@@ -1,0 +1,11 @@
+.DS_Store
+xcuserdata/
+ReportWriter/build/
+ReportWriter.zip
+
+# 4D test database: data, generated files, per-user settings, built plugin copy
+ReportWriter/test/Data/
+ReportWriter/test/Libraries/
+ReportWriter/test/Plugins/
+ReportWriter/test/Project/DerivedData/
+ReportWriter/test/userPreferences.*/

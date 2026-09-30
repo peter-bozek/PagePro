@@ -1,0 +1,961 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		18B684FF06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B684FE06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp */; };
+		8D01CCCA0486CAD60068D4B7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		D13116A91A03ACB700DE1322 /* 4DPluginAPI.c in Sources */ = {isa = PBXBuildFile; fileRef = D13116A81A03ACB700DE1322 /* 4DPluginAPI.c */; settings = {COMPILER_FLAGS = "-Wno-multichar"; }; };
+		D134D4AC1A030BA0008D14EF /* manifest.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = D134D4A91A030B06008D14EF /* manifest.json */; };
+		D22610372B3DADBF00CFC83D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D22610362B3DADBF00CFC83D /* Carbon.framework */; };
+		D22610392B3DADC500CFC83D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D22610382B3DADC500CFC83D /* CoreFoundation.framework */; };
+		D226103D2B3DAE3200CFC83D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D226103C2B3DAE3200CFC83D /* CoreServices.framework */; };
+		D226103F2B3DAF5A00CFC83D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D226103E2B3DAF5A00CFC83D /* Cocoa.framework */; };
+		D226106C2B3DB5A400CFC83D /* SRDataSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226104B2B3DB5A400CFC83D /* SRDataSource.cpp */; };
+		D226106D2B3DB5A400CFC83D /* SRSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226104C2B3DB5A400CFC83D /* SRSection.cpp */; };
+		D22610702B3DB5A400CFC83D /* ExtendedExecute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226104F2B3DB5A400CFC83D /* ExtendedExecute.cpp */; };
+		D22610722B3DB5A400CFC83D /* SRReportData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610512B3DB5A400CFC83D /* SRReportData.cpp */; };
+		D22610752B3DB5A400CFC83D /* SRReportWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610542B3DB5A400CFC83D /* SRReportWriter.cpp */; };
+		D22610792B3DB5A400CFC83D /* SRGetFontsCG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610582B3DB5A400CFC83D /* SRGetFontsCG.cpp */; };
+		D226107A2B3DB5A400CFC83D /* SRObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610592B3DB5A400CFC83D /* SRObject.cpp */; };
+		D226107B2B3DB5A400CFC83D /* SRTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226105A2B3DB5A400CFC83D /* SRTable.cpp */; };
+		D226107D2B3DB5A400CFC83D /* SRPlugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226105C2B3DB5A400CFC83D /* SRPlugin.cpp */; };
+		D226107F2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h in Headers */ = {isa = PBXBuildFile; fileRef = D226105E2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h */; };
+		D22610862B3DB5A400CFC83D /* SRDataSourceProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610652B3DB5A400CFC83D /* SRDataSourceProvider.cpp */; };
+		D22610882B3DB5A400CFC83D /* SRLicense.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610672B3DB5A400CFC83D /* SRLicense.cpp */; };
+		D226108A2B3DB5A400CFC83D /* SRDataFormatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */; };
+		D226108B2B3DB5A400CFC83D /* SR4DData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226106A2B3DB5A400CFC83D /* SR4DData.cpp */; };
+		D226108C2B3DB5A400CFC83D /* RW4DText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226106B2B3DB5A400CFC83D /* RW4DText.cpp */; };
+		D26A53B130112B07008C98A1 /* SRDataFormatter 2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26A53B030112B07008C98A1 /* SRDataFormatter 2.cpp */; };
+		D26EBFA92AF2736E001E7074 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */; };
+		D26EBFAA2AF2736E001E7074 /* xmltest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFA72AF2736E001E7074 /* xmltest.cpp */; };
+		D26EBFEC2AF274EE001E7074 /* RWCTPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */; };
+		D26EBFEE2AF274EE001E7074 /* RWObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB32AF274EE001E7074 /* RWObject.cpp */; };
+		D26EBFF32AF274EE001E7074 /* RWPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB82AF274EE001E7074 /* RWPageComposer.cpp */; };
+		D26EBFF52AF274EE001E7074 /* ETReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFBA2AF274EE001E7074 /* ETReport.cpp */; };
+		D26EBFF62AF274EE001E7074 /* RWPDFPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFBB2AF274EE001E7074 /* RWPDFPageComposer.cpp */; };
+		D26EBFFA2AF274EE001E7074 /* RWDataProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFBF2AF274EE001E7074 /* RWDataProvider.cpp */; };
+		D26EBFFC2AF274EF001E7074 /* ETObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFC12AF274EE001E7074 /* ETObject.cpp */; };
+		D26EBFFE2AF274EF001E7074 /* RWPoDoFoPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFC32AF274EE001E7074 /* RWPoDoFoPageComposer.cpp */; };
+		D26EBFFF2AF274EF001E7074 /* RWDataSourceProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFC42AF274EE001E7074 /* RWDataSourceProvider.cpp */; };
+		D26EC0042AF274EF001E7074 /* ETReportData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFC92AF274EE001E7074 /* ETReportData.cpp */; };
+		D26EC0052AF274EF001E7074 /* RWBaseTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFCA2AF274EE001E7074 /* RWBaseTypes.cpp */; };
+		D26EC0062AF274EF001E7074 /* RWSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFCB2AF274EE001E7074 /* RWSection.cpp */; };
+		D26EC0072AF274EF001E7074 /* RWCalculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFCC2AF274EE001E7074 /* RWCalculator.cpp */; };
+		D26EC0092AF274EF001E7074 /* RWReportWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFCE2AF274EE001E7074 /* RWReportWriter.cpp */; };
+		D26EC0182AF274EF001E7074 /* ETSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFDD2AF274EE001E7074 /* ETSection.cpp */; };
+		D26EC0192AF274EF001E7074 /* RWMacPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFDE2AF274EE001E7074 /* RWMacPageComposer.cpp */; };
+		D26EC01A2AF274EF001E7074 /* RWDataSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFDF2AF274EE001E7074 /* RWDataSource.cpp */; };
+		D26EC01B2AF274EF001E7074 /* RWTextFormatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFE02AF274EE001E7074 /* RWTextFormatter.cpp */; };
+		D26EC01F2AF274EF001E7074 /* RWTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFE42AF274EE001E7074 /* RWTable.cpp */; };
+		D26EC0202AF274EF001E7074 /* RWStyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFE52AF274EE001E7074 /* RWStyle.cpp */; };
+		D26EC0212AF274EF001E7074 /* RWReportData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFE62AF274EE001E7074 /* RWReportData.cpp */; };
+		D26EC0272AF3CBD4001E7074 /* 4DPlugin-JSON.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0252AF3CBD4001E7074 /* 4DPlugin-JSON.cpp */; };
+		D26EC0382AF44891001E7074 /* DMUndo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC02B2AF44891001E7074 /* DMUndo.cpp */; };
+		D26EC03B2AF44891001E7074 /* DMArea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC02E2AF44891001E7074 /* DMArea.cpp */; };
+		D26EC03C2AF44891001E7074 /* DMObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC02F2AF44891001E7074 /* DMObject.cpp */; };
+		D26EC03E2AF44891001E7074 /* DMReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0312AF44891001E7074 /* DMReport.cpp */; };
+		D26EC03F2AF44891001E7074 /* UIScrollBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0322AF44891001E7074 /* UIScrollBar.cpp */; };
+		D26EC0432AF44891001E7074 /* PSObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0362AF44891001E7074 /* PSObject.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D134D4AB1A030B7A008D14EF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				D134D4AC1A030BA0008D14EF /* manifest.json in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		189286350695AD8900B05D6E /* ReportWriter.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReportWriter.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		18B684F006944F2000CC6A1E /* 4DPluginAPI.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = 4DPluginAPI.h; sourceTree = "<group>"; };
+		18B684F106944F2000CC6A1E /* EntryPoints.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = EntryPoints.h; sourceTree = "<group>"; };
+		18B684F206944F2000CC6A1E /* Flags.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Flags.h; sourceTree = "<group>"; };
+		18B684F306944F2000CC6A1E /* PrivateTypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PrivateTypes.h; sourceTree = "<group>"; };
+		18B684F406944F2000CC6A1E /* PublicTypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PublicTypes.h; sourceTree = "<group>"; };
+		18B684FE06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; path = "4DPlugin-ReportWriter.cpp"; sourceTree = "<group>"; };
+		8D01CCD10486CAD60068D4B7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D120937E13534DCC00A72CAA /* 4DPlugin-ReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "4DPlugin-ReportWriter.h"; sourceTree = "<group>"; };
+		D130064E12F02D9700702C0E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		D13116A81A03ACB700DE1322 /* 4DPluginAPI.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = 4DPluginAPI.c; sourceTree = "<group>"; };
+		D134D4A91A030B06008D14EF /* manifest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
+		D14D10DD1A03A8A5008B3411 /* constants.xlf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = constants.xlf; sourceTree = "<group>"; };
+		D22610342B3B5DC600CFC83D /* theVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theVersion.h; path = "../../new SRP current_16/Resources/theVersion.h"; sourceTree = "<group>"; };
+		D22610362B3DADBF00CFC83D /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		D22610382B3DADC500CFC83D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		D226103C2B3DAE3200CFC83D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		D226103E2B3DAF5A00CFC83D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		D22610412B3DB01500CFC83D /* 4DPrefixMacCarbonDbg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DPrefixMacCarbonDbg.h; sourceTree = "<group>"; };
+		D22610422B3DB01500CFC83D /* 4DHeadersCarbon.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DHeadersCarbon.pch; sourceTree = "<group>"; };
+		D22610432B3DB01500CFC83D /* 4DHeadersCarbonDbg.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DHeadersCarbonDbg.pch; sourceTree = "<group>"; };
+		D22610442B3DB01500CFC83D /* 4DPrefixMacCarbon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DPrefixMacCarbon.h; sourceTree = "<group>"; };
+		D226104B2B3DB5A400CFC83D /* SRDataSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRDataSource.cpp; sourceTree = "<group>"; };
+		D226104C2B3DB5A400CFC83D /* SRSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRSection.cpp; sourceTree = "<group>"; };
+		D226104D2B3DB5A400CFC83D /* SR4DData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SR4DData.h; sourceTree = "<group>"; };
+		D226104E2B3DB5A400CFC83D /* SRLicense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRLicense.h; sourceTree = "<group>"; };
+		D226104F2B3DB5A400CFC83D /* ExtendedExecute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExtendedExecute.cpp; sourceTree = "<group>"; };
+		D22610502B3DB5A400CFC83D /* SRGetFontsCG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRGetFontsCG.h; sourceTree = "<group>"; };
+		D22610512B3DB5A400CFC83D /* SRReportData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRReportData.cpp; sourceTree = "<group>"; };
+		D22610532B3DB5A400CFC83D /* WinDbgPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinDbgPrefix.h; sourceTree = "<group>"; };
+		D22610542B3DB5A400CFC83D /* SRReportWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRReportWriter.cpp; sourceTree = "<group>"; };
+		D22610552B3DB5A400CFC83D /* SRSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRSection.h; sourceTree = "<group>"; };
+		D22610562B3DB5A400CFC83D /* SRObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRObject.h; sourceTree = "<group>"; };
+		D22610572B3DB5A400CFC83D /* SRDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRDataSource.h; sourceTree = "<group>"; };
+		D22610582B3DB5A400CFC83D /* SRGetFontsCG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRGetFontsCG.cpp; sourceTree = "<group>"; };
+		D22610592B3DB5A400CFC83D /* SRObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRObject.cpp; sourceTree = "<group>"; };
+		D226105A2B3DB5A400CFC83D /* SRTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRTable.cpp; sourceTree = "<group>"; };
+		D226105B2B3DB5A400CFC83D /* Mac4DCarbonDbgPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mac4DCarbonDbgPrefix.h; sourceTree = "<group>"; };
+		D226105C2B3DB5A400CFC83D /* SRPlugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRPlugin.cpp; sourceTree = "<group>"; };
+		D226105D2B3DB5A400CFC83D /* WinPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinPrefix.h; sourceTree = "<group>"; };
+		D226105E2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mac4DCarbonPrefix.h; sourceTree = "<group>"; };
+		D226105F2B3DB5A400CFC83D /* RW4DText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RW4DText.h; sourceTree = "<group>"; };
+		D22610602B3DB5A400CFC83D /* SRPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRPlugin.h; sourceTree = "<group>"; };
+		D22610612B3DB5A400CFC83D /* ExtendedExecute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtendedExecute.h; sourceTree = "<group>"; };
+		D22610622B3DB5A400CFC83D /* SRDataSourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRDataSourceProvider.h; sourceTree = "<group>"; };
+		D22610632B3DB5A400CFC83D /* SRDataFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRDataFormatter.h; sourceTree = "<group>"; };
+		D22610642B3DB5A400CFC83D /* SRReportData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRReportData.h; sourceTree = "<group>"; };
+		D22610652B3DB5A400CFC83D /* SRDataSourceProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRDataSourceProvider.cpp; sourceTree = "<group>"; };
+		D22610662B3DB5A400CFC83D /* dllLoader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dllLoader.c; sourceTree = "<group>"; };
+		D22610672B3DB5A400CFC83D /* SRLicense.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRLicense.cpp; sourceTree = "<group>"; };
+		D22610682B3DB5A400CFC83D /* SRReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRReportWriter.h; sourceTree = "<group>"; };
+		D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRDataFormatter.cpp; sourceTree = "<group>"; };
+		D226106A2B3DB5A400CFC83D /* SR4DData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SR4DData.cpp; sourceTree = "<group>"; };
+		D226106B2B3DB5A400CFC83D /* RW4DText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RW4DText.cpp; sourceTree = "<group>"; };
+		D26A53B030112B07008C98A1 /* SRDataFormatter 2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "SRDataFormatter 2.cpp"; sourceTree = "<group>"; };
+		D26EBFA42AF26D4A001E7074 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml2.cpp; sourceTree = "<group>"; };
+		D26EBFA72AF2736E001E7074 /* xmltest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmltest.cpp; sourceTree = "<group>"; };
+		D26EBFA82AF2736E001E7074 /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
+		D26EBFAD2AF274EE001E7074 /* RWTextFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWTextFormatter.h; sourceTree = "<group>"; };
+		D26EBFAF2AF274EE001E7074 /* ETObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETObject.h; sourceTree = "<group>"; };
+		D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWCTPageComposer.cpp; sourceTree = "<group>"; };
+		D26EBFB22AF274EE001E7074 /* ETReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETReport.h; sourceTree = "<group>"; };
+		D26EBFB32AF274EE001E7074 /* RWObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWObject.cpp; sourceTree = "<group>"; };
+		D26EBFB52AF274EE001E7074 /* RWMacPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWMacPageComposer.h; sourceTree = "<group>"; };
+		D26EBFB82AF274EE001E7074 /* RWPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWPageComposer.cpp; sourceTree = "<group>"; };
+		D26EBFB92AF274EE001E7074 /* RWReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWReportWriter.h; sourceTree = "<group>"; };
+		D26EBFBA2AF274EE001E7074 /* ETReport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ETReport.cpp; sourceTree = "<group>"; };
+		D26EBFBB2AF274EE001E7074 /* RWPDFPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWPDFPageComposer.cpp; sourceTree = "<group>"; };
+		D26EBFBC2AF274EE001E7074 /* ETReportData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETReportData.h; sourceTree = "<group>"; };
+		D26EBFBD2AF274EE001E7074 /* RWReportVariables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWReportVariables.h; sourceTree = "<group>"; };
+		D26EBFBF2AF274EE001E7074 /* RWDataProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWDataProvider.cpp; sourceTree = "<group>"; };
+		D26EBFC02AF274EE001E7074 /* RWDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWDataSource.h; sourceTree = "<group>"; };
+		D26EBFC12AF274EE001E7074 /* ETObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ETObject.cpp; sourceTree = "<group>"; };
+		D26EBFC22AF274EE001E7074 /* RWDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWDataProvider.h; sourceTree = "<group>"; };
+		D26EBFC32AF274EE001E7074 /* RWPoDoFoPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWPoDoFoPageComposer.cpp; sourceTree = "<group>"; };
+		D26EBFC42AF274EE001E7074 /* RWDataSourceProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWDataSourceProvider.cpp; sourceTree = "<group>"; };
+		D26EBFC62AF274EE001E7074 /* RWCalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWCalculator.h; sourceTree = "<group>"; };
+		D26EBFC82AF274EE001E7074 /* RWBaseTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWBaseTypes.h; sourceTree = "<group>"; };
+		D26EBFC92AF274EE001E7074 /* ETReportData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ETReportData.cpp; sourceTree = "<group>"; };
+		D26EBFCA2AF274EE001E7074 /* RWBaseTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWBaseTypes.cpp; sourceTree = "<group>"; };
+		D26EBFCB2AF274EE001E7074 /* RWSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWSection.cpp; sourceTree = "<group>"; };
+		D26EBFCC2AF274EE001E7074 /* RWCalculator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWCalculator.cpp; sourceTree = "<group>"; };
+		D26EBFCE2AF274EE001E7074 /* RWReportWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWReportWriter.cpp; sourceTree = "<group>"; };
+		D26EBFCF2AF274EE001E7074 /* RWStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWStyle.h; sourceTree = "<group>"; };
+		D26EBFD02AF274EE001E7074 /* RWPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPageComposer.h; sourceTree = "<group>"; };
+		D26EBFD12AF274EE001E7074 /* ETSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETSection.h; sourceTree = "<group>"; };
+		D26EBFD22AF274EE001E7074 /* RWPDFPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPDFPageComposer.h; sourceTree = "<group>"; };
+		D26EBFD32AF274EE001E7074 /* RWSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWSection.h; sourceTree = "<group>"; };
+		D26EBFD52AF274EE001E7074 /* RWPoDoFoPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPoDoFoPageComposer.h; sourceTree = "<group>"; };
+		D26EBFD72AF274EE001E7074 /* MacCarbonPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacCarbonPrefix.h; sourceTree = "<group>"; };
+		D26EBFD92AF274EE001E7074 /* RWCTPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWCTPageComposer.h; sourceTree = "<group>"; };
+		D26EBFDA2AF274EE001E7074 /* RWReportData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWReportData.h; sourceTree = "<group>"; };
+		D26EBFDB2AF274EE001E7074 /* RWDataSourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWDataSourceProvider.h; sourceTree = "<group>"; };
+		D26EBFDC2AF274EE001E7074 /* RWObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWObject.h; sourceTree = "<group>"; };
+		D26EBFDD2AF274EE001E7074 /* ETSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ETSection.cpp; sourceTree = "<group>"; };
+		D26EBFDE2AF274EE001E7074 /* RWMacPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWMacPageComposer.cpp; sourceTree = "<group>"; };
+		D26EBFDF2AF274EE001E7074 /* RWDataSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWDataSource.cpp; sourceTree = "<group>"; };
+		D26EBFE02AF274EE001E7074 /* RWTextFormatter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWTextFormatter.cpp; sourceTree = "<group>"; };
+		D26EBFE42AF274EE001E7074 /* RWTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWTable.cpp; sourceTree = "<group>"; };
+		D26EBFE52AF274EE001E7074 /* RWStyle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWStyle.cpp; sourceTree = "<group>"; };
+		D26EBFE62AF274EE001E7074 /* RWReportData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWReportData.cpp; sourceTree = "<group>"; };
+		D26EC0252AF3CBD4001E7074 /* 4DPlugin-JSON.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "4DPlugin-JSON.cpp"; sourceTree = "<group>"; };
+		D26EC0262AF3CBD4001E7074 /* 4DPlugin-JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "4DPlugin-JSON.h"; sourceTree = "<group>"; };
+		D26EC02A2AF44891001E7074 /* DMArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMArea.h; sourceTree = "<group>"; };
+		D26EC02B2AF44891001E7074 /* DMUndo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMUndo.cpp; sourceTree = "<group>"; };
+		D26EC02C2AF44891001E7074 /* PSObjProps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSObjProps.h; sourceTree = "<group>"; };
+		D26EC02D2AF44891001E7074 /* UIScrollBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIScrollBar.h; sourceTree = "<group>"; };
+		D26EC02E2AF44891001E7074 /* DMArea.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMArea.cpp; sourceTree = "<group>"; };
+		D26EC02F2AF44891001E7074 /* DMObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMObject.cpp; sourceTree = "<group>"; };
+		D26EC0302AF44891001E7074 /* PSObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSObject.h; sourceTree = "<group>"; };
+		D26EC0312AF44891001E7074 /* DMReport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMReport.cpp; sourceTree = "<group>"; };
+		D26EC0322AF44891001E7074 /* UIScrollBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIScrollBar.cpp; sourceTree = "<group>"; };
+		D26EC0332AF44891001E7074 /* DMUndo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMUndo.h; sourceTree = "<group>"; };
+		D26EC0342AF44891001E7074 /* DMObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMObject.h; sourceTree = "<group>"; };
+		D26EC0352AF44891001E7074 /* DMReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMReport.h; sourceTree = "<group>"; };
+		D26EC0362AF44891001E7074 /* PSObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PSObject.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D01CCCD0486CAD60068D4B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D226103F2B3DAF5A00CFC83D /* Cocoa.framework in Frameworks */,
+				D22610392B3DADC500CFC83D /* CoreFoundation.framework in Frameworks */,
+				D22610372B3DADBF00CFC83D /* Carbon.framework in Frameworks */,
+				D226103D2B3DAE3200CFC83D /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* ReportWriter */ = {
+			isa = PBXGroup;
+			children = (
+				D26EC0242AF3CBD4001E7074 /* support */,
+				D108BD7A1A03D1E6001F1B90 /* Manifest */,
+				08FB77ADFE841716C02AAC07 /* Source */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
+				189286360695AD8900B05D6E /* Products */,
+				D16FBB3C22A4C07E008F0416 /* Frameworks */,
+			);
+			name = ReportWriter;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				D130064E12F02D9700702C0E /* Cocoa.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D01CCD10486CAD60068D4B7 /* Info.plist */,
+				D22610342B3B5DC600CFC83D /* theVersion.h */,
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77ADFE841716C02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				D26EC0232AF27801001E7074 /* ET */,
+				D226104A2B3DB5A400CFC83D /* SRP */,
+				D22610402B3DB01500CFC83D /* 4D Headers */,
+				D26EC0292AF44891001E7074 /* DM */,
+				D26EBFAC2AF274EE001E7074 /* RW */,
+				D26EBFA52AF2736E001E7074 /* tinyXML */,
+				18B684FE06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp */,
+				D120937E13534DCC00A72CAA /* 4DPlugin-ReportWriter.h */,
+				18B684ED06944F2000CC6A1E /* 4D Plugin API */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		189286360695AD8900B05D6E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				189286350695AD8900B05D6E /* ReportWriter.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		18B684ED06944F2000CC6A1E /* 4D Plugin API */ = {
+			isa = PBXGroup;
+			children = (
+				D13116A81A03ACB700DE1322 /* 4DPluginAPI.c */,
+				18B684F006944F2000CC6A1E /* 4DPluginAPI.h */,
+				18B684F106944F2000CC6A1E /* EntryPoints.h */,
+				18B684F206944F2000CC6A1E /* Flags.h */,
+				18B684F306944F2000CC6A1E /* PrivateTypes.h */,
+				18B684F406944F2000CC6A1E /* PublicTypes.h */,
+			);
+			path = "4D Plugin API";
+			sourceTree = "<group>";
+		};
+		D108BD7A1A03D1E6001F1B90 /* Manifest */ = {
+			isa = PBXGroup;
+			children = (
+				D134D4A91A030B06008D14EF /* manifest.json */,
+				D14D10DD1A03A8A5008B3411 /* constants.xlf */,
+			);
+			name = Manifest;
+			sourceTree = "<group>";
+		};
+		D16FBB3C22A4C07E008F0416 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D226103E2B3DAF5A00CFC83D /* Cocoa.framework */,
+				D226103C2B3DAE3200CFC83D /* CoreServices.framework */,
+				D22610382B3DADC500CFC83D /* CoreFoundation.framework */,
+				D22610362B3DADBF00CFC83D /* Carbon.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D22610402B3DB01500CFC83D /* 4D Headers */ = {
+			isa = PBXGroup;
+			children = (
+				D22610432B3DB01500CFC83D /* 4DHeadersCarbonDbg.pch */,
+				D22610442B3DB01500CFC83D /* 4DPrefixMacCarbon.h */,
+				D22610412B3DB01500CFC83D /* 4DPrefixMacCarbonDbg.h */,
+				D22610422B3DB01500CFC83D /* 4DHeadersCarbon.pch */,
+			);
+			path = "4D Headers";
+			sourceTree = "<group>";
+		};
+		D226104A2B3DB5A400CFC83D /* SRP */ = {
+			isa = PBXGroup;
+			children = (
+				D22610572B3DB5A400CFC83D /* SRDataSource.h */,
+				D226104B2B3DB5A400CFC83D /* SRDataSource.cpp */,
+				D226104C2B3DB5A400CFC83D /* SRSection.cpp */,
+				D226104D2B3DB5A400CFC83D /* SR4DData.h */,
+				D226104E2B3DB5A400CFC83D /* SRLicense.h */,
+				D226104F2B3DB5A400CFC83D /* ExtendedExecute.cpp */,
+				D22610502B3DB5A400CFC83D /* SRGetFontsCG.h */,
+				D22610512B3DB5A400CFC83D /* SRReportData.cpp */,
+				D22610532B3DB5A400CFC83D /* WinDbgPrefix.h */,
+				D22610542B3DB5A400CFC83D /* SRReportWriter.cpp */,
+				D22610552B3DB5A400CFC83D /* SRSection.h */,
+				D22610562B3DB5A400CFC83D /* SRObject.h */,
+				D22610582B3DB5A400CFC83D /* SRGetFontsCG.cpp */,
+				D22610592B3DB5A400CFC83D /* SRObject.cpp */,
+				D226105A2B3DB5A400CFC83D /* SRTable.cpp */,
+				D226105B2B3DB5A400CFC83D /* Mac4DCarbonDbgPrefix.h */,
+				D226105C2B3DB5A400CFC83D /* SRPlugin.cpp */,
+				D226105D2B3DB5A400CFC83D /* WinPrefix.h */,
+				D226105E2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h */,
+				D226105F2B3DB5A400CFC83D /* RW4DText.h */,
+				D22610602B3DB5A400CFC83D /* SRPlugin.h */,
+				D22610612B3DB5A400CFC83D /* ExtendedExecute.h */,
+				D22610622B3DB5A400CFC83D /* SRDataSourceProvider.h */,
+				D22610632B3DB5A400CFC83D /* SRDataFormatter.h */,
+				D22610642B3DB5A400CFC83D /* SRReportData.h */,
+				D22610652B3DB5A400CFC83D /* SRDataSourceProvider.cpp */,
+				D22610662B3DB5A400CFC83D /* dllLoader.c */,
+				D22610672B3DB5A400CFC83D /* SRLicense.cpp */,
+				D22610682B3DB5A400CFC83D /* SRReportWriter.h */,
+				D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */,
+				D226106A2B3DB5A400CFC83D /* SR4DData.cpp */,
+				D226106B2B3DB5A400CFC83D /* RW4DText.cpp */,
+				D26A53B030112B07008C98A1 /* SRDataFormatter 2.cpp */,
+			);
+			path = SRP;
+			sourceTree = SOURCE_ROOT;
+		};
+		D26EBFA52AF2736E001E7074 /* tinyXML */ = {
+			isa = PBXGroup;
+			children = (
+				D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */,
+				D26EBFA72AF2736E001E7074 /* xmltest.cpp */,
+				D26EBFA82AF2736E001E7074 /* tinyxml2.h */,
+			);
+			path = tinyXML;
+			sourceTree = "<group>";
+		};
+		D26EBFAC2AF274EE001E7074 /* RW */ = {
+			isa = PBXGroup;
+			children = (
+				D26EBFD72AF274EE001E7074 /* MacCarbonPrefix.h */,
+				D26EBFC82AF274EE001E7074 /* RWBaseTypes.h */,
+				D26EBFCA2AF274EE001E7074 /* RWBaseTypes.cpp */,
+				D26EBFC62AF274EE001E7074 /* RWCalculator.h */,
+				D26EBFCC2AF274EE001E7074 /* RWCalculator.cpp */,
+				D26EBFC02AF274EE001E7074 /* RWDataSource.h */,
+				D26EBFDF2AF274EE001E7074 /* RWDataSource.cpp */,
+				D26EBFC22AF274EE001E7074 /* RWDataProvider.h */,
+				D26EBFBF2AF274EE001E7074 /* RWDataProvider.cpp */,
+				D26EBFDB2AF274EE001E7074 /* RWDataSourceProvider.h */,
+				D26EBFC42AF274EE001E7074 /* RWDataSourceProvider.cpp */,
+				D26EBFDC2AF274EE001E7074 /* RWObject.h */,
+				D26EBFB32AF274EE001E7074 /* RWObject.cpp */,
+				D26EBFD02AF274EE001E7074 /* RWPageComposer.h */,
+				D26EBFB82AF274EE001E7074 /* RWPageComposer.cpp */,
+				D26EBFB52AF274EE001E7074 /* RWMacPageComposer.h */,
+				D26EBFDE2AF274EE001E7074 /* RWMacPageComposer.cpp */,
+				D26EBFD92AF274EE001E7074 /* RWCTPageComposer.h */,
+				D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */,
+				D26EBFD22AF274EE001E7074 /* RWPDFPageComposer.h */,
+				D26EBFBB2AF274EE001E7074 /* RWPDFPageComposer.cpp */,
+				D26EBFD52AF274EE001E7074 /* RWPoDoFoPageComposer.h */,
+				D26EBFC32AF274EE001E7074 /* RWPoDoFoPageComposer.cpp */,
+				D26EBFDA2AF274EE001E7074 /* RWReportData.h */,
+				D26EBFE62AF274EE001E7074 /* RWReportData.cpp */,
+				D26EBFBD2AF274EE001E7074 /* RWReportVariables.h */,
+				D26EBFB92AF274EE001E7074 /* RWReportWriter.h */,
+				D26EBFCE2AF274EE001E7074 /* RWReportWriter.cpp */,
+				D26EBFD32AF274EE001E7074 /* RWSection.h */,
+				D26EBFCB2AF274EE001E7074 /* RWSection.cpp */,
+				D26EBFAD2AF274EE001E7074 /* RWTextFormatter.h */,
+				D26EBFE02AF274EE001E7074 /* RWTextFormatter.cpp */,
+				D26EBFE42AF274EE001E7074 /* RWTable.cpp */,
+				D26EBFCF2AF274EE001E7074 /* RWStyle.h */,
+				D26EBFE52AF274EE001E7074 /* RWStyle.cpp */,
+			);
+			path = RW;
+			sourceTree = "<group>";
+		};
+		D26EC0232AF27801001E7074 /* ET */ = {
+			isa = PBXGroup;
+			children = (
+				D26EBFAF2AF274EE001E7074 /* ETObject.h */,
+				D26EBFC12AF274EE001E7074 /* ETObject.cpp */,
+				D26EBFB22AF274EE001E7074 /* ETReport.h */,
+				D26EBFBA2AF274EE001E7074 /* ETReport.cpp */,
+				D26EBFBC2AF274EE001E7074 /* ETReportData.h */,
+				D26EBFC92AF274EE001E7074 /* ETReportData.cpp */,
+				D26EBFD12AF274EE001E7074 /* ETSection.h */,
+				D26EBFDD2AF274EE001E7074 /* ETSection.cpp */,
+			);
+			path = ET;
+			sourceTree = "<group>";
+		};
+		D26EC0242AF3CBD4001E7074 /* support */ = {
+			isa = PBXGroup;
+			children = (
+				D26EC0252AF3CBD4001E7074 /* 4DPlugin-JSON.cpp */,
+				D26EC0262AF3CBD4001E7074 /* 4DPlugin-JSON.h */,
+			);
+			path = support;
+			sourceTree = "<group>";
+		};
+		D26EC0292AF44891001E7074 /* DM */ = {
+			isa = PBXGroup;
+			children = (
+				D26EC02A2AF44891001E7074 /* DMArea.h */,
+				D26EC02B2AF44891001E7074 /* DMUndo.cpp */,
+				D26EC02C2AF44891001E7074 /* PSObjProps.h */,
+				D26EC02D2AF44891001E7074 /* UIScrollBar.h */,
+				D26EC02E2AF44891001E7074 /* DMArea.cpp */,
+				D26EC02F2AF44891001E7074 /* DMObject.cpp */,
+				D26EC0302AF44891001E7074 /* PSObject.h */,
+				D26EC0312AF44891001E7074 /* DMReport.cpp */,
+				D26EC0322AF44891001E7074 /* UIScrollBar.cpp */,
+				D26EC0332AF44891001E7074 /* DMUndo.h */,
+				D26EC0342AF44891001E7074 /* DMObject.h */,
+				D26EC0352AF44891001E7074 /* DMReport.h */,
+				D26EC0362AF44891001E7074 /* PSObject.cpp */,
+			);
+			path = DM;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8D01CCC70486CAD60068D4B7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D226107F2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8D01CCC60486CAD60068D4B7 /* ReportWriter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 42D60B3F0A9DDBC8002ABB42 /* Build configuration list for PBXNativeTarget "ReportWriter" */;
+			buildPhases = (
+				8D01CCC70486CAD60068D4B7 /* Headers */,
+				8D01CCC90486CAD60068D4B7 /* Resources */,
+				D134D4AB1A030B7A008D14EF /* CopyFiles */,
+				8D01CCCB0486CAD60068D4B7 /* Sources */,
+				8D01CCCD0486CAD60068D4B7 /* Frameworks */,
+				8D01CCCF0486CAD60068D4B7 /* Rez */,
+				D1292E7B22C4A91E00CB5A8C /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ReportWriter;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = ReportWriter;
+			productReference = 189286350695AD8900B05D6E /* ReportWriter.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					8D01CCC60486CAD60068D4B7 = {
+						DevelopmentTeam = 3X63W4TBDH;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 42D60B430A9DDBC8002ABB42 /* Build configuration list for PBXProject "ReportWriter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				ja,
+				en,
+				de,
+				fr,
+				Base,
+			);
+			mainGroup = 089C166AFE841209C02AAC07 /* ReportWriter */;
+			productRefGroup = 189286360695AD8900B05D6E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D01CCC60486CAD60068D4B7 /* ReportWriter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D01CCC90486CAD60068D4B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D01CCCA0486CAD60068D4B7 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		8D01CCCF0486CAD60068D4B7 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D1292E7B22C4A91E00CB5A8C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if test \"$CONFIGURATION\" == 'Deployment'; then\n\n    USER_NAME=keisuke.miyako@4d.com\n    UUID=`uuidgen | tr -d - | tr -d '\\n' | tr '[:upper:]' '[:lower:]'`\n    DEVELOPER_ID=`security find-identity -p codesigning -v | egrep 'Developer ID Application[^\"]+' -o`\n    PRODUCT_PATH=\"$CODESIGNING_FOLDER_PATH\"\n    \n    #clean\n    xattr -cr \"$PRODUCT_PATH\"\n    codesign --remove-signature \"$PRODUCT_PATH\"\n    \n    #sign\n    codesign --verbose --deep --timestamp --force --sign \"$DEVELOPER_ID\" \"$PRODUCT_PATH\"\n    \n    #archive\n    DMG_PATH=\"$PROJECT_DIR/$PRODUCT_NAME.dmg\"\n    ZIP_PATH=\"$PROJECT_DIR/$PRODUCT_NAME.zip\" #for windows\n    rm -f \"$DMG_PATH\"\n    hdiutil create -format UDBZ -plist -srcfolder \"$PRODUCT_PATH\" \"$DMG_PATH\"\n    rm -f \"$ZIP_PATH\"\n    ditto -c -k --keepParent \"$PRODUCT_PATH\" \"$ZIP_PATH\"\n    \n    xcrun notarytool submit \"$ZIP_PATH\" --keychain-profile \"notarytool\" --wait\n    xcrun notarytool submit \"$DMG_PATH\" --keychain-profile \"notarytool\" --wait\n        \n    xcrun stapler staple \"$DMG_PATH\"\n\nelse\n    echo \"No notarization performed as this is not a release build.\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D01CCCB0486CAD60068D4B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D26EC0212AF274EF001E7074 /* RWReportData.cpp in Sources */,
+				D22610702B3DB5A400CFC83D /* ExtendedExecute.cpp in Sources */,
+				D22610792B3DB5A400CFC83D /* SRGetFontsCG.cpp in Sources */,
+				D26EBFF52AF274EE001E7074 /* ETReport.cpp in Sources */,
+				D13116A91A03ACB700DE1322 /* 4DPluginAPI.c in Sources */,
+				D26EC0382AF44891001E7074 /* DMUndo.cpp in Sources */,
+				D26EC0192AF274EF001E7074 /* RWMacPageComposer.cpp in Sources */,
+				D226106C2B3DB5A400CFC83D /* SRDataSource.cpp in Sources */,
+				D226107D2B3DB5A400CFC83D /* SRPlugin.cpp in Sources */,
+				D26EC0092AF274EF001E7074 /* RWReportWriter.cpp in Sources */,
+				D226108A2B3DB5A400CFC83D /* SRDataFormatter.cpp in Sources */,
+				D22610752B3DB5A400CFC83D /* SRReportWriter.cpp in Sources */,
+				D26EC01F2AF274EF001E7074 /* RWTable.cpp in Sources */,
+				D26EBFEC2AF274EE001E7074 /* RWCTPageComposer.cpp in Sources */,
+				D26EBFFC2AF274EF001E7074 /* ETObject.cpp in Sources */,
+				D26EBFF62AF274EE001E7074 /* RWPDFPageComposer.cpp in Sources */,
+				D226108C2B3DB5A400CFC83D /* RW4DText.cpp in Sources */,
+				D26EC03F2AF44891001E7074 /* UIScrollBar.cpp in Sources */,
+				D26EBFA92AF2736E001E7074 /* tinyxml2.cpp in Sources */,
+				D26EC03C2AF44891001E7074 /* DMObject.cpp in Sources */,
+				D26EC0052AF274EF001E7074 /* RWBaseTypes.cpp in Sources */,
+				D226108B2B3DB5A400CFC83D /* SR4DData.cpp in Sources */,
+				D22610722B3DB5A400CFC83D /* SRReportData.cpp in Sources */,
+				D26EC0182AF274EF001E7074 /* ETSection.cpp in Sources */,
+				D26EC0042AF274EF001E7074 /* ETReportData.cpp in Sources */,
+				D26EC01A2AF274EF001E7074 /* RWDataSource.cpp in Sources */,
+				D26EC03E2AF44891001E7074 /* DMReport.cpp in Sources */,
+				D26EBFFE2AF274EF001E7074 /* RWPoDoFoPageComposer.cpp in Sources */,
+				D26EBFF32AF274EE001E7074 /* RWPageComposer.cpp in Sources */,
+				D26EBFAA2AF2736E001E7074 /* xmltest.cpp in Sources */,
+				D26EBFEE2AF274EE001E7074 /* RWObject.cpp in Sources */,
+				D226107A2B3DB5A400CFC83D /* SRObject.cpp in Sources */,
+				D26EC0072AF274EF001E7074 /* RWCalculator.cpp in Sources */,
+				D26EC0432AF44891001E7074 /* PSObject.cpp in Sources */,
+				D26EC0272AF3CBD4001E7074 /* 4DPlugin-JSON.cpp in Sources */,
+				D22610862B3DB5A400CFC83D /* SRDataSourceProvider.cpp in Sources */,
+				D26EC01B2AF274EF001E7074 /* RWTextFormatter.cpp in Sources */,
+				D26EC0062AF274EF001E7074 /* RWSection.cpp in Sources */,
+				D26EBFFF2AF274EF001E7074 /* RWDataSourceProvider.cpp in Sources */,
+				D26A53B130112B07008C98A1 /* SRDataFormatter 2.cpp in Sources */,
+				18B684FF06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp in Sources */,
+				D26EBFFA2AF274EE001E7074 /* RWDataProvider.cpp in Sources */,
+				D226106D2B3DB5A400CFC83D /* SRSection.cpp in Sources */,
+				D26EC03B2AF44891001E7074 /* DMArea.cpp in Sources */,
+				D22610882B3DB5A400CFC83D /* SRLicense.cpp in Sources */,
+				D226107B2B3DB5A400CFC83D /* SRTable.cpp in Sources */,
+				D26EC0202AF274EF001E7074 /* RWStyle.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D26EBFA42AF26D4A001E7074 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		42D60B400A9DDBC8002ABB42 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUGGING_SYMBOLS = YES;
+				DEPLOYMENT_LOCATION = NO;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 3X63W4TBDH;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = c17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "include/**";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/a",
+				);
+				LIBRARY_STYLE = Bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
+				PRODUCT_NAME = ReportWriter;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		42D60B410A9DDBC8002ABB42 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEPLOYMENT_LOCATION = NO;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 3X63W4TBDH;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = c17;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "include/**";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/a",
+				);
+				LIBRARY_STYLE = Bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
+				PRODUCT_NAME = ReportWriter;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		42D60B420A9DDBC8002ABB42 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEPLOYMENT_LOCATION = NO;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 3X63W4TBDH;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = c17;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "include/**";
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/a",
+				);
+				LIBRARY_STYLE = Bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
+				PRODUCT_NAME = ReportWriter;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Default;
+		};
+		42D60B440A9DDBC8002ABB42 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 3X63W4TBDH;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				OBJROOT = "$(SRCROOT)/build";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYMROOT = "$(SRCROOT)/test/Plugins";
+			};
+			name = Development;
+		};
+		42D60B450A9DDBC8002ABB42 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 3X63W4TBDH;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				OBJROOT = "$(SRCROOT)/build";
+				SDKROOT = macosx;
+				SYMROOT = "$(SRCROOT)/test/Plugins";
+			};
+			name = Deployment;
+		};
+		42D60B460A9DDBC8002ABB42 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = 3X63W4TBDH;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c17;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				SDKROOT = macosx;
+				SYMROOT = "$(SRCROOT)/test/Plugins";
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		42D60B3F0A9DDBC8002ABB42 /* Build configuration list for PBXNativeTarget "ReportWriter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				42D60B400A9DDBC8002ABB42 /* Development */,
+				42D60B410A9DDBC8002ABB42 /* Deployment */,
+				42D60B420A9DDBC8002ABB42 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		42D60B430A9DDBC8002ABB42 /* Build configuration list for PBXProject "ReportWriter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				42D60B440A9DDBC8002ABB42 /* Development */,
+				42D60B450A9DDBC8002ABB42 /* Deployment */,
+				42D60B460A9DDBC8002ABB42 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

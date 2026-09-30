@@ -1,0 +1,39 @@
+/*
+ *  Copyright © 2002 Metrowerks Corporation.  All Rights Reserved.
+ *
+ *  Questions and comments to:
+ *       <mailto:support@metrowerks.com>
+ *       <http://www.metrowerks.com/>
+ */
+
+#include "theVersion.h"
+
+# define	kBundleVersion		kVersionString
+# define	kBundleShortVersion	kProductNameString  " " kVersionString
+# define	kBundleGetInfo		kBundleShortVersion " " kProductCopyrightString
+
+
+plist
+{
+	dictionary
+	{
+		key "CFBundleIdentifier"			value string kBundleIdentifierString
+
+		key "CFBundleGetInfoString"			value string kBundleGetInfo
+		key "CFBundleShortVersionString"	value string kBundleShortVersion
+
+		key "CFBundleExecutable"			value string __OUTPUT_FILENAME__
+		key "CFBundleName"					value string kBundleNameString
+		key "CFBundlePackageType"			value string __OUTPUT_TYPE__
+		key "CFBundleSignature"				value string __OUTPUT_CREATOR__
+		key "CFBundleVersion"				value string kBundleVersion
+
+#ifdef	kBundleIconFile
+		key "CFBundleIconFile"				value string kBundleIconFile
+#endif
+
+		key "CFBundleDevelopmentRegion"		value string "English"
+		key "CFBundleInfoDictionaryVersion"	value string "6.0"
+		key "CSResourcesFileMapped"			value boolean false
+	}
+}
