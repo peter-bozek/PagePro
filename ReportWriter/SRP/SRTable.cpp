@@ -710,7 +710,7 @@ SRColumn::Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID)
 		}
 		else if (STR_EQUALS (name, "source"))
 		{
-			if (STR_EQUALS (value, "%ROWNUM%"))		// ¥¥¥
+			if (STR_EQUALS (value, "%ROWNUM%"))		// â€¢â€¢â€¢
 				mPrintRowNum = true;
 			else
 			{

@@ -1048,7 +1048,7 @@ void
 SRPageSection::Write (FILE *fd, bool inUseCalculator)
 const
 {
-// ¥¥¥ TODO ¥¥¥	emit values used in calculations (if inUseCalculator & variable is not in the body)
+// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	emit values used in calculations (if inUseCalculator & variable is not in the body)
 
 	WriteSection (fd, mType);	// "Body");
 	if (mObjects.size() > 0)
@@ -1080,7 +1080,7 @@ void
 SRPageSection::Write ( *inParent, bool inUseCalculator)
 const
 {
-// ¥¥¥ TODO ¥¥¥	emit values used in calculations (if inUseCalculator & variable is not in the body)
+// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	emit values used in calculations (if inUseCalculator & variable is not in the body)
 
     XMLElement*	me = WriteSection (inParent, mType);
 

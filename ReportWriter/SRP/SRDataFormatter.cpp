@@ -110,7 +110,7 @@ RWTextValue	FormatVariable (const RWValue &inVar, const CText inFormat)
 				buf = inVar.GetText();
 			break;
 
-//¥¥¥ TODO ¥¥¥	parse textual string formats into numbers? Should be done probably on SRP conversion...
+//â€¢â€¢â€¢ TODO â€¢â€¢â€¢	parse textual string formats into numbers? Should be done probably on SRP conversion...
 		case RWValue::eValue_DateTime:
 		{
 			time_t	tim = (time_t) inVar.GetInteger();
@@ -137,7 +137,7 @@ RWTextValue	FormatVariable (const RWValue &inVar, const CText inFormat)
 			break;
 		}
 
-//¥¥¥ TODO ¥¥¥	parse textual string formats into numbers? Should be done probably on SRP conversion...
+//â€¢â€¢â€¢ TODO â€¢â€¢â€¢	parse textual string formats into numbers? Should be done probably on SRP conversion...
 		case RWValue::eValue_Date:
 		{	// day: 0 - 31 ==> 5 bits
 			// month: 0 - 12 ==> 4 bits
