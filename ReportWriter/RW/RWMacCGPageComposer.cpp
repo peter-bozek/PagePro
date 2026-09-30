@@ -754,7 +754,7 @@ RWMacCGPageComposer::GetPictBounds (SRect &ioRect, const RWPicture &inPicture, E
 				
 			case RWValue::eValue_PicturePDF:
 			case RWValue::eValue_PictureEMF:
-				//¥¥¥ TODO¥¥¥	convert image format
+				//â€¢â€¢â€¢ TODOâ€¢â€¢â€¢	convert image format
 //				CGDataProviderRef CGDataProviderCreateWithData (void *info, const void *data, size_t size, CGDataProviderReleaseDataCallback releaseData);
 //				CGImageSourceRef CGImageSourceCreateWithDataProvider(CGDataProviderRef provider, CFDictionaryRef options);
 //				CGImageRef CGImageCreateWithJPEGDataProvider(CGDataProviderRef source, const float decode[], bool shouldInterpolate, CGColorRenderingIntent intent);

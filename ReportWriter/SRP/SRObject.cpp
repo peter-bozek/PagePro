@@ -1978,8 +1978,8 @@ SRText::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 // LocalizeText													   [protected]
 // ---------------------------------------------------------------------------
-// :resource_num,resource_id	¥¥¥TODO¥¥¥	PA_LocaliseStringByID()
-// :xliff:resource_name		¥¥¥TODO¥¥¥	PA_LocaliseString()
+// :resource_num,resource_id	â€¢â€¢â€¢TODOâ€¢â€¢â€¢	PA_LocaliseStringByID()
+// :xliff:resource_name		â€¢â€¢â€¢TODOâ€¢â€¢â€¢	PA_LocaliseString()
 
 
 RWTextValue

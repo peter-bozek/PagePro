@@ -137,9 +137,9 @@ typedef	struct	SCategory_item
 }	SCategory_item;
 
 
-// for CP 1250	: ⁄
+// for CP 1250	: ‚ÅÑ
 // for UTF8		: √ö
-// for UTF16	: ⁄
+// for UTF16	: ‚ÅÑ
 // just FYI: it is an U_accute = 0xDA ;-)
 static	SCategory_item	topHdr[] =
 {
