@@ -150,6 +150,47 @@ static	void	TestTransform (void)
 	CHECK (RWStr::ReplaceAll (u"a&b&c", u"&", u"&amp;") == u"a&amp;b&amp;c");
 	CHECK (RWStr::ReplaceAll (u"aaa", u"aa", u"b") == u"ba");
 	CHECK (RWStr::ReplaceAll (u"abc", u"", u"x") == u"abc");
+
+	CHECK (RWStr::EscapeXML (u"<a href=\"x\">'&'</a>") == u"&lt;a href=&quot;x&quot;&gt;&apos;&amp;&apos;&lt;/a&gt;");
+	CHECK (RWStr::EscapeXML (u"žluť \U0001F600") == u"žluť \U0001F600");
+}
+
+static	void	TestBase64 (void)
+{
+	CHECK (RWStr::Base64Encode ("", 0) == u"");
+	CHECK (RWStr::Base64Encode ("f", 1) == u"Zg==");
+	CHECK (RWStr::Base64Encode ("fo", 2) == u"Zm8=");
+	CHECK (RWStr::Base64Encode ("foo", 3) == u"Zm9v");
+	CHECK (RWStr::Base64Encode ("foobar", 6) == u"Zm9vYmFy");
+	CHECK (RWStr::Base64Encode ("foobar", 6, 4) == u"Zm9v YmFy");
+
+	std::vector<unsigned char>	decoded = RWStr::Base64Decode (u"Zm9v YmE=");
+	CHECK (std::string (decoded.begin(), decoded.end()) == "fooba");
+	decoded = RWStr::Base64Decode (u"Zm9vYg");						// missing padding
+	CHECK (std::string (decoded.begin(), decoded.end()) == "foob");
+
+	// all byte values, several group sizes, round trip
+	std::vector<unsigned char>	bytes;
+	for (int i = 0; i < 1000; i++)
+		bytes.push_back ((unsigned char) (i * 7));
+	for (size_t len : { size_t (0), size_t (1), size_t (2), size_t (95), size_t (96), size_t (97), size_t (1000) })
+	{
+		RWString	encoded = RWStr::Base64Encode (bytes.data(), len, 128);
+		CHECK (RWStr::Base64Decode (encoded) == std::vector<unsigned char> (bytes.begin(), bytes.begin() + len));
+	}
+
+	// old TinyXML era layout: 128 character chunks, tab indented lines
+	RWString	old = u"\n\t" + RWStr::Base64Encode (bytes.data(), 96) + u"\r\n\t" + RWStr::Base64Encode (bytes.data() + 96, 5) + u"\r\n";
+	CHECK (RWStr::Base64Decode (old) == std::vector<unsigned char> (bytes.begin(), bytes.begin() + 101));
+}
+
+static	void	TestFormat (void)
+{
+	CHECK (RWStr::Format ("%ld-%s", 42L, "x") == u"42-x");
+	CHECK (RWStr::Format ("%.3f", 2.5) == u"2.500");
+	CHECK (RWStr::Format ("%s", "\xC5\xBE") == u"ž");				// UTF-8 arguments
+	CHECK (RWStr::Format ("%0300d", 7).size() == 300);				// longer than the stack buffer
+	CHECK (RWStr::Format ("%s", "").empty());
 }
 
 
@@ -417,6 +458,8 @@ int		main (int argc, char **argv)
 	Test4D();
 	TestCompare();
 	TestTransform();
+	TestBase64();
+	TestFormat();
 	TestNumbers();
 	TestXmlRead();
 	TestXmlWrite();

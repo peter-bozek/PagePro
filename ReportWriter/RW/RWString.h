@@ -56,6 +56,12 @@ namespace	RWStr
 	RWStringView			Trim (RWStringView inText);				// strips ASCII white space (space, tab, CR, LF)
 	std::vector<RWString>	Split (RWStringView inText, char16_t inSeparator);
 	RWString				ReplaceAll (RWStringView inText, RWStringView inFrom, RWStringView inTo);
+	RWString				EscapeXML (RWStringView inText);		// & < > " ' as entities, for hand-written HTML / XML
+
+	// Base64 (standard alphabet, '=' padding). Encoding inserts a space every inGroupLength
+	// characters (0 = none); decoding skips white space and stops at the first invalid character.
+	RWString				Base64Encode (const void *inData, size_t inSize, size_t inGroupLength = 0);
+	std::vector<unsigned char>	Base64Decode (RWStringView inText);
 
 	// numbers
 	// Parsing skips leading white space and reads the longest valid prefix, like strtol / strtod
@@ -65,6 +71,13 @@ namespace	RWStr
 	std::optional<double>		ToDouble (RWStringView inText);
 	RWString					FromInteger (long long inValue);
 	RWString					FromDouble (double inValue, const char *inPrintfFormat = "%g");
+
+	// printf style formatting in the "C" locale; the result is expected to be ASCII / UTF-8
+	RWString					Format (const char *inPrintfFormat, ...)
+#if	defined(__GNUC__) || defined(__clang__)
+									__attribute__ ((format (printf, 1, 2)))
+#endif
+									;
 }
 
 #endif

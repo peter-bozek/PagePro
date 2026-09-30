@@ -18,3 +18,11 @@ clang++ "${FLAGS[@]}" -Wall -Wextra -Werror -fsanitize=address,undefined \
 	"$OUT/pugixml.o" -o "$OUT/RWFoundationTests"
 
 "$OUT/RWFoundationTests" "$OUT"
+
+# RWBaseTypes core, linked with the 4D plugin API (never called)
+clang -std=gnu99 -mmacosx-version-min=11.0 -g -w -Wno-int-conversion -I "$ROOT/4D Plugin API" -c "$ROOT/4D Plugin API/4DPluginAPI.c" -o "$OUT/4DPluginAPI.o"
+clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -Wall -Wextra -Wno-comma -Wno-unused-value -fsanitize=address,undefined \
+	"$ROOT/RW/RWBaseTypes.cpp" "$ROOT/RW/RWString.cpp" "$ROOT/RW/RWXml.cpp" "$ROOT/tests/RWBaseTypesTests.cpp" \
+	"$OUT/pugixml.o" "$OUT/4DPluginAPI.o" -framework CoreFoundation -framework CoreGraphics -o "$OUT/RWBaseTypesTests"
+
+"$OUT/RWBaseTypesTests"

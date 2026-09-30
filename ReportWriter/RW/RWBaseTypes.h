@@ -1,15 +1,25 @@
 #ifndef	_RWBaseTypes_h_
 # define	_RWBaseTypes_h_
 
-#if	!defined(USE_MAC_TYPES) && VERSIONMAC
-# define	USE_MAC_TYPES	1
+# include   "4DPluginAPI.h"		// Flags.h: VERSIONMAC / VERSIONWIN
+
+// MACVER used to come from a prefix header (RW/MacCarbonPrefix.h) the project no longer uses;
+// without it every "#if MACVER" compiled its Windows branch on the Mac.
+#if	VERSIONMAC && !defined(MACVER)
+# define	MACVER			1
 #endif
 
-# include   "4DPluginAPI.h"
-# include	"tinyxml2.h"
+// Carbon types (Point, Rect, RGBColor, ATSUI) stay off: the old check ran before Flags.h
+// was included, so it never enabled them. Removing Carbon is a separate decision (MIGRATION_PLAN.md, phase 0).
+#if	!defined(USE_MAC_TYPES)
+# define	USE_MAC_TYPES	0
+#endif
+# include	"RWString.h"
+# include	"RWXml.h"
+# include	"tinyxml2.h"		// transitional - modules not yet ported to RWXml still use it
 # include	<math.h>
-# include   <string>         // std::string
-# include   <format>
+# include   <string>
+# include   <vector>
 
 #if	WINVER
 namespace	Gdiplus
@@ -93,309 +103,65 @@ enum	EPictFormat
 #endif
 
 
-//encoding of strings used by RW
-// currenty we use UTF-16 encoded strings
-typedef std::basic_string<PA_Unichar>           CUTF16String;
-typedef std::string                             CUTF8String;
+// ---------------------------------------------------------------------------
+// Text
+// ---------------------------------------------------------------------------
+// All text is RWString (std::u16string, UTF-16), see RWString.h.
+// Everything in this section is transitional, kept so that modules can be
+// ported one by one - new code uses RWString and RWStr:: directly.
+// To be removed with TinyXML (MIGRATION_PLAN.md, phase 8).
 
-typedef	UniChar			                        CChar;
-typedef	std::basic_string<UniChar>              CText;
-#define	CChar_Size			                    2
+typedef	RWString			CText;
+typedef	RWString			CXMLText;		// XML text is no longer UTF-8
+typedef	char16_t			CChar;
+#define	CChar_Size			2
 
-//encoding of strings used by XML
-// currently we use UTF-8 thru TiniXml ==> char
-typedef std::string                              CXMLText;
+#define	STR_NOTFOUND		(-1L)
 
-inline    bool    TEXT_EQUALS (const CXMLText s1, const char *s2)         {return s1.compare(s2) == 0; }
-inline    bool    TEXT_STARTS_WITH (const CXMLText s1, const char *s2)    { return s1.find(s2) == 0; }
-inline    long    TEXT_STR (const CXMLText s1, const char *s2)            { return s1.find(s2); }
+// case sensitive
+inline	bool	TEXT_EQUALS (RWStringView inText, std::string_view inASCII)			{ return RWStr::Equals (inText, inASCII); }
+inline	bool	TEXT_STARTS_WITH (RWStringView inText, std::string_view inASCII)	{ return RWStr::StartsWith (inText, RWStr::FromASCII (inASCII)); }
+inline	long	TEXT_STR (RWStringView inText, std::string_view inASCII)
+{
+	size_t	pos = inText.find (RWStr::FromASCII (inASCII));
+	return pos == RWStringView::npos ? STR_NOTFOUND : long (pos);
+}
 
-#define	STR_NOTFOUND	(-1L)
+// ASCII case insensitive
+inline	int		STR_COMPARE (RWStringView inText, std::string_view inASCII)			{ return RWStr::CompareNoCase (inText, RWStr::FromASCII (inASCII)); }
+inline	bool	STR_EQUALS (RWStringView inText, std::string_view inASCII)			{ return RWStr::EqualsNoCase (inText, inASCII); }
+inline	bool	STR_STARTS_WITH (RWStringView inText, std::string_view inASCII)		{ return RWStr::StartsWithNoCase (inText, RWStr::FromASCII (inASCII)); }
 
-# define    STR_COMPARE(s1,s2)            strcasecmp (s1.c_str(), s2)
-# define    STR_EQUALS(s1,s2)            (strcasecmp (s1.c_str(), s2) == 0)
-# define    STR_STARTS_WITH(s1,s2)        (strncasecmp (s1.c_str(), s2, strlen (s2)) == 0)
 
-class	RWTextValue
+// RWTextValue - former text holder class, now an RWString with the old method names
+class	RWTextValue	:	public	RWString
 {
 public:
-inline						RWTextValue (void);
-inline						RWTextValue (const RWTextValue &inRhs);
-inline						RWTextValue (const char *value);		// ASCII
-// inline						RWTextValue (const UTF8Char *value);	// UTF8
+						RWTextValue (void) {}
+						RWTextValue (const RWString &inValue)	:	RWString (inValue) {}
+						RWTextValue (RWString &&inValue)		:	RWString (std::move (inValue)) {}
+						RWTextValue (RWStringView inValue)		:	RWString (inValue) {}
+						RWTextValue (const char16_t *inValue)	:	RWString (inValue ? inValue : u"") {}
+	explicit			RWTextValue (const char *inUTF8)		:	RWString (RWStr::FromUTF8 (inUTF8 ? inUTF8 : "")) {}
 
-inline						RWTextValue (const CText value);			// UTF16
-inline						~RWTextValue (void);
+	using	RWString::operator =;
 
-inline						operator const CText (void) const;
-inline						operator CText (void);
-    
-    
-    
-inline	RWTextValue&		operator = (const char *value);
-// inline	RWTextValue&		operator = (const UTF8Char *value);
+	bool				IsEmpty (void) const						{ return empty(); }
+	void				Free (void)									{ clear(); }
+	void				Allocate (size_t inLength)					{ assign (inLength, u'\0'); }
+	size_t				StrLength (void) const						{ return size(); }
+	bool				equal (RWStringView inText) const			{ return RWStringView (*this) == inText; }
 
-inline	RWTextValue&		operator = (const CText value);
+	RWTextValue&		Copy (RWStringView inValue)					{ assign (inValue); return *this; }
+	RWTextValue&		Copy (const char *inUTF8)					{ assign (RWStr::FromUTF8 (inUTF8 ? inUTF8 : "")); return *this; }
+	RWTextValue&		Attach (RWString inValue)					{ RWString::operator = (std::move (inValue)); return *this; }
+	RWString			Detach (void)								{ RWString result (std::move (*this)); clear(); return result; }
 
-inline	RWTextValue&		operator = (const RWTextValue &value);
-
-inline	bool				IsEmpty (void) const;
-inline	void				Free (void);
-inline	void				Allocate (size_t len);
-inline	size_t				StrLength (void) const;
-inline  bool                equal (const CText string2) const;
-inline  int                 compare (const CText string2) const;
-inline  bool                empty () const;
-    
-		RWTextValue&		Copy (const char *value);
-//		RWTextValue&		Copy (const UTF8Char *value);
-        RWTextValue&		Copy (const CText &value);
-    
-// inline	RWTextValue&		Attach (CText &value);
-inline	RWTextValue&		Attach (CText value);
-inline	CText				Detach (void);
-    
-inline	RWTextValue&		FromXML (const std::string &value);
-// inline	RWTextValue&		FromXML (const CXMLText value);
-        CXMLText			ToXML (void) const;
-        CXMLText			ToXMLEscaped (void) const;
-    
-static	void				FreeXML (CXMLText value);
-    
-    
-    // static utility methods
-    static  CXMLText        UTF_16_to_UTF8(const CText value);
-    static  CText           UTF_8_to_UTF16(const CXMLText value);
-
-protected:
-	CText			data_;
+	RWTextValue&		FromXML (RWStringView inValue)				{ assign (inValue); return *this; }
+	const RWString&		ToXML (void) const							{ return *this; }
+	RWString			ToXMLEscaped (void) const					{ return RWStr::EscapeXML (*this); }
+	static	void		FreeXML (RWString &ioValue)					{ ioValue.clear(); }
 };
-
-
-inline	RWTextValue::RWTextValue (void)
-	:	data_ (0)
-{
-}
-
-inline	RWTextValue::RWTextValue (const RWTextValue &inRhs)
-{
-    data_ = inRhs.data_;
-}
-
-inline	RWTextValue::RWTextValue (const char *value)
-{
-	Copy (value);
-}
-
-/*inline	RWTextValue::RWTextValue (const UTF8Char *value)
-{
-	Copy (value);
-}*/
-
-inline	RWTextValue::RWTextValue (const CText value)
-{
-    data_ = value;
-}
-
-inline	RWTextValue::~RWTextValue (void)
-{
-	Free();
-}
-
-inline	RWTextValue::operator const CText (void)
-const
-{
-	return data_;
-}
-
-inline	RWTextValue::operator CText (void)
-{
-	return data_;
-}
-
-inline	RWTextValue&	RWTextValue::operator = (const char *value)
-{
-	return Copy (value);
-}
-
-/*inline	RWTextValue&	RWTextValue::operator = (const UTF8Char *value)
-{
-	return Copy (value);
-}*/
-
-
-inline	RWTextValue&	RWTextValue::operator = (const CText value)
-{
-    data_ = value;
-    return *this;
-}
-
-inline	RWTextValue&	RWTextValue::operator = (const RWTextValue &value)
-{
-	return Copy (value.data_);
-}
-
-inline	bool	RWTextValue::IsEmpty (void) const
-{
-	return data_.empty();
-}
-
-inline	void	RWTextValue::Free (void)
-{
-	if (!data_.empty())
-	{
-		data_.clear();
-	}
-	return;
-}
-
-inline	void	RWTextValue::Allocate (size_t len)
-{
-	Free();
-    data_.resize(len);
-	return;
-}
-
-inline	size_t	RWTextValue::StrLength (void) const
-{
-        return (data_).length();
-}
-
-inline    bool    RWTextValue::equal (const CText string2) const
-{
-        return data_.compare(string2) == 0;
-}
-
-inline    int    RWTextValue::compare (const CText string2) const
-{
-        return data_.compare(string2);
-}
-
-inline    bool    RWTextValue::empty () const
-{
-        return data_.empty();
-}
-
-/*inline	RWTextValue&	RWTextValue::Attach (CText &value)
-{
-	Free();
-	data_ = value;
-    value.clear();
-	return *this;
-}*/
-
-inline	RWTextValue&	RWTextValue::Attach (CText value)
-{
-	Free();
-	data_ = value;
-	return *this;
-}
-
-inline	CText	RWTextValue::Detach (void)
-{
-	CText	value = data_;
-	data_.clear();
-	return value;
-}
-
-inline	RWTextValue&	RWTextValue::FromXML (const CXMLText &value)
-{
-	return Copy (value.c_str());
-}
-
-/*
-inline	RWTextValue&	RWTextValue::FromXML (const CXMLText value)
-{
-	return Copy (reinterpret_cast <const UTF8Char*> (value.c_str()));
-}
-*/
-
-inline    bool    TEXT_EQUALS (const UniChar* p, const char *s2)
-{
-    std::basic_string<UniChar> s1 = p;
-    std::basic_string<UniChar> s3 = RWTextValue::UTF_8_to_UTF16(s2);
-    return s1.compare(s3) == 0;
-}
-
-inline    bool    TEXT_STARTS_WITH (const UniChar* p, const char *s2)
-{
-    std::basic_string<UniChar> s1 = p;
-    std::basic_string<UniChar> s3 = RWTextValue::UTF_8_to_UTF16(s2);
-    return s1.compare(0, s3.length(), s3) == 0;
-    
-}
-inline    long    TEXT_STR (const UniChar* p, const char *s2)
-{
-    std::basic_string<UniChar> s1 = p;
-    std::basic_string<UniChar> s3 = RWTextValue::UTF_8_to_UTF16(s2);
-    return s1.find(s3);
-}
-
-inline    bool    TEXT_EQUALS (const CText s1, const char *s2)
-{
-    std::basic_string<UniChar> s3 = RWTextValue::UTF_8_to_UTF16(s2);
-    return s1.compare(s3) == 0;
-}
-
-inline    bool    TEXT_STARTS_WITH (const CText s1, const char *s2)
-{
-    std::basic_string<UniChar> s3 = RWTextValue::UTF_8_to_UTF16(s2);
-    return s1.compare(0, s3.length(), s3) == 0;
-    
-}
-inline    long    TEXT_STR (const CText s1, const char *s2)
-{
-    std::basic_string<UniChar> s3 = RWTextValue::UTF_8_to_UTF16(s2);
-    return s1.find(s3);
-}
-
-inline	CXMLText	RWTextValue::ToXML (void) const
-{
-    return   RWTextValue::UTF_16_to_UTF8 (data_);
-}
-
-inline	CXMLText	RWTextValue::ToXMLEscaped (void) const
-{
-    if (!data_.empty())
-    {
-        CXMLText escaped;
-        CXMLText sUTF8 =  RWTextValue::UTF_16_to_UTF8 (data_);
-        int i = 0;
-        while (sUTF8[i]) {
-            switch (sUTF8[i]) {
-                case '&':
-                    escaped.append("&amp;");
-                    break;
-                case '>':
-                    escaped.append("&gt;");
-                    break;
-                case '<':
-                    escaped.append("&lt;");
-                    break;
-                case '"':
-                    escaped.append("&quot;");
-                    break;
-                case '\'':
-                    escaped.append("&apos;");
-                    break;
-                
-                default:
-                    escaped.append(&sUTF8[i]);
-                    break;
-            }
-            i++;
-        }
-        return escaped;
-    }
-    return NULL;
-}
-
-inline	void	RWTextValue::FreeXML (CXMLText value)
-{
-	value.erase();
-    return;
-}
-
 
 
 # define	RW_EPSILON			1e-5
@@ -474,8 +240,8 @@ struct	SPoint	:	public	_SPoint
 	inline				SPoint (QDPoint p);
 						operator QDPoint (void) const;
 //#endif
-				SPoint&	operator = (const char *inValue);
-						operator const char* (void) const;
+				SPoint&	operator = (RWStringView inValue);		// "h;v" (or "h,v")
+				RWString	ToString (void) const;				// "h;v"
 };
 
 inline	SPoint::SPoint (void)
@@ -540,9 +306,8 @@ inline		void	SetRect (int t, int l, int b, int r);
 
 /* inline				SRect (const Rect &r);
 					operator Rect (void) const; */
-    SRect&    operator = (const char *inValue);
-    SRect&    operator = (const CXMLText *inValue);
-					operator const char* (void) const;
+				SRect&	operator = (RWStringView inValue);		// "left;top;right;bottom" (or with commas)
+				RWString	ToString (void) const;				// "left;top;right;bottom"
 };
 
 
@@ -761,18 +526,16 @@ struct	SRGBColor	:	public	_SRGBColor
 			inline	SRGBColor (void);
 			inline	SRGBColor (unsigned short r, unsigned short g, unsigned short b, unsigned short a);
 			inline	SRGBColor (unsigned long argb);
-			inline	SRGBColor (const char *inValue);
-			inline	SRGBColor (const CText inValue);
+	explicit	inline	SRGBColor (RWStringView inValue);
 #if	USE_MAC_TYPES
 			inline	SRGBColor (const RGBColor inValue);
 			inline	SRGBColor (const ATSURGBAlphaColor inValue);
 	inline	operator RGBColor (void) const;
 	inline	operator ATSURGBAlphaColor (void) const;
 #endif
-	SRGBColor&		operator = (const CText inValue);
+	SRGBColor&		operator = (RWStringView inValue);	// "#AARRGGBB", "#RRGGBB", color name, "r,g,b[,a]" (0-1 reals or 16 bit values), ARGB number
 	inline			operator unsigned long (void) const;
-					operator CText (void) const;
-                    operator char * (void) const;
+	RWString		ToString (void) const;				// "#aarrggbb"
 };
 
 inline	SRGBColor::SRGBColor (void)
@@ -803,14 +566,7 @@ inline	SRGBColor::SRGBColor (unsigned long argb)
 	alpha |= alpha << 8;
 }
 
-inline	SRGBColor::SRGBColor (const char *inValue)
-{
-	operator = (inValue);
-    
-
-}
-
-inline	SRGBColor::SRGBColor (const CText inValue)
+inline	SRGBColor::SRGBColor (RWStringView inValue)
 {
 	operator = (inValue);
 }
@@ -849,22 +605,6 @@ inline	SRGBColor::operator unsigned long (void) const
 {
 	unsigned long	argb = ((alpha & 0xFF00L) << 16) | ((red & 0xFF00L) << 8) | (green & 0xFF00) | ((blue & 0xFF00) >> 8);
 	return argb;
-}
-
-inline    SRGBColor::operator CText (void) const
-{
-    unsigned long    argb = ((alpha & 0xFF00L) << 16) | ((red & 0xFF00L) << 8) | (green & 0xFF00) | ((blue & 0xFF00) >> 8);
-    char             buffer[16];
-    snprintf(buffer, 16, "%#x", argb);
-    return RWTextValue::UTF_8_to_UTF16(buffer) ;
-}
-
-inline    SRGBColor::operator char * (void) const
-{
-    unsigned long    argb = ((alpha & 0xFF00L) << 16) | ((red & 0xFF00L) << 8) | (green & 0xFF00) | ((blue & 0xFF00) >> 8);
-    char             buffer[16];
-    snprintf(buffer, 16, "%#x", argb);
-    return buffer ;
 }
 
 extern	const SRGBColor	cBlackColor;
@@ -908,8 +648,8 @@ public:
 		eValue_Boolean,
 		eValue_Integer,
 		eValue_Real,
-		eValue_XMLText,
-		eValue_Text,
+		// 4 was eValue_XMLText (UTF-8 text); all text is eValue_Text now - numbering kept
+		eValue_Text = 5,
 		eValue_DateTime,
 		eValue_Date,
 		eValue_Time,
@@ -953,11 +693,9 @@ typedef	enum
 			inline					RWValue (void);
 			inline					RWValue (long inInteger);
 			inline					RWValue (double inDouble);
-//			inline					RWValue (time_t inDateTime);		time_t is actually long...
 			inline					RWValue (long inValue, EValue_Kind inKind);
 			inline					RWValue (EValue_Kind inKind);
 			inline					RWValue (PA_VariableKind inKind);
-//									RWValue (SConstText inText);
 									RWValue (EValue_Kind inKind, void* inData, size_t inSize);
 									RWValue (const RWValue &inOriginal);
 			inline					~RWValue (void);
@@ -971,7 +709,7 @@ public:
 			inline	bool			operator != (const RWValue &inCompare) const;
 
 			inline	EValue_Kind		GetKind (void) const;
-			inline	bool			IsEmpty (void) const;
+					bool			IsEmpty (void) const;		// undefined, empty text / BLOB / picture
 			inline	long			GetInteger (void) const;
 			inline	void			SetInteger (long value, EValue_Kind inKind = eValue_Integer);
 			inline	bool			GetBoolean (void) const;
@@ -979,15 +717,12 @@ public:
 			inline	void			SetBoolean (bool value);
 			inline	double			GetReal (void) const;
 			inline	void			SetReal (double value);
-			inline	void			SetXMLText (const CXMLText value);
-			inline	void			SetXMLText (CXMLText value, bool takeOwnership);
-    
-            inline  CXMLText        GetXMLText (void) const;
-			inline	CText		    GetText (void) const;
-			inline	void			SetText (const CText value);
-//					void			SetText (const char* value);
-//					void			SetText (const UTF8Char* value);
-			inline	void			SetText (CText value, bool takeOwnership);
+			inline	const RWString&	GetText (void) const;
+			inline	void			SetText (RWString value);
+			inline	void			SetText (RWString value, bool takeOwnership);	// transitional - text is always owned
+			inline	const RWString&	GetXMLText (void) const;							// transitional - same as GetText
+			inline	void			SetXMLText (RWString value);						// transitional - same as SetText
+			inline	void			SetXMLText (RWString value, bool takeOwnership);	// transitional - same as SetText
 			inline	size_t			GetBlobSize (void) const;
 			inline	void*			GetBlobData (void) const;
 			inline	const SBlob&	GetBlob (void) const;
@@ -997,27 +732,26 @@ public:
 			inline	void			SetPictureRef (void* value, bool inScreen);
 			inline	void			SetPicture (EValue_Kind inKind, void* value, size_t size, bool takeOwnership);
 			inline	void			SetPicture (EValue_Kind inKind, const SBlob& value, bool takeOwnership);
-					void			GetTextValue (RWTextValue &outValue, const char* fmt) const;
+					void			GetTextValue (RWString &outValue, const char* fmt) const;	// fmt: printf format for numbers, label for pictures
 	static	inline	const char**	GetPictFormats (void);
 					bool			CoerceValue (EValue_Kind inKind);
 
 private:
 	// not implemented - dangerous behavior - just a const difference...
 					RWValue	&		operator = (const RWValue &inOriginal);	// clone - inOriginal is stil owner
-//					RWValue	&		operator = (RWValue &inOriginal);		// grab - inOriginal is not owner anymore
-	
+
 protected:
 static const char *		sPictFormats[];
 	EValue_Kind			fKind;		// variable kind
-	mutable bool		fOwn;		// data is owned by this instance
+	mutable bool		fOwn;		// BLOB / picture data is owned by this instance
+	RWString			fText;		// eValue_Text
 
 	union
 	{
-		long			fInteger;
+		long			fInteger;	// boolean, integer, date, time, date-time
 		double			fReal;
-		CXMLText    	fXMLText;
-		CText	 		fText;
-		SBlob			fBlob;
+		SBlob			fBlob;		// eValue_BLOB and eValue_Picture...
+		void			*fRef;		// eValue_PictRefScreen / eValue_PictRefPrint
 	};
 };
 
@@ -1025,7 +759,7 @@ static const char *		sPictFormats[];
 inline	RWValue::RWValue (void)
 	:	fKind (eValue_Undefined),
 		fOwn (false),
-		fText (0)
+		fBlob ()
 {
 }
 
@@ -1033,33 +767,27 @@ inline	RWValue::RWValue (void)
 inline	RWValue::RWValue (long inInteger)
 	:	fKind (eValue_Integer),
 		fOwn (false),
-		fInteger (inInteger)
+		fBlob ()
 {
+	fInteger = inInteger;
 }
 
 
 inline	RWValue::RWValue (double inDouble)
 	:	fKind (eValue_Real),
 		fOwn (false),
-		fReal (inDouble)
+		fBlob ()
 {
+	fReal = inDouble;
 }
 
-
-/*		time_t is actually long...
-inline	RWValue::RWValue (time_t inDateTime)
-	:	fKind (eValue_DateTime),
-		fOwn (false),
-		fDateTime (inDateTime)
-{
-}
-*/
 
 inline	RWValue::RWValue (long inValue, EValue_Kind inKind)
 	:	fKind (eValue_Undefined),
 		fOwn (false),
-		fInteger (inValue)
+		fBlob ()
 {
+	fInteger = inValue;
 	if (inKind == eValue_Boolean || inKind == eValue_Date || inKind == eValue_Time || inKind == eValue_DateTime)
 		fKind = inKind;
 	return;
@@ -1067,13 +795,15 @@ inline	RWValue::RWValue (long inValue, EValue_Kind inKind)
 
 inline	RWValue::RWValue (EValue_Kind inKind)
 	:	fKind (inKind),
-	fOwn (false)
+		fOwn (false),
+		fBlob ()
 {
 }
 
 inline	RWValue::RWValue (PA_VariableKind inKind)
-:	fKind (eValue_Undefined),
-	fOwn (false)
+	:	fKind (eValue_Undefined),
+		fOwn (false),
+		fBlob ()
 {
 	switch (inKind) {
 		case eVK_Real:
@@ -1082,25 +812,16 @@ inline	RWValue::RWValue (PA_VariableKind inKind)
 		case	eVK_Date:
 			fKind = eValue_Date;
 			break;
-		case	eVK_Undefined:
-			fKind = eValue_Undefined;
-			break;
 		case	eVK_Boolean:
 			fKind = eValue_Boolean;
 			break;
 		case	eVK_Integer:
-			fKind = eValue_Integer;
-			break;
 		case	eVK_Longint:
 			fKind = eValue_Integer;
-			break;
-		case	eVK_Picture:
-			fKind = eValue_Undefined;
 			break;
 		case	eVK_Time:
 			fKind = eValue_Time;
 			break;
-			
 		default:
 			fKind = eValue_Undefined;
 			break;
@@ -1121,7 +842,6 @@ const
 }
 
 inline	RWValue::EValue_Kind	RWValue::GetKind (void) const		{ return fKind; }
-inline	bool					RWValue::IsEmpty (void) const		{ return fText.empty(); }
 inline	long					RWValue::GetInteger (void) const	{ return fInteger; }
 inline	void					RWValue::SetInteger (long value, EValue_Kind inKind)	{ Free(); fKind = inKind; fInteger = value; }
 inline	bool					RWValue::GetBoolean (void) const	{ return fInteger != 0; }
@@ -1129,26 +849,14 @@ inline	void					RWValue::SetBoolean (int value)		{ Free(); fKind = eValue_Boolea
 inline	void					RWValue::SetBoolean (bool value)	{ Free(); fKind = eValue_Boolean; fInteger = value; }
 inline	double					RWValue::GetReal (void) const		{ return fReal; }
 inline	void					RWValue::SetReal (double value)		{ Free(); fKind = eValue_Real; fReal = value; }
-inline	CXMLText			    RWValue::GetXMLText (void) const				{ return fXMLText; }
-inline	void					RWValue::SetXMLText (const CXMLText value)		{ Free(); fKind = eValue_XMLText; fXMLText = value; }
-inline	void					RWValue::SetXMLText (CXMLText value, bool takeOwnership)		{ Free(); fKind = eValue_XMLText; fXMLText = value; fOwn = takeOwnership; }
-inline	CText				    RWValue::GetText (void) const		{ return fText; }
-inline	void					RWValue::SetText (const CText value)
-{
-	Free();
-	fKind = eValue_Text;
-//	fOwn = false;
-	fText = value;
-}
-inline	void					RWValue::SetText (CText value, bool takeOwnership)
-{
-	Free();
-	fKind = eValue_Text;
-	fOwn = takeOwnership;
-	fText = value;
-}
+inline	const RWString&			RWValue::GetText (void) const		{ return fText; }
+inline	void					RWValue::SetText (RWString value)	{ Free(); fKind = eValue_Text; fText = std::move (value); }
+inline	void					RWValue::SetText (RWString value, bool)			{ SetText (std::move (value)); }
+inline	const RWString&			RWValue::GetXMLText (void) const				{ return fText; }
+inline	void					RWValue::SetXMLText (RWString value)			{ SetText (std::move (value)); }
+inline	void					RWValue::SetXMLText (RWString value, bool)		{ SetText (std::move (value)); }
 inline	size_t					RWValue::GetBlobSize (void) const	{ return fKind >= eValue_BLOB? fBlob.fSize: 0; }
-inline	void*					RWValue::GetBlobData (void) const	{ return fBlob.fData; }
+inline	void*					RWValue::GetBlobData (void) const	{ return fKind >= eValue_BLOB? fBlob.fData: NULL; }
 inline	const SBlob	&			RWValue::GetBlob (void) const		{ return fBlob; }
 inline	void					RWValue::SetBlob (void* value, size_t size, bool takeOwnership)
 {
@@ -1159,9 +867,8 @@ inline	void					RWValue::SetBlob (void* value, size_t size, bool takeOwnership)
 	fBlob.fSize = size;
 }
 inline	void					RWValue::SetBlob (const SBlob& value, bool takeOwnership)	{ SetBlob (value.fData, value.fSize, takeOwnership); }
-inline	void*					RWValue::GetPictureRef (void) const	{	return (void*) fInteger; }
-//inline	void					RWValue::SetPictureRef (void* value)	{ Free(); if ((fInteger = (long) value) != 0) fKind = eValue_PictureRef; }
-inline	void					RWValue::SetPictureRef (void* value, bool inScreen)	{ Free(); fInteger = (long) value; fKind = inScreen? eValue_PictRefScreen: eValue_PictRefPrint; fOwn = true; }
+inline	void*					RWValue::GetPictureRef (void) const	{	return (fKind == eValue_PictRefScreen || fKind == eValue_PictRefPrint) ? fRef : NULL; }
+inline	void					RWValue::SetPictureRef (void* value, bool inScreen)	{ Free(); fRef = value; fKind = inScreen? eValue_PictRefScreen: eValue_PictRefPrint; fOwn = true; }
 inline	void					RWValue::SetPicture (EValue_Kind inKind, void* value, size_t size, bool takeOwnership)		{ SetBlob (value, size, takeOwnership); fKind = inKind; }
 inline	void					RWValue::SetPicture (EValue_Kind inKind, const SBlob& value, bool takeOwnership)			{ SetBlob (value.fData, value.fSize, takeOwnership); fKind = inKind; }
 inline	const char**			RWValue::GetPictFormats (void)			{ return sPictFormats; }
@@ -1330,34 +1037,32 @@ using namespace std;
 
 typedef	struct	RWPrintContext*	RWPrintContextRef;	// for coordinate transform - bottom + CG on Mac / bottom for PDF / nothing otherwise
 
-using namespace tinyxml2;
+using namespace tinyxml2;		// transitional - removed with TinyXML
 
 class	RWTools
 {
 public:
-	static		CText           	ParseIntoText (const XMLElement *inNode, bool);
-	static		CText				ParseIntoText (const XMLElement *inNode);
-    static      void                WriteText (FILE *fd, const CXMLText inText);
-	static		void				WriteText (XMLElement *inParent, const CXMLText inText);
-	static		void				WriteText (FILE *fd, const CText inText);
-	static		void				WriteText (XMLElement *inParent, const CText inText);
+	// text content of a text element: text nodes, nested <Data> elements, <NL/> as CR
+	static		RWString			ParseIntoText (RWXmlNode inNode);
+	static		void				WriteText (RWXmlNode inParent, RWStringView inText);
 
+	// BLOB data as Base64 text content
+	static		void				ReadData (RWXmlNode inParent, SBlob &outData);
+	static		void				WriteData (RWXmlNode inParent, const SBlob &inData);
 
-	static		void				ReadData (const XMLElement *inParent, SBlob &outData);
-	static		void				WriteData (FILE *fd, const SBlob &inData);
-	static		void				WriteData (XMLNode *inParent, const SBlob &inData);
-	static		long				FindInList (const CXMLText inValue, const char** inList);
+	static		long				FindInList (RWStringView inValue, const char** inList);
 
 	static		CGAffineTransform	MakeMatrixFromUserRect (SRect &ioRect, float inAngle, float inBottom, float inWidth, float inHeight);
 	static		CGAffineTransform	MakeMatrixFromUserRect (const RWPrintContextRef inContext, SRect &ioRect, float inAngle, float inWidth, float inHeight);
 	static		void				MakeUserRectFromText (SRect &ioRect, float inAngle);
 
-	static		CText				SplitAttributedString (const CText inAttributedString, unique_ptr<long> *outAttributes);
-    static      CText               EscapeAttributedString (const CText inAttributedString);
-    static      CXMLText            EscapeAttributedString (const CXMLText inAttributedString);
-	static		int					ParseAttributedStringAttribute (const CText inAttributedString, double &outSize, int &outSizeSign, int &outStyle, SRGBColor &outColor, CText &outFont);
-	static		bool				ParseTextForVar (bool inAttributed, const CText inString, long inTextLen, long &ioStart, long &outEnd, CText &outVarName, CText &outFormat);
-	static		bool				ParseTextForXLIFF (const CText inString, long inTextLen, CText &outText);
+	// outAttributes: [0] = array size, [1] = length of the result, then pairs
+	// <position of the tag text in the source, position in the result>
+	static		RWString			SplitAttributedString (RWStringView inAttributedString, std::vector<long> *outAttributes);
+    static      RWString            EscapeAttributedString (RWStringView inText);
+	static		int					ParseAttributedStringAttribute (RWStringView inAttributedString, double &outSize, int &outSizeSign, int &outStyle, SRGBColor &outColor, RWString &outFont);
+	static		bool				ParseTextForVar (bool inAttributed, RWStringView inString, long inTextLen, long &ioStart, long &outEnd, RWString &outVarName, RWString &outFormat);
+	static		bool				ParseTextForXLIFF (RWStringView inString, long inTextLen, RWString &outText);
 };
 
 

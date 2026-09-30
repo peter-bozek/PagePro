@@ -26,12 +26,25 @@ Rules for new and ported code:
 - [ ] **0. Baseline.** Put the project under version control: only `ET/` and `en.lproj` are tracked in git today. Collect a regression corpus of real `.srxml` / `.rwxml` files plus the exported XML/HTML/CSV they produce. Decide whether the Carbon composer (`RWMacPageComposer`, ATSUI, `PMPrintSession`) and `DMArea` Carbon code stay in the target. They are a separate porting problem.
 - [x] **1. Libraries.** `pugixml/` (compiled into the target) and `rapidjson/include/` (header-only). Header search paths added in all three Xcode configurations.
 - [x] **2. Foundation.** `RW/RWString.{h,cpp}`, `RW/RWString4D.h`, `RW/RWXml.{h,cpp}`, `RW/RWJson.h`. Tests in `tests/RWFoundationTests.cpp`; run `tests/run_tests.sh` (ASan + UBSan, macOS 11 deployment target).
-- [ ] **3. Core types (`RW/RWBaseTypes`).**
-  - `typedef std::u16string CText;` as a temporary alias, then `CXMLText` / `CUTF16String` → `RWString`.
-  - `RWValue`: merge `eValue_XMLText` into `eValue_Text` (single storage, coercions via `RWStr::`).
-  - `SPoint` / `SRect` / `SRGBColor`: parse / format with `RWStr::` (fixes the `sizeof (buf[0])` bug).
-  - `RWTools`: `ParseIntoText`, `ReadData`, `WriteText`, `WriteData` take `RWXmlNode`; `FILE*` overloads deleted.
-  - Remove `RWTextValue::UTF_16_to_UTF8` / `UTF_8_to_UTF16` (broken, see below), `ToXMLEscaped`, `TEXT_*` / `STR_*` macros. Replace `std::binary_function` bases.
+- [x] **3. Core types (`RW/RWBaseTypes`).** Done; covered by `tests/RWBaseTypesTests.cpp`.
+  - `RWValue`: text is an `RWString` member outside the union (it used to be a `std::string` / `std::u16string` inside an anonymous union, never constructed or destroyed properly). `eValue_XMLText` is gone, and `eValue_Text` stays 5. Picture references are `void*` (they were stored in `long`, which truncates on 64-bit Windows). `IsEmpty` is defined for every kind.
+  - `SPoint` / `SRect` / `SRGBColor`: `operator = (RWStringView)` and `ToString()` replace `const char*` conversions, which returned static or dangling buffers.
+  - `RWTools`: `ParseIntoText`, `WriteText`, `ReadData`, `WriteData` take `RWXmlNode`; `FILE*` overloads removed; Base64 via `RWStr::Base64Encode/Decode` (the old writer put the whole encoded BLOB in a stack VLA). `SplitAttributedString` returns its attributes in a `std::vector<long>` (was `unique_ptr<long>` over `operator new` memory).
+  - `RWString` gained `Format` (C locale printf), `EscapeXML`, `Base64Encode/Decode`.
+  - `RWBaseTypes.h` now defines `MACVER` from `VERSIONMAC`. It used to come from an unused prefix header, so every `#if MACVER` compiled its Windows branch on the Mac. `USE_MAC_TYPES` is explicitly 0 (it never was on, see phase 0).
+  - **Transitional shims** (remove in phase 8): `CText` / `CXMLText` = `RWString`, `CChar`, `TEXT_*` / `STR_*` helpers, `RWTextValue` (an `RWString` with the old method names), `RWValue::SetXMLText/GetXMLText`, `#include "tinyxml2.h"` + `using namespace tinyxml2`.
+  - **Behaviour changes**:
+    - A CR in element text is written as `<NL/>`. XML parsers turn a raw CR into LF, so 4D line breaks were lost on every save/load.
+    - `<SPAN STYLE>` `font-weight`, `font-style` and `text-decoration` now apply; the old code compared the property name instead of its value.
+    - Entities in attributed text: `&#xHH;` is decoded, and named entities no longer skip twice their length.
+    - `ParseTextForVar` clears the format of a variable without one (the previous variable's format leaked), ignores unterminated `<%…`, and no longer skips 2 characters after an empty `<%%>`.
+    - Colours are written as `#aarrggbb`; the old writer produced an empty string.
+    - Text → integer coercion also understands `#colour` for all text (it used to be UTF-8 text only).
+    - Numbers are always formatted and parsed in the C locale.
+  - Windows-only code in `RWValue::Clone` (`Gdiplus::Image::Clone`) is not compiled or tested yet (phase 9).
+
+  Per-file compile errors after phase 3 (C++ syntax check, excluding the Cocoa noise in `DMArea` / `RWMacPageComposer`). These are the work lists for phases 4–7; almost all come from TinyXML types, `char*` text and `UniChar*` ↔ `char16_t*` at the 4D boundary:
+  RW 526 (RWCTPageComposer 163, RWObject 60, RWTable 58, RWReportWriter 39, RWSection 37, RWReportData 31, RWPageComposer 30, RWDataProvider 28), SRP 340 (SRObject 72, SRTable 51, SRReportData 29, SRSection 22, ExtendedExecute 22, SRReportWriter 20), ET 101, DM 285 (DMReport 100, DMObject 77, PSObject 46).
 - [ ] **4. RW module.** `RWReportData`, `RWSection`, `RWStyle`, `RWObject`, `RWDataProvider` (delete `Write (FILE*)` / `WriteValue (FILE*)`), XML use in the page composers.
 - [ ] **5. SRP module.**
   - Delete every `Write (FILE*)`, `WriteSelf (FILE*)`, `WriteSection (FILE*)`, `WriteSpecial (FILE*)`, `WritePage (FILE*)` and `SRDataSource::Write*/WriteReportData (FILE*)`. They are unreachable: `SRReportWriter::Report` already builds a tree.
@@ -55,4 +68,5 @@ Rules for new and ported code:
 - `RW/RWBaseTypes.cpp:232`: `snprintf (buf, sizeof (buf[0]), …)` writes an empty colour string.
 - `SRP/SRReportWriter.cpp:389`: `ReportToXML` always returns `NULL` (and leaks), so ET export and the `.rwxml` dump never run.
 - `SRP/SRPlugin.cpp:745`: `strncat (s3, ".rwxml", sizeof (s3))` can overflow.
+- Fixed in phase 3: the `RWBaseTypes` items above, plus the `RWValue` union, `SRGBColor::operator char*` (returned a stack buffer), `GetEntity`, SPAN style values, Base64 stack VLA, missing `MACVER`.
 - `CText` = `std::basic_string<unsigned short>` relies on `char_traits<unsigned short>`, deprecated in current libc++ and scheduled for removal.

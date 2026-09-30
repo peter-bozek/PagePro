@@ -14,6 +14,7 @@
 # include	<cstdio>
 # include	<cstdlib>
 # include	<clocale>
+# include	<cstdarg>
 
 #if	defined(_WIN32)
 # include	<locale.h>
@@ -114,6 +115,55 @@ namespace
 		for (; i < inText.size() && inText[i] < 0x80 && !IsASCIISpace (inText[i]); i++)
 			result.push_back (char (inText[i]));
 
+		return result;
+	}
+
+
+	// ---------------------------------------------------------------------------
+	// VFormat
+	// ---------------------------------------------------------------------------
+	// vsnprintf in the "C" locale
+
+	std::string
+	VFormat (const char *inFormat, va_list inArgs)
+	{
+		char	buf[256];
+		va_list	args;
+
+		va_copy (args, inArgs);
+#if	defined(_WIN32)
+		int		len = _vscprintf_l (inFormat, CLocale(), args);
+#else
+		int		len = vsnprintf_l (buf, sizeof (buf), CLocale(), inFormat, args);
+#endif
+		va_end (args);
+
+		if (len < 0)
+			return std::string();
+
+		std::string	result (size_t (len), '\0');
+#if	defined(_WIN32)
+		_vsnprintf_s_l (&result[0], size_t (len) + 1, _TRUNCATE, inFormat, CLocale(), inArgs);
+#else
+		if (size_t (len) < sizeof (buf))
+			result.assign (buf, size_t (len));
+		else
+		{
+			va_copy (args, inArgs);
+			vsnprintf_l (&result[0], size_t (len) + 1, CLocale(), inFormat, args);
+			va_end (args);
+		}
+#endif
+		return result;
+	}
+
+	std::string
+	VFormatHelper (const char *inFormat, ...)
+	{
+		va_list	args;
+		va_start (args, inFormat);
+		std::string	result = VFormat (inFormat, args);
+		va_end (args);
 		return result;
 	}
 }
@@ -506,16 +556,126 @@ RWStr::FromInteger (long long inValue)
 RWString
 RWStr::FromDouble (double inValue, const char *inPrintfFormat)
 {
-	char	buf[512];	// enough for "%f" of DBL_MAX
+	return FromASCII (VFormatHelper (inPrintfFormat, inValue));
+}
 
-#if	defined(_WIN32)
-	int		len = _snprintf_l (buf, sizeof (buf) - 1, inPrintfFormat, CLocale(), inValue);
-	buf[sizeof (buf) - 1] = 0;
-#else
-	int		len = snprintf_l (buf, sizeof (buf), CLocale(), inPrintfFormat, inValue);
-#endif
 
-	if (len < 0)
-		return RWString();
-	return FromASCII (std::string_view (buf, std::min (size_t (len), sizeof (buf) - 1)));
+// ---------------------------------------------------------------------------
+// Format
+// ---------------------------------------------------------------------------
+
+RWString
+RWStr::Format (const char *inPrintfFormat, ...)
+{
+	va_list	args;
+	va_start (args, inPrintfFormat);
+	std::string	result = VFormat (inPrintfFormat, args);
+	va_end (args);
+
+	return FromUTF8 (result);
+}
+
+
+// ---------------------------------------------------------------------------
+// EscapeXML
+// ---------------------------------------------------------------------------
+
+RWString
+RWStr::EscapeXML (RWStringView inText)
+{
+	RWString	result;
+	result.reserve (inText.size());
+	for (char16_t ch : inText)
+	{
+		switch (ch)
+		{
+			case u'&':	result.append (u"&amp;");	break;
+			case u'<':	result.append (u"&lt;");	break;
+			case u'>':	result.append (u"&gt;");	break;
+			case u'"':	result.append (u"&quot;");	break;
+			case u'\'':	result.append (u"&apos;");	break;
+			default:	result.push_back (ch);		break;
+		}
+	}
+	return result;
+}
+
+
+// ---------------------------------------------------------------------------
+// Base64Encode / Base64Decode
+// ---------------------------------------------------------------------------
+
+namespace
+{
+	const	char	kBase64Chars[]	=	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+	int
+	Base64Value (char16_t inChar)
+	{
+		if (inChar >= u'A' && inChar <= u'Z')	return inChar - u'A';
+		if (inChar >= u'a' && inChar <= u'z')	return inChar - u'a' + 26;
+		if (inChar >= u'0' && inChar <= u'9')	return inChar - u'0' + 52;
+		if (inChar == u'+')						return 62;
+		if (inChar == u'/')						return 63;
+		return -1;
+	}
+}
+
+RWString
+RWStr::Base64Encode (const void *inData, size_t inSize, size_t inGroupLength)
+{
+	const unsigned char	*data = static_cast <const unsigned char*> (inData);
+	RWString			result;
+	result.reserve ((inSize + 2) / 3 * 4 + (inGroupLength ? inSize / inGroupLength : 0));
+
+	size_t	column = 0;
+	auto	put = [&] (char16_t inChar)
+	{
+		if (inGroupLength != 0 && column == inGroupLength)
+		{
+			result.push_back (u' ');
+			column = 0;
+		}
+		result.push_back (inChar);
+		column++;
+	};
+
+	for (size_t i = 0; i < inSize; i += 3)
+	{
+		unsigned long	triple = (unsigned long) data[i] << 16;
+		if (i + 1 < inSize)	triple |= (unsigned long) data[i + 1] << 8;
+		if (i + 2 < inSize)	triple |= data[i + 2];
+
+		put (kBase64Chars[(triple >> 18) & 0x3F]);
+		put (kBase64Chars[(triple >> 12) & 0x3F]);
+		put (i + 1 < inSize ? kBase64Chars[(triple >> 6) & 0x3F] : '=');
+		put (i + 2 < inSize ? kBase64Chars[triple & 0x3F] : '=');
+	}
+	return result;
+}
+
+std::vector<unsigned char>
+RWStr::Base64Decode (RWStringView inText)
+{
+	std::vector<unsigned char>	result;
+	result.reserve (inText.size() / 4 * 3);
+
+	unsigned long	bits = 0;
+	int				bitCount = 0;
+	for (char16_t ch : inText)
+	{
+		if (IsASCIISpace (ch))
+			continue;
+		int	value = Base64Value (ch);
+		if (value < 0)
+			break;		// '=' padding or garbage ends the data
+		bits = (bits << 6) | (unsigned long) value;
+		bitCount += 6;
+		if (bitCount >= 8)
+		{
+			bitCount -= 8;
+			result.push_back ((unsigned char) ((bits >> bitCount) & 0xFF));
+		}
+	}
+	return result;
 }

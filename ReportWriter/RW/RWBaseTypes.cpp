@@ -1,5 +1,7 @@
 # include	"RWBaseTypes.h"
 # include	"RWStyle.h"
+# include	"RWString4D.h"
+# include	<cctype>
 # include	<memory>
 
 #if	WINVER
@@ -81,289 +83,180 @@ SRect::operator Rect (void) const
 
 #endif
 
-SPoint&
-SPoint::operator = (const char *inValue)
+
+// ---------------------------------------------------------------------------
+// Text form of SPoint / SRect
+// ---------------------------------------------------------------------------
+
+namespace
 {
-	h = v = 0;
-	if (inValue && *inValue)	//mbs 19052010
+	// Read up to inCount numbers separated by inSeparator into outValues, in order;
+	// returns how many were read (like the sscanf calls it replaces).
+	int
+	ReadNumbers (RWStringView inText, char16_t inSeparator, double *outValues, int inCount)
 	{
-		if (sscanf (inValue, "%lg;%lg", &h, &v) != 2)
-			sscanf (inValue, "%lg,%lg", &h, &v);
+		std::vector<RWString>	parts = RWStr::Split (inText, inSeparator);
+		int						n = 0;
+		for ( ; n < inCount && n < (int) parts.size(); n++)
+		{
+			std::optional<double>	value = RWStr::ToDouble (parts[n]);
+			if (!value)
+				break;
+			outValues[n] = *value;
+		}
+		return n;
 	}
+
+	// "a;b;c" as written, older files may use "a,b,c"
+	void
+	ReadNumberList (RWStringView inText, double *outValues, int inCount)
+	{
+		for (int i = 0; i < inCount; i++)
+			outValues[i] = 0;
+		if (ReadNumbers (inText, u';', outValues, inCount) != inCount)
+			ReadNumbers (inText, u',', outValues, inCount);
+	}
+}
+
+
+SPoint&
+SPoint::operator = (RWStringView inValue)
+{
+	double	values[2];
+	ReadNumberList (inValue, values, 2);
+	h = values[0];
+	v = values[1];
 	return *this;
 }
 
 
-SPoint::operator const char* (void) const
+RWString
+SPoint::ToString (void) const
 {
-	static	char buf [2][64];
-	static	int cur = 0;
-	cur = 1 - cur;
-	snprintf (buf[cur], sizeof (buf[0]), "%g;%g", h, v);
-	return buf[cur];
+	return RWStr::Format ("%g;%g", h, v);
 }
+
 
 SRect&
-SRect::operator = (const char *inValue)
+SRect::operator = (RWStringView inValue)
 {
-	top = left = bottom = right = 0;
-	if (inValue && *inValue)	//mbs 19052010
-	{
-//		sscanf (inValue, "%g,%g,%g,%g", &top, &left, &bottom, &right);
-		if (sscanf (inValue, "%lg;%lg;%lg;%lg", &left, &top, &right, &bottom) != 4)
-			sscanf (inValue, "%lg,%lg,%lg,%lg", &left, &top, &right, &bottom);
-	}
+	double	values[4];
+	ReadNumberList (inValue, values, 4);
+	left = values[0];
+	top = values[1];
+	right = values[2];
+	bottom = values[3];
 	return *this;
 }
 
 
-SRect::operator const char* (void) const
+RWString
+SRect::ToString (void) const
 {
-	static	char buf [2][64];
-	static	int cur = 0;
-	cur = 1 - cur;
-//	snprintf (buf[cur], sizeof (buf[0]), "%g,%g,%g,%g", top, left, bottom, right);
-	snprintf (buf[cur], sizeof (buf[0]), "%lg;%lg;%lg;%lg", left, top, right, bottom);
-	return buf [cur];
+	return RWStr::Format ("%g;%g;%g;%g", left, top, right, bottom);
 }
 
+
+// ---------------------------------------------------------------------------
+// Text form of SRGBColor
+// ---------------------------------------------------------------------------
 
 SRGBColor&
-SRGBColor::operator = (const CText inValue)
+SRGBColor::operator = (RWStringView inValue)
 {
 	red = green = blue = 0;
-	alpha = ~0;
-	if (inValue.length() > 0)
+	alpha = 0xFFFF;
+
+	RWStringView	value = RWStr::Trim (inValue);
+	if (value.empty())
+		return *this;
+
+	if (value[0] == u'#')								// #AARRGGBB, #RRGGBB
 	{
-        CText value = inValue;
-		unsigned long	l = 0;
-        
-		while (l < value.length() &&
-               (value[l] == ' ' || value[l] == '\t' || value[l] == '\r' || value[l] == '\n'))
-			l++;
-            
-        
-        if (l > 0) value = inValue.substr(l);
-               
-        if (value.length())
-        {
-            if (value[0] == '#')
-            {
-                const UniChar *p = value.c_str() + 1;
-                const UniChar *in = value.c_str();
-                for (; (*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f') || (*p >= 'A' && *p <= 'F'); p++)
-                    ;
-                if (p > in + 1 && p < in + 10)
-                {
-                    l = 0;
-                    sscanf ((char *)(in + 1), "%lx", &l);
-                    operator = (l);
-                    if (p < in + 8)
-                        alpha = ~0;
-                }
-            }
-            else if ((value[0] >= 'a' && value[0] <= 'z') || (value[0] >= 'A' && value[0] <= 'Z'))
-            {
-                if (TEXT_STARTS_WITH (value, "red"))
-                    *this = cRedColor;
-                else if (TEXT_STARTS_WITH (value, "green"))
-                    *this = cGreenColor;
-                else if (TEXT_STARTS_WITH (value, "blue"))
-                    *this = cBlueColor;
-                else if (TEXT_STARTS_WITH (value, "white"))
-                    *this = cWhiteColor;
-                else if (TEXT_STARTS_WITH (value, "gray"))
-                    *this = cGrayColor;
-                else if (TEXT_STARTS_WITH (value, "lightgray"))
-                    *this = cLightGrayColor;
-                else if (TEXT_STARTS_WITH (value, "transparent"))
-                    red = green = blue = alpha = 0;
-                else if (TEXT_STARTS_WITH (value, "cyan"))
-                    *this = cCyanColor;
-                else if (TEXT_STARTS_WITH (value, "magenta"))
-                    *this = cMagentaColor;
-                else if (TEXT_STARTS_WITH (value, "yellow"))
-                    *this = cYellowColor;
-                else if (TEXT_STARTS_WITH (value, "brown"))
-                    *this = cBrownColor;
-                else if (TEXT_STARTS_WITH (value, "orange"))
-                    *this = cOrangeColor;
-                else if (TEXT_STARTS_WITH (value, "purple"))
-                    *this = cPurpleColor;
-                else // if (STR_STARTS_WITH (inValue, "black"))
-                    *this = cBlackColor;
-            }
-            else if (strchr ((char *)value.c_str(), '.') != NULL)	//mbs 04042010
-            {
-                float	r, g, b, a = 1;
-                if (sscanf ((char *)value.c_str(), "%g,%g,%g,%g", &r, &g, &b, &a) >= 3)
-                {
-                    if (r >= 0 && r <= 1 && g >= 0 && g <= 1 && b >= 0 && b <= 1)
-                    {
-                        red = (unsigned short) (r * 65535);
-                        green = (unsigned short) (g * 65535);
-                        blue = (unsigned short) (b * 65535);
-                        alpha = (unsigned short) (a * 65535);
-                    }
-                }
-            }
-            else if (sscanf ((char *)value.c_str(), "%hi,%hi,%hi,%hi", &red, &green, &blue, &alpha) == 1)
-            {
-                if (sscanf ((char *)value.c_str(), "%li", &l) == 1)
-                    operator = (l);
-            }
-        }
+		size_t	digits = 1;
+		while (digits < value.size() && std::isxdigit (value[digits] < 0x80 ? int (value[digits]) : 0))
+			digits++;
+		digits--;
+		if (digits >= 1 && digits <= 8)
+		{
+			std::optional<long long>	argb = RWStr::ToInteger (u"0x" + RWString (value.substr (1, digits)));
+			*this = SRGBColor ((unsigned long) argb.value_or (0));
+			if (digits < 7)
+				alpha = 0xFFFF;
+		}
 	}
-	return *this;
-}
-
-
-
-
-SRGBColor::operator CText (void) const
-{
-	static char buf [64];
-//	snprintf (buf[cur], sizeof (buf[0]), "%#x,%#x,%#x,%#x", red, green, blue, alpha);
-//mbs 04042010	float as default
-//	snprintf (buf[cur], sizeof (buf[0]), "%g,%g,%g,%g", red/65535., green/65535., blue/65535., alpha/65535.);
-//	if (strchr (buf[cur], '.') == NULL)
-//		strcat (buf[cur], ".");
-//mbs 27042010	ARGB as default
-	snprintf ( (char *)buf, sizeof (buf[0]), "#%08lx", (unsigned long) *this);
-	return RWTextValue::UTF_8_to_UTF16(buf);
-}
-
-
-
-RWTextValue&
-RWTextValue::Copy (const char *value)
-{
-	Free();
-	if (value && *value)
+	else if ((value[0] >= u'a' && value[0] <= u'z') || (value[0] >= u'A' && value[0] <= u'Z'))
 	{
-        data_ = RWTextValue::UTF_8_to_UTF16(value);
+		static	const	struct	{ const char16_t *name; const SRGBColor *color; }	sNames[] =
+		{
+			{ u"red", &cRedColor },			{ u"green", &cGreenColor },		{ u"blue", &cBlueColor },
+			{ u"white", &cWhiteColor },		{ u"gray", &cGrayColor },		{ u"lightgray", &cLightGrayColor },
+			{ u"transparent", &cEmptyColor },	{ u"cyan", &cCyanColor },	{ u"magenta", &cMagentaColor },
+			{ u"yellow", &cYellowColor },	{ u"brown", &cBrownColor },		{ u"orange", &cOrangeColor },
+			{ u"purple", &cPurpleColor }
+		};
+
+		*this = cBlackColor;							// unknown names, "black"
+		for (const auto &entry : sNames)
+		{
+			if (RWStr::StartsWith (value, entry.name))
+			{
+				*this = *entry.color;
+				break;
+			}
+		}
+	}
+	else if (value.find (u'.') != RWStringView::npos)	// r,g,b[,a] as 0..1 reals
+	{
+		double	c[4] = { 0, 0, 0, 1 };
+		if (ReadNumbers (value, u',', c, 4) >= 3
+		 &&	c[0] >= 0 && c[0] <= 1 && c[1] >= 0 && c[1] <= 1 && c[2] >= 0 && c[2] <= 1)
+		{
+			red = (unsigned short) (c[0] * 65535);
+			green = (unsigned short) (c[1] * 65535);
+			blue = (unsigned short) (c[2] * 65535);
+			alpha = (unsigned short) (c[3] * 65535);
+		}
+	}
+	else												// ARGB number, or r,g,b[,a] as 16 bit values
+	{
+		std::vector<RWString>	parts = RWStr::Split (value, u',');
+		unsigned short			*components[4] = { &red, &green, &blue, &alpha };
+		size_t					count = 0;
+		for ( ; count < 4 && count < parts.size(); count++)
+		{
+			std::optional<long long>	number = RWStr::ToInteger (parts[count]);
+			if (!number)
+				break;
+			*components[count] = (unsigned short) *number;
+		}
+		if (count == 1)
+			*this = SRGBColor ((unsigned long) RWStr::ToInteger (parts[0]).value_or (0));
 	}
 
 	return *this;
 }
 
 
-
-RWTextValue&
-RWTextValue::Copy (const CText &value)
+RWString
+SRGBColor::ToString (void) const
 {
-	Free();
-    data_ = value;
-	
-	return *this;
+	return RWStr::Format ("#%08lx", (unsigned long) *this);
 }
 
 
-CXMLText
-UTF_16_to_UTF8(const CText value)
-{
-    CXMLText out;
-    unsigned int codepoint = 0;
-    auto it = value.cbegin();
-    while (*it != 0)
-     {
-         if (*it >= 0xd800 && *it <= 0xdbff)
-             codepoint = ((*it - 0xd800) << 10) + 0x10000;
-         else
-         {
-             if (*it >= 0xdc00 && *it <= 0xdfff)
-                 codepoint |= *it - 0xdc00;
-             else
-                 codepoint = *it;
-
-             if (codepoint <= 0x7f)
-                 out.append(1, static_cast<uint8_t>(codepoint));
-             else if (codepoint <= 0x7ff)
-             {
-                 out.append(1, static_cast<uint8_t>(0xc0 | ((codepoint >> 6) & 0x1f)));
-                 out.append(1, static_cast<uint8_t>(0x80 | (codepoint & 0x3f)));
-             }
-             else if (codepoint <= 0xffff)
-             {
-                 out.append(1, static_cast<uint8_t>(0xe0 | ((codepoint >> 12) & 0x0f)));
-                 out.append(1, static_cast<uint8_t>(0x80 | ((codepoint >> 6) & 0x3f)));
-                 out.append(1, static_cast<uint8_t>(0x80 | (codepoint & 0x3f)));
-             }
-             else
-             {
-                 out.append(1, static_cast<uint8_t>(0xf0 | ((codepoint >> 18) & 0x07)));
-                 out.append(1, static_cast<uint8_t>(0x80 | ((codepoint >> 12) & 0x3f)));
-                 out.append(1, static_cast<uint8_t>(0x80 | ((codepoint >> 6) & 0x3f)));
-                 out.append(1, static_cast<uint8_t>(0x80 | (codepoint & 0x3f)));
-             }
-             codepoint = 0;
-         }
-     }
-     return out;
-}
-
-CText
-UTF_8_to_UTF16(const CXMLText &value)
-{
-    CText out;
-    unsigned int codepoint;
-    auto it = value.cbegin();
-    while (*it != 0)
-     {
-         uint8_t ch = *it;
-         if (ch <= 0x7f)
-             codepoint = ch;
-         else if (ch <= 0xbf)
-             codepoint = (codepoint << 6) | (ch & 0x3f);
-         else if (ch <= 0xdf)
-             codepoint = ch & 0x1f;
-         else if (ch <= 0xef)
-             codepoint = ch & 0x0f;
-         else
-             codepoint = ch & 0x07;
-         ++it;
-         if (((*it & 0xc0) != 0x80) && (codepoint <= 0x10ffff))
-         {
-             if (codepoint > 0xffff)
-             {
-                 codepoint -= 0x10000;
-                 out.append(1, static_cast<UTF16Char>(0xd800 + (codepoint >> 10)));
-                 out.append(1, static_cast<UTF16Char>(0xdc00 + (codepoint & 0x03ff)));
-             }
-             else if (codepoint < 0xd800 || codepoint >= 0xe000)
-                 out.append(1, static_cast<UTF16Char>(codepoint));
-         }
-     }
-     return out;
-
-}
-
-/*
-RWValue::RWValue (const CText inText)
-	:	fKind (eValue_Text),
-		fOwn (false),
-		fText (0)
-{
-	if (inText)
-	{
-		fText = reinterpret_cast <CText> (strdup (reinterpret_cast <const char*> (inText));
-		fOwn = true;
-	}
-	return;
-}
-*/
-
+// ---------------------------------------------------------------------------
+// RWValue
+// ---------------------------------------------------------------------------
 
 const char *	RWValue::sPictFormats[] = { "BLOB", "PICT", "PDF", "JPG", "PNG", "TIFF", "EMF", NULL };
 
 
 RWValue::RWValue (EValue_Kind inKind, void* inData, size_t inSize)
 	:	fKind (inKind),
-		fOwn (false)
+		fOwn (false),
+		fBlob ()
 {
-	fBlob.fSize = 0;
-	fBlob.fData = NULL;
-
 	if (inSize != 0 && inData != NULL)
 	{
 		fBlob.fData = malloc (inSize);
@@ -380,25 +273,12 @@ RWValue::RWValue (EValue_Kind inKind, void* inData, size_t inSize)
 
 RWValue::RWValue (const RWValue &inOriginal)
 	:	fKind (eValue_Undefined),
-		fOwn (false)
+		fOwn (false),
+		fBlob ()
 {
 	Clone (inOriginal);
 }
 
-/*
-RWValue&
-RWValue::operator = (const RWValue &inOriginal)
-{
-	return Attach (inOriginal);
-}
-
-
-RWValue&
-RWValue::operator = (RWValue &inOriginal)
-{
-	return Detach (inOriginal);
-}
-*/
 
 void
 RWValue::Free (void)
@@ -406,59 +286,51 @@ RWValue::Free (void)
 	if (fOwn)
 	{
 		fOwn = false;
-		if (fKind == eValue_XMLText)
+		if (fKind == eValue_PictRefScreen)
 		{
-            fXMLText.clear();  //free (const_cast <CXMLText> (fXMLText));
-		}
-		else if (fKind == eValue_Text)
-		{
-            fText.clear();  //free (fText);
-		}
-		else if (fKind == eValue_PictRefScreen)
-		{
-#if	MACVER
-			if (fInteger)
-				::CFRelease ((RWScreenPict) fInteger);
+			if (fRef)
+#if	VERSIONMAC
+				::CFRelease (fRef);
 #else
-			if (fInteger)
-				delete reinterpret_cast <RWScreenPict> (fInteger);
+				delete reinterpret_cast <RWScreenPict> (fRef);
 #endif
 		}
 		else if (fKind == eValue_PictRefPrint)
 		{
-#if	MACVER
-			if (fInteger)
-				::CFRelease ((RWPrintPict) fInteger);
+			if (fRef)
+#if	VERSIONMAC
+				::CFRelease (fRef);
 #else
-			if (fInteger)
-				delete reinterpret_cast <RWPrintPict> (fInteger);
+				delete reinterpret_cast <RWPrintPict> (fRef);
 #endif
 		}
 		else if (fKind >= eValue_BLOB)
 		{
-			if (fBlob.fSize != 0 && fBlob.fData != NULL)
-			{
+			if (fBlob.fData != NULL)
 				free (fBlob.fData);
-				fBlob.fSize = 0;
-				fBlob.fData = NULL;
-			}
 		}
 	}
+	fText.clear();
+	fBlob.Init();
 	fKind = eValue_Undefined;
 
 	return;
 }
 
 
+// ---------------------------------------------------------------------------
+// Attach
+// ---------------------------------------------------------------------------
+// share the original's data without owning it
+
 RWValue&
 RWValue::Attach (const RWValue &inOriginal)
 {
-	if (static_cast<const void*> (this) != static_cast<const void*> (&inOriginal))
+	if (this != &inOriginal)
 	{
 		Free();
-		
+
 		fKind = inOriginal.fKind;
-//		fOwn = false;
 		switch (fKind)
 		{
 			case eValue_Undefined:
@@ -469,23 +341,22 @@ RWValue::Attach (const RWValue &inOriginal)
 			case eValue_DateTime:
 			case eValue_Date:
 			case eValue_Time:
-			case eValue_PictRefScreen:
-			case eValue_PictRefPrint:
 				fInteger = inOriginal.fInteger;
 				break;
-				
+
+			case eValue_PictRefScreen:
+			case eValue_PictRefPrint:
+				fRef = inOriginal.fRef;
+				break;
+
 			case eValue_Real:
 				fReal = inOriginal.fReal;
-				break;
-				
-			case eValue_XMLText:
-				fXMLText = inOriginal.fXMLText;
 				break;
 
 			case eValue_Text:
 				fText = inOriginal.fText;
 				break;
-				
+
 			case eValue_BLOB:
 			case eValue_PicturePICT:
 			case eValue_PicturePDF:
@@ -493,27 +364,31 @@ RWValue::Attach (const RWValue &inOriginal)
 			case eValue_PicturePNG:
 			case eValue_PictureTIFF:
 			case eValue_PictureEMF:
-				fBlob.fSize = inOriginal.fBlob.fSize;
-				fBlob.fData = inOriginal.fBlob.fData;
+				fBlob = inOriginal.fBlob;
 				break;
-				
+
 			default:
 				fKind = eValue_Undefined;
 				break;
 		}
 	}
-	
+
 	return *this;
 }
 
 
+// ---------------------------------------------------------------------------
+// Detach
+// ---------------------------------------------------------------------------
+// take over the original's data, including ownership
+
 RWValue&
 RWValue::Detach (RWValue &inOriginal)
 {
-	if (static_cast<void*> (this) != static_cast<void*> (&inOriginal))
+	if (this != &inOriginal)
 	{
 		Free();
-		
+
 		fKind = inOriginal.fKind;
 		fOwn = inOriginal.fOwn;
 		inOriginal.fOwn = false;
@@ -527,23 +402,23 @@ RWValue::Detach (RWValue &inOriginal)
 			case eValue_DateTime:
 			case eValue_Date:
 			case eValue_Time:
-			case eValue_PictRefScreen:
-			case eValue_PictRefPrint:
 				fInteger = inOriginal.fInteger;
 				break;
-				
+
+			case eValue_PictRefScreen:
+			case eValue_PictRefPrint:
+				fRef = inOriginal.fRef;
+				break;
+
 			case eValue_Real:
 				fReal = inOriginal.fReal;
 				break;
-				
-			case eValue_XMLText:
-				fXMLText = inOriginal.fXMLText;
-				break;
-				
+
 			case eValue_Text:
-				fText = inOriginal.fText;
+				fText = std::move (inOriginal.fText);
+				inOriginal.fText.clear();
 				break;
-				
+
 			case eValue_BLOB:
 			case eValue_PicturePICT:
 			case eValue_PicturePDF:
@@ -551,10 +426,9 @@ RWValue::Detach (RWValue &inOriginal)
 			case eValue_PicturePNG:
 			case eValue_PictureTIFF:
 			case eValue_PictureEMF:
-				fBlob.fSize = inOriginal.fBlob.fSize;
-				fBlob.fData = inOriginal.fBlob.fData;
+				fBlob = inOriginal.fBlob;
 				break;
-				
+
 			default:
 				inOriginal.fOwn = fOwn;
 				fOwn = false;
@@ -562,15 +436,20 @@ RWValue::Detach (RWValue &inOriginal)
 				break;
 		}
 	}
-	
+
 	return *this;
 }
 
 
+// ---------------------------------------------------------------------------
+// Clone
+// ---------------------------------------------------------------------------
+// deep copy
+
 RWValue&
 RWValue::Clone (const RWValue &inOriginal)
 {
-	if (static_cast<const void*> (this) != static_cast<const void*> (&inOriginal))
+	if (this != &inOriginal)
 	{
 		Free();
 
@@ -592,47 +471,22 @@ RWValue::Clone (const RWValue &inOriginal)
 				fReal = inOriginal.fReal;
 				break;
 
-			case eValue_XMLText:
-				if (!inOriginal.fXMLText.empty())
-				{
-					fXMLText =  inOriginal.fXMLText;
-					fOwn = true;
-				}
-				else
-					fXMLText.clear();
-				break;
-
 			case eValue_Text:
-				if (!inOriginal.fText.empty())
-				{
-					// RWTextValue	t ((const CText) inOriginal.fText);
-                    fText = inOriginal.fText;  // t.Detach();
-					fOwn = true;
-				}
-				else
-					fText.clear();
+				fText = inOriginal.fText;
 				break;
 
 			case eValue_PictRefScreen:
-				fInteger = inOriginal.fInteger;
-#if	MACVER
-				if (fInteger)
-					::CFRetain ((RWScreenPict) fInteger);
-#else
-				if (fInteger)
-					fInteger = (long) new RWScreenPict (reinterpret_cast <RWScreenPict> (fInteger));
-#endif
-				break;
-
 			case eValue_PictRefPrint:
-				fInteger = inOriginal.fInteger;
-#if	MACVER
-				if (fInteger)
-					::CFRetain ((RWPrintPict) fInteger);
+				fRef = inOriginal.fRef;
+				if (fRef)
+				{
+#if	VERSIONMAC
+					::CFRetain (fRef);
 #else
-				if (fInteger)
-					fInteger = (long) new RWPrintPict (reinterpret_cast <RWPrintPict> (fInteger));
+					fRef = reinterpret_cast <Gdiplus::Image*> (fRef)->Clone();
 #endif
+					fOwn = true;
+				}
 				break;
 
 			case eValue_BLOB:
@@ -652,11 +506,6 @@ RWValue::Clone (const RWValue &inOriginal)
 						memcpy (fBlob.fData, inOriginal.fBlob.fData, inOriginal.fBlob.fSize);
 					}
 				}
-				else
-				{
-					fBlob.fSize = 0;
-					fBlob.fData = NULL;
-				}
 				break;
 
 			default:
@@ -667,7 +516,6 @@ RWValue::Clone (const RWValue &inOriginal)
 
 	return *this;
 }
-
 
 
 bool
@@ -683,28 +531,27 @@ const
 			case eValue_Undefined:
 				equal = true;
 				break;
-				
+
 			case eValue_Boolean:
 			case eValue_Integer:
 			case eValue_DateTime:
 			case eValue_Date:
 			case eValue_Time:
+				equal = (fInteger == inCompare.fInteger);
+				break;
+
 			case eValue_PictRefScreen:
 			case eValue_PictRefPrint:
-				equal = (fInteger == inCompare.fInteger);
+				equal = (fRef == inCompare.fRef);
 				break;
 
 			case eValue_Real:
 				equal = (fReal == inCompare.fReal);
 				break;
-				
-			case eValue_XMLText:
-                equal = fXMLText.compare(inCompare.fXMLText) == 0;
-				break;
-				
+
 			case eValue_Text:
-                equal = fText.compare(inCompare.fText) == 0;
-                break;
+				equal = (fText == inCompare.fText);
+				break;
 
 			case eValue_BLOB:
 			case eValue_PicturePICT:
@@ -733,106 +580,127 @@ const
 }
 
 
-
-
-void
-RWValue::GetTextValue (RWTextValue &outValue, const char* fmt)
+bool
+RWValue::IsEmpty (void)
 const
 {
-	char		buf [64];
-	const char	*p = buf;
 	switch (fKind)
 	{
 		case eValue_Undefined:
-			p = "<NULL>";
+			return true;
+
+		case eValue_Text:
+			return fText.empty();
+
+		case eValue_PictRefScreen:
+		case eValue_PictRefPrint:
+			return fRef == NULL;
+
+		default:
+			if (fKind >= eValue_BLOB)
+				return fBlob.fSize == 0 || fBlob.fData == NULL;
+			return false;
+	}
+}
+
+
+// ---------------------------------------------------------------------------
+// GetTextValue
+// ---------------------------------------------------------------------------
+// fmt is a printf format for numbers, a replacement label for BLOBs and pictures.
+// outValue is left unchanged for an empty label.
+
+void
+RWValue::GetTextValue (RWString &outValue, const char* fmt)
+const
+{
+	const char	*label = NULL;
+
+	switch (fKind)
+	{
+		case eValue_Undefined:
+			label = "<NULL>";
 			break;
 
 		case eValue_Boolean:
-			p = fInteger ? "1" : "0";
+			label = fInteger ? "1" : "0";
 			break;
 
 		case eValue_Integer:
-			snprintf (buf, sizeof (buf), fmt? fmt: "%ld", fInteger);
+			outValue = RWStr::Format (fmt ? fmt : "%ld", fInteger);
 			break;
 
-		case RWValue::eValue_DateTime:
+		case eValue_DateTime:
 		{
-			time_t	tim = (time_t) fInteger;
-			struct	tm *lt = localtime (&tim);
-			strftime (buf, sizeof (buf), "%Y-%m-%dT%T%Z", lt);
+			time_t		tim = (time_t) fInteger;
+			struct tm	lt;
+			char		buf[64];
+#if	VERSIONWIN
+			localtime_s (&lt, &tim);
+#else
+			localtime_r (&tim, &lt);
+#endif
+			size_t		len = strftime (buf, sizeof (buf), "%Y-%m-%dT%H:%M:%S%Z", &lt);
+			outValue = RWStr::FromUTF8 (std::string_view (buf, len));
 			break;
 		}
-			
-		case RWValue::eValue_Date:
+
+		case eValue_Date:
 			// day: 0 - 31 ==> 5 bits
 			// month: 0 - 12 ==> 4 bits
 			// day | (month << 5) | (year << 9)
-			snprintf (buf, sizeof (buf), "%04ld-%02ld-%02ld", fInteger >> 9, (fInteger >> 5) & 0xF, fInteger & 0x1F);
-			break;
-			
-		case RWValue::eValue_Time:
-			snprintf (buf, sizeof (buf), "%02ld.%02ld.%02ld", fInteger / 3600, fInteger / 60 % 60, fInteger % 60);
-			break;
-			
-		case eValue_Real:
-			snprintf (buf, sizeof (buf), fmt? fmt: "%lg", fReal);
+			outValue = RWStr::Format ("%04ld-%02ld-%02ld", fInteger >> 9, (fInteger >> 5) & 0xF, fInteger & 0x1F);
 			break;
 
-		case eValue_XMLText:
-		{
-            outValue = RWTextValue::UTF_8_to_UTF16 (fXMLText.c_str());
-			p = NULL;
+		case eValue_Time:
+			outValue = RWStr::Format ("%02ld.%02ld.%02ld", fInteger / 3600, fInteger / 60 % 60, fInteger % 60);
 			break;
-		}
+
+		case eValue_Real:
+			outValue = RWStr::Format (fmt ? fmt : "%lg", fReal);
+			break;
 
 		case eValue_Text:
 			outValue = fText;
-			p = NULL;
 			break;
 
 		case eValue_BLOB:
-			p = fmt? fmt: "<BLOB>";
+			label = fmt ? fmt : "<BLOB>";
 			break;
 
 		case eValue_PictRefScreen:
-#if	MACVER
-			p = fmt? fmt: "<CGImageRef>";
+#if	VERSIONMAC
+			label = fmt ? fmt : "<CGImageRef>";
 #else
-			p = fmt? fmt: "<Gdiplus::Bitmap*>";
+			label = fmt ? fmt : "<Gdiplus::Bitmap*>";
 #endif
 			break;
+
 		case eValue_PictRefPrint:
-#if	MACVER
-			p = fmt? fmt: "<CGPDFDocumentRef>";
+#if	VERSIONMAC
+			label = fmt ? fmt : "<CGPDFDocumentRef>";
 #else
-			p = fmt? fmt: "<Gdiplus::Metafile*>";
+			label = fmt ? fmt : "<Gdiplus::Metafile*>";
 #endif
 			break;
-		case eValue_PicturePICT:
-			p = fmt? fmt: "<IMAGE_PICT>";
-			break;
-		case eValue_PicturePDF:
-			p = fmt? fmt: "<IMAGE_PDF>";
-			break;
-		case eValue_PictureJPG:
-			p = fmt? fmt: "<IMAGE_JPG>";
-			break;
-		case eValue_PicturePNG:
-			p = fmt? fmt: "<IMAGE_PNG>";
-			break;
-		case eValue_PictureTIFF:
-			p = fmt? fmt: "<IMAGE_TIFF>";
-			break;
-		case eValue_PictureEMF:
-			p = fmt? fmt: "<IMAGE_EMF>";
-			break;
+
+		case eValue_PicturePICT:	label = fmt ? fmt : "<IMAGE_PICT>";	break;
+		case eValue_PicturePDF:		label = fmt ? fmt : "<IMAGE_PDF>";	break;
+		case eValue_PictureJPG:		label = fmt ? fmt : "<IMAGE_JPG>";	break;
+		case eValue_PicturePNG:		label = fmt ? fmt : "<IMAGE_PNG>";	break;
+		case eValue_PictureTIFF:	label = fmt ? fmt : "<IMAGE_TIFF>";	break;
+		case eValue_PictureEMF:		label = fmt ? fmt : "<IMAGE_EMF>";	break;
 	}
 
-	if (p && *p)
-		outValue = (const char *) p;
+	if (label && *label)
+		outValue = RWStr::FromUTF8 (label);
 	return;
 }
 
+
+// ---------------------------------------------------------------------------
+// CoerceValue
+// ---------------------------------------------------------------------------
 
 bool
 RWValue::CoerceValue (EValue_Kind inKind)
@@ -847,328 +715,112 @@ RWValue::CoerceValue (EValue_Kind inKind)
 				SetBoolean (GetInteger() > 0);
 			else if (fKind == eValue_Real)
 				SetBoolean (GetReal() > 0);
-			else if (fKind == eValue_XMLText)
-				SetBoolean (!GetXMLText().empty() && !TEXT_EQUALS (GetXMLText(), "0"));
 			else if (fKind == eValue_Text)
-				SetBoolean (!GetText().empty() && !TEXT_EQUALS (GetText(), "0"));
+				SetBoolean (!fText.empty() && !RWStr::Equals (fText, "0"));
 			else
 				return false;
 			break;
 
 		case eValue_Integer:
-		{
-			long	lVal;
 			if (fKind == eValue_Boolean)
 				SetInteger (GetBoolean());
 			else if (fKind == eValue_Real)
-				SetInteger (GetReal());
-			else if (fKind == eValue_XMLText)
-			{
-				if (!GetXMLText().empty())
-				{
-					//mbs 12072010	special case for color
-                    if (GetXMLText()[0] == '#')
-					{
-						SRGBColor	c (GetXMLText().c_str());
-						SetInteger ((unsigned long) c);
-					}
-					else if (sscanf ((char *)GetXMLText().c_str(), "%li", &lVal) == 1)
-						SetInteger (lVal);
-					else
-						return false;
-				}
-				else
-					SetInteger (0);
-			}
+				SetInteger ((long) GetReal());
 			else if (fKind == eValue_Text)
 			{
-				CoerceValue (eValue_XMLText);
-				if (!GetXMLText().empty())
-				{
-					if (sscanf ((char *)GetXMLText().c_str(), "%li", &lVal) == 1)
-						SetInteger (lVal);
-					else
-						return false;
-				}
-				else
+				RWStringView	text = RWStr::Trim (fText);
+				if (text.empty())
 					SetInteger (0);
+				else if (text[0] == u'#')		//mbs 12072010	special case for color
+					SetInteger ((long) (unsigned long) SRGBColor (text));
+				else if (std::optional<long long> value = RWStr::ToInteger (text))
+					SetInteger ((long) *value);
+				else
+					return false;
 			}
 			else
 				return false;
 			break;
-		}
 
 		case eValue_Real:
-		{
-			double	fVal;
 			if (fKind == eValue_Boolean)
 				SetReal (GetBoolean());
 			else if (fKind == eValue_Integer)
 				SetReal (GetInteger());
-			else if (fKind == eValue_XMLText)
-			{
-				if (!GetXMLText().empty() && sscanf ((char *)GetXMLText().c_str(), "%lg", &fVal) == 1)
-					SetReal (fVal);
-			}
 			else if (fKind == eValue_Text)
 			{
-				CoerceValue (eValue_XMLText);
-				if (!GetXMLText().empty() && sscanf ((char *)GetXMLText().c_str(), "%lg", &fVal) == 1)
-					SetReal (fVal);
+				// text that is not a number stays text (as before)
+				if (std::optional<double> value = RWStr::ToDouble (fText))
+					SetReal (*value);
 			}
 			else
 				return false;
 			break;
-		}
-
-		case eValue_XMLText:
-			if (fKind == eValue_Text)
-			{
-					fKind = eValue_XMLText;
-					fXMLText = RWTextValue::UTF_16_to_UTF8 (fText);
-			}
-			else
-				return false;
-			break;
-
-		case eValue_Text:
-			if (fKind == eValue_XMLText)
-			{
-					fKind = eValue_Text;
-					fText = RWTextValue::UTF_8_to_UTF16(fXMLText);
-			}
-			else
-				return false;
-			break;
-
-//		case eValue_DateTime:
-//		case eValue_Date:
-//		case eValue_Time:
-//			return false;
 
 		case eValue_PictRefScreen:
 		case eValue_PictRefPrint:
-			if (fKind > eValue_BLOB)
-			{
-				//••• TODO •••	convert image format...
-				return false;
-			}
-			else
-				return false;
-			break;
-
 		case eValue_BLOB:
-			return false;
-			break;
-
 		case eValue_PicturePICT:
 		case eValue_PicturePDF:
 		case eValue_PictureJPG:
 		case eValue_PicturePNG:
 		case eValue_PictureTIFF:
 		case eValue_PictureEMF:
-			if (fKind >= eValue_PictRefScreen)
-			{
-				//••• TODO •••	convert image format...
-				return false;
-			}
-			else
-				return false;
-			break;
+			//••• TODO •••	convert image format...
+			return false;
 
 		default:
 			return false;
-			break;
 	}
 
 	return true;
 }
 
 
-
 // ---------------------------------------------------------------------------
-// WriteText												  [static][public]
+// ParseIntoText													  [static][public]
 // ---------------------------------------------------------------------------
+// text content of an element: text nodes, nested <Data> elements, <NL/> as CR
 
-void
-RWTools::WriteText (FILE *fd, const CXMLText inText)
+RWString
+RWTools::ParseIntoText (RWXmlNode inNode)
 {
-    if (!inText.empty())
+	RWString	result;
+
+	for (RWXmlNode node = inNode.FirstChild(); node; node = node.NextSibling())
 	{
-		fprintf (fd, "%s", EscapeAttributedString(inText).c_str());
-	}
-
-	return;
-}
-
-void
-RWTools::WriteText (FILE *fd, const CText inText)
-{
-    if (!inText.empty())
-    {
-        fprintf (fd, "%s", EscapeAttributedString( RWTextValue::UTF_16_to_UTF8(inText)).c_str());
-    }
-
-    return;
-}
-
-
-void
-RWTools::WriteText (XMLElement *inParent, const CXMLText inText)
-{
-	if (!inText.empty())
-	{
-        XMLText * myText = inParent->ToDocument()->NewText((const char *)inText.c_str());
-		inParent->InsertEndChild (myText);
-	}
-
-	return;
-}
-
-
-// ---------------------------------------------------------------------------
-// ParseIntoText											  [static][public]
-// ---------------------------------------------------------------------------
-
-CText
-RWTools::ParseIntoText (const XMLElement *inNode, bool)
-{
-    CText	result;
-
-	const XMLNode		*node;
-	for ( node = inNode->FirstChild(); node; node = node->NextSibling() )
-	{
-		const XMLText	*text = node->ToText();
-
-		if (text)
-		{
-			result.append(RWTextValue::UTF_8_to_UTF16( text->Value()));
-		}
-		else
-		{
-            const XMLElement	*elem = node->ToElement();
-			if (elem)
-			{
-				const CText	name = RWTextValue::UTF_8_to_UTF16 (elem->Value());
-				if (TEXT_EQUALS (name, "Data"))
-				{
-                    CText	nested (ParseIntoText (elem, true));
-					result.append(nested);
-				}
-				else if (TEXT_EQUALS (name, "NL"))
-				{
-					result.append((UniChar *)'\r');
-				}
-			}
-		}
+		if (node.IsText())
+			result += node.Value();
+		else if (node.NameIs ("Data"))
+			result += ParseIntoText (node);
+		else if (node.NameIs ("NL"))
+			result.push_back (u'\r');
 	}
 
 	return result;
 }
 
-CText
-RWTools::ParseIntoText (const XMLElement *inNode)
-{
-    return ParseIntoText(inNode, true);
-}
-
-
-
-/*--- function HTUU_encode -----------------------------------------------
- *
- *   Encode a single line of binary data to a standard format that
- *   uses only printing ASCII characters (but takes up 33% more bytes).
- *
- *    Entry    bufin    points to a buffer of bytes
- *             nbytes   is the number of bytes in that buffer.
- *             bufcoded points to an output buffer.  Be sure that this
- *                      can hold at least 1 + (4*nbytes)/3 characters.
- *
- *    Exit     bufcoded contains the coded line.  The first 4*nbytes/3 bytes
- *                      contain printing ASCII characters representing
- *                      those binary bytes. This may include one or
- *                      two '=' characters used as padding at the end.
- *                      The last byte is a zero byte.
- *             Returns the number of ASCII characters in "bufcoded".
- */
-static	const unsigned char six2pr[64] = {
-    'A','B','C','D','E','F','G','H','I','J','K','L','M',
-    'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-    'a','b','c','d','e','f','g','h','i','j','k','l','m',
-    'n','o','p','q','r','s','t','u','v','w','x','y','z',
-    '0','1','2','3','4','5','6','7','8','9','+','/'
-};
-
-static	long	MyEncode (const unsigned char *bufin, long nbytes, char *bufcoded)
-{
-/* ENC is the basic 1 character encoding function to make a char printing */
-#define ENC(c) six2pr[c]
-
-	char				*outptr = bufcoded;
-	long				i;
-
-	if (nbytes % 3)
-		nbytes -= 3;	//mbs 07072010	ensure we do not access buffer beyond the end!
-	for (i=0; i<nbytes; i += 3)
-	{
-		*(outptr++) = ENC(*bufin >> 2);            /* c1 */
-		*(outptr++) = ENC(((*bufin << 4) & 060) | ((bufin[1] >> 4) & 017)); /*c2*/
-		*(outptr++) = ENC(((bufin[1] << 2) & 074) | ((bufin[2] >> 6) & 03));/*c3*/
-		*(outptr++) = ENC(bufin[2] & 077);         /* c4 */
-		bufin += 3;
-	}
-	if (nbytes % 3)
-		nbytes += 3;
-	if (i < nbytes)	//mbs 07072010	ensure we do not access buffer beyond the end!
-	{
-		unsigned char	buf [3] = { 0 };
-		memcpy (buf, bufin, nbytes - i);
-		*(outptr++) = ENC(*buf >> 2);            /* c1 */
-		*(outptr++) = ENC(((*buf << 4) & 060) | ((buf[1] >> 4) & 017)); /*c2*/
-		*(outptr++) = ENC(((buf[1] << 2) & 074) | ((buf[2] >> 6) & 03));/*c3*/
-		*(outptr++) = ENC(buf[2] & 077);         /* c4 */
-		bufin += 3;
-		i += 3;
-	}
-		
-
-	/* If nbytes was not a multiple of 3, then we have encoded too
-	* many characters.  Adjust appropriately.
-	*/
-	if(i == nbytes+1)		// There were only 2 bytes in that last group
-	{
-		outptr[-1] = '=';
-	}
-	else if(i == nbytes+2)	// There was only 1 byte in that last group
-	{
-		outptr[-1] = '=';
-		outptr[-2] = '=';
-	}
-	*outptr = '\0';
-
-	return outptr - bufcoded;
-}
-
-#define	chunkRawSize		96	// 32*3
-#define	chunkEncodedSize	128	// 32*4
 
 // ---------------------------------------------------------------------------
-// WriteData														  [public]
+// WriteText														  [static][public]
 // ---------------------------------------------------------------------------
+// XML parsers turn a CR in text into LF, so CR is written as <NL/>
+// (read back by ParseIntoText) - 4D uses CR as line separator.
 
 void
-RWTools::WriteData (FILE *fd, const SBlob &inData)
+RWTools::WriteText (RWXmlNode inParent, RWStringView inText)
 {
-	const unsigned char *data = reinterpret_cast <const unsigned char*> (inData.fData);
-	size_t				size = inData.fSize;
-	char				buf [chunkEncodedSize + 2];
-	int					chunk;
-
-	for ( ; size > 0; data += chunkRawSize, size -= chunk)
+	size_t	start = 0;
+	while (start < inText.size())
 	{
-		chunk = size > chunkRawSize ? chunkRawSize : size;
-		MyEncode (data, chunk, buf);
-		fprintf (fd, "\t%s\r\n", buf);
+		size_t	cr = inText.find (u'\r', start);
+		if (cr == RWStringView::npos)
+			cr = inText.size();
+		if (cr > start)
+			inParent.AppendText (inText.substr (start, cr - start));
+		if (cr < inText.size())
+			inParent.Append (u"NL");
+		start = cr + 1;
 	}
 
 	return;
@@ -1176,236 +828,61 @@ RWTools::WriteData (FILE *fd, const SBlob &inData)
 
 
 // ---------------------------------------------------------------------------
-// WriteData														  [public]
+// ReadData / WriteData												  [static][public]
 // ---------------------------------------------------------------------------
+// BLOB as Base64 text content, in groups of 128 characters
 
 void
-RWTools::WriteData (XMLNode *inParent, const SBlob &inData)
+RWTools::ReadData (RWXmlNode inNode, SBlob &outData)
 {
-	const unsigned char *data = reinterpret_cast <const unsigned char*> (inData.fData);
-	size_t				size = inData.fSize;
+	outData.Free();
 
+	RWString	encoded;
+	for (RWXmlNode node = inNode.FirstChild(); node; node = node.NextSibling())
+		if (node.IsText())
+			encoded += node.Value();
 
-	char        	buf [size * 4 / 3 + size / chunkRawSize + 5];
-	char			*dst = buf;
-	int				chunk;
-	for ( ; size > 0; data += chunkRawSize, dst += chunkEncodedSize, size -= chunk)
+	std::vector<unsigned char>	data = RWStr::Base64Decode (encoded);
+	if (!data.empty())
 	{
-		if (dst != buf)
-			*dst++ = ' ';
-		chunk = size > chunkRawSize ? chunkRawSize : size;
-		MyEncode (data, chunk, dst);
+		outData.fData = malloc (data.size());
+		if (outData.fData != NULL)
+		{
+			memcpy (outData.fData, data.data(), data.size());
+			outData.fSize = data.size();
+		}
 	}
-	XMLText	*elem = inParent->ToDocument()->NewText(buf);
-	inParent->InsertEndChild (elem);
-	
+
+	return;
+}
+
+
+void
+RWTools::WriteData (RWXmlNode inParent, const SBlob &inData)
+{
+	if (inData.fData != NULL && inData.fSize != 0)
+		inParent.AppendText (RWStr::Base64Encode (inData.fData, inData.fSize, 128));
+
 	return;
 }
 
 
 // ---------------------------------------------------------------------------
-// FindInList														  [public]
+// FindInList														  [static][public]
 // ---------------------------------------------------------------------------
 
 long
-RWTools::FindInList (const CXMLText inValue, const char** inList)
+RWTools::FindInList (RWStringView inValue, const char** inList)
 {
 	if (!inValue.empty() && inList)
 	{
-		long	index = 0;
-		while (*inList)
-		{
-			if (TEXT_EQUALS (inValue, *inList))
+		for (long index = 0; inList[index]; index++)
+			if (RWStr::Equals (inValue, inList[index]))
 				return index;
-			index++;
-			inList++;
-		}
 	}
 	return -1;
 }
 
-
-
-/*--- function HTUU_decode ------------------------------------------------
- *
- *  Decode an ASCII-encoded buffer back to its original binary form.
- *
- *    Entry    bufcoded    points to a uuencoded string.  It is
- *                         terminated by any character not in
- *                         the printable character table six2pr, but
- *                         leading whitespace is stripped.
- *             bufplain    points to the output buffer; must be big
- *                         enough to hold the decoded string (generally
- *                         shorter than the encoded string) plus
- *                         as many as two extra bytes used during
- *                         the decoding process.
- *             outbufsize  is the maximum number of bytes that
- *                         can fit in bufplain.
- *
- *    Exit     Returns the number of binary bytes decoded.
- *             bufplain    contains these bytes.
- */
-
-static	unsigned char	pr2six[256];
-
-static int MyDecode (const unsigned char *&bufcoded, unsigned char *bufplain, long outbufsize)
-{
-/* single character decode */
-#define DEC(c) pr2six[(int)c]
-#define MAXVAL 63
-
-	static int	first = 1;
-
-	long		nbytesdecoded, j = (outbufsize*4)/3;
-
-	/* If this is the first call, initialize the mapping table.
-	* This code should work even on non-ASCII machines.
-	*/
-	if (first)
-	{
-		first = 0;
-		for (j=0; j<256; j++)
-			pr2six[j] = MAXVAL+1;
-
-		for (j=0; j<64; j++)
-			pr2six[(int)six2pr[j]] = (unsigned char) j;
-	}
-
-	/* Strip leading whitespace. */
-	while (*bufcoded==' ' || *bufcoded == '\t' || *bufcoded == '\r' || *bufcoded == '\n')
-		bufcoded++;
-
-	/* Figure out how many characters are in the input buffer.
-	* If this would decode into more bytes than would fit into
-	* the output buffer, adjust the number of input bytes downwards.
-	*/
-	const unsigned char *bufin = bufcoded;
-	long		nprbytes;
-
-	j = (outbufsize*4)/3;
-	while(j > 0 && pr2six[(int)*(bufin++)] <= MAXVAL)
-		j--;
-	nprbytes = bufin - bufcoded;
-	if (j > 0)
-		nprbytes--;
-	nbytesdecoded = ((nprbytes+3)/4) * 3;
-	if (nbytesdecoded > outbufsize)
-		nprbytes = (outbufsize*4)/3;
-
-	bufin = bufcoded;
-
-	if (bufplain)
-	{
-		unsigned char *bufout = bufplain;
-		while (nprbytes > 0)
-		{
-			*(bufout++) = (unsigned char) (DEC(*bufin) << 2 | DEC(bufin[1]) >> 4);
-			*(bufout++) = (unsigned char) (DEC(bufin[1]) << 4 | DEC(bufin[2]) >> 2);
-			*(bufout++) = (unsigned char) (DEC(bufin[2]) << 6 | DEC(bufin[3]));
-			bufin += 4;
-			nprbytes -= 4;
-		}
-	}
-	else
-	{
-		bufin += ((nprbytes+3)/4) * 4;
-		nprbytes -= ((nprbytes+3)/4) * 4;
-	}
-
-	if (nprbytes & 03)
-	{
-		if (pr2six[(int)bufin[-2]] > MAXVAL)
-		{
-			nbytesdecoded -= 2;
-			bufin -= 2;
-		}
-		else
-		{
-			nbytesdecoded -= 1;
-			bufin--;
-		}
-	}
-
-	bufcoded = bufin;
-	return (nbytesdecoded);
-}
-
-
-// ---------------------------------------------------------------------------
-// ReadData															  [public]
-// ---------------------------------------------------------------------------
-
-void
-RWTools::ReadData (const XMLElement *inNode, SBlob &outData)
-{
-	outData.Free();
-
-	const XMLNode	*node;
-	const XMLText	*text;
-    const unsigned char* str, *cur;
-	size_t			outSize = 0;
-	int				size;
-    const unsigned char *s1;
-    
-	for (node = inNode->FirstChild(); node != NULL; node = node->NextSibling())
-	{
-		text = node->ToText();
-		if (text)
-		{
-            // ss = reinterpret_cast<const unsigned char *>(text->Value());
-			str = (unsigned char *)text->Value();
-            if (str && *str)
-			{
-				cur = str;
-
-				for ( ; ; )
-				{
-					size = MyDecode ( cur, NULL, 64*1024*1024); //cur.c_str()
-					if (size < 1)
-						break;
-					outSize += size;
-				}
-			}
-		}
-	}
-
-	if (outSize != 0)
-	{
-		unsigned char	*data = reinterpret_cast <unsigned char*> (malloc (outSize + 2));
-		if (data != NULL)
-		{
-			unsigned char	*dst = data;
-			size_t			real_size = outSize;
-
-			for (node = inNode->FirstChild(); outSize > 0 && node != NULL; node = node->NextSibling())
-			{
-				text = node->ToText();
-				if (text)
-				{
-					str = (unsigned char *)(text->Value());
-					if (str && *str)
-					{
-						for ( cur = str; outSize > 0; )
-						{
-                            size = MyDecode (cur, dst, outSize);
-							if (size < 1)
-								break;
-							outSize -= size;
-							dst += size;
-						}
-					}
-				}
-			}
-
-			real_size -= outSize;
-//			outVar.SetBlob (data, real_size, true);
-			outData.fData = data;
-			outData.fSize = real_size;
-		}
-	}
-
-	return;
-}
 
 
 // ---------------------------------------------------------------------------
@@ -1557,353 +1034,326 @@ RWTools::MakeUserRectFromText (SRect &ioRect, float inAngle)
 
 
 // ---------------------------------------------------------------------------
-// EscapeAttributedString											  [public]
+// EscapeAttributedString											  [static][public]
 // ---------------------------------------------------------------------------
 // used to convert non-attribute text to attributed text
 
-CXMLText
-RWTools::EscapeAttributedString (const CXMLText inAttributedString)
+RWString
+RWTools::EscapeAttributedString (RWStringView inText)
 {
-    CText ss = RWTextValue::UTF_8_to_UTF16(inAttributedString);
-    return RWTextValue::UTF_16_to_UTF8(EscapeAttributedString(ss));
-}
-
-CText
-RWTools::EscapeAttributedString (const CText inAttributedString)
-{
-	CText			as (inAttributedString);
-	long			i;
-	
-	if (as.length() > 0)
+	RWString	result;
+	result.reserve (inText.size());
+	for (char16_t ch : inText)
 	{
-		for (i = 0; i < as.length(); i++)
+		switch (ch)
 		{
-			switch (as[i]) {
-				case '<':
-				{
-                    UTF16Char	et[] = { '&', 'l', 't', ';', 0 };
-					as = as.erase(i, 1);
-					as = as.insert(i, et);
-					break;
-				}
-				case '>':
-				{	
-                    UTF16Char	et[] = { '&', 'g', 't', ';', 0 };
-					as = as.erase(i, 1);
-					as = as.insert(i, et);
-					break;
-				}
-				case '&':
-				{
-                    UTF16Char	et[] = { '&', 'a', 'm', 'p', ';', 0 };
-					as = as.erase(i, 1);
-					as = as.insert(i, et);
-					break;
-				}
-				case '"':
-				{
-                    UTF16Char	et[] = { '&', 'q', 'u', 'o', 't', ';', 0 };
-					as = as.erase(i, 1);
-					as = as.insert(i, et);
-					break;
-				}
-				default:
-					break;
-			}
+			case u'<':	result.append (u"&lt;");	break;
+			case u'>':	result.append (u"&gt;");	break;
+			case u'&':	result.append (u"&amp;");	break;
+			case u'"':	result.append (u"&quot;");	break;
+			default:	result.push_back (ch);		break;
 		}
 	}
-	return as;
+	return result;
 }
-// ---------------------------------------------------------------------------
-// SplitAttributedString											  [public]
-// ---------------------------------------------------------------------------
-// on return, outAttributes contains array of pairs of long position <attribute string in source, text in destination>
-// first pair is <size of array, length of destination text>
 
-CText
-RWTools::SplitAttributedString (const CText inAttributedString, unique_ptr<long> *outAttributes)
+
+// ---------------------------------------------------------------------------
+// SplitAttributedString											  [static][public]
+// ---------------------------------------------------------------------------
+// Removes the tags and resolves the entities of attributed text.
+// outAttributes: [0] = array size, [1] = length of the result, then pairs
+// <position of the tag text in the source (first char after '<'), position in the result>
+
+RWString
+RWTools::SplitAttributedString (RWStringView inAttributedString, std::vector<long> *outAttributes)
 {
-	CText			as (inAttributedString);
-	vector<long>	v;
-	long			i, j, aPosOffset = 0;
+	RWString			as (inAttributedString);
+	std::vector<long>	v;
+	long				aPosOffset = 0;
+	auto				at = [&as] (long inIndex) -> char16_t { return inIndex >= 0 && size_t (inIndex) < as.size() ? as[inIndex] : 0; };
 
-	if (as.length() > 0)
+	for (long i = 0; size_t (i) < as.size(); i++)
 	{
-		for (i = 0; i < as.length(); i++)
+		if (as[i] == u'<')	// start of a tag
 		{
-			if (as[i] == '<')	// start of a tag
+			// can happen if text is switched from standard to attributed
+			if (at (i + 1) == u'%')	// <%variable; format%>
 			{
-		// can happen if text is switched from standard to attributed
-				if (as[i + 1] == '%')	// <%variable; format%>
-				{
-                    UniChar	et[] = { '%', '>', 0 };
-					j = as.find (et, i + 2);
-					if (j == string::npos)
-						break;
-					i = j;
-					continue;
-				}
-
-                j = as.find ('>', i + 1);
-				if (j == string::npos)
+				size_t	j = as.find (u"%>", i + 2);
+				if (j == RWString::npos)
 					break;
-				if (as [j - 1] == '/')	//mbs 19052010	support <BR/>
+				i = long (j);
+				continue;
+			}
+
+			size_t	pos = as.find (u'>', i + 1);
+			if (pos == RWString::npos)
+				break;
+			long	j = long (pos);
+
+			if (as[j - 1] == u'/')	//mbs 19052010	support <BR/>
+			{
+				bool	isBR = ((at (i + 1) == u'B' && at (i + 2) == u'R') || (at (i + 1) == u'b' && at (i + 2) == u'r'))
+							&& (at (i + 3) == u'/' || at (i + 3) == u' ' || at (i + 3) == u'\t');
+				if (isBR)
 				{
-					if (as [i+1] == 'B' && as [i+2] == 'R' && (as [i+3] == '/' || as [i+3] == ' ' || as [i+3] == '\t'))
-					{
-						aPosOffset += j - i;
-						as.erase (i, j - i);
-						as [i] = 0x000D;	// CR
-					}
-					else if (as [i+1] == 'b' && as [i+2] == 'r' && (as [i+3] == '/' || as [i+3] == ' ' || as [i+3] == '\t'))
-					{
-						aPosOffset += j - i;
-						as.erase (i, j - i);
-						as [i] = 0x000D;	// CR
-					}
-					else
-					{
-						aPosOffset += j - i + 1;
-						as.erase (i, j - i + 1);
-						i--;
-					}
+					aPosOffset += j - i;
+					as.erase (i, j - i);
+					as[i] = 0x000D;	// CR
 				}
 				else
 				{
-					if (outAttributes)
-					{
-						v.push_back (i + aPosOffset + 1);	// first char after '<'
-						v.push_back (i);
-					}
 					aPosOffset += j - i + 1;
 					as.erase (i, j - i + 1);
 					i--;
 				}
 			}
-			else if (as[i] == '&')
+			else
 			{
-				// parse entity
-				if (as [i+1] == '#' && as [i+2] == 'x' && i + 5 < as.length() && as [i+5] == ';')
+				if (outAttributes)
 				{
-					unsigned char	value = 0;
-					if (as [i+3] > '9')
-						value = (9 + (as [i+3] & 0x07)) << 4;
-					else
-						value = (as [i+3] & 0x0F) << 4;
-					if (as [i+4] > '9')
-						value |= (9 + (as [i+4] & 0x07));
-					else
-						value |= (as [i+4] & 0x0F);
-					as.erase (i, 5);
-					as [i] = value;
-					aPosOffset += 5;
+					v.push_back (i + aPosOffset + 1);	// first char after '<'
+					v.push_back (i);
 				}
-				else if (as [i+1] == 'a' && as [i+2] == 'm' && as [i+3] == 'p' && as [i+4] == ';')
-				{
-					as.erase (i + 1, 4);	//mbs 29072011	+1
-//					as [i] = '&';
-					aPosOffset += 4;
-				}
-				else if (as [i+1] == 'l' && as [i+2] == 't' && as [i+3] == ';')
-				{
-					as.erase (i, 3);
-					as [i] = '<';
-					aPosOffset += 3;
-				}
-				else if (as [i+1] == 'g' && as [i+2] == 't' && as [i+3] == ';')
-				{
-					as.erase (i, 3);
-					as [i] = '>';
-					aPosOffset += 3;
-				}
-				else if (as [i+1] == 'q' && as [i+2] == 'u' && as [i+3] == 'o' && as [i+4] == 't' && as [i+5] == ';')
-				{
-					as.erase (i, 5);
-					as [i] = '\"';
-					aPosOffset += 5;
-				}
-				else if (as [i+1] == 'a' && as [i+2] == 'p' && as [i+3] == 'o' && as [i+4] == 's' && as [i+5] == ';')
-				{
-					as.erase (i, 5);
-					as [i] = '\'';
-					aPosOffset += 5;
-				}
+				aPosOffset += j - i + 1;
+				as.erase (i, j - i + 1);
+				i--;
+			}
+		}
+		else if (as[i] == u'&')
+		{
+			// parse entity
+			if (at (i + 1) == u'#' && at (i + 2) == u'x' && at (i + 5) == u';')
+			{
+				auto		hex = [] (char16_t c) -> unsigned { return c > u'9' ? 9 + (c & 0x07) : (c & 0x0F); };
+				char16_t	value = char16_t (((hex (at (i + 3)) << 4) | hex (at (i + 4))) & 0xFF);
+				as.erase (i, 5);
+				as[i] = value;
+				aPosOffset += 5;
+			}
+			else if (at (i + 1) == u'a' && at (i + 2) == u'm' && at (i + 3) == u'p' && at (i + 4) == u';')
+			{
+				as.erase (i + 1, 4);	//mbs 29072011	+1
+				aPosOffset += 4;
+			}
+			else if (at (i + 1) == u'l' && at (i + 2) == u't' && at (i + 3) == u';')
+			{
+				as.erase (i, 3);
+				as[i] = u'<';
+				aPosOffset += 3;
+			}
+			else if (at (i + 1) == u'g' && at (i + 2) == u't' && at (i + 3) == u';')
+			{
+				as.erase (i, 3);
+				as[i] = u'>';
+				aPosOffset += 3;
+			}
+			else if (at (i + 1) == u'q' && at (i + 2) == u'u' && at (i + 3) == u'o' && at (i + 4) == u't' && at (i + 5) == u';')
+			{
+				as.erase (i, 5);
+				as[i] = u'"';
+				aPosOffset += 5;
+			}
+			else if (at (i + 1) == u'a' && at (i + 2) == u'p' && at (i + 3) == u'o' && at (i + 4) == u's' && at (i + 5) == u';')
+			{
+				as.erase (i, 5);
+				as[i] = u'\'';
+				aPosOffset += 5;
 			}
 		}
 	}
 
 	if (outAttributes)
 	{
-		long	*l = static_cast <long*> (::operator new ((v.size() + 2) * sizeof (long)));
-		outAttributes->reset (l);
-		l [0] = v.size() + 2;
-		l [1] = as.length();
-		for (i = 0, j = v.size(); i < j; i++)
-			l [i + 2] = v [i];
+		outAttributes->clear();
+		outAttributes->reserve (v.size() + 2);
+		outAttributes->push_back (long (v.size() + 2));
+		outAttributes->push_back (long (as.length()));
+		outAttributes->insert (outAttributes->end(), v.begin(), v.end());
 	}
 	return as;
 }
 
 
-
 // ---------------------------------------------------------------------------
-// ParseAttributedStringAttribute									  [public]
+// Tag / style text scanning
 // ---------------------------------------------------------------------------
-//mbs 22032010
 
-const    UniChar         CR   = 0x000D;  // ASCII carrige return  '\r'
-const    UniChar         LF   = 0x000A;  // ASCII newline         '\n'
-const    UniChar         SP   = 0x0020;  // ASCII space         ' '
-const    UniChar         NBSP = 0x00A0;  // Unicode non-breaking space
-const    UniChar         LSEP = 0x2028;  // Unicode line separator
-const    UniChar         PSEP = 0x2029;  // Unicode paragraph separator
-static	bool	IsSpace (const UniChar c)
+namespace
 {
-	return (c == SP || c == NBSP || c == CR || c == LF || c == LSEP || c == PSEP);
-}
+	const	char16_t	CR   = 0x000D;	// ASCII carriage return
+	const	char16_t	LF   = 0x000A;	// ASCII newline
+	const	char16_t	SP   = 0x0020;	// ASCII space
+	const	char16_t	NBSP = 0x00A0;	// Unicode non-breaking space
+	const	char16_t	LSEP = 0x2028;	// Unicode line separator
+	const	char16_t	PSEP = 0x2029;	// Unicode paragraph separator
 
-static	const UniChar* SkipWhiteSpace( const UniChar* p )
-{
-	if ( !p || !*p )
+	bool
+	IsSpace (char16_t c)
 	{
+		return c == SP || c == NBSP || c == CR || c == LF || c == LSEP || c == PSEP;
+	}
+
+	unsigned
+	HexValue (char16_t c)
+	{
+		if (c >= u'0' && c <= u'9')	return c - u'0';
+		if (c >= u'a' && c <= u'f')	return c - u'a' + 10;
+		if (c >= u'A' && c <= u'F')	return c - u'A' + 10;
 		return 0;
 	}
-	while ( p && *p )
+
+	bool
+	IsHexDigit (char16_t c)
 	{
-		if ( IsSpace( *p ) )
-			++p;
-		else
-			break;
+		return (c >= u'0' && c <= u'9') || (c >= u'a' && c <= u'f') || (c >= u'A' && c <= u'F');
 	}
 
-	return p;
-}
-
-static	const UniChar* ReadName( const UniChar* p, CText &name )
-{
-//	*name = "";
-	// Names start with letters or underscores.
-	// After that, they can be letters, underscores, numbers,
-	// hyphens, or colons. (Colons are valid only for namespaces,
-	// but tinyxml can't tell namespaces from names.)
-	if (    p && *p
-		 && ( ( *p >= 'a' && *p <= 'z' ) || ( *p >= 'A' && *p <= 'Z' ) || *p == '_' ) )
+	// read position in a text; an embedded NUL ends the text, as in the C string code it replaces
+	struct	Cursor
 	{
-		while(		p && *p
-				&&	(		( *p >= 'a' && *p <= 'z' )
-						 || ( *p >= 'A' && *p <= 'Z' )
-						 || *p == '_'
-						 || *p == '-' ) )
+		RWStringView	text;
+		size_t			pos = 0;
+
+		explicit		Cursor (RWStringView inText, size_t inPos = 0) : text (inText), pos (inPos) {}
+
+		char16_t		Peek (size_t inOffset = 0) const	{ return pos + inOffset < text.size() ? text[pos + inOffset] : 0; }
+		bool			AtEnd (void) const					{ return Peek() == 0; }
+		bool			StartsWith (RWStringView inPart) const	{ return pos <= text.size() && RWStr::StartsWith (text.substr (pos), inPart); }
+	};
+
+	void
+	SkipWhiteSpace (Cursor &ioCursor)
+	{
+		while (!ioCursor.AtEnd() && IsSpace (ioCursor.Peek()))
+			ioCursor.pos++;
+	}
+
+	// Names start with a letter or underscore, then letters, underscores or hyphens.
+	bool
+	ReadName (Cursor &ioCursor, RWString &outName)
+	{
+		char16_t	c = ioCursor.Peek();
+		if (!((c >= u'a' && c <= u'z') || (c >= u'A' && c <= u'Z') || c == u'_'))
+			return false;
+
+		for (c = ioCursor.Peek(); (c >= u'a' && c <= u'z') || (c >= u'A' && c <= u'Z') || c == u'_' || c == u'-'; c = ioCursor.Peek())
 		{
-			name += *p;
-			++p;
+			outName.push_back (c);
+			ioCursor.pos++;
 		}
-		return p;
-	}
-	return 0;
-}
-
-static	const UniChar	sHexa []	= {	'&', '#', 'x', 0	};
-static	const UniChar	sAmp []		= {	'&', 'a', 'm', 'p', ';', 0	};
-static	const UniChar	sLt []		= {	'&', 'l', 't', ';', 0	};
-static	const UniChar	sGt []		= {	'&', 'g', 't', ';', 0	};
-static	const UniChar	sQuot []	= {	'&', 'q', 'u', 'o', 't', ';', 0	};
-static	const UniChar	sApos []	= {	'&', 'a', 'p', 'o', 's', ';', 0	};
-static	struct	uEntity 	
-{
-	const UniChar*	str;
-	unsigned int	strLength;
-	UniChar			chr;
-}	sEntity[] =
-{
-	{ sAmp, 	5, '&' },
-	{ sLt,		4, '<' },
-	{ sGt,		4, '>' },
-	{ sQuot,	6, '\"' },
-	{ sApos,	6, '\'' }
-};
-
-static	const UniChar* GetEntity( const UniChar* p, UniChar* value )
-{
-	// Presume an entity, and pull it out.
-	int i;
-
-	// Ignore the &#x entities.
-	if (p [1] == '#' && p [2] == 'x' && p[3] && p[4] && p [5] == ';')
-	{
-        UniChar	value = 0;
-		if (p [3] > '9')
-			value = (9 + (p [3] & 0x07)) << 4;
-		else
-			value = (p [3] & 0x0F) << 4;
-		if (p [4] > '9')
-			value |= (9 + (p [4] & 0x07));
-		else
-			value |= (p [4] & 0x0F);
-		return p+6;
+		return true;
 	}
 
-	// Now try to match it.
-	for( i=0; i< (int) (sizeof (sEntity) / sizeof (sEntity[0])); ++i )
+	// one character, resolving &#xHH; and the five XML entities
+	char16_t
+	GetChar (Cursor &ioCursor)
 	{
-		if ( memcmp( sEntity[i].str, p, sEntity[i].strLength * sizeof (UniChar) ) == 0 )
+		static	const	struct	{ const char16_t *entity; char16_t chr; }	sEntities[] =
 		{
-			*value = sEntity[i].chr;
-			return ( p + sEntity[i].strLength * sizeof (UniChar));
+			{ u"&amp;", u'&' }, { u"&lt;", u'<' }, { u"&gt;", u'>' }, { u"&quot;", u'"' }, { u"&apos;", u'\'' }
+		};
+
+		char16_t	c = ioCursor.Peek();
+		if (c == u'&')
+		{
+			if (ioCursor.Peek (1) == u'#' && ioCursor.Peek (2) == u'x'
+			 &&	IsHexDigit (ioCursor.Peek (3)) && IsHexDigit (ioCursor.Peek (4)) && ioCursor.Peek (5) == u';')
+			{
+				c = char16_t ((HexValue (ioCursor.Peek (3)) << 4) | HexValue (ioCursor.Peek (4)));
+				ioCursor.pos += 6;
+				return c;
+			}
+			for (const auto &e : sEntities)
+			{
+				if (ioCursor.StartsWith (e.entity))
+				{
+					ioCursor.pos += std::char_traits<char16_t>::length (e.entity);
+					return e.chr;
+				}
+			}
+		}
+		ioCursor.pos++;
+		return c;
+	}
+
+	// read up to inEnd (resolving entities) and skip it; false if inEnd was not found
+	bool
+	ReadText (Cursor &ioCursor, RWString &outText, char16_t inEnd)
+	{
+		while (!ioCursor.AtEnd() && ioCursor.Peek() != inEnd)
+			outText.push_back (GetChar (ioCursor));
+		if (ioCursor.AtEnd())
+			return false;
+		ioCursor.pos++;
+		return true;
+	}
+
+	bool
+	ReadText (Cursor &ioCursor, RWString &outText, RWStringView inEnd)
+	{
+		while (!ioCursor.AtEnd() && !ioCursor.StartsWith (inEnd))
+			outText.push_back (GetChar (ioCursor));
+		if (ioCursor.AtEnd())
+			return false;
+		ioCursor.pos += inEnd.size();
+		return true;
+	}
+
+	// a style value: quoted, or up to white space / ';' / '/' / '>'
+	RWString
+	ReadValue (Cursor &ioCursor)
+	{
+		RWString	value;
+		char16_t	quote = ioCursor.Peek();
+		if (quote == u'\'' || quote == u'"')
+		{
+			ioCursor.pos++;
+			ReadText (ioCursor, value, quote);
+		}
+		else
+		{
+			for (char16_t c = ioCursor.Peek(); c != 0 && !IsSpace (c) && c != u';' && c != u'/' && c != u'>'; c = ioCursor.Peek())
+			{
+				value.push_back (c);
+				ioCursor.pos++;
+			}
+		}
+		return value;
+	}
+
+	// "[+|-] 12.5" - size in points, optional relative sign
+	void
+	ReadSize (Cursor &ioCursor, double &outSize, int &outSizeSign)
+	{
+		outSize = 0;
+		outSizeSign = 0;
+		if (ioCursor.Peek() == u'+' || ioCursor.Peek() == u'-')
+		{
+			outSizeSign = ioCursor.Peek();
+			ioCursor.pos++;
+		}
+		SkipWhiteSpace (ioCursor);
+		for ( ; ioCursor.Peek() >= u'0' && ioCursor.Peek() <= u'9'; ioCursor.pos++)
+			outSize = outSize * 10 + (ioCursor.Peek() - u'0');
+		if (ioCursor.Peek() == u'.')
+		{
+			double	base = 10;
+			for (ioCursor.pos++; ioCursor.Peek() >= u'0' && ioCursor.Peek() <= u'9'; ioCursor.pos++)
+			{
+				outSize += (ioCursor.Peek() - u'0') / base;
+				base *= 10;
+			}
 		}
 	}
-
-	// So it wasn't an entity, its unrecognized, or something like that.
-	*value = *p;	// Don't put back the last one, since we return it!
-	return p+1;
-}
-
-// Get a character, while interpreting entities.
-inline static const UniChar* GetChar( const UniChar* p, UniChar* value )
-{
-	if ( *p == '&' )
-	{
-		return GetEntity( p, value );
-	}
-	else
-	{
-		*value = *p;
-		return p+1;
-	}
-}
-
-static	const UniChar* ReadText(	const UniChar* p,
-									CText& text,
-									const UniChar endTag)
-{
-	while (p && *p && *p != endTag)
-	{
-		UniChar	c;
-		p = GetChar( p, &c );
-        text += c;
-	}
-	if (p && *p)
-		return p + 1;
-	return p;
-}
-
-static	const UniChar* ReadText(	const UniChar* p,
-									CText& text,
-									const char* endTag)
-{
-    
-	while (p && *p && not TEXT_STARTS_WITH (p, endTag))
-	{
-		UniChar	c;
-		p = GetChar( p, &c );
-        text += c;
-	}
-	if (p && *p)
-		return p + strlen (endTag);
-	return p;
 }
 
 
+// ---------------------------------------------------------------------------
+// ParseAttributedStringAttribute									  [static][public]
+// ---------------------------------------------------------------------------
+//mbs 22032010
 // return value:
 //	unhandled (e.g. </xxx>:	0
 // for simple cases, the letter in uppercase:
@@ -1924,382 +1374,223 @@ static	const UniChar* ReadText(	const UniChar* p,
 //	'text-align' and 'background-color' are ignored
 
 int
-RWTools::ParseAttributedStringAttribute (const CText inAttributedString, double &outSize, int &outSizeSign, int &outStyle, SRGBColor &outColor, CText &outFont)
+RWTools::ParseAttributedStringAttribute (RWStringView inAttributedString, double &outSize, int &outSizeSign, int &outStyle, SRGBColor &outColor, RWString &outFont)
 {
-    const UniChar * p = inAttributedString.c_str();
+	Cursor		p (inAttributedString);
+	RWString	name;
 
-    if (!p || !*p)
-		return false;
-	p = SkipWhiteSpace (p);
-    if (!p || !*p || *p == '/')
-		return false;
-    CText	name;
-	p = ReadName (p, name);
-    if (!p || !*p)
-		return false;
-	p = SkipWhiteSpace(p);
-    if (!p || !*p)
-		return false;
-	
-//	outSize = 0;
-//	outSizeSign = 0;
-//	outStyle = 0;
-//	outColor = SRGBColor();
-//	outFont.Free();
+	SkipWhiteSpace (p);
+	if (p.AtEnd() || p.Peek() == u'/')
+		return 0;
+	if (!ReadName (p, name))
+		return 0;
+	SkipWhiteSpace (p);
+	if (p.AtEnd())
+		return 0;
 
-	if (TEXT_EQUALS(name, "b"))		// bold
+	if (RWStr::Equals (name, "b"))			// bold
 	{
 		outStyle = RWStyle::st_bold;
 		return 'B';
 	}
-	else if (TEXT_EQUALS(name, "i"))	// italic
+	else if (RWStr::Equals (name, "i"))		// italic
 	{
 		outStyle = RWStyle::st_italic;
 		return 'I';
 	}
-	else if (TEXT_EQUALS(name, "u"))	// underline
+	else if (RWStr::Equals (name, "u"))		// underline
 	{
 		outStyle = RWStyle::st_underline;
 		return 'U';
 	}
-	else if (TEXT_EQUALS(name, "s"))	// size in points
+	else if (RWStr::Equals (name, "s"))		// size in points
 	{
-		outSize = 0;
-		outSizeSign = 0;
-		if (*p == '+' || *p == '-')
-		{
-			outSizeSign = *p;
-			p++;
-		}
-		p = SkipWhiteSpace (p);
-		if (!p || !*p)
-			return false;
-		for ( ; *p >= '0' && *p <= '9'; p++)
-			outSize = outSize * 10 + (*p - '0');
-		if (*p == '.')
-		{
-			float	base = 10;
-			for (p++; *p >= '0' && *p <= '9'; p++)
-			{
-				outSize = outSize + (*p - '0') / base;
-				base /= 10;
-			}
-		}
+		ReadSize (p, outSize, outSizeSign);
 		return 'S';
 	}
-	else if (TEXT_EQUALS(name, "c"))	// color
+	else if (RWStr::Equals (name, "c"))		// color
 	{
-		outColor = SRGBColor (p);
+		outColor = SRGBColor (p.text.substr (p.pos));
 		return 'C';
 	}
-	else if (TEXT_EQUALS(name, "f"))	// font
+	else if (RWStr::Equals (name, "f"))		// font
 	{
-		UniChar	end;
-		CText	value;
-		if ( *p == '\'' )
-		{
-			++p;
-			end = '\'';
-			p = ReadText( p, value, end );
-		}
-		else if ( *p == '"' )
-		{
-			++p;
-			end = '\"';
-			p = ReadText( p, value, end );
-		}
-		else
-		{
-//			value = "";
-			while (    p && *p										// existence
-					&& !IsSpace( *p ) && *p != '\n' && *p != '\r'	// whitespace
-					&& *p != ';' && *p != '/' && *p != '>' )		// tag end
-			{
-				value += *p;
-				++p;
-			}
-		}
-		outFont = value;
+		outFont = ReadValue (p);
 		return 'F';
 	}
-	else if (TEXT_EQUALS(name, "SPAN"))	// 4D v12 <SPAN STYLE="...">
+	else if (RWStr::Equals (name, "SPAN"))	// 4D v12 <SPAN STYLE="...">
 	{
 		name.clear();
-		p = ReadName (p, name);
-		if (!p || !*p)
-			return false;
-		if (!TEXT_EQUALS(name, "STYLE"))
-			return false;
-		p = SkipWhiteSpace( p );
-		if ( !p || *p != '=' )
-			return false;
-		++p;	// skip '='
-		p = SkipWhiteSpace( p );
-		if ( !p || !*p )
-			return false;
+		if (!ReadName (p, name) || p.AtEnd() || !RWStr::Equals (name, "STYLE"))
+			return 0;
+		SkipWhiteSpace (p);
+		if (p.Peek() != u'=')
+			return 0;
+		p.pos++;
+		SkipWhiteSpace (p);
+
 		// read the STYLE attribute
-		UniChar	end;
-		if ( *p == '\'' )
-			end = '\'';
-		else if ( *p == '"' )
-			end = '\"';
-		else
-			return false;
-		++p;
-		CText	avalue;
-		p = ReadText( p, avalue, end );
-		if ( !p || !*p )
-			return false;
+		char16_t	quote = p.Peek();
+		if (quote != u'\'' && quote != u'"')
+			return 0;
+		p.pos++;
+		RWString	style;
+		if (!ReadText (p, style, quote) || p.AtEnd())
+			return 0;
 
-		int	result = 256;	//mbs 25052010
-		//now parse the STYLE attributes
-		p = avalue.c_str();
-		do
+		int		result = 256;	//mbs 25052010
+		Cursor	s (style);
+		for (;;)
 		{
-			p = SkipWhiteSpace (p);
-			if (!p || !*p)
-				return result;
+			SkipWhiteSpace (s);
 			name.clear();
-			p = ReadName (p, name);
-			if (!p || !*p)
+			if (s.AtEnd() || !ReadName (s, name) || s.AtEnd())
 				return result;
-			p = SkipWhiteSpace( p );
-			if ( !p || *p != ':' )
+			SkipWhiteSpace (s);
+			if (s.Peek() != u':')
 				return result;
-			++p;	// skip ':'
-			p = SkipWhiteSpace( p );
-			if ( !p || !*p )
+			s.pos++;	// skip ':'
+			SkipWhiteSpace (s);
+			if (s.AtEnd())
 				return result;
 
-			CText	value;
-			if ( *p == '\'' )
-			{
-				++p;
-				end = '\'';
-				p = ReadText( p, value, end );
-			}
-			else if ( *p == '"' )
-			{
-				++p;
-				end = '\"';
-				p = ReadText( p, value, end );
-			}
-			else
-			{
-//				value = "";
-				while (    p && *p										// existence
-						&& !IsSpace( *p ) && *p != '\n' && *p != '\r'	// whitespace
-						&& *p != ';' && *p != '/' && *p != '>' )		// tag end
-				{
-					value += *p;
-					++p;
-				}
-			}
+			RWString	value = ReadValue (s);
 
-			// now interpret the attribute
-			if (TEXT_EQUALS(name, "font-family"))				// font-family : 'Arial'
+			if (RWStr::Equals (name, "font-family"))				// font-family : 'Arial'
 			{
 				outFont = value;
 				result |= 1;
 			}
-			else if (TEXT_EQUALS(name, "font-size"))			// font-size : 24pt
+			else if (RWStr::Equals (name, "font-size"))				// font-size : 24pt
 			{
-				const UniChar *	q = value.c_str();
-				outSize = 0;
-				outSizeSign = 0;
-				if (*q == '+' || *q == '-')
-				{
-					outSizeSign = *q;
-					q++;
-				}
-				q = SkipWhiteSpace (q);
-				if (!q || !*q)
-					return result;
-				for ( ; *q >= '0' && *q <= '9'; q++)
-					outSize = outSize * 10 + (*q - '0');
-				if (*q == '.')
-				{
-					float	base = 10;
-					for (q++; *q >= '0' && *q <= '9'; q++)
-					{
-						outSize = outSize + (*q - '0') / base;
-						base /= 10;
-					}
-				}
+				Cursor	q (value);
+				ReadSize (q, outSize, outSizeSign);
 				result |= 2;
 			}
-//			else if (name.IsEqualTo ("text-align"))			// text-align : left
-//				;	// ignored
-			else if (TEXT_EQUALS(name, "font-weight"))		// font-weight : bold
+			else if (RWStr::Equals (name, "font-weight"))			// font-weight : bold
 			{
-				if (TEXT_EQUALS(name, "bold"))
+				if (RWStr::Equals (value, "bold"))
 					outStyle |= RWStyle::st_bold;
-				else if (TEXT_EQUALS(name, "normal"))
+				else if (RWStr::Equals (value, "normal"))
 					outStyle &= ~RWStyle::st_bold;
 				result |= 4;
 			}
-			else if (TEXT_EQUALS(name, "font-style"))			// font-style : italic
+			else if (RWStr::Equals (name, "font-style"))			// font-style : italic
 			{
-				if (TEXT_EQUALS(name, "italic"))
+				if (RWStr::Equals (value, "italic"))
 					outStyle |= RWStyle::st_italic;
-				else if (TEXT_EQUALS(name, "normal"))
+				else if (RWStr::Equals (value, "normal"))
 					outStyle &= ~RWStyle::st_italic;
 				result |= 8;
 			}
-			else if (TEXT_EQUALS(name, "text-decoration"))	// text-decoration : underline
+			else if (RWStr::Equals (name, "text-decoration"))		// text-decoration : underline
 			{
-				if (TEXT_EQUALS(name, "underline"))
+				if (RWStr::Equals (value, "underline"))
 					outStyle |= RWStyle::st_underline;
-				else if (TEXT_EQUALS(name, "none"))
+				else if (RWStr::Equals (value, "none"))
 					outStyle &= ~RWStyle::st_underline;
-				else if (TEXT_EQUALS(name, "line-through"))
+				else if (RWStr::Equals (value, "line-through"))
 					outStyle |= RWStyle::st_strikethrough;
 				result |= 16;
 			}
-			else if (TEXT_EQUALS(name, "color"))				// color : #000000
+			else if (RWStr::Equals (name, "color"))					// color : #000000
 			{
 				outColor = SRGBColor (value);
 				result |= 32;
 			}
-//			else if (name.IsEqualTo ("background-color"))	// background-color : #FFFFFF
-//				;	// ignored
-			if ( !p || !*p )
+			// text-align, background-color: ignored
+
+			SkipWhiteSpace (s);
+			if (s.Peek() != u';')
 				return result;
-			if (*p == ';')
-				++p;
-			else
-				return result;
-		} while (true);
+			s.pos++;
+		}
 	}
-	else
+
+	return 0;
+}
+
+
+// ---------------------------------------------------------------------------
+// ParseTextForXLIFF												  [static][public]
+// ---------------------------------------------------------------------------
+// ":xliff:resname" (up to '<') is replaced by the localized string
+
+bool
+RWTools::ParseTextForXLIFF (RWStringView inString, long, RWString &outText)
+{
+	size_t	startPos = inString.find (u":xliff:");
+	if (startPos == RWStringView::npos)
 		return false;
+
+	RWString	name;
+	Cursor		p (inString, startPos + 7);
+	ReadText (p, name, u'<');
+
+	PA_Unistring	translated = PA_LocaliseString (RWStr::ToPA (name), 0);
+	outText = RWStr::FromPA (&translated);
+	PA_DisposeUnistring (&translated);
+	return true;
 }
 
-bool
-RWTools::ParseTextForXLIFF (const CText inString, long inTextLen, CText &outText)
-{
-	CText		content (inString);
-	CText		name;
-		
-	long			startPos;
-	
-	startPos = TEXT_STR(content, ":xliff:");
-	if (startPos != string::npos)
-	{
-		const UniChar*	p = ReadText (content.c_str() + startPos + 7, name, "<");
-		PA_Unistring	forTranslation = PA_CreateUnistring((PA_Unichar *)name.c_str());
-		PA_Unistring	translated = PA_LocaliseString(PA_GetUnistring(&forTranslation), 0);
-		outText.assign (PA_GetUnistring (&translated), PA_GetUnistringLength (&translated));
-		PA_DisposeUnistring (&forTranslation);
-		PA_DisposeUnistring (&translated);
-		return true;
 
-	}
-	return false;
-}
+// ---------------------------------------------------------------------------
+// ParseTextForVar													  [static][public]
+// ---------------------------------------------------------------------------
+// Finds the next <%name;format%> (or &lt;%name;format%&gt; in attributed text)
+// at or after ioStart and before inTextLen. On success ioStart / outEnd delimit
+// the whole reference, outFormat is empty when there is no format.
 
 bool
-RWTools::ParseTextForVar (bool inAttributed, const CText inString, long inTextLen, long &ioStart, long &outEnd, CText &outVarName, CText &outFormat)
+RWTools::ParseTextForVar (bool inAttributed, RWStringView inString, long inTextLen, long &ioStart, long &outEnd, RWString &outVarName, RWString &outFormat)
 {
-	long	curPos, startPos, endPos, nameLen, fmtPos;
+	size_t	limit = std::min (size_t (std::max (inTextLen, 0L)), inString.size());
+	size_t	curPos = size_t (std::max (ioStart, 0L));
 
 	if (inAttributed)
 	{
-		for (curPos = ioStart; (startPos = TEXT_STR (inString.c_str() + curPos, "&lt;%")) != string::npos && startPos < inTextLen; curPos = startPos)
+		for (size_t startPos; (startPos = inString.find (u"&lt;%", curPos)) != RWStringView::npos && startPos < limit; curPos = startPos)
 		{
-			startPos += curPos;
-			CText	xmlText;
-			const	UniChar*	p = ReadText (inString.c_str() + startPos + 5, xmlText, "%&gt;");
-			if (p)
+			RWString	xmlText;
+			Cursor		p (inString, startPos + 5);
+			if (!ReadText (p, xmlText, u"%&gt;"))
+				break;			// not terminated
+
+			size_t	endPos = p.pos;
+			if (!xmlText.empty())
 			{
-				endPos = p - inString.c_str();
-				nameLen = xmlText.length();
-				if (nameLen > 0)
-				{
-					fmtPos = TEXT_STR (xmlText, ";");
-					if (fmtPos != string::npos)
-					{
-						outFormat.assign (xmlText.c_str() + fmtPos + 1, nameLen - fmtPos - 1);
-						nameLen = fmtPos;	//mbs 19052010	not -1
-					}
-					outVarName.assign (xmlText.c_str(), nameLen);
-					ioStart = startPos;
-					outEnd = endPos;
-					return true;
-				}
-				else
-					startPos = endPos;
+				size_t	fmtPos = xmlText.find (u';');
+				outFormat = fmtPos != RWString::npos ? xmlText.substr (fmtPos + 1) : RWString();
+				outVarName = xmlText.substr (0, fmtPos);	//mbs 19052010	not -1
+				ioStart = long (startPos);
+				outEnd = long (endPos);
+				return true;
 			}
-			else
-				break;
+			startPos = endPos;
 		}
 	}
 	else
 	{
-		for (curPos = ioStart; (startPos = TEXT_STR (inString.c_str() + curPos, "<%")) != string::npos && startPos < inTextLen; curPos = startPos)
+		for (size_t startPos; (startPos = inString.find (u"<%", curPos)) != RWStringView::npos && startPos < limit; curPos = startPos)
 		{
-			startPos += curPos;
-			long	endPos = TEXT_STR (inString.c_str() + startPos + 2, "%>");
-			if (endPos != string::npos)
-			{
-				endPos += startPos + 4;
-				nameLen = endPos - startPos - 4;
-				if (nameLen > 0)
-				{
-					for (fmtPos = startPos + 2; fmtPos < endPos - 1 && inString [fmtPos] != ';'; fmtPos++)
-						;
-					if (fmtPos < endPos - 1)
-					{
-						outFormat.assign (inString.c_str() + fmtPos + 1, endPos - fmtPos - 3);
-						nameLen = fmtPos - startPos - 2;
-					}
-					outVarName.assign (inString.c_str() + startPos + 2, nameLen);
-					ioStart = startPos;
-					outEnd = endPos;
-					return true;
-				}
-				else
-					startPos = endPos + 2;
-			}
-			else
+			size_t	close = inString.find (u"%>", startPos + 2);
+			if (close == RWStringView::npos)
 				break;
+
+			size_t	endPos = close + 2;
+			if (close > startPos + 2)
+			{
+				RWStringView	content = inString.substr (startPos + 2, close - startPos - 2);
+				size_t			fmtPos = content.find (u';');
+				outFormat = fmtPos != RWStringView::npos ? RWString (content.substr (fmtPos + 1)) : RWString();
+				outVarName = RWString (content.substr (0, fmtPos));
+				ioStart = long (startPos);
+				outEnd = long (endPos);
+				return true;
+			}
+			startPos = endPos;
 		}
 	}
 
 	return false;
 }
-
-
-#if	0
-static string TestEncode (const UInt8 *ptr, long size)
-{
-	StPointerBlock	buf (size * 4 / 3 + 4);
-	MyEncode (ptr, size, reinterpret_cast <char*> (buf.Get()));
-	return string (reinterpret_cast <char*> (buf.Get()));
-}
-
-void RWTools_TestBase64 (void)
-{
-# define	kTestSize	16*1024*1024
-	StPointerBlock	buf (kTestSize);
-	StPointerBlock	decoded (kTestSize + 4);
-	long	i;
-	for (i = 0; i < kTestSize; i++)
-		buf [i] = (UInt8) i;
-	string	s;
-	for (i = kTestSize - 256; i < kTestSize; i++)
-	{
-		s = TestEncode (buf, i+1);
-		const char *cur = s.c_str();
-		long	l = MyDecode (cur, NULL, 64*1024*1024);
-		if (l != i + 1)
-			printf ("MyDecode (NULL, %ld): %ld\n", i+1, l);
-		cur = s.c_str();
-		l = MyDecode (cur, decoded, i+1);
-		if (l != i + 1)
-			printf ("MyDecode (buf, %ld): %ld\n", i+1, l);
-		if (memcmp (buf, decoded, i+1) != 0)
-			printf ("memcmp (buf, decoded, %ld) failed\n", i+1);
-	}
-}
-#endif
