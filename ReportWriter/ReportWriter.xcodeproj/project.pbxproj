@@ -61,6 +61,9 @@
 		D26EC03E2AF44891001E7074 /* DMReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0312AF44891001E7074 /* DMReport.cpp */; };
 		D26EC03F2AF44891001E7074 /* UIScrollBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0322AF44891001E7074 /* UIScrollBar.cpp */; };
 		D26EC0432AF44891001E7074 /* PSObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0362AF44891001E7074 /* PSObject.cpp */; };
+		B8729E566CCB10A18D7B86E3 /* RWString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 302672E938BCD3A1839D17ED /* RWString.cpp */; };
+		E1170334DFE80D2DFC7D2B13 /* RWXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0475D027BAF4D58FCE82BB9E /* RWXml.cpp */; };
+		777136D274BAE8AE2E65FE47 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 453AE3927F2325A3947271B9 /* pugixml.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -194,6 +197,15 @@
 		D26EC0342AF44891001E7074 /* DMObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMObject.h; sourceTree = "<group>"; };
 		D26EC0352AF44891001E7074 /* DMReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMReport.h; sourceTree = "<group>"; };
 		D26EC0362AF44891001E7074 /* PSObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PSObject.cpp; sourceTree = "<group>"; };
+		BC0A20D03806F473C84005DD /* RWString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWString.h; sourceTree = "<group>"; };
+		302672E938BCD3A1839D17ED /* RWString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWString.cpp; sourceTree = "<group>"; };
+		1C2E84224FA1010FF69D3E5F /* RWString4D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWString4D.h; sourceTree = "<group>"; };
+		D37570E890BF05931EE866A1 /* RWXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWXml.h; sourceTree = "<group>"; };
+		0475D027BAF4D58FCE82BB9E /* RWXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWXml.cpp; sourceTree = "<group>"; };
+		F05CFDAD07009E5034B965DD /* RWJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWJson.h; sourceTree = "<group>"; };
+		487BA6D04F90754620F3392E /* pugixml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugixml.hpp; sourceTree = "<group>"; };
+		FE574AA54321327F404FABA4 /* pugiconfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugiconfig.hpp; sourceTree = "<group>"; };
+		453AE3927F2325A3947271B9 /* pugixml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pugixml.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,6 +264,7 @@
 				D26EC0292AF44891001E7074 /* DM */,
 				D26EBFAC2AF274EE001E7074 /* RW */,
 				D26EBFA52AF2736E001E7074 /* tinyXML */,
+				6595A6724B552C1A513D381E /* pugixml */,
 				18B684FE06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp */,
 				D120937E13534DCC00A72CAA /* 4DPlugin-ReportWriter.h */,
 				18B684ED06944F2000CC6A1E /* 4D Plugin API */,
@@ -361,9 +374,25 @@
 			path = tinyXML;
 			sourceTree = "<group>";
 		};
+		6595A6724B552C1A513D381E /* pugixml */ = {
+			isa = PBXGroup;
+			children = (
+				487BA6D04F90754620F3392E /* pugixml.hpp */,
+				FE574AA54321327F404FABA4 /* pugiconfig.hpp */,
+				453AE3927F2325A3947271B9 /* pugixml.cpp */,
+			);
+			path = pugixml;
+			sourceTree = "<group>";
+		};
 		D26EBFAC2AF274EE001E7074 /* RW */ = {
 			isa = PBXGroup;
 			children = (
+				BC0A20D03806F473C84005DD /* RWString.h */,
+				302672E938BCD3A1839D17ED /* RWString.cpp */,
+				1C2E84224FA1010FF69D3E5F /* RWString4D.h */,
+				D37570E890BF05931EE866A1 /* RWXml.h */,
+				0475D027BAF4D58FCE82BB9E /* RWXml.cpp */,
+				F05CFDAD07009E5034B965DD /* RWJson.h */,
 				D26EBFD72AF274EE001E7074 /* MacCarbonPrefix.h */,
 				D26EBFC82AF274EE001E7074 /* RWBaseTypes.h */,
 				D26EBFCA2AF274EE001E7074 /* RWBaseTypes.cpp */,
@@ -560,6 +589,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8729E566CCB10A18D7B86E3 /* RWString.cpp in Sources */,
+				E1170334DFE80D2DFC7D2B13 /* RWXml.cpp in Sources */,
+				777136D274BAE8AE2E65FE47 /* pugixml.cpp in Sources */,
 				D26EC0212AF274EF001E7074 /* RWReportData.cpp in Sources */,
 				D22610702B3DB5A400CFC83D /* ExtendedExecute.cpp in Sources */,
 				D22610792B3DB5A400CFC83D /* SRGetFontsCG.cpp in Sources */,
@@ -654,7 +686,11 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "include/**";
+				HEADER_SEARCH_PATHS = (
+					"include/**",
+					pugixml,
+					rapidjson/include,
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				LIBRARY_SEARCH_PATHS = (
@@ -707,7 +743,11 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "include/**";
+				HEADER_SEARCH_PATHS = (
+					"include/**",
+					pugixml,
+					rapidjson/include,
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				LIBRARY_SEARCH_PATHS = (
@@ -759,7 +799,11 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "include/**";
+				HEADER_SEARCH_PATHS = (
+					"include/**",
+					pugixml,
+					rapidjson/include,
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				LIBRARY_SEARCH_PATHS = (
