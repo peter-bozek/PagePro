@@ -10,15 +10,35 @@
 #include "RW4DText.h"
 # include	<stdio.h>
 
-const	char* RWSpan::endSpan = "</SPAN>";
-const	char* RWSpan::startSpan = "<SPAN STYLE=";
-const	char* RWSpan::boldText = "font-weight:bold";
-const	char* RWSpan::italicText = "font-style:italic";
-const	char* RWSpan::underlineText = "text-decoration:underline";
-const	char* RWSpan::fontSize = "font-size:";
-const	char* RWSpan::fontName = "font-family:";
-const	char* RWSpan::fontColor = "color:";
-const	UTF16Char RWSpan::breakTag[] = {'<', 'B', 'R', '/', '>'};
+const	RWStringView RWSpan::endSpan = u"</SPAN>";
+const	RWStringView RWSpan::startSpan = u"<SPAN STYLE=";
+const	RWStringView RWSpan::boldText = u"font-weight:bold";
+const	RWStringView RWSpan::italicText = u"font-style:italic";
+const	RWStringView RWSpan::underlineText = u"text-decoration:underline";
+const	RWStringView RWSpan::fontSize = u"font-size:";
+const	RWStringView RWSpan::fontName = u"font-family:";
+const	RWStringView RWSpan::fontColor = u"color:";
+const	RWStringView RWSpan::breakTag = u"<BR/>";
+
+namespace
+{
+	const	char16_t	kCR = 0x0d;
+
+	// position of inPart in inText at or after inStart, -1 if missing
+	long	Find (const RWString &inText, RWStringView inPart, size_t inStart)
+	{
+		size_t	pos = inStart <= inText.size() ? inText.find (inPart, inStart) : RWString::npos;
+		return pos == RWString::npos ? -1 : long (pos);
+	}
+
+	// substring that tolerates positions past the end
+	RWString	Substring (const RWString &inText, long inStart, long inLength)
+	{
+		if (inStart < 0 || size_t (inStart) >= inText.size() || inLength <= 0)
+			return RWString();
+		return inText.substr (size_t (inStart), size_t (inLength));
+	}
+}
 
 bool		
 RWSpan::IsOverlapping (const RWSpan& inSpan)
@@ -33,7 +53,7 @@ bool
 RWSpan::IsEmpty (void)
 const
 {
-	return ( (mStyle == 0) && (mSize == 0) && (mFont.StrLength() == 0) && (mHasColor == false) );
+	return ( (mStyle == 0) && (mSize == 0) && mFont.empty() && (mHasColor == false) );
 }
 
 void
@@ -44,7 +64,7 @@ RWSpan::Join (const RWSpan& inSpan, int mode)
 		mStyle |= inSpan.mStyle;
 		if (mSize == 0)
 			mSize = inSpan.mSize;
-		if (mFont.StrLength() == 0) 
+		if (mFont.empty()) 
 			mFont = inSpan.mFont;
 		if ((mHasColor == false) && (inSpan.mHasColor == true))
 		{
@@ -57,7 +77,7 @@ RWSpan::Join (const RWSpan& inSpan, int mode)
 		mStyle ^= inSpan.mStyle;
 		if (inSpan.mSize > 0)
 			mSize = inSpan.mSize;
-		if (inSpan.mFont.StrLength() > 0) 
+		if (!inSpan.mFont.empty())
 			mFont = inSpan.mFont;
 		if (inSpan.mHasColor) {
 			mColor = inSpan.mColor;
@@ -72,8 +92,8 @@ RWSpan::Remove (const RWSpan& inSpan)
 	mStyle = mStyle & ~inSpan.mStyle;
 	if (inSpan.mSize == mSize)
 		mSize = 0;
-	if (mFont == inSpan.mFont) 
-		mFont.Delete(0);
+	if (mFont == inSpan.mFont)
+		mFont.clear();
 
 	if ((inSpan.mHasColor == true) && (mHasColor == true) && (inSpan.mColor == mColor)) 
 		mHasColor = false;
@@ -97,82 +117,71 @@ RWSpan::toXML (const CText& inString)
 const
 {
 
-	CText spanString = inString.Substring (mOffset, mLength);
+	RWString	spanString = Substring (inString, mOffset, mLength);
 
-	int where, last = 0;
-	UTF16Char cr = 0x0d;
-	while ((where = spanString.Find (cr, last, CText::eCF_StrictlyEqual)) > -1) 
-	{
-		last = where;
-		spanString.Delete(last, 1);
-		spanString.Insert(last, RWSpan::breakTag, 5);
-	}
-	
+	// line breaks as <BR/>
+	for (long where = Find (spanString, RWStringView (&kCR, 1), 0); where >= 0; where = Find (spanString, RWStringView (&kCR, 1), size_t (where)))
+		spanString.replace (size_t (where), 1, breakTag);
+
 	if (IsEmpty())
 		return spanString;
-		
-	CText	styledString (mLength + 128);
-		
-	styledString.AppendAscii (startSpan);
-	styledString.AppendAscii ("\"");
-	
+
+	RWString	styledString;
+	styledString.reserve (mLength + 128);
+
+	styledString.append (startSpan);
+	styledString.append (u"\"");
+
 	bool	needSemicolon = false;
-	
-	if (mFont.StrLength() > 0) {
-		styledString.AppendAscii(fontName);
-		styledString.AppendAscii("'");
-		styledString.Append(mFont);
-		styledString.AppendAscii("'");
+
+	if (!mFont.empty()) {
+		styledString.append (fontName);
+		styledString.append (u"'");
+		styledString.append (mFont);
+		styledString.append (u"'");
 		needSemicolon = true;
 	}
 
-
-	char buf[32];
 	if (mSize > 0) {
-		if (needSemicolon) 
-			styledString.AppendAscii(";");
-		styledString.AppendAscii(fontSize);
-		sprintf(buf, "%.2fpt", mSize) ;
-		styledString.AppendAscii(buf);
-//		styledString.AppendAscii("pt");
+		if (needSemicolon)
+			styledString.append (u";");
+		styledString.append (fontSize);
+		styledString.append (RWStr::Format ("%.2fpt", mSize));
 		needSemicolon = true;
 	}
-	
+
 	if (mStyle & RWStyle::st_bold) {
-		if (needSemicolon) 
-			styledString.AppendAscii(";");
-		styledString.AppendAscii(boldText);
+		if (needSemicolon)
+			styledString.append (u";");
+		styledString.append (boldText);
 		needSemicolon = true;
 	}
-		
+
 	if (mStyle & RWStyle::st_italic) {
-		if (needSemicolon) 
-			styledString.AppendAscii(";");
-		styledString.AppendAscii(italicText);
+		if (needSemicolon)
+			styledString.append (u";");
+		styledString.append (italicText);
 		needSemicolon = true;
 	}
-	
+
 	if (mStyle & RWStyle::st_underline) {
-		if (needSemicolon) 
-			styledString.AppendAscii(";");
-		styledString.AppendAscii(underlineText);
+		if (needSemicolon)
+			styledString.append (u";");
+		styledString.append (underlineText);
 		needSemicolon = true;
 	}
-	
+
 	if (mHasColor) {
-		if (needSemicolon) 
-			styledString.AppendAscii(";");
-		styledString.AppendAscii(fontColor);
-		unsigned int color = mColor & 0x00ffffff;
-		sprintf (buf, "#%X", color);
-//		styledString.AppendAscii("#");
-		styledString.AppendAscii(buf);
+		if (needSemicolon)
+			styledString.append (u";");
+		styledString.append (fontColor);
+		styledString.append (RWStr::Format ("#%X", (unsigned int) (mColor & 0x00ffffff)));
 		needSemicolon = true;
 	}
-	
-	styledString.AppendAscii("\">");
-	styledString.Append (spanString);
-	styledString.AppendAscii(endSpan);
+
+	styledString.append (u"\">");
+	styledString.append (spanString);
+	styledString.append (endSpan);
 
 	return styledString;
 }
@@ -192,105 +201,90 @@ RW4DStyledText::Initialize (void)
 	 in mSpanList 
 	 */
 	
-	CText		attributes;
+	RWString	attributes;
 	RWSpan*		span;
 	long		plainPosition = 0;
 	long		last = 0;
 	long		where = 0;
-	
-	if (mText.StrLength() == 0)
+
+	if (mText.empty())
 	{
 		span = new RWSpan (0, 0);
 		mSpanList.push_back (span);
 		return;
 	}
-	
-	UTF16Char cr = 0x0d;
-	while ((where = mText.Find (RWSpan::breakTag, 5, last, CText::eCF_StrictlyEqual)) > -1) 
-	{
-		last = where;
-		mText.Delete(last, 5);
-		mText.Insert(last, &cr, 1);
-	}
-	
+
+	// <BR/> as CR
+	for (where = Find (mText, RWSpan::breakTag, 0); where >= 0; where = Find (mText, RWSpan::breakTag, size_t (where)))
+		mText.replace (size_t (where), RWSpan::breakTag.size(), 1, kCR);
+
 	last = 0;
-	while (last < mText.StrLength()) {
+	while (last < long (mText.size())) {
 
-		where = mText.Find (RWSpan::startSpan, last, CText::eCF_StrictlyEqual);
+		where = Find (mText, RWSpan::startSpan, size_t (last));
 
-		if (where == CText::_NotFound_) {
-			span = new RWSpan (plainPosition, mText.StrLength() - last);
+		if (where < 0) {
+			span = new RWSpan (plainPosition, long (mText.size()) - last);
 			mSpanList.push_back(span);
-			mPlainText.Append (mText.Substring(last, mText.StrLength() - last));
-			plainPosition += (mText.StrLength() - last);
+			mPlainText.append (mText, size_t (last), RWString::npos);
+			plainPosition += (long (mText.size()) - last);
 			return;
 		}
-		else
-		{ 
-			if (where > last)
-			{
-				span = new RWSpan (plainPosition, where - last);
-				mSpanList.push_back(span);
-				mPlainText.Append (mText.Substring(last, where - last));
-				plainPosition += (where - last);
-			}
+		else if (where > last)
+		{
+			span = new RWSpan (plainPosition, where - last);
+			mSpanList.push_back(span);
+			mPlainText.append (Substring (mText, last, where - last));
+			plainPosition += (where - last);
 		}
-		
-		
-		long end = mText.Find ('>', where, CText::eCF_StrictlyEqual);
-		if (end == CText::_NotFound_) {
-			end = mText.StrLength();
+
+		long end = Find (mText, u">", size_t (where));
+		if (end < 0)
 			return;
-		}
-		
-		long endTag = mText.Find (RWSpan::endSpan, where, CText::eCF_StrictlyEqual);
-		if (endTag == CText::_NotFound_) {
-			endTag = mText.StrLength();
-		}
-		
+
+		long endTag = Find (mText, RWSpan::endSpan, size_t (where));
+		if (endTag < 0)
+			endTag = long (mText.size());
+
 		span = new RWSpan (plainPosition, endTag - end - 1);
-		mPlainText.Append (mText.Substring (end + 1, endTag - end - 1));
+		mPlainText.append (Substring (mText, end + 1, endTag - end - 1));
 		plainPosition += (endTag - end - 1);
 
-		attributes = mText.Substring (where, end - where);
-		
-		if (attributes.Find(RWSpan::boldText, 0, CText::eCF_StrictlyEqual) != CText::_NotFound_) 
+		attributes = Substring (mText, where, end - where);
+
+		if (Find (attributes, RWSpan::boldText, 0) >= 0)
 			span->mStyle |= RWStyle::st_bold;
-		if (attributes.Find(RWSpan::italicText, 0, CText::eCF_StrictlyEqual) != CText::_NotFound_) 
+		if (Find (attributes, RWSpan::italicText, 0) >= 0)
 			span->mStyle |= RWStyle::st_italic;
-		if (attributes.Find(RWSpan::underlineText, 0, CText::eCF_StrictlyEqual) != CText::_NotFound_) 
+		if (Find (attributes, RWSpan::underlineText, 0) >= 0)
 			span->mStyle |= RWStyle::st_underline;
-		
-		int attPosition = attributes.Find (RWSpan::fontName, 0, CText::eCF_StrictlyEqual);
-		if (attPosition != CText::_NotFound_) {
-			int endName = attributes.Find ("'", attPosition + strlen (RWSpan::fontName) + 1, CText::eCF_StrictlyEqual);
-			if (endName != CText::_NotFound_) {
-				span->mFont = attributes.Substring (attPosition + strlen (RWSpan::fontName) + 1, endName - attPosition - strlen (RWSpan::fontName) - 1);
-			}
+
+		long attPosition = Find (attributes, RWSpan::fontName, 0);
+		if (attPosition >= 0) {
+			long	nameStart = attPosition + long (RWSpan::fontName.size()) + 1;	// past the quote
+			long	endName = Find (attributes, u"'", size_t (nameStart));
+			if (endName >= 0)
+				span->mFont = Substring (attributes, nameStart, endName - nameStart);
 		}
 
-		attPosition = attributes.Find(RWSpan::fontSize, 0, CText::eCF_StrictlyEqual);
-		if (attPosition != CText::_NotFound_) {
-			// span->mSize = mText.ToNumber(attPosition + strlen (RWSpan::fontSize), 6);
-			char buf[32];
-			attributes.Substring(attPosition + strlen (RWSpan::fontSize), 6).ToAscii(buf, 6);
-			float size;
-			if (sscanf(buf, "%f", &size))
+		attPosition = Find (attributes, RWSpan::fontSize, 0);
+		if (attPosition >= 0) {
+			float	size;
+			if (RWStr::ReadNumber (Substring (attributes, attPosition + long (RWSpan::fontSize.size()), 6), size))
 				span->mSize = size;
 		}
 
-		attPosition = attributes.Find(RWSpan::fontColor, 0, CText::eCF_StrictlyEqual);
-		if (attPosition != CText::_NotFound_) {
+		attPosition = Find (attributes, RWSpan::fontColor, 0);
+		if (attPosition >= 0) {
 			span->mHasColor = true;
-			char buf [32];
-			attributes.Substring(attPosition + strlen(RWSpan::fontColor) + 1, 9).ToAscii(buf, 9);
-			unsigned int color;
-			if (sscanf(buf, "%X", &color))
-				span->mColor = (color | 0xFF000000);
+			RWString	hex = u"0x" + Substring (attributes, attPosition + long (RWSpan::fontColor.size()) + 1, 8);	// past the '#'
+			std::optional<long long>	color = RWStr::ToInteger (hex);
+			if (color)
+				span->mColor = ((unsigned long) *color | 0xFF000000);
 		}
-		
+
 		mSpanList.push_back(span);
-		last = endTag + strlen (RWSpan::endSpan);
+		last = endTag + long (RWSpan::endSpan.size());
 	}
 	return;
 }
@@ -299,12 +293,13 @@ CText
 RW4DStyledText::toXMLString (void)
 const
 {
-	CText output (mText.StrLength() + 128);
+	RWString	output;
+	output.reserve (mText.size() + 128);
 	RWSpanList::const_iterator iter;
 	for (iter = mSpanList.begin(); iter != mSpanList.end(); iter++)
 	{
 		const RWSpan *span = *iter;
-		output.Append (span->toXML (mPlainText));
+		output.append (span->toXML (mPlainText));
 	}
 	return output;
 }
@@ -380,8 +375,8 @@ RW4DStyledText::RemoveSpan (const RWSpan& inSpan)
 		{
 			RWSpan* newSpan = new RWSpan (*span);
 			newSpan->mLength = inSpan.mOffset - span->mOffset;
+			span->mLength -= (inSpan.mOffset - span->mOffset);	// before moving the offset (was after: length never shrank)
 			span->mOffset = inSpan.mOffset;
-			span->mLength -= (inSpan.mOffset - span->mOffset);
 			RWSpanList::iterator iter = mSpanList.begin() + index;
 			mSpanList.insert (iter, newSpan);
 			continue;

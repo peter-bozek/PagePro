@@ -491,11 +491,11 @@ class	DMReport
 friend class	DMBase;
 
 public:
-								DMReport (XMLDocument *inXML);
+								DMReport (RWXmlDocument *inXML);
 	virtual						~DMReport (void);
 
-	virtual		void			SetReport (XMLDocument *inXML);
-				void			GetReport (XMLDocument &outXML);
+	virtual		void			SetReport (RWXmlDocument *inXML);
+				void GetReport (RWXmlDocument &outXML);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;

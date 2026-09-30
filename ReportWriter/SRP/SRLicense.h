@@ -27,7 +27,7 @@ enum	ELicense
 class RWPageComposer;
 struct SRect;
 
-ELicense	RW_SetLicense (const CText &inLicense);
+ELicense	RW_SetLicense (const RWString &inLicense);
 ELicense	RW_GetLicense (void);
 void		RW_CheckLicense (RWPageComposer *inComposer, const SRect *inRect, bool inForPrinting);
 

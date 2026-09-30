@@ -55,7 +55,7 @@ public:
 
 	static		void			HandleEvent (PA_PluginParameters params);
 
-	virtual		void			SetReport (XMLDocument *inXML);
+	virtual		void			SetReport (RWXmlDocument *inXML) override;
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);

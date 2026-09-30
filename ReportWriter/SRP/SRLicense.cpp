@@ -179,7 +179,7 @@ void		RW_CreateLicense (const CText &inCustomer, long in4DNumber, long inFlags, 
 #endif
 
 
-ELicense	RW_SetLicense (const string &inLicense)
+ELicense	RW_SetLicense (const RWString &inLicense)
 {
 	if (sLicense == eLicense_Demo && sLicenseExpiry == 0 && inLicense.length() == 0)
 	{

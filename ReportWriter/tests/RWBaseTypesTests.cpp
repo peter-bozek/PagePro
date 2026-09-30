@@ -10,6 +10,7 @@
 # include	"RWBaseTypes.h"
 # include	"RWStyle.h"
 # include	"RWDataProvider.h"
+# include	"RW4DText.h"
 
 # include	<cstdio>
 # include	<cstring>
@@ -402,6 +403,37 @@ static	void	TestDataProvider (void)
 }
 
 
+static	void	TestStyledText (void)
+{
+	CHECK (RW4DStyledText (u"Hello").toXMLString() == u"Hello");
+	CHECK (RW4DStyledText (u"").toXMLString() == u"");
+
+	RWString	bold = u"a<SPAN STYLE=\"font-weight:bold\">bc</SPAN>d";
+	RW4DStyledText	t1 (bold);
+	CHECK (t1.mPlainText == u"abcd");
+	CHECK (t1.toXMLString() == bold);
+
+	RWString	full = u"<SPAN STYLE=\"font-family:'Arial';font-size:12.00pt;color:#FF0000\">x</SPAN>";
+	RW4DStyledText	t2 (full);
+	CHECK (t2.mSpanList.size() == 1 && t2.mSpanList[0]->mFont == u"Arial" && t2.mSpanList[0]->mSize == 12);
+	CHECK (t2.mSpanList.size() == 1 && t2.mSpanList[0]->mHasColor && t2.mSpanList[0]->mColor == 0xFFFF0000UL);
+	CHECK (t2.toXMLString() == full);
+
+	RW4DStyledText	t3 (u"a<BR/>b");
+	CHECK (t3.mPlainText == u"a\rb");
+	CHECK (t3.toXMLString() == u"a<BR/>b");
+
+	RW4DStyledText	t4 (u"abcd");
+	t4.AddSpan (RWSpan (0, 4, RWStyle::st_italic, 0, u"", 0, false), RWSpan::mode_add);
+	CHECK (t4.toXMLString() == u"<SPAN STYLE=\"font-style:italic\">abcd</SPAN>");
+
+	// removing part of a span: the old code kept the full length and repeated "ef"
+	RW4DStyledText	t5 (u"<SPAN STYLE=\"font-weight:bold\">abcd</SPAN>ef");
+	t5.RemoveSpan (RWSpan (2, 2, RWStyle::st_bold, 0, u"", 0, false));
+	CHECK (t5.toXMLString() == u"<SPAN STYLE=\"font-weight:bold\">ab</SPAN>cdef");
+}
+
+
 int		main (void)
 {
 	TestGeometry();
@@ -415,6 +447,7 @@ int		main (void)
 	TestVariables();
 	TestReadNumber();
 	TestDataProvider();
+	TestStyledText();
 
 	std::printf ("%d checks, %d failed\n", sChecks, sFailures);
 	return sFailures == 0 ? 0 : 1;

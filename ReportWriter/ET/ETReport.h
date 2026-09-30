@@ -65,7 +65,8 @@ public:
 
 	RWTextValue		FormatVariable (RWValue &inVar, const CText inFormat) const;
 	
-	void			ReportToFile (FILE *inFile);
+	// builds the export (XML, HTML, text, CSV, JSON) and writes it as UTF-8; false if the file could not be written
+	bool			ReportToFile (const RWString &inPath);
 	e_OutputOptions	GetOutputOptions (void);
 	void			WriteText (const char *inType, void * object);
 	void			WriteText (const char *inType, ETObject * object, RWTextValue &inText);

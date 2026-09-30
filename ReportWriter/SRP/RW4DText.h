@@ -7,7 +7,7 @@
  *
  */
 
-#include <deque>;
+#include <deque>
 #include "RWStyle.h"
 
 class	RWSpan
@@ -18,15 +18,16 @@ public:
 		mode_xor
 	};
 	
-	static const	char* endSpan;
-	static const	char* startSpan;
-	static const	char* boldText;
-	static const	char* italicText;
-	static const	char* underlineText;
-	static const	char* fontSize;
-	static const	char* fontName;
-	static const	char* fontColor;
-	static const	UTF16Char breakTag[];
+	// 4D v12 styled text markup
+	static const	RWStringView endSpan;
+	static const	RWStringView startSpan;
+	static const	RWStringView boldText;
+	static const	RWStringView italicText;
+	static const	RWStringView underlineText;
+	static const	RWStringView fontSize;
+	static const	RWStringView fontName;
+	static const	RWStringView fontColor;
+	static const	RWStringView breakTag;
 
 
 	int				mOffset;

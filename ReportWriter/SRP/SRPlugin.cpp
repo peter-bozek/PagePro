@@ -10,9 +10,7 @@
 
 # include	"4DPluginAPI.h"
 
-# include	"XConfig.h"
-# include	"CText.h"
-using namespace	XF;
+# include	"RWString4D.h"
 # include	"ExtendedExecute.h"
 
 extern	"C"		void Yield4D (void);
@@ -97,7 +95,6 @@ static		void			PickColorCB (void *inData)
 # include	"RWReportWriter.h"
 # include	"RWBaseTypes.h"
 
-# include	"UTEC.h"
 
 # include	"DMReport.h"
 # include	"DMArea.h"
@@ -186,13 +183,13 @@ try
 		case eOpenSession:			//	outSession, RW_Flags, ".pdf", template, job name, printer
 		{
 			sBuf = PA_GetStringParameter (params, 3);
-			CText	s3 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s3 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 4);
-			CText	s4 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s4 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 5);
-			CText	s5 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s5 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 6);	//mbs 25072011	printer
-			CText	s6 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s6 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_OpenSession (obj, PA_GetLongParameter (params, 2), s3, s4, s5, s6));
 			PA_SetLongParameter (params, 1, obj);
 			break;
@@ -209,11 +206,11 @@ try
 		case ePrintSRP:				//	".srxml", SR_Flags, RW_Flags, ".pdf", session, printer
 		{
 			sBuf = PA_GetStringParameter (params, 1);
-			CText	s1 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s1 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 4);
-			CText	s4 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s4 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 6);	//mbs 25072011	printer
-			CText	s6 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s6 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_Print (s1, PA_GetLongParameter (params, 2), PA_GetLongParameter (params, 3), s4, PA_GetLongParameter (params, 5), s6));
 			break;
 		}
@@ -221,9 +218,9 @@ try
 		case eProcessSRP:			//	".srxml", SR_Flags, ".rwxml"
 		{
 			sBuf = PA_GetStringParameter (params, 1);
-			CText	s1 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s1 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 3);
-			CText	s2 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s2 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_Process_RW (s1, PA_GetLongParameter (params, 2), s2));
 			break;
 		}
@@ -231,11 +228,11 @@ try
 		case ePrintRW:				//	".rwxml", Ignored_Flags, RW_Flags, ".pdf", session, printer
 		{
 			sBuf = PA_GetStringParameter (params, 1);
-			CText	s1 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s1 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 4);
-			CText	s4 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s4 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 6);	//mbs 25072011	printer
-			CText	s6 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s6 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_Print_RW (s1, PA_GetLongParameter (params, 2), PA_GetLongParameter (params, 3), s4, PA_GetLongParameter (params, 5), s6));
 			break;
 		}
@@ -245,15 +242,13 @@ try
 		case eRegister:				//	license
 		{
 			sBuf = PA_GetStringParameter (params, 1);
-			CText	s1 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
-			if (s1.StrLength() > 0) {
+			CText	s1 = RWStr::FromPA (sBuf);
+			if (!s1.empty()) {
 				(void) RW_SetLicense (s1);
 				PA_ReturnLong (params, RW_GetLicense());
 			} else {
-				char	buf [16];
-				snprintf (buf, sizeof (buf), "%ld", PA_GetSerialKey());
-				s1.AssignAscii (buf);
-				PA_SetUnistring (sBuf, s1.Get());
+				s1 = RWStr::Format ("%ld", (long) PA_GetSerialKey());
+				RWStr::SetPA (sBuf, s1);
 				PA_ReturnLong (params, RW_GetLicense());
 			}
 			break;
@@ -266,7 +261,7 @@ try
 		case eNewReport:			//	ref, "srxml", options (bit 0 means path vs. XML)
 		{
 			sBuf = PA_GetStringParameter (params, 2);
-			CText	s2 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s2 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_CreateReport (obj, s2, PA_GetLongParameter (params, 3)));
 			PA_SetLongParameter (params, 1, obj);
 			break;
@@ -275,7 +270,7 @@ try
 		case eParseReport:			//	ref, "srxml", options (bit 0 means path vs. XML)
 		{
 			sBuf = PA_GetStringParameter (params, 2);
-			CText	s2 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s2 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_ParseReport (PA_GetLongParameter (params, 1), s2, PA_GetLongParameter (params, 3)));
 			break;
 		}
@@ -283,11 +278,11 @@ try
 		case eSaveReport:			//	ref, "srxml", options (bit 0 means path vs. XML)
 		{
 			sBuf = PA_GetStringParameter (params, 2);
-			CText	s2 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s2 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, obj = RW_SaveReport (PA_GetLongParameter (params, 1), s2, PA_GetLongParameter (params, 3)));
 			//mbs 25042010	save the string if XML is requested...
 			if (obj == 0 && (PA_GetLongParameter (params, 3) & 0x1) == 0)
-				PA_SetUnistring (sBuf, s2.Get());
+				RWStr::SetPA (sBuf, s2);
 			break;
 		}
 
@@ -375,14 +370,14 @@ try
 			CText	xml;
 			PA_ReturnLong (params, RW_GetObjectXML (PA_GetLongParameter (params, 1), PA_GetLongParameter (params, 2), xml));
 			sBuf = PA_GetStringParameter (params, 3);
-			PA_SetUnistring (sBuf, xml.Get());
+			RWStr::SetPA (sBuf, xml);
 			break;
 		}
 			
 		case eNewObjectFromXML:		//	repRef, ref, XML, parent
 		{
 			sBuf = PA_GetStringParameter (params, 3);
-			CText	xml (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	xml = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_NewObjectFromXML (PA_GetLongParameter (params, 1), obj, xml, PA_GetLongParameter (params, 4)));
 			PA_SetLongParameter (params, 2, obj);
 			break;
@@ -391,7 +386,7 @@ try
 		case eFindObjectByID:		//	repRef, name, ref
 		{
 			sBuf = PA_GetStringParameter (params, 2);
-			CText	s1 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));
+			CText	s1 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_FindObjectByID (PA_GetLongParameter (params, 1), s1, obj));
 			PA_SetLongParameter (params, 3, obj);
 			break;
@@ -487,8 +482,8 @@ try
 	
 		case eVersionString:			//	inStr
 		{
-			CText			version (kVersionString);
-			PA_Unistring	versString = PA_CreateUnistring(version.Get());
+			CText			version = RWStr::FromASCII (kVersionString);
+			PA_Unistring	versString = RWStr::CreatePA (version);
 			PA_ReturnString (params, PA_GetUnistring (&versString));
 			PA_DisposeUnistring(&versString);
 			break;
@@ -613,9 +608,6 @@ void InitPlugin (void)
 //	PA_UseCStrings();
 //	PA_ReturnNullTerminatedText (false);
 
-	CText::SetDefaultEncoding (SYSTEM_ENCODING);
-	TiXmlBase::SetEncodeAscii (false);		// we use UTF8, so no &xC8 for multibyte chars...
-	TiXmlBase::SetCondenseWhiteSpace (false);
 
 #ifdef	__DEBUGMEM_H
 
@@ -630,8 +622,7 @@ void InitPlugin (void)
    Gdiplus::GdiplusStartup (&sGdiplusToken, &gdiplusStartupInput, NULL);
 #endif
 
-	CText	empty;
-	RW_SetLicense (empty);
+	RW_SetLicense (RWString());
 }
 
 
@@ -690,6 +681,33 @@ long RW_CloseSession (long &ioSession)
 
 # define	IsFileName	((inOptions & 0x1) != 0)
 
+// ---------------------------------------------------------------------------
+// LoadSourceXML
+// ---------------------------------------------------------------------------
+// A report comes as a 4D document path (inIsFileName) or as XML text.
+
+static	long	LoadSourceXML (RWXmlDocument &outXML, const CText &inSource, bool inIsFileName)
+{
+	RWXmlResult	result = inIsFileName ? outXML.LoadFile (RWStr::NativePath (inSource)) : outXML.LoadString (inSource);
+	if (!result)
+	{
+		if (inIsFileName)
+			printf ("Could not load file '%s'. Error='%s'.\n", RWStr::ToUTF8 (RWStr::NativePath (inSource)).c_str(), RWStr::ToUTF8 (result.description).c_str());
+		else
+			printf ("Could not load XML. Error='%s' at offset %ld.\n", RWStr::ToUTF8 (result.description).c_str(), (long) result.offset);
+		fflush (stdout);
+		return errCantLoadXML;
+	}
+	return noErr;
+}
+
+// source description for error messages: the path, or just "XML text"
+static	std::string	SourceName (const CText &inSource, bool inIsFileName)
+{
+	return inIsFileName ? RWStr::ToUTF8 (RWStr::NativePath (inSource)) : std::string ("XML text");
+}
+
+
 long RW_Print (CText &src, long inOptions, long dstFlags, CText &dst, long inSession, CText &inPrinter)	//mbs 25072011	printer
 {
 	RWPageComposer	*session = NULL;
@@ -704,61 +722,24 @@ long RW_Print (CText &src, long inOptions, long dstFlags, CText &dst, long inSes
 
 	try
 	{
-		XMLDocument	xml;
-		if (IsFileName)
-		{
-			bool loadOkay = xml.LoadFile ((const char*) src.GetFSName());
-			if (not loadOkay)
-			{
-				printf ("Could not load file '%s'. Error='%s'.\n", src.GetFSName(), xml.ErrorDesc());
-				fflush (stdout);
-				result = errCantLoadXML;
-			}
-		}
-		else
-		{
-			xml.Parse ((const char*) src.GetUTF8());
-			if (xml.Error())
-			{
-				printf ("Could not load XML. Error='%s'.\n", xml.ErrorDesc());
-				fflush (stdout);
-				result = errCantLoadXML;
-			}
-		}
+		RWXmlDocument	xml;
+		result = LoadSourceXML (xml, src, IsFileName);
 
 		if (result == noErr)
 		{
-			SRReportData	reportData (&xml);
-			SRDataSource	reportSource;
-			auto_ptr<XMLDocument>	printed;
+			SRReportData					reportData (&xml);
+			SRDataSource					reportSource;
+			std::unique_ptr<RWXmlDocument>	printed;
 			{
 				SRReportWriter	reporter (reportSource, reportData, inOptions);
-				printed.reset (reporter.ReportToXML (0));
+				printed = reporter.ReportToXML();
 			}
-			if (printed.get() != NULL)
+			if (printed)
 			{
+				if (dstFlags & 0x10000000)	// debugging: keep the processed report next to the output
+					(void) printed->SaveFile (RWStr::NativePath (dst) + u".rwxml");
 
-				if (dstFlags & 0x10000000)
-				{
-					char	s3[256+8];
-					strncpy (s3, dst.GetFSName(), sizeof (s3));
-					strncat (s3, ".rwxml", sizeof (s3));
-					FILE	*fd2 = fopen (s3, "wb");
-					if (fd2 != NULL)
-					{
-						try
-						{
-							printed->Print (fd2);
-						}
-						catch (...)
-						{
-						}
-						fclose (fd2);
-					}
-				}
-
-
-				auto_ptr <RWPageComposer>	arwComposer;
+				std::unique_ptr<RWPageComposer>	arwComposer;
 				RWPageComposer	*pc = session;
 				if (session == NULL)
 				{
@@ -788,14 +769,13 @@ long RW_Print (CText &src, long inOptions, long dstFlags, CText &dst, long inSes
 	}
 	catch (long l)
 	{
-//		if (l != errCantLoadXML)
-			printf ("\nException in RW_Print: %ld. Source: %s\n", l, src.GetFSName());
-			fflush (stdout);
+		printf ("\nException in RW_Print: %ld. Source: %s\n", l, SourceName (src, IsFileName).c_str());
+		fflush (stdout);
 		result = l;
 	}
 	catch (...)
 	{
-		printf ("\nUncaught exception in RW_Print! Source: %s\n", src.GetFSName());
+		printf ("\nUncaught exception in RW_Print! Source: %s\n", SourceName (src, IsFileName).c_str());
 		fflush (stdout);
 		result = errGenericError;
 	}
@@ -810,69 +790,41 @@ long RW_Process_RW (CText &src, long inOptions, CText &dst)
 
 	try
 	{
-		XMLDocument	xml;
-		if (IsFileName)
-		{
-			bool loadOkay = xml.LoadFile ((const char*) src.GetFSName());
-			if (not loadOkay)
-			{
-				printf ("Could not load file '%s'. Error='%s'.\n", src.GetFSName(), xml.ErrorDesc());
-				fflush (stdout);
-				result = errCantLoadXML;
-			}
-		}
-		else
-		{
-			xml.Parse ((const char*) src.GetUTF8());
-			if (xml.Error())
-			{
-				printf ("Could not load XML. Error='%s'.\n", xml.ErrorDesc());
-				fflush (stdout);
-				result = errCantLoadXML;
-			}
-		}
+		RWXmlDocument	xml;
+		result = LoadSourceXML (xml, src, IsFileName);
 
 		if (result == noErr)
 		{
-			FILE	*fd = fopen (dst.GetFSName(), "wb");
-			if (fd != NULL)
+			const RWString	path = RWStr::NativePath (dst);
+			SRReportData	reportData (&xml);
+			SRDataSource	reportSource;
+			bool			saved = false;
+
+			//mbs 05112010
+			if ((inOptions & ~1) != 0)	// non-zero options (except path) means export
 			{
-				try
+				std::unique_ptr<RWXmlDocument>	printed;
 				{
-					SRReportData	reportData (&xml);
-					SRDataSource	reportSource;
-					//mbs 05112010
-					if ((inOptions & ~1) != 0)	// non-zero options (except path) means export
-					{
-						auto_ptr<XMLDocument>	printed;
-						{
-							SRReportWriter	reporter (reportSource, reportData, inOptions);
-							printed.reset (reporter.ReportToXML (0));
-						}
-						if (printed.get() != NULL)
-						{
-							ETReportData	etData (printed.get());
-							ETReport		etReport (reportSource, etData, inOptions);
-							etReport.ReportToFile (fd);
-						}
-					}
-					else
-					{
-						SRReportWriter	reporter (reportSource, reportData, inOptions);
-						reporter.ReportToFile (fd);
-					}
-					fflush (fd);
-					fclose (fd);
+					SRReportWriter	reporter (reportSource, reportData, inOptions);
+					printed = reporter.ReportToXML();
 				}
-				catch (...)
+				if (printed)
 				{
-					fclose (fd);
-					throw;
+					ETReportData	etData (printed.get());
+					ETReport		etReport (reportSource, etData, inOptions);
+					saved = etReport.ReportToFile (path);
 				}
 			}
 			else
 			{
-				printf ("Could not create RW file '%s'. Error='%s'.\n", dst.GetFSName(), strerror (errno));
+				SRReportWriter					reporter (reportSource, reportData, inOptions);
+				std::unique_ptr<RWXmlDocument>	printed = reporter.ReportToXML();
+				saved = printed && printed->SaveFile (path);
+			}
+
+			if (!saved)
+			{
+				printf ("Could not create RW file '%s'. Error='%s'.\n", RWStr::ToUTF8 (path).c_str(), strerror (errno));
 				fflush (stdout);
 				result = errCantSaveXML;
 			}
@@ -880,14 +832,13 @@ long RW_Process_RW (CText &src, long inOptions, CText &dst)
 	}
 	catch (long l)
 	{
-//		if (l != errCantSaveXML)
-			printf ("\nException in RW_Process_RW: %ld. Source: %s\n", l, src.GetFSName());
-			fflush (stdout);
+		printf ("\nException in RW_Process_RW: %ld. Source: %s\n", l, SourceName (src, IsFileName).c_str());
+		fflush (stdout);
 		result = l;
 	}
 	catch (...)
 	{
-		printf ("\nUncaught exception in RW_Process_RW! Source: %s\n", src.GetFSName());
+		printf ("\nUncaught exception in RW_Process_RW! Source: %s\n", SourceName (src, IsFileName).c_str());
 		fflush (stdout);
 		result = errGenericError;
 	}
@@ -910,31 +861,12 @@ long RW_Print_RW (CText &src, long inOptions, long dstFlags, CText &dst, long in
 
 	try
 	{
-		XMLDocument	xml;
-		if (IsFileName)
-		{
-			bool loadOkay = xml.LoadFile ((const char*) src.GetFSName());
-			if (not loadOkay)
-			{
-				printf ("Could not load file '%s'. Error='%s'.\n", src.GetFSName(), xml.ErrorDesc());
-				fflush (stdout);
-				result = errCantLoadXML;
-			}
-		}
-		else
-		{
-			xml.Parse ((const char*) src.GetUTF8());
-			if (xml.Error())
-			{
-				printf ("Could not load XML. Error='%s'.\n", xml.ErrorDesc());
-				fflush (stdout);
-				result = errCantLoadXML;
-			}
-		}
+		RWXmlDocument	xml;
+		result = LoadSourceXML (xml, src, IsFileName);
 
 		if (result == noErr)
 		{
-			auto_ptr <RWPageComposer>	arwComposer;
+			std::unique_ptr<RWPageComposer>	arwComposer;
 			RWPageComposer	*pc = session;
 			if (session == NULL)
 			{
@@ -963,14 +895,13 @@ long RW_Print_RW (CText &src, long inOptions, long dstFlags, CText &dst, long in
 	}
 	catch (long l)
 	{
-//		if (l != errCantLoadXML)
-			printf ("\nException in RW_Print_RW: %ld. Source: %s\n", l, src.GetFSName());
-			fflush (stdout);
+		printf ("\nException in RW_Print_RW: %ld. Source: %s\n", l, SourceName (src, IsFileName).c_str());
+		fflush (stdout);
 		result = l;
 	}
 	catch (...)
 	{
-		printf ("\nUncaught exception in RW_Print_RW! Source: %s\n", src.GetFSName());
+		printf ("\nUncaught exception in RW_Print_RW! Source: %s\n", SourceName (src, IsFileName).c_str());
 		fflush (stdout);
 		result = errGenericError;
 	}
@@ -1077,37 +1008,16 @@ long RW_CreateReport (long &outRepRef, CText &src, long inOptions)
 
 	try
 	{
-		XMLDocument	xml;
-		if (src.StrLength() > 0)
+		if (!src.empty())
 		{
-			if (IsFileName)
-			{
-				bool loadOkay = xml.LoadFile ((const char*) src.GetFSName());
-				if (not loadOkay)
-				{
-					printf ("Could not load file '%s'. Error='%s'.\n", src.GetFSName(), xml.ErrorDesc());
-					fflush (stdout);
-					result = errCantLoadXML;
-				}
-			}
-			else
-			{
-				xml.Parse ((const char*) src.GetUTF8());
-				if (xml.Error())
-				{
-					printf ("Could not load XML. Error='%s'.\n", xml.ErrorDesc());
-					fflush (stdout);
-					result = errCantLoadXML;
-				}
-			}
+			RWXmlDocument	xml;
+			result = LoadSourceXML (xml, src, IsFileName);
 			if (result == noErr)
 				rep = new DMReport (&xml);
 		}
 		else
 			rep = new DMReport (NULL);
-		outRepRef = rep->GetInternalID();
-		// •••TEST•••
-		// rep->SetReport (&xml);
+		outRepRef = rep ? rep->GetInternalID() : 0;
 	}
 	catch (...)
 	{
@@ -1125,43 +1035,21 @@ long RW_CreateReport (long &outRepRef, CText &src, long inOptions)
 long RW_ParseReport (long inRepRef, CText &src, long inOptions)
 {
 	long		result = 0;
-	
+
 	try
 	{
 		DMReport	*rep = DMReport::GetReportObject (inRepRef);
 		if (rep == NULL)
 			result = errInvalidReportRef;
-		else
+		else if (!src.empty())
 		{
-			if (src.StrLength() > 0)
-			{
-				XMLDocument	xml;
-				if (IsFileName)
-				{
-					bool loadOkay = xml.LoadFile ((const char*) src.GetFSName());
-					if (not loadOkay)
-					{
-						printf ("Could not load file '%s'. Error='%s'.\n", src.GetFSName(), xml.ErrorDesc());
-						fflush (stdout);
-						result = errCantLoadXML;
-					}
-				}
-				else
-				{
-					xml.Parse ((const char*) src.GetUTF8());
-					if (xml.Error())
-					{
-						printf ("Could not load XML. Error='%s'.\n", xml.ErrorDesc());
-						fflush (stdout);
-						result = errCantLoadXML;
-					}
-				}
-				if (result == noErr)
-					rep->SetReport (&xml);
-			}
-			else
-				rep->SetReport (NULL);
+			RWXmlDocument	xml;
+			result = LoadSourceXML (xml, src, IsFileName);
+			if (result == noErr)
+				rep->SetReport (&xml);
 		}
+		else
+			rep->SetReport (NULL);
 	}
 	catch (...)
 	{
@@ -1169,11 +1057,12 @@ long RW_ParseReport (long inRepRef, CText &src, long inOptions)
 		fflush (stdout);
 		result = errGenericError;
 	}
-	
+
 	return result;
 }
 
 
+// the report is written to the file src (inOptions bit 0), or returned in src as XML text
 long RW_SaveReport (long inRepRef, CText &src, long inOptions)
 {
 	long		result = 0;
@@ -1185,24 +1074,20 @@ long RW_SaveReport (long inRepRef, CText &src, long inOptions)
 			result = errInvalidReportRef;
 		else
 		{
-			XMLDocument	xml;
+			RWXmlDocument	xml;
 			rep->GetReport (xml);
 			if (IsFileName)
 			{
-				bool saveOkay = xml.SaveFile (src.GetFSName());
-				if (not saveOkay)
+				const RWString	path = RWStr::NativePath (src);
+				if (!xml.SaveFile (path))
 				{
-					printf ("Could not save file '%s'. Error='%s'.\n", src.GetFSName(), xml.ErrorDesc());
+					printf ("Could not save file '%s'. Error='%s'.\n", RWStr::ToUTF8 (path).c_str(), strerror (errno));
 					fflush (stdout);
 					result = errCantSaveXML;
 				}
 			}
 			else
-			{
-				ostringstream	ostr;
-				ostr << xml;
-				src.AssignUTF8 ((const UTF8Char *) ostr.str().c_str());
-			}
+				src = xml.SaveString (false, true);
 		}
 	}
 	catch (...)
@@ -1353,7 +1238,7 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 									if (ps && ps->name && *ps->name)
 									{
 										CText	n ((UTF8Char*) ps->name, CText::_nullTerminated_);
-										ustr = PA_CreateUnistring (n.Get());
+										ustr = RWStr::CreatePA (n);
 									}
 									else
 										ustr = PA_CreateUnistring (RW_FourDTypeIDToText (prs->id));
@@ -1398,7 +1283,7 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 								if (ps && ps->name && *ps->name)
 								{
 									CText	n ((UTF8Char*) ps->name, CText::_nullTerminated_);
-									ustr = PA_CreateUnistring (n.Get());
+									ustr = RWStr::CreatePA (n);
 								}
 								else
 									ustr = PA_CreateUnistring (RW_FourDTypeIDToText (prs->id));
@@ -2614,9 +2499,9 @@ long RW_AddRemoveStyle (PA_PluginParameters params, bool inAdd)
 // eTextStyleAdd:			//	outStr, inStr, from, to, style, fontName, fontSize, fontColor, setColor, scale, rounding, mode
 // eTextStyleRemove:		//	outStr, inStr, from, to, style, fontName, fontSize, fontColor, setColor, scale, rounding,
 	sBuf = PA_GetStringParameter (params, 2);
-	CText	s2 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));					// inStr
+	CText	s2 = RWStr::FromPA (sBuf);					// inStr
 	sBuf = PA_GetStringParameter (params, 6);
-	CText	s6 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));					// fontName
+	CText	s6 = RWStr::FromPA (sBuf);					// fontName
 	RWSpan span (	PA_GetLongParameter (params, 3) - 1,								// from - passed value is 1-based
 					PA_GetLongParameter (params, 4) - PA_GetLongParameter (params, 3),	// to
 					PA_GetLongParameter (params, 5),									// style
@@ -2638,7 +2523,7 @@ long RW_AddRemoveStyle (PA_PluginParameters params, bool inAdd)
 	text.Clean();
 	s6 = text.toXMLString();
 	sBuf = PA_GetStringParameter (params, 1);
-	PA_SetUnistring (sBuf, s6.Get());
+	RWStr::SetPA (sBuf, s6);
 	return 0;
 }
 
@@ -2655,7 +2540,7 @@ long RW_ApplyStyle (PA_PluginParameters params)
 		return errInvalidObjectRef;
 
 	sBuf = PA_GetStringParameter (params, 2);
-	CText	s2 (PA_GetUnistring (sBuf), PA_GetUnistringLength (sBuf));					// inStr
+	CText	s2 = RWStr::FromPA (sBuf);					// inStr
 	sBuf = PA_GetStringParameter (params, 6);
 	CText	s6 (style->GetFName());
 	SRGBColor c = style->GetTextColor();
@@ -2672,7 +2557,7 @@ long RW_ApplyStyle (PA_PluginParameters params)
 	text.Clean();
 	s6 = text.toXMLString();
 	sBuf = PA_GetStringParameter (params, 1);
-	PA_SetUnistring (sBuf, s6.Get());
+	RWStr::SetPA (sBuf, s6);
 	return 0;
 }
 

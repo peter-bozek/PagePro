@@ -23,12 +23,12 @@ class	ETReportData
 {
 	friend class	ETReport;
 public:
-					ETReportData (XMLDocument *inXML);
+					ETReportData (RWXmlDocument *inXML);
 					~ETReportData (void);
 	
 	inline			bool				IsDynamic (void) const;
 	inline			ETReport		*	GetReportWriter (void) const;
-	const			XMLElement  	*	GetReport (void) const;
+					RWXmlNode			GetReport (void) const;
 	const           CText				GetName (void) const;
 	inline			ETWatermarkSection*	GetWatermarkSection (void);
 	inline			ETSectionList	*	GetPageSections (void);
@@ -51,7 +51,7 @@ private:
 	
 private:
 	ETReport	*		mReportWriter;
-	XMLDocument 	*	mXML;
+	RWXmlDocument	*	mXML;
 	RWTextValue			mName;
 	RWTextValue			mID;
 	

@@ -11,6 +11,9 @@
 
 # include	"4DPluginAPI.h"
 # include	"RWString.h"
+#if	VERSIONMAC
+# include	"RWStringCF.h"
+#endif
 
 static_assert (sizeof (PA_Unichar) == sizeof (char16_t), "PA_Unichar must be a 16 bit code unit");
 
@@ -46,6 +49,16 @@ namespace	RWStr
 	inline	void				SetPA (PA_Unistring *ioTarget, const RWString &inText)
 	{
 		PA_SetUnistring (ioTarget, ToPA (inText));
+	}
+
+	// file system path for a document path passed by 4D (HFS on the Mac, native on Windows)
+	inline	RWString			NativePath (RWStringView in4DPath)
+	{
+#if	VERSIONMAC
+		return POSIXPathFromHFS (in4DPath);
+#else
+		return RWString (in4DPath);
+#endif
 	}
 }
 
