@@ -710,7 +710,7 @@ RWGroup::GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool 
 			RWObject					*obj;
 			float						bBottom = 0, rBottom = 0;
 			float						bRight = 0, rRight = 0;
-// ¥¥¥ TODO ¥¥¥	CHECK the following change!!!
+// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	CHECK the following change!!!
 //			SRect						r (ioRect);
 //			r += mVirtPosition;	// adjust the frame for children
 			SRect	r (	ioRect.top + mVirtPosition.top,
@@ -1314,7 +1314,7 @@ RWRect::Parse (RWReportData *inReport, XMLElement *inNode)
 RWObject::EDrawState
 RWRect::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 {
-	// ¥¥¥ TODO ¥¥¥	no support for "split" rectangle - must fit on page
+	// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	no support for "split" rectangle - must fit on page
 //mbs 09072010	try clipping
 
 	if (CanDraw (inRect, mPrinted)) {		// pB
@@ -1534,7 +1534,7 @@ RWPict::GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool i
 	bool	fit = true;
 	if (mComposerPictureData == NULL || GetGrow())
 	{
-// ¥¥¥ TODO ¥¥¥	CHECK the following change!!!
+// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	CHECK the following change!!!
 // this is not good - it will shrink ioRect and GetPictBounds will not grow...
 // but calling GetPictBounds with ePictFormat_Normal will do what we really want!
 //		SRect	r (ioRect);

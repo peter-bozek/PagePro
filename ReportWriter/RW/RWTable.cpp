@@ -6,7 +6,7 @@
 # include	<algorithm>
 # include   <stdio.h>
 
-// ¥¥¥ TODO ¥¥¥	all data rows have the same height, but Pictures are computed differently...
+// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	all data rows have the same height, but Pictures are computed differently...
 
 
 inline	bool operator <  (const RWColumn &x, const RWColumn &y);

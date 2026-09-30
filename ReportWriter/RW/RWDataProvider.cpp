@@ -409,7 +409,7 @@ RWDataProvider::ParseValue (XMLElement const *inNode, RWDataID &outID, RWValue &
 
 		case RWValue::eValue_PictRefScreen:	// invalid case!
 		case RWValue::eValue_PictRefPrint:	// invalid case!
-			// ¥¥¥ TODO ¥¥¥	what to do?!?
+			// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	what to do?!?
 			break;
 			
 		case RWValue::eValue_BLOB:
@@ -571,7 +571,7 @@ RWDataProvider::WriteValue (FILE *fd, RWDataID inID, const RWValue &inVar)
 
 		case RWValue::eValue_PictRefScreen:	// invalid case!
 		case RWValue::eValue_PictRefPrint:	// invalid case!
-			// ¥¥¥ TODO ¥¥¥	what to do?!?
+			// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	what to do?!?
 			snprintf (buf, sizeof (buf), "%ld", inVar.GetInteger());
 			result = buf;
 			break;
@@ -684,7 +684,7 @@ RWDataProvider::WriteValue (XMLElement *inParent, RWDataID inID, const RWValue &
 
 		case RWValue::eValue_PictRefScreen:	// invalid case!
 		case RWValue::eValue_PictRefPrint:	// invalid case!
-			// ¥¥¥ TODO ¥¥¥	what to do?!?
+			// â€¢â€¢â€¢ TODO â€¢â€¢â€¢	what to do?!?
 			snprintf (buf, sizeof (buf), "%ld", inVar.GetInteger());
 			result = buf;
 			break;
