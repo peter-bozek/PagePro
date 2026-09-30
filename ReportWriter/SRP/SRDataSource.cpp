@@ -10,12 +10,7 @@
 #endif
 # include	"4DPluginAPI.h"
 // using namespace	FourDAPIEx;
-# define	USE_CUSTOM_CALLBACK	1
-
-#if	USE_CUSTOM_CALLBACK
-# include	"PrivateTypes.h"
-# include	"EntryPoints.h"
-#endif
+# include	"RWString4D.h"
 
 //# include	<stdio.h>	// snprintf
 # include	<memory>	// auto_ptr
@@ -115,9 +110,9 @@ SRDataSource::SetCallBackID (void)
 // ---------------------------------------------------------------------------
 
 void
-SRDataSource::ParseDataSource ( XMLElement *inNode)
+SRDataSource::ParseDataSource (RWXmlNode inNode)
 {
-	const CXMLText	value = inNode->Attribute (FindPropertyByID (PSObjPropType, GetProperties())->name);
+	const RWString	value = inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropType, GetProperties())->name));
 	if (!value.empty())
 		assert (STR_EQUALS (value, "4D"));
 
@@ -140,13 +135,13 @@ SRDataSource::GetProperty (OSType id, RWValue &outValue)
 {
 	switch (id)
 	{
-		case PSObjPropType:			outValue.SetXMLText (s4DKind [0]); break;
-		case PSObjPropSource:		outValue.SetXMLText (sSource [mSource]); break;
+		case PSObjPropType:			outValue.SetText (RWStr::FromASCII (s4DKind [0])); break;
+		case PSObjPropSource:		outValue.SetText (RWStr::FromASCII (sSource [mSource])); break;
 		case PSObjPropIterations:	outValue.SetInteger (mNumIterations); break;
 		case PSObjPropID:			outValue.SetInteger (mMainTable); break;
 		case PSObjPropName:			outValue.SetText (mName); break;
-		case PSObjPropRelateOne:	outValue.SetXMLText (sRelate [mRelateOne]); break;
-		case PSObjPropRelateMany:	outValue.SetXMLText (sRelate [mRelateMany]); break;
+		case PSObjPropRelateOne:	outValue.SetText (RWStr::FromASCII (sRelate [mRelateOne])); break;
+		case PSObjPropRelateMany:	outValue.SetText (RWStr::FromASCII (sRelate [mRelateMany])); break;
 		case PSObjPropCallback:		outValue.SetText (mCallBackName); break;
 		case PSObjPropStartScript:	outValue.SetText (mStartScript); break;
 		case PSObjPropBodyScript:	outValue.SetText (mBodyScript); break;
@@ -223,17 +218,9 @@ SRDataSource::SetProperty (OSType id, RWValue &inValue)
 void
 SRDataSource::ParseReport (RWXmlNode inReport)
 {
-	if (inReport != NULL)
-	{
-        const XMLElement	*node = inReport->FirstChildElement ("DataSource");
-		if (node != NULL)
-		{
-            const XMLElement	*elem = node->ToElement(); // return self, so we can keep the code
-
-			if (elem != NULL)
-				ParseDataSource (const_cast<XMLElement *>(elem));
-		}
-	}
+	RWXmlNode	node = inReport.Child (u"DataSource");
+	if (node)
+		ParseDataSource (node);
 
 	return;
 }
@@ -546,16 +533,24 @@ SRDataSource::CreateField (const CText inName)
 	{
 		long	table = 0, field = 0;
 		int		scanned;
-        scanned = sscanf (RWTextValue::UTF_16_to_UTF8(inName).c_str(), "[%ld]%ld", &table, &field);
+		scanned = 0;		// "[table]field" as numbers, like sscanf ("[%ld]%ld")
+		size_t	close = inName.find (u']');
+		if (!inName.empty() && inName[0] == u'[' && close != CText::npos
+		 &&	RWStr::ReadNumber (RWStringView (inName).substr (1, close - 1), table))
+		{
+			scanned = 1;
+			if (RWStr::ReadNumber (RWStringView (inName).substr (close + 1), field))
+				scanned = 2;
+		}
 		if (scanned == 0)
 		{
 			short	st = 0, sf = 0;
-			PA_GetTableAndFieldNumbers (const_cast <PA_Unichar*> (inName.c_str()), &st, &sf);
+			PA_GetTableAndFieldNumbers (RWStr::ToPA (inName), &st, &sf);
 			if (PA_GetLastError() != 0)
 			{
 				st = sf = 0;
 				PA_UseVirtualStructure();
-				PA_GetTableAndFieldNumbers (const_cast <PA_Unichar*> (inName.c_str()), &st, &sf);
+				PA_GetTableAndFieldNumbers (RWStr::ToPA (inName), &st, &sf);
 				PA_UseRealStructure();
 				PA_GetTrueFieldNumber( st, sf,  &st, &sf);
 				
@@ -660,35 +655,15 @@ SRDataSource::RunScript (ExtendedExecute &inScript, PSObject *inObject, bool inA
 		SetStdObjectID (inObject);
 		if (mCallBackID != 0)
 		{
-# if USE_CUSTOM_CALLBACK
-			PA_Handle	values = PA_NewHandle (3 * sizeof (PA_Variable));	// $0, $1, $2
-			if (values != NULL)
-			{
-				PA_Variable*	vars = (PA_Variable*) PA_LockHandle (values);
-				vars [0].fType = eVK_Undefined;			// no retVal
-				PA_Unistring	us = PA_CreateUnistring (inScript.Get());
-				PA_SetStringVariable (&vars [1], &us);
-				PA_SetLongintVariable (&vars [2], (long) inObject);
-				PA_UnlockHandle (values);
-				PA_ExecuteMethodByID_2 (mCallBackID, values, 1);
-//				result = PA_GetLastError();
-				vars = (PA_Variable*) PA_LockHandle (values);
-				PA_ClearVariable (&vars [0]);
-				PA_ClearVariable (&vars [1]);
-				PA_ClearVariable (&vars [2]);
-				PA_UnlockHandle (values);
-				PA_DisposeHandle (values);
-			}
-# else
-			PA_Unistring	us = PA_CreateUnistring (const_cast <CText> (inScript));
+			// $1 = script, $2 = object reference (internal ID, a pointer does not fit a longint)
+			PA_Unistring	us = RWStr::CreatePA (inScript.Get());
 			PA_Variable		args[2];
 			PA_SetStringVariable (&args [0], &us);
-			PA_SetLongintVariable (&args [1], inObject);
-//			PA_ExecuteMethod (&us);
-			PA_ExecuteMethodByID (mCallBackID, &args, 2);
+			PA_SetLongintVariable (&args [1], inObject ? (PA_long32) inObject->GetInternalID() : 0);
+			PA_Variable		result = PA_ExecuteMethodByID (mCallBackID, args, 2);
+			PA_ClearVariable (&result);
 			PA_ClearVariable (&args [0]);
 			PA_ClearVariable (&args [1]);
-# endif
 		}
 		else
 		{
@@ -697,7 +672,7 @@ SRDataSource::RunScript (ExtendedExecute &inScript, PSObject *inObject, bool inA
 			
 	}
 
-	if (inAlwaysInvalidate || (inScript && *inScript))
+	if (inAlwaysInvalidate || !inScript.IsEmpty())
 		Invalidate();
 
 	return;
@@ -795,28 +770,17 @@ SRDataSource::SetStdObjectID (PSObject *inObject)
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-void
-SRDataSource::Write (FILE *fd)
-const
-{
-	fprintf (fd, "<DataSource kind=\"4D\" iterations=\"%lu\" />\r\n", mNumIterations);
-
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
 void
-SRDataSource::Write ( XMLElement *inParent)
+SRDataSource::Write (RWXmlNode inParent)
 const
 {
-    XMLElement	elem ("DataSource");
-	elem.SetAttribute ("kind", "4D");
-	elem.SetAttribute ("iterations", mNumIterations);
-	inParent->InsertEndChild (elem);
+	RWXmlNode	elem = inParent.Append (u"DataSource");
+	elem.SetAttr (u"kind", u"4D");
+	elem.SetAttribute (u"iterations", mNumIterations);
 
 	return;
 }
@@ -826,34 +790,15 @@ const
 // WriteReportData													  [public]
 // ---------------------------------------------------------------------------
 
-void
-SRDataSource::WriteReportData (FILE *fd)
-const
-{
-	fprintf (fd, "<ReportData");
-	if (mData.IsEmpty())
-		fprintf (fd, " />\r\n");
-	else
-	{
-		fprintf (fd, ">\r\n");
-		mData.Write (fd);
-		fprintf (fd, "</ReportData>\r\n");
-	}
-
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // WriteReportData													  [public]
 // ---------------------------------------------------------------------------
 
 void
-SRDataSource::WriteReportData ( XMLElement *inParent)
+SRDataSource::WriteReportData (RWXmlNode inParent)
 const
 {
-    XMLElement	elem ("ReportData");
-	mData.Write (inParent->InsertEndChild (elem)->ToElement());
+	mData.Write (inParent.Append (u"ReportData"));
 
 	return;
 }

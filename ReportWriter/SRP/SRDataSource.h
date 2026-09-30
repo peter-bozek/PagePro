@@ -68,10 +68,8 @@ virtual	RWTextValue		FormatVariable (const RWValue &inVar, const CText inFormat)
 		void			RunScript (ExtendedExecute &inScript, PSObject *inObject = NULL, bool inAlwaysInvalidate = false);
 		void			Close ();
 		void			Invalidate (void);
-		void			Write (FILE *fd) const;
-		void			Write (XMLElement *inParent) const;
-		void			WriteReportData (FILE *fd) const;
-		void			WriteReportData (XMLElement *inParent) const;
+		void			Write (RWXmlNode inParent) const;
+		void			WriteReportData (RWXmlNode inParent) const;
 
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
@@ -83,7 +81,7 @@ protected:
 		void			SetStdRecordNumber (void);				// RWRecord / SRRecord
 		void			SetStdObjectID (PSObject *inObject);	// RWObject / SRObjectID
 
-		void			ParseDataSource (XMLElement *inNode);
+		void			ParseDataSource (RWXmlNode inNode);
 
 private:
 			// defensive programming - not implemented

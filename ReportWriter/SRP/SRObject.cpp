@@ -384,7 +384,7 @@ const
 void
 SRObject::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
-	if (inNode != NULL)
+	if (inNode)
 		PSObject::LoadXML (inNode);
 
 /*
@@ -475,9 +475,9 @@ SRObject::CreateCalculatedObject (SRReportData *inReport, long inOrder, const CT
 	SRVariable	*object = NULL;
 
 	if (inName[0] == '[')
-		object = SRField::Create (inReport, NULL, inOrder);
+		object = SRField::Create (inReport, RWXmlNode(), inOrder);
 	else
-		object = SRVariable::Create (inReport, NULL, inOrder);
+		object = SRVariable::Create (inReport, RWXmlNode(), inOrder);
 	object->mDraw = eDraw_No;
 	object->mSource = inName;
 
@@ -489,84 +489,35 @@ SRObject::CreateCalculatedObject (SRReportData *inReport, long inOrder, const CT
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-void
-SRObject::WriteSelf (FILE *fd, const char* inObjectType)
+RWXmlNode
+SRObject::WriteSelf (RWXmlNode inParent, const char* inObjectType)
 {
-	SRect	pos (mPosition);
+	RWXmlNode	elem = inParent.Append (RWStr::FromASCII (inObjectType));
+	SRect		pos (mPosition);
 //	if (mAlignment != eAlign_None)
 //		pos.right = pos.left;
-	fprintf (fd, "<%s r=\"%s\"", inObjectType, (const char*) pos);
+	elem.SetAttr (u"r", pos.ToString());
 	if (not mName.IsEmpty())
-	{
-		fprintf (fd, " name=\"");
-		RWTools::WriteText (fd, mName);
-		fprintf (fd, "\"");
-	}
+		elem.SetAttr (u"name", mName);
 	if (not mID.IsEmpty())
-	{
-		fprintf (fd, " id=\"");
-		RWTools::WriteText (fd, mID);
-		fprintf (fd, "\"");
-	}
-	//	if (mFixedH)
-//		fprintf (fd, " fixH=\"1\"");
+		elem.SetAttr (u"id", mID);
+//	if (mFixedH)
+//		elem.SetAttribute (u"fixH", 1);
 	if (mFixedV)
-		fprintf (fd, " fixV=\"1\"");
+		elem.SetAttribute (u"fixV", 1);
 //	if (mBindH)
-//		fprintf (fd, " bindH=\"1\"");
+//		elem.SetAttribute (u"bindH", 1);
 	if (mBindV)
-		fprintf (fd, " bindV=\"1\"");
+		elem.SetAttribute (u"bindV", 1);
 	if (mAlignment != eAlign_None)
-		fprintf (fd, " align=\"%d\"", (int) mAlignment);	// sAlignment [mAlignment]
+		elem.SetAttribute (u"align", (int) mAlignment);		// sAlignment [mAlignment]
 	if (mDraw != eDraw_Yes)
-		fprintf (fd, " draw=\"%d\"", (int) mDraw);			// sDraw [mDraw]
+		elem.SetAttribute (u"draw", (int) mDraw);			// sDraw [mDraw]
 #if	TARGET_DEBUG
-	fprintf (fd, " oid=\"%ld\"", mSeqID);
+	elem.SetAttribute (u"oid", mSeqID);
 #endif
 
-	return;
-}
-
-
-XMLElement*
-SRObject::WriteSelf (XMLElement *inParent, const char* inObjectType)
-{
-    XMLElement	* elem = inParent->GetDocument()->NewElement (inObjectType);
-	SRect	pos (mPosition);
-//	if (mAlignment != eAlign_None)
-//		pos.right = pos.left;
-	elem->SetAttribute ("r", (const char*) pos);
-	if (not mName.IsEmpty())
-	{
-		CXMLText	name = mName.ToXML();
-		elem->SetAttribute ("name", name.c_str());
-		mName.FreeXML (name);
-	}
-	if (not mID.IsEmpty())
-	{
-		CXMLText	name = mID.ToXML();
-		elem->SetAttribute ("id", name.c_str());
-		mID.FreeXML (name);
-	}
-	//	if (mFixedH)
-//		elem.SetAttribute ("fixH", 1);
-	if (mFixedV)
-		elem->SetAttribute ("fixV", 1);
-//	if (mBindH)
-//		elem.SetAttribute ("bindH", 1);
-	if (mBindV)
-		elem->SetAttribute ("bindV", 1);
-	if (mAlignment != eAlign_None)
-		elem->SetAttribute ("align", (int) mAlignment);		// sAlignment [mAlignment]
-	if (mDraw != eDraw_Yes)
-		elem->SetAttribute ("draw", (int) mDraw);			// sDraw [mDraw]
-#if	TARGET_DEBUG
-	elem->SetAttribute ("oid", mSeqID);
-#endif
-	
-	XMLNode	*node = inParent->InsertEndChild (elem);
-
-	return node->ToElement();
+	return elem;
 }
 
 
@@ -583,13 +534,13 @@ SRObject::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropID:			outValue.SetText (mID); break;		//mbs 15112010
 
 		case PSObjPropOrder:		outValue.SetInteger (mSeqID); break;
-		case PSObjPropRect:			outValue.SetXMLText ((const char*) mPosition); break;
+		case PSObjPropRect:			outValue.SetText (mPosition.ToString()); break;
 //		case PSObjPropFixH:			outValue.SetBoolean (mFixedH); break;
 		case PSObjPropFixV:			outValue.SetBoolean (mFixedV); break;
 //		case PSObjPropBindH:		outValue.SetBoolean (mBindH); break;
 		case PSObjPropBindV:		outValue.SetBoolean (mBindV); break;
-		case PSObjPropAlign:		outValue.SetXMLText (sAlignment [mAlignment]);break;
-		case PSObjPropDraw:			outValue.SetXMLText (sDraw [mDraw]);break;						
+		case PSObjPropAlign:		outValue.SetText (RWStr::FromASCII (sAlignment [mAlignment]));break;
+		case PSObjPropDraw:			outValue.SetText (RWStr::FromASCII (sDraw [mDraw]));break;						
 			
 		case PSObjPropPosTop:		outValue.SetReal (mPosition.top); break;
 		case PSObjPropPosLeft:		outValue.SetReal (mPosition.left); break;
@@ -703,7 +654,7 @@ SRObject::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 SRGroup*
-SRGroup::Create (SRReportData *inReport, XMLElement *inNode, long inOrder)
+SRGroup::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SRGroup	*group = new SRGroup (inReport, inOrder);
 	group->LoadXML (inNode);
@@ -797,37 +748,17 @@ SRGroup::FetchCalcValue (void)
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-void
-SRGroup::Write (FILE *fd, bool inIsInBody, bool inUseCalculator)
-{
-	SRObjListD::const_iterator	it;
-	SRObject					*obj;
-
-	WriteSelf (fd, "Group");
-	
-	fprintf (fd, ">\r\n");
-	for (it = mObjects.begin(); it != mObjects.end(); it++)
-	{
-		obj = *it;
-		obj->Write (fd, inIsInBody, inUseCalculator);
-	}
-	fprintf (fd, "</Group>\r\n");
-	
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRGroup::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
+RWXmlNode
+SRGroup::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
 	SRObjListD::const_iterator	it;
 	SRObject					*obj;
 
-    XMLElement	*me = WriteSelf (inParent, "Group");
+    RWXmlNode me = WriteSelf (inParent, "Group");
 	for (it = mObjects.begin(); it != mObjects.end(); it++)
 	{
 		obj = *it;
@@ -842,27 +773,14 @@ SRGroup::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-void
-SRGroup::WriteSelf (FILE *fd, const char* inObjectType)
+RWXmlNode
+SRGroup::WriteSelf (RWXmlNode inParent, const char* inObjectType)
 {
-	SRObject::WriteSelf (fd, inObjectType);
-
+    RWXmlNode me = SRObject::WriteSelf (inParent, inObjectType);
 //	if (mExpandH)
-//		fprintf (fd, " expandH=\"1\"");
+//		me.SetAttribute (u"expandH", 1);
 	if (mExpandV)
-		fprintf (fd, " expandV=\"1\"");
-
-	return;
-}
-
-XMLElement*
-SRGroup::WriteSelf (XMLElement *inParent, const char* inObjectType)
-{
-    XMLElement	*me = SRObject::WriteSelf (inParent, inObjectType);
-//	if (mExpandH)
-//		me->SetAttribute ("expandH", 1);
-	if (mExpandV)
-		me->SetAttribute ("expandV", 1);
+		me.SetAttribute (u"expandV", 1);
 
 	return me;
 }
@@ -965,7 +883,7 @@ const
 // ---------------------------------------------------------------------------
 
 SRLine*
-SRLine::Create (SRReportData *inReport, XMLElement *inNode, long inOrder)
+SRLine::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SRLine	*line = new SRLine (inReport, inOrder);
 	line->LoadXML (inNode);
@@ -999,24 +917,14 @@ SRLine::~SRLine (void)
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-void
-SRLine::Write (FILE *fd, bool inIsInBody, bool inUseCalculator)
-{
-	WriteSelf (fd, "Line");
-	fprintf (fd, " />\r\n");
-
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRLine::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
+RWXmlNode
+SRLine::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
-    XMLElement	*me = WriteSelf (inParent, "Line");
+    RWXmlNode me = WriteSelf (inParent, "Line");
 
 	return me;
 }
@@ -1026,31 +934,16 @@ SRLine::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-void
-SRLine::WriteSelf (FILE *fd, const char* inObjectType)
+RWXmlNode
+SRLine::WriteSelf (RWXmlNode inParent, const char* inObjectType)
 {
-	SRObject::WriteSelf (fd, inObjectType);
-
+    RWXmlNode me = SRObject::WriteSelf (inParent, inObjectType);
 	if (mThickness != 1)
-		fprintf (fd, " thickness=\"%g\"", mThickness);
+		me.SetAttribute (u"thickness", mThickness);
 	if (mLineColor != cBlackColor)
-		fprintf (fd, " lineColor=\"%s\"", (const char*) mLineColor);
+		me.SetAttribute (u"lineColor", mLineColor.ToString());
 	if (mFlags != 0)
-		fprintf (fd, " flags=\"%d\"", mFlags);
-
-	return;
-}
-
-XMLElement*
-SRLine::WriteSelf (XMLElement *inParent, const char* inObjectType)
-{
-    XMLElement	*me = SRObject::WriteSelf (inParent, inObjectType);
-	if (mThickness != 1)
-		me->SetAttribute ("thickness", mThickness);
-	if (mLineColor != cBlackColor)
-		me->SetAttribute ("lineColor", (const char*) mLineColor);
-	if (mFlags != 0)
-		me->SetAttribute ("flags", (int) mFlags);
+		me.SetAttribute (u"flags", (int) mFlags);
 
 	return me;
 }
@@ -1066,7 +959,7 @@ SRLine::GetProperty (OSType id, RWValue &outValue)
 	switch (id)
 	{
 		case PSObjPropThickness:	outValue.SetReal (mThickness); break;
-		case PSObjPropLineColor:	outValue.SetXMLText ((const char*) mLineColor); break;
+		case PSObjPropLineColor:	outValue.SetText (mLineColor.ToString()); break;
 		case PSObjPropFlags:		outValue.SetInteger (mFlags); break;
 
 		default:					return SRObject::GetProperty (id, outValue);
@@ -1111,7 +1004,7 @@ SRLine::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 SROval*
-SROval::Create (SRReportData *inReport,XMLElement  *inNode, long inOrder)
+SROval::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SROval	*oval = new SROval (inReport, inOrder);
 	oval->LoadXML (inNode);
@@ -1145,24 +1038,14 @@ SROval::~SROval (void)
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-void
-SROval::Write (FILE *fd, bool inIsInBody, bool inUseCalculator)
-{
-	WriteSelf (fd, "Oval");
-	fprintf (fd, " />\r\n");
-
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SROval::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
+RWXmlNode
+SROval::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
-    XMLElement	*me = WriteSelf (inParent, "Oval");
+    RWXmlNode me = WriteSelf (inParent, "Oval");
 
 	return me;
 }
@@ -1172,32 +1055,17 @@ SROval::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-void
-SROval::WriteSelf (FILE *fd, const char* inObjectType)
+RWXmlNode
+SROval::WriteSelf (RWXmlNode inParent, const char* inObjectType)
 {
-	SRObject::WriteSelf (fd, inObjectType);
+    RWXmlNode me = SRObject::WriteSelf (inParent, inObjectType);
 
 	if (mThickness != 1)
-		fprintf (fd, " thickness=\"%g\"", mThickness);
+		me.SetAttribute (u"thickness", mThickness);
 	if (mLineColor != cBlackColor)
-		fprintf (fd, " lineColor=\"%s\"", (const char*) mLineColor);
+		me.SetAttribute (u"lineColor", mLineColor.ToString());
 	if (mFill /* && mFillColor != cWhiteColor */)
-		fprintf (fd, " fillColor=\"%s\"", (const char*) mFillColor);
-
-	return;
-}
-
-XMLElement*
-SROval::WriteSelf (XMLElement *inParent, const char* inObjectType)
-{
-    XMLElement	*me = SRObject::WriteSelf (inParent, inObjectType);
-
-	if (mThickness != 1)
-		me->SetAttribute ("thickness", mThickness);
-	if (mLineColor != cBlackColor)
-		me->SetAttribute ("lineColor", (const char*) mLineColor);
-	if (mFill /* && mFillColor != cWhiteColor */)
-		me->SetAttribute ("fillColor", (const char*) mFillColor);
+		me.SetAttribute (u"fillColor", mFillColor.ToString());
 
 	return me;
 }
@@ -1215,7 +1083,7 @@ SROval::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropFlags:		return false;
 
 		case PSObjPropFill:			outValue.SetInteger (mFill); break;
-		case PSObjPropFillColor:	outValue.SetXMLText ((const char*) mFillColor); break;
+		case PSObjPropFillColor:	outValue.SetText (mFillColor.ToString()); break;
 
 		default:					return SRLine::GetProperty (id, outValue);
 	}
@@ -1251,7 +1119,7 @@ SROval::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 SRRect*
-SRRect::Create (SRReportData *inReport, XMLElement *inNode, long inOrder)
+SRRect::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SRRect	*rect = new SRRect (inReport, inOrder);
 	rect->LoadXML (inNode);
@@ -1286,24 +1154,14 @@ SRRect::~SRRect (void)
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-void
-SRRect::Write (FILE *fd, bool inIsInBody, bool inUseCalculator)
-{
-	WriteSelf (fd, "Rect");
-	fprintf (fd, " />\r\n");
-
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRRect::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
+RWXmlNode
+SRRect::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
-    XMLElement	*me = WriteSelf (inParent, "Rect");
+    RWXmlNode me = WriteSelf (inParent, "Rect");
 
 	return me;
 }
@@ -1313,31 +1171,17 @@ SRRect::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-void
-SRRect::WriteSelf (FILE *fd, const char* inObjectType)
+RWXmlNode
+SRRect::WriteSelf (RWXmlNode inParent, const char* inObjectType)
 {
-	SROval::WriteSelf (fd, inObjectType);
-	if (mRows != 1)
-		fprintf (fd, " rows=\"%ld\"", mRows);
-	if (mCols != 1)
-		fprintf (fd, " cols=\"%ld\"", mCols);
-	if (mFlags != RWRect_Full)
-		fprintf (fd, " flags=\"%d\"", mFlags);
-
-	return;
-}
-
-XMLElement*
-SRRect::WriteSelf (XMLElement *inParent, const char* inObjectType)
-{
-    XMLElement	*me = SROval::WriteSelf (inParent, inObjectType);
+    RWXmlNode me = SROval::WriteSelf (inParent, inObjectType);
 
 	if (mRows != 1)
-		me->SetAttribute ("rows", (int)mRows);
+		me.SetAttribute (u"rows", (int)mRows);
 	if (mCols != 1)
-		me->SetAttribute ("cols", (int)mCols);
+		me.SetAttribute (u"cols", (int)mCols);
 	if (mFlags != RWRect_Full)
-		me->SetAttribute ("flags", mFlags);
+		me.SetAttribute (u"flags", mFlags);
 
 	return me;
 }
@@ -1400,7 +1244,7 @@ SRRect::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 SRPict*
-SRPict::Create (SRReportData *inReport, XMLElement *inNode, long inOrder)
+SRPict::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SRPict	*pict = new SRPict (inReport, inOrder);
 	pict->LoadXML (inNode);
@@ -1448,11 +1292,11 @@ SRPict::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 
 	if (inNode)
 	{
-        XMLElement	*elem = inNode->FirstChildElement (sPictDataProperties [0]);
+		RWXmlNode	elem = inNode.Child (RWStr::FromASCII (sPictDataProperties [0]));
 		if (elem)
 		{
 			int				kind = RWValue::eValue_BLOB;
-			const CXMLText	fmt = elem->Attribute (sPictDataProperties [1]);
+			const RWString	fmt = elem.Attr (RWStr::FromASCII (sPictDataProperties [1]));
 			if (!fmt.empty())
 			{
 				long	lVal = RWTools::FindInList (fmt, RWValue::GetPictFormats());
@@ -1475,24 +1319,16 @@ SRPict::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 // ---------------------------------------------------------------------------
 
 #if 0
-void
-SRPict::Write (FILE *fd, bool inIsInBody, bool inUseCalculator)
-{
-	WriteSelf (fd, "Pict");
-	fprintf (fd, " />\r\n");
-
-	return;
-}
 #endif
 
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRPict::Write ( XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
+RWXmlNode
+SRPict::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
-    XMLElement	*me = WriteSelf (inParent, "Pict");
+    RWXmlNode me = WriteSelf (inParent, "Pict");
 
 	return me;
 }
@@ -1503,45 +1339,10 @@ SRPict::Write ( XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 // ---------------------------------------------------------------------------
 
 #if 0
-void
-SRPict::WriteSelf (FILE *fd, const char* inObjectType)
-{
-	if (mDataID == 0 && mPicture.GetKind() >= RWValue::eValue_PictRefScreen)
-	{
-		mDataID = GetDataSource().EmitPicture (mPicture);
-		mPicture.Free();
-	}
-
-	SROval::WriteSelf (fd, inObjectType);
-//	if (mExpandH)
-//		fprintf (fd, " expandH=\"1\"");
-	if (mExpandV)
-		fprintf (fd, " expandV=\"1\"");
-	if (mDataID != 0)
-		fprintf (fd, " dataID=\"%lu\"", mDataID);
-	if (mFormat != 0)
-		fprintf (fd, " format=\"%d\"", mFormat);
-    if (mObjectRotation != 0)
-        fprintf (fd, " rotation=\"%g\"", mObjectRotation);
-    if (mFillColor != cEmptyColor)
-        fprintf (fd, " fillColor=\"%s\"", (const char*) mFillColor);
-
-	if (mFrame)
-	{
-		fprintf (fd, " frame=\"1\"");
-		if (mFrameOffset != 2)
-			fprintf (fd, " frameOffset=\"%g\"", mFrameOffset);
-		if (mThickness != 1)
-			fprintf (fd, " frameThickness=\"%g\"", mThickness);
-		if (mLineColor != cBlackColor)
-			fprintf (fd, " frameColor=\"%s\"", (const char*) mLineColor);
-	}
-	return;
-}
 #endif
 
-XMLElement*
-SRPict::WriteSelf (XMLElement *inParent, const char* inObjectType)
+RWXmlNode
+SRPict::WriteSelf (RWXmlNode inParent, const char* inObjectType)
 {
 	if (mDataID == 0 && mPicture.GetKind() >= RWValue::eValue_PictRefScreen)
 	{
@@ -1549,29 +1350,29 @@ SRPict::WriteSelf (XMLElement *inParent, const char* inObjectType)
 		mPicture.Free();
 	}
 
-    XMLElement	*me = SRObject::WriteSelf (inParent, inObjectType);
+    RWXmlNode me = SRObject::WriteSelf (inParent, inObjectType);
 //	if (mExpandH)
-//		me->SetAttribute ("expandH", 1);
+//		me.SetAttribute (u"expandH", 1);
 	if (mExpandV)
-		me->SetAttribute ("expandV", 1);
+		me.SetAttribute (u"expandV", 1);
 	if (mDataID != 0)
-		me->SetAttribute ("dataID", (int)mDataID);
+		me.SetAttribute (u"dataID", (int)mDataID);
 	if (mFormat != 0)
-		me->SetAttribute ("format", mFormat);
+		me.SetAttribute (u"format", mFormat);
     if (mObjectRotation != 0)
-        me->SetAttribute ("rotation", mObjectRotation);
+        me.SetAttribute (u"rotation", mObjectRotation);
     if (mFillColor != cEmptyColor )
-        me->SetAttribute ("fillColor", (const char*) mFillColor);
+        me.SetAttribute (u"fillColor", mFillColor.ToString());
 
 	if (mFrame)
 	{
-		me->SetAttribute ("frame", 1);
+		me.SetAttribute (u"frame", 1);
 		if (mFrameOffset != 2)
-			me->SetAttribute ("frameOffset", mFrameOffset);
+			me.SetAttribute (u"frameOffset", mFrameOffset);
 		if (mThickness != 1)
-			me->SetAttribute ("frameThickness", mThickness);
+			me.SetAttribute (u"frameThickness", mThickness);
 		if (mLineColor != cBlackColor)
-			me->SetAttribute ("frameColor", (const char*) mLineColor);
+			me.SetAttribute (u"frameColor", mLineColor.ToString());
 	}
 
 	return me;
@@ -1588,7 +1389,7 @@ SRPict::GetProperty (OSType id, RWValue &outValue)
 	switch (id)
 	{
 		case PSObjPropFrameThickness:	outValue.SetReal (mThickness); break;	// same as PSObjPropThickness in SROval
-		case PSObjPropFrameColor:		outValue.SetXMLText ((const char*) mLineColor); break;	// same as PSObjPropLineColor in SROval
+		case PSObjPropFrameColor:		outValue.SetText (mLineColor.ToString()); break;	// same as PSObjPropLineColor in SROval
 
 //		case PSObjPropExpandH:			outValue.SetBoolean (mExpandH); break;
 		case PSObjPropExpandV:			outValue.SetBoolean (mExpandV); break;
@@ -1597,7 +1398,7 @@ SRPict::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropFrameOffset:		outValue.SetReal (mFrameOffset); break;
 		case PSObjPropData:				outValue.Attach (mPicture); break;
         case PSObjPropObjectRotation:   outValue.SetReal (mObjectRotation); break;
-        case PSObjPropBackColor:        outValue.SetXMLText ((const char*) mFillColor); break;
+        case PSObjPropBackColor:        outValue.SetText (mFillColor.ToString()); break;
 
 		default:						return SROval::GetProperty (id, outValue);
 	}
@@ -1655,7 +1456,7 @@ SRPict::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 SRText*
-SRText::Create (SRReportData *inReport, XMLElement *inNode, long inOrder)
+SRText::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SRText	*text = new SRText (inReport, inOrder);
 	text->LoadXML (inNode);
@@ -1742,44 +1543,14 @@ SRText::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 // ---------------------------------------------------------------------------
 
 #if 0
-void
-SRText::Write (FILE *fd, bool inIsInBody, bool inUseCalculator)
-{
-	RWTextValue	text;
-	bool		oldDynamic = mIsDynamic;
-	if (mIsDynamic)
-		text = ParseText (mIsDynamic);
-	else
-		text = LocalizeText();
-
-	WriteSelf (fd, "Text");
-
-	if (text && *text)
-	{
-		fprintf (fd, ">");
-		RWTools::WriteText (fd, text);
-		fprintf (fd, "</Text>\r\n");
-	}
-	else
-		fprintf (fd, " />\r\n");
-
-	mIsDynamic = oldDynamic;
-	if (mIsDynamic)
-		text.Free();
-	else
-		mText.Attach (text.Detach());	// no need to copy...
-	
-	
-	return;
-}
 #endif
 
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRText::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
+RWXmlNode
+SRText::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
 	RWTextValue		text;
 	bool			oldDynamic = mIsDynamic;
@@ -1790,7 +1561,7 @@ SRText::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 		text = LocalizeText();
 
 
-    XMLElement	*me = WriteSelf (inParent, "Text");
+    RWXmlNode me = WriteSelf (inParent, "Text");
 
 	if (!text.IsEmpty())
 		RWTools::WriteText (me, text);
@@ -1810,68 +1581,36 @@ SRText::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 // ---------------------------------------------------------------------------
 
 #if 0
-void
-SRText::WriteSelf (FILE *fd, const char* inObjectType)
-{
-	SRObject::WriteSelf (fd, inObjectType);
-
-	if (mStyleID != 0)
-		fprintf (fd, " style=\"%ld\"", mStyleID);
-//	if (mExpandH)
-//		fprintf (fd, " expandH=\"1\"");
-	if (mExpandV)
-		fprintf (fd, " expandV=\"1\"");
-	if (mIsDynamic)
-		fprintf (fd, " dynamic=\"1\"");
-	if (mIsAttributed)
-		fprintf (fd, " attributed=\"1\"");
-	if (mKeepTogether)
-		fprintf (fd, " keepTogether=\"1\"");
-	if (mDrawIfEmpty != eEmpty_Draw)
-		fprintf (fd, " empty=\"%d\"", (int) mDrawIfEmpty);	// sEmpty [mDrawIfEmpty]
-	if (mFrame)
-	{
-		fprintf (fd, " frame=\"1\"");
-		if (mFrameOffset != 2)
-			fprintf (fd, " frameOffset=\"%g\"", mFrameOffset);
-		if (mThickness != 1)
-			fprintf (fd, " frameThickness=\"%g\"", mThickness);
-		if (mLineColor != cBlackColor)
-			fprintf (fd, " frameColor=\"%s\"", (const char*) mLineColor);
-	}
-
-	return;
-}
 #endif
 
-XMLElement*
-SRText::WriteSelf (XMLElement *inParent, const char *inObjectType)
+RWXmlNode
+SRText::WriteSelf (RWXmlNode inParent, const char *inObjectType)
 {
-    XMLElement	*me = SRObject::WriteSelf (inParent, inObjectType);
+    RWXmlNode me = SRObject::WriteSelf (inParent, inObjectType);
 
 	if (mStyleID != 0)
-		me->SetAttribute ("style", (int)mStyleID);
+		me.SetAttribute (u"style", (int)mStyleID);
 //	if (mExpandH)
-//		me->SetAttribute ("expandH", 1);
+//		me.SetAttribute (u"expandH", 1);
 	if (mExpandV)
-		me->SetAttribute ("expandV", 1);
+		me.SetAttribute (u"expandV", 1);
 	if (mIsDynamic)
-		me->SetAttribute ("dynamic", 1);
+		me.SetAttribute (u"dynamic", 1);
 	if (mIsAttributed)
-		me->SetAttribute ("attributed", 1);
+		me.SetAttribute (u"attributed", 1);
 	if (mKeepTogether)
-		me->SetAttribute ("keepTogether", 1);
+		me.SetAttribute (u"keepTogether", 1);
 	if (mDrawIfEmpty != eEmpty_Draw)
-		me->SetAttribute ("empty", (int) mDrawIfEmpty);		// sEmpty [mDrawIfEmpty]
+		me.SetAttribute (u"empty", (int) mDrawIfEmpty);		// sEmpty [mDrawIfEmpty]
 	if (mFrame)
 	{
-		me->SetAttribute ("frame", 1);
+		me.SetAttribute (u"frame", 1);
 		if (mFrameOffset != 2)
-			me->SetAttribute ("frameOffset", mFrameOffset);
+			me.SetAttribute (u"frameOffset", mFrameOffset);
 		if (mThickness != 1)
-			me->SetAttribute ("frameThickness", mThickness);
+			me.SetAttribute (u"frameThickness", mThickness);
 		if (mLineColor != cBlackColor)
-			me->SetAttribute ("frameColor", (const char*) mLineColor);
+			me.SetAttribute (u"frameColor", mLineColor.ToString());
 	}
 
 	return me;
@@ -1888,7 +1627,7 @@ SRText::GetProperty (OSType id, RWValue &outValue)
 	switch (id)
 	{
 		case PSObjPropFrameThickness:	outValue.SetReal (mThickness); break;	// same as PSObjPropThickness in SROval
-		case PSObjPropFrameColor:		outValue.SetXMLText ((const char*) mLineColor); break;	// same as PSObjPropLineColor in SROval
+		case PSObjPropFrameColor:		outValue.SetText (mLineColor.ToString()); break;	// same as PSObjPropLineColor in SROval
 
 		case PSObjPropStyle:			outValue.SetInteger (mStyleID); break;
 //		case PSObjPropExpandH:			outValue.SetBoolean (mExpandH); break;
@@ -1935,7 +1674,7 @@ SRText::SetProperty (OSType id, RWValue &inValue)
 			if (SetIntegerProperty (inValue, mStyleID, 0))
 			{
 				RWStyleList * styles = GetReportData()->GetStyles();
-				RWStyle	*style = new RWStyle (styles, NULL);
+				RWStyle	*style = new RWStyle (styles, RWXmlNode());
 				if (mStyleID > GetReportData()->GetLastStyle())	//mbs 20052011
 					mStyleID = 0;
 				style->Clear (mStyleID);
@@ -1991,10 +1730,10 @@ const
 	if (not mText.IsEmpty())
 	{
 		long	textLen = mText.StrLength();
-		CText	localized (mText, textLen);
-		
+		RWString	localized (mText);		// was "(mText, textLen)": empty unless XLIFF replaced it
+
 		(void) RWTools::ParseTextForXLIFF (mText, textLen, localized);
-		text.Attach (localized.c_str());
+		text = localized;
 	}
 	
 	return text;
@@ -2019,10 +1758,10 @@ const
 		long	textLen = mText.StrLength();
 		long	curPos = 0, delta = 0, endPos;
 
-		CText	result (mText, textLen);
-		CText   varName;
-		CText   format;
-	
+		RWString	result (mText);		// was "(mText, textLen)": the substring *from* textLen, i.e. empty
+		RWString	varName;
+		RWString	format;
+
 		while (curPos < textLen && RWTools::ParseTextForVar (mIsAttributed, mText, textLen, curPos, endPos, varName, format))
 		{
 			if (GetReportWriter()->IsRWReportVariable (varName))
@@ -2034,43 +1773,28 @@ const
 			}
 			else
 			{
-				const CText	varname = varName;
-				bool		encode = mIsAttributed;
-				if (!varname.empty() && varname[0] == '+')
+				RWStringView	varname = varName;
+				bool			encode = mIsAttributed;
+				if (!varname.empty() && varname[0] == u'+')
 				{
-                    varname.erase(0, 1);;
+					varname.remove_prefix (1);
 					encode = false;
 				}
-				RWTextValue	varText;
+				RWString	varText;
 				if (!varname.empty())
-					varText = GetVariableText (varname, format;
+					varText = GetVariableText (RWString (varname), format);
 				varName.clear();
 				format.clear();
-				size_t	varLen;
-				if (varText)
-					varLen = varText.StrLength();
-				else
-					varLen = 0;
+
 				result.erase (curPos - delta, endPos - curPos);
-				if (varLen > 0)
-				{
-					if (encode)
-					{
-						CXMLText	encoded;
-						CText	    us (varText, varLen);
-						TiXmlBase::PutString ((const char*) us.GetUTF8(), &encoded);
-						us.AssignUTF8 ((const UTF8Char*) encoded.c_str(), encoded.length());
-						result.Insert (curPos - delta, us);
-						varLen = us.StrLength();
-					}
-					else
-						result.Insert (curPos - delta, varText, varLen);
-				}
-				delta += endPos - curPos - varLen;
+				if (encode)
+					varText = RWTools::EscapeAttributedString (varText);
+				result.insert (curPos - delta, varText);
+				delta += endPos - curPos - (long) varText.size();
 				curPos = endPos;
 			}
 		}
-		text.Attach (result.Release());
+		text = result;
 	}
 
 	return text;
@@ -2083,12 +1807,12 @@ const
 // ---------------------------------------------------------------------------
 
 SRVariable*
-SRVariable::Create (SRReportData *inReport, XMLElement *inNode, long inOrder)
+SRVariable::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SRVariable	*var = new SRVariable (inReport, inOrder);
 	var->LoadXML (inNode);
 
-	if (var->mSource)
+	if (!var->mSource.empty())
 		var->mVar = var->GetReportWriter()->CreateVariable (var->mSource, var->mIndex, var->mCalcType);
 
 	return var;
@@ -2163,7 +1887,7 @@ SRVariable::Reset (void)
 void
 SRVariable::FetchValue (bool inUseOld)
 {
-	if (mScript != NULL)
+	if (!mScript.Get().empty())
 		GetDataSource().RunScript (mScript, this);
 
 //	if (mCalcShow)
@@ -2201,165 +1925,14 @@ SRVariable::FetchCalcValue (void)
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-void
-SRVariable::Write (FILE *fd, bool inIsInBody, bool inUseCalculator)
-{
-	
-	if (mRepeat != eRepeat_None)
-	{
-		// output a Table object
-		if (mDataID == 0)
-			mDataID = GetDataSource().EmitRepeating (mVar, mRepeat == eRepeat_Horizontally);
-		SRObject::WriteSelf (fd, "Table");
-		fprintf (fd, " dataID=\"%lu\"", mDataID);
-		if (not mFrame)
-			fprintf (fd, " frame=\"0\"");
-		if (mRepeat == eRepeat_Horizontally)
-		{
-			fprintf (fd, " cols=\"%ld\">\r\n", mVar->GetSize());
-			fprintf (fd, "<Columns height=\"%g\">\r\n", mPosition.Height());
-			fprintf (fd, "<col id=\"0\" grid=\"0\" width=\"%g\"", mPosition.Width() + mRepeatOffset);
-		}
-		else
-		{
-			fprintf (fd, " cols=\"1\">\r\n");
-			fprintf (fd, "<Columns height=\"%g\">\r\n", mPosition.Height() + mRepeatOffset);
-			fprintf (fd, "<col id=\"0\" grid=\"0\" width=\"%g\"", mPosition.Width());
-		}
-		if (not mFormat.IsEmpty())
-		{
-			CXMLText		name = mFormat.ToXML();
-			TIXML_STRING	tsname (name);
-			mFormat.FreeXML (name);
-			TIXML_STRING	encoded;
-			TiXmlBase::PutString (tsname, &encoded);
-			fprintf (fd, " format=\"%s\"", encoded.c_str());
-		}
-		if (mStyleID != 0)
-			fprintf (fd, " style=\"%ld\"", mStyleID);
-		fprintf (fd, " />\r\n");
-		fprintf (fd, "</Columns>\r\n");
-		fprintf (fd, "</Table>\r\n");
-	}
-	else if (GetReportWriter()->IsRWReportVariable (mSource))
-	{
-		WriteSelf (fd, "Var");
-		fprintf (fd, " source=\"");
-		RWTools::WriteText (fd, mSource);
-		fputc ('"', fd);
-		if (not mFormat.IsEmpty())
-		{
-			fprintf (fd, " format=\"");
-			RWTools::WriteText (fd, mFormat);
-			fputc ('"', fd);
-		}
-		fprintf (fd, " />\r\n");
-	}
-	else
-	{
-		const char*	type;
-
-		if (mCalcType != ECalcType_None)
-		{
-			if (inUseCalculator)
-			{
-				WriteSelf (fd, type = "Var");
-				fprintf (fd, " source=\"");
-				RWTools::WriteText (fd, mSource);
-				fprintf (fd, "\" calc=\"%ld\"", long (mCalcType));
-				if (not mFormat.IsEmpty() && mValue.GetKind() < RWValue::eValue_PictRefScreen)
-				{
-					fprintf (fd, " format=\"");
-					RWTools::WriteText (fd, mFormat);
-					fputc ('"', fd);
-				}
-			}
-			else
-				WriteSelf (fd, type = "Text");
-		}
-		else if (mValue.GetKind() >= RWValue::eValue_PictRefScreen)
-		{
-			if (mDataID == 0)	// || (mVar != NULL && mVar->IsChanged()))
-				mDataID = GetDataSource().EmitPicture (mValue);
-			SRObject::WriteSelf (fd, type = "Pict");
-			if (mDataID != 0)
-				fprintf (fd, " dataID=\"%lu\"", mDataID);
-			if (not mFormat.IsEmpty())
-			{
-				CXMLText		name = mFormat.ToXML();
-				TIXML_STRING	tsname (name);
-				mFormat.FreeXML (name);
-				TIXML_STRING	encoded;
-				TiXmlBase::PutString (tsname, &encoded);
-				fprintf (fd, " format=\"%s\"", encoded.c_str());
-			}
-			if (mFrame)
-				fprintf (fd, " frame=\"1\"");
-//			if (mExpandH)
-//				fprintf (fd, " expandH=\"1\"");
-			if (mExpandV)
-				fprintf (fd, " expandV=\"1\"");
-		}
-		else
-			WriteSelf (fd, type = "Text");
-
-		if (inIsInBody && inUseCalculator && GetReportWriter()->IsCalculatedVariable (mSource))
-		{
-			fprintf (fd, " var=\"");
-			RWTools::WriteText (fd, mSource);
-			fputc ('"', fd);
-
-			switch (mValue.GetKind())
-			{
-				case RWValue::eValue_Boolean:
-				case RWValue::eValue_Integer:
-				case RWValue::eValue_DateTime:
-				case RWValue::eValue_Date:
-				case RWValue::eValue_Time:
-					fprintf (fd, " val=\"%ld\"", mValue.GetInteger());
-					break;
-
-				case RWValue::eValue_Real:
-					fprintf (fd, " val=\"%.15lg\"", mValue.GetReal());
-					break;
-
-				default:	// to shut up compiler - calculated value can't be of any other kind...
-					break;
-			}
-		}
-
-		if (mValue.GetKind() < RWValue::eValue_PictRefScreen)
-		{
-			mText.Free();
-			mText = GetReportWriter()->FormatVariable (mValue, mFormat);
-
-			if (not mText.IsEmpty())
-			{
-				fprintf (fd, ">");
-				RWTools::WriteText (fd, mText);
-				fprintf (fd, "</%s>\r\n", type);
-			}
-			else
-				fprintf (fd, " />\r\n");
-		}
-		else
-			fprintf (fd, " />\r\n");
-	}
-
-	
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRVariable::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
+RWXmlNode
+SRVariable::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
-    XMLElement	*me = NULL;
-	CXMLText		xml;
+	RWXmlNode	me;
 
 	if (mRepeat != eRepeat_None)
 	{
@@ -2367,38 +1940,29 @@ SRVariable::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 		if (mDataID == 0)
 			mDataID = GetDataSource().EmitRepeating (mVar, mRepeat == eRepeat_Horizontally);
 		me = SRObject::WriteSelf (inParent, "Table");
-		me->SetAttribute ("dataID", mDataID);
+		me.SetAttribute (u"dataID", mDataID);
 		if (not mFrame)
-			me->SetAttribute ("frame", 0);
-		me->SetAttribute ("cols", mRepeat == eRepeat_Horizontally ? mVar->GetSize() : 1);
+			me.SetAttribute (u"frame", 0);
+		me.SetAttribute (u"cols", mRepeat == eRepeat_Horizontally ? mVar->GetSize() : 1);
 
-        XMLElement	elem ("col");
-		elem.SetAttribute ("id", 0);
-		elem.SetAttribute ("grid", 0);
-		elem.SetAttribute ("width", mRepeat == eRepeat_Horizontally ? mPosition.Width() + mRepeatOffset : mPosition.Width());
+		RWXmlNode	columns = me.Append (u"Columns");
+		columns.SetAttribute (u"height", mRepeat == eRepeat_Horizontally ? mPosition.Height() : mPosition.Height() + mRepeatOffset);
+		RWXmlNode	elem = columns.Append (u"col");
+		elem.SetAttribute (u"id", 0);
+		elem.SetAttribute (u"grid", 0);
+		elem.SetAttribute (u"width", mRepeat == eRepeat_Horizontally ? mPosition.Width() + mRepeatOffset : mPosition.Width());
 		if (not mFormat.IsEmpty())
-		{
-			xml = mFormat.ToXML();
-			elem.SetAttribute ("format", xml);
-			mFormat.FreeXML (xml);
-		}
+			elem.SetAttr (u"format", mFormat);
 		if (mStyleID != 0)
-			elem.SetAttribute ("style", mStyleID);
-        XMLElement columns ("Columns");
-		columns.SetAttribute ("height", mRepeat == eRepeat_Horizontally ? mPosition.Height() : mPosition.Height() + mRepeatOffset);
-		me->InsertEndChild (columns)->InsertEndChild (elem);
+			elem.SetAttribute (u"style", mStyleID);
 	}
 	else if (GetReportWriter()->IsRWReportVariable (mSource))
 	{
 		me = WriteSelf (inParent, "Var");
-		xml = mSource.ToXML();
-		me->SetAttribute ("source", xml);
-		mSource.FreeXML (xml);
+		me.SetAttr (u"source", mSource);
 		if (not mFormat.IsEmpty())
 		{
-			xml = mFormat.ToXML();
-			me->SetAttribute ("format", xml);
-			mFormat.FreeXML (xml);
+			me.SetAttr (u"format", mFormat);
 		}
 	}
 	else
@@ -2408,15 +1972,11 @@ SRVariable::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 			if (inUseCalculator)
 			{
 				me = WriteSelf (inParent, "Var");
-				xml = mSource.ToXML();
-				me->SetAttribute ("source", xml);
-				mSource.FreeXML (xml);
-				me->SetAttribute ("calc", long (mCalcType));
+				me.SetAttr (u"source", mSource);
+				me.SetAttribute (u"calc", long (mCalcType));
 				if (not mFormat.IsEmpty() && mValue.GetKind() < RWValue::eValue_PictRefScreen)
 				{
-					xml = mFormat.ToXML();
-					me->SetAttribute ("format", xml);
-					mFormat.FreeXML (xml);
+					me.SetAttr (u"format", mFormat);
 				}
 			}
 			else
@@ -2428,28 +1988,24 @@ SRVariable::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 				mDataID = GetDataSource().EmitPicture (mValue);
 			me = SRObject::WriteSelf (inParent, "Pict");
 			if (mDataID != 0)
-				me->SetAttribute ("dataID", mDataID);
+				me.SetAttribute (u"dataID", mDataID);
 			if (not mFormat.IsEmpty())
 			{
-				xml = mFormat.ToXML();
-				me->SetAttribute ("format", xml);
-				mFormat.FreeXML (xml);
+				me.SetAttr (u"format", mFormat);
 			}
 			if (mFrame)
-				me->SetAttribute ("frame", 1);
+				me.SetAttribute (u"frame", 1);
 //			if (mExpandH)
-//				me->SetAttribute ("expandH", 1);
+//				me.SetAttribute (u"expandH", 1);
 			if (mExpandV)
-				me->SetAttribute ("expandV", 1);
+				me.SetAttribute (u"expandV", 1);
 		}
 		else
 			me = WriteSelf (inParent, "Text");
 
 		if (inIsInBody && inUseCalculator && GetReportWriter()->IsCalculatedVariable (mSource))
 		{
-			xml = mSource.ToXML();
-			me->SetAttribute ("var", xml);
-			mSource.FreeXML (xml);
+			me.SetAttr (u"var", mSource);
 			switch (mValue.GetKind())
 			{
 				case RWValue::eValue_Boolean:
@@ -2457,11 +2013,11 @@ SRVariable::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 				case RWValue::eValue_DateTime:
 				case RWValue::eValue_Date:
 				case RWValue::eValue_Time:
-					me->SetAttribute ("val", mValue.GetInteger());
+					me.SetAttribute (u"val", mValue.GetInteger());
 					break;
 
 				case RWValue::eValue_Real:
-					me->SetAttribute ("val", mValue.GetReal());
+					me.SetAttribute (u"val", mValue.GetReal());
 					break;
 
 				default:	// to shut up compiler - calculated value can't be of any other kind...
@@ -2502,7 +2058,7 @@ SRVariable::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropFormat:			outValue.SetText (mFormat); break;
 		case PSObjPropElement:			outValue.SetInteger (mIndex); break;
 		case PSObjPropCalcType:			outValue.SetInteger (long (mCalcType)); break;
-		case PSObjPropRepeat:			outValue.SetXMLText (sRepeat [mRepeat]);break;						
+		case PSObjPropRepeat:			outValue.SetText (RWStr::FromASCII (sRepeat [mRepeat]));break;						
 		case PSObjPropRepeatOffset:		outValue.SetReal (mRepeatOffset); break;
 		case PSObjPropScript:			outValue.SetText (mScript); break;
 
@@ -2561,8 +2117,7 @@ const SRObject*
 SRVariable::FindCalculatedObject (const CText inName)
 const
 {
-	SConstText	name (inName);
-	if (mCalcType == ECalcType_None && name == SConstText (mSource))
+	if (mCalcType == ECalcType_None && inName == mSource)
 		return this;
 	return NULL;
 }
@@ -2574,12 +2129,12 @@ const
 // ---------------------------------------------------------------------------
 
 SRField*
-SRField::Create (SRReportData *inReport, XMLElement *inNode, long inOrder)
+SRField::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SRField	*field = new SRField (inReport, inOrder);
 	field->LoadXML (inNode);
 
-	if (field->mSource)
+	if (!field->mSource.empty())
 		field->mVar = field->GetReportWriter()->CreateField (field->mSource, field->mCalcType);
 
 	return field;
@@ -2613,7 +2168,7 @@ SRField::~SRField (void)
 void
 SRField::FetchValue (bool inUseOld)
 {
-	if (mScript != NULL)
+	if (!mScript.Get().empty())
 		GetDataSource().RunScript (mScript, this);
 
 //	if (mCalcShow)

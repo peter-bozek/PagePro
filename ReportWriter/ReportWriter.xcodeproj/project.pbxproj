@@ -30,7 +30,6 @@
 		D226108A2B3DB5A400CFC83D /* SRDataFormatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */; };
 		D226108B2B3DB5A400CFC83D /* SR4DData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226106A2B3DB5A400CFC83D /* SR4DData.cpp */; };
 		D226108C2B3DB5A400CFC83D /* RW4DText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226106B2B3DB5A400CFC83D /* RW4DText.cpp */; };
-		D26A53B130112B07008C98A1 /* SRDataFormatter 2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26A53B030112B07008C98A1 /* SRDataFormatter 2.cpp */; };
 		D26EBFA92AF2736E001E7074 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */; };
 		D26EBFAA2AF2736E001E7074 /* xmltest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFA72AF2736E001E7074 /* xmltest.cpp */; };
 		D26EBFEC2AF274EE001E7074 /* RWCTPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */; };
@@ -135,7 +134,6 @@
 		D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRDataFormatter.cpp; sourceTree = "<group>"; };
 		D226106A2B3DB5A400CFC83D /* SR4DData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SR4DData.cpp; sourceTree = "<group>"; };
 		D226106B2B3DB5A400CFC83D /* RW4DText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RW4DText.cpp; sourceTree = "<group>"; };
-		D26A53B030112B07008C98A1 /* SRDataFormatter 2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "SRDataFormatter 2.cpp"; sourceTree = "<group>"; };
 		D26EBFA42AF26D4A001E7074 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml2.cpp; sourceTree = "<group>"; };
 		D26EBFA72AF2736E001E7074 /* xmltest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmltest.cpp; sourceTree = "<group>"; };
@@ -363,7 +361,6 @@
 				D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */,
 				D226106A2B3DB5A400CFC83D /* SR4DData.cpp */,
 				D226106B2B3DB5A400CFC83D /* RW4DText.cpp */,
-				D26A53B030112B07008C98A1 /* SRDataFormatter 2.cpp */,
 			);
 			path = SRP;
 			sourceTree = SOURCE_ROOT;
@@ -639,7 +636,6 @@
 				D26EC01B2AF274EF001E7074 /* RWTextFormatter.cpp in Sources */,
 				D26EC0062AF274EF001E7074 /* RWSection.cpp in Sources */,
 				D26EBFFF2AF274EF001E7074 /* RWDataSourceProvider.cpp in Sources */,
-				D26A53B130112B07008C98A1 /* SRDataFormatter 2.cpp in Sources */,
 				18B684FF06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp in Sources */,
 				D26EBFFA2AF274EE001E7074 /* RWDataProvider.cpp in Sources */,
 				D226106D2B3DB5A400CFC83D /* SRSection.cpp in Sources */,

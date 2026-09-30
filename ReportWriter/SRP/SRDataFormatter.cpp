@@ -1,110 +1,109 @@
 # include	"SRDataFormatter.h"
 # include	"4DPluginAPI.h"
 # include   "RWBaseTypes.h"
+# include	"RWString4D.h"
 
-#include <sstream>
+#include <ctime>
 #include <string>
 
-using namespace std;
 // using namespace	FourDAPIEx;
 
 namespace	SRDataFormatter	{
 
 
-RWTextValue	FormatVariable (const RWValue &inVar, const CText inFormat)
+// ---------------------------------------------------------------------------
+// Format4D																[local]
+// ---------------------------------------------------------------------------
+// 4D writes at most 255 characters into the result buffer
+
+namespace
 {
-    CText					buf;
-	UTF16Char				empty[1] = { '\0' };
-	RWValue::EValue_Kind	kind = inVar.GetKind();
-	CText					format = (inFormat);
+	const	size_t	k4DResultSize = 256;
 
-/*
-	UTF16Char				*format = NULL;
-	long					fmtSize = 0;
-	long					textSize = 0;
-	if (	inFormat
-		&&	*inFormat
-		&&	(fmtSize = CText::StrLength ((const CText) inFormat)) <= 255
-		&&	(	kind == RWValue::eValue_Boolean
-			||	kind == RWValue::eValue_Integer
-			||	kind == RWValue::eValue_Real
-			||	(	kind == RWValue::eValue_Text
-				&&	not inVar.IsEmpty()
-				&&	(textSize = CText::StrLength ((const CText) inVar.GetText())) <= 80
-				)
-			||	kind == RWValue::eValue_Date
-			||	kind == RWValue::eValue_Time
-			)
-	)
+	RWString	FormatLongint (long inValue, const RWString &inFormat)
 	{
-		CText	fmt (inFormat, CText::_nullTerminated_);	// convert UTF8/UTF16 to UniChar
-		format = fmt.CopyCStr (inEncoding);					// convert UniChar to MacRoman for use by 4D
+		PA_Unichar	result [k4DResultSize] = { 0 };
+		PA_FormatLongint ((PA_long32) inValue, RWStr::ToPA (inFormat), result);
+		return RWStr::FromPA (result);
 	}
-*/
 
-	switch (kind)
+	RWString	FormatReal (double inValue, const RWString &inFormat)
+	{
+		PA_Unichar	result [k4DResultSize] = { 0 };
+		PA_FormatReal (inValue, RWStr::ToPA (inFormat), result);
+		return RWStr::FromPA (result);
+	}
+
+	RWString	FormatDate (long inDate, short inFormat)
+	{
+		// day: 0 - 31 ==> 5 bits
+		// month: 0 - 12 ==> 4 bits
+		// day | (month << 5) | (year << 9)
+		PA_Unichar	result [k4DResultSize] = { 0 };
+		PA_FormatDate (short (inDate & 0x1F), short ((inDate >> 5) & 0xF), short (inDate >> 9), inFormat, result);
+		return RWStr::FromPA (result);
+	}
+
+	RWString	FormatTime (long inTime, short inFormat)
+	{
+		PA_Unichar	result [k4DResultSize] = { 0 };
+		PA_FormatTime ((PA_long32) inTime, inFormat, result);	// HH:MM:SS
+		return RWStr::FromPA (result);
+	}
+}
+
+
+// ---------------------------------------------------------------------------
+// FormatVariable
+// ---------------------------------------------------------------------------
+
+RWString	FormatVariable (const RWValue &inVar, RWStringView inFormat)
+{
+	RWString	buf;
+	RWString	format (inFormat);
+
+	switch (inVar.GetKind())
 	{
 		case RWValue::eValue_Undefined:
-            buf.assign ("", 0, 1);  // pB 2010-12 ###Undefined Value###");
-			break;
+			break;	// pB 2010-12 ###Undefined Value###
 
 		case RWValue::eValue_Boolean:
 		{
-#if	0
-			const UTF16Char	boolFmt[] = { 'T', 'r', 'u', 'e', ';', 'F', 'a', 'l', 's', 'e', 0 };
-			PA_FormatLongint (inVar.GetInteger() - 1, format ? format : const_cast <UTF16Char*> (boolFmt), buf.Get());
-#else
-			buf = format;
-			if (buf.length() == 0)
-				buf.assign ("True;False");
-			long	pos = buf.find (';', 0);
-			if (pos ==  string::npos)
+			// "text if true;text if false"
+			buf = format.empty() ? RWString (u"True;False") : format;
+			size_t	pos = buf.find (u';');
+			if (pos == RWString::npos)
 				pos = buf.length();
-			if (inVar.atoi())
+			if (inVar.GetBoolean())
 				buf.erase (pos);
 			else
 				buf.erase (0, pos + 1);
-#endif
 			break;
 		}
 
 		case RWValue::eValue_Integer:
-//			snprintf (result = buf, sizeof (buf), "%ld", inVar.GetInteger());
-			PA_FormatLongint (inVar.GetInteger(), format ? format : empty, buf.c_str());
+			buf = FormatLongint (inVar.GetInteger(), format);
 			break;
 
 		case RWValue::eValue_Real:
-//			snprintf (result = buf, sizeof (buf), "%.15lg", inVar.GetReal());
-			PA_FormatReal (inVar.GetReal(), format ? format : empty, buf.c_str());
+			buf = FormatReal (inVar.GetReal(), format);
 			break;
 
 		case RWValue::eValue_Text:
-//			result = inVar.fText;
-			if (format.length() > 0)
-				// PA_FormatString (const_cast <CText> (inVar.GetText()), format, buf.Get());
-				// PA_FormatString cannot format text values - implement only trivial formatting
+			if (!format.empty())
 			{
-				int stringIdx = 0;
-				CText	sourceStr (inVar.GetText());
-                CText formatting (format);
-				int stringLen = sourceStr.length();
-				int formatIdx;
-				for (formatIdx = 0; formatIdx < formatting.length(); formatIdx++)
+				// PA_FormatString cannot format text values - implement only trivial formatting:
+				// every '#' takes the next character of the text, the rest is appended
+				const RWString	&source = inVar.GetText();
+				size_t			used = 0;
+				for (char16_t ch : format)
 				{
-					if (formatting[formatIdx] == '#') {
-						if(stringIdx < stringLen)
-						{
-							buf.append(sourceStr[stringIdx]);
-							stringIdx++;
-						}
-					}
-					else {
-						buf.append(formatting[formatIdx]);
-					}
+					if (ch != u'#')
+						buf.push_back (ch);
+					else if (used < source.size())
+						buf.push_back (source[used++]);
 				}
-				if (stringIdx < stringLen) {
-                    buf.append(sourceStr.substr(stringIdx, stringLen - stringIdx));
-				}
+				buf.append (source, used, RWString::npos);
 			}
 			else
 				buf = inVar.GetText();
@@ -113,61 +112,31 @@ RWTextValue	FormatVariable (const RWValue &inVar, const CText inFormat)
 //••• TODO •••	parse textual string formats into numbers? Should be done probably on SRP conversion...
 		case RWValue::eValue_DateTime:
 		{
-			time_t	tim = (time_t) inVar.GetInteger();
-			struct	tm *lt = localtime (&tim);
-#if	0
-			PA_FormatDate (lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900, 8, buf.Get());	// DateTime
-			buf.UpdateLength();
-			PA_FormatTime (lt->tm_hour * 3600L + lt->tm_min * 60L + lt->tm_sec, 6, buf.Get() + buf.StrLength());	// DateTime
+			time_t		tim = (time_t) inVar.GetInteger();
+			struct tm	lt;
+#if	VERSIONWIN
+			localtime_s (&lt, &tim);
 #else
-			char	cbuf [128];
-			if (format.length() > 0)
-			{
-				buf = format;
-				strftime (cbuf, sizeof (cbuf), (const char*) buf.GetUTF8(), lt);
-			}
-			else
-				strftime (cbuf, sizeof (cbuf), "%Y-%m-%d %T %Z", lt);
-#if	WINVER
-			buf.AssignAscii (cbuf);
-#else
-			buf.AssignUTF8 ((const UTF8Char*) cbuf);
+			localtime_r (&tim, &lt);
 #endif
-#endif
+			char		cbuf [128];
+			std::string	fmt = format.empty() ? std::string ("%Y-%m-%d %H:%M:%S %Z") : RWStr::ToUTF8 (format);
+			size_t		len = strftime (cbuf, sizeof (cbuf), fmt.c_str(), &lt);
+			buf = RWStr::FromUTF8 (std::string_view (cbuf, len));
 			break;
 		}
 
 //••• TODO •••	parse textual string formats into numbers? Should be done probably on SRP conversion...
 		case RWValue::eValue_Date:
-		{	// day: 0 - 31 ==> 5 bits
-			// month: 0 - 12 ==> 4 bits
-			// day | (month << 5) | (year << 9)
-//			snprintf (result = buf, sizeof (buf), "%04d-%02d-%02d", inVar.GetInteger() >> 9, (inVar.GetInteger() >> 5) & 0xF, inVar.GetInteger() & 0x1F);
-			int	fmt = 0;
-			// if (format && *format >= '1' && *format <= '9' && format[1] == 0)
-			//	fmt = *format - '0';
-			if (format.length() > 0) {
-				CText s  = format;
-				fmt = atoi(s.c_str());
-			}
-			PA_FormatDate (inVar.GetInteger() & 0x1F, (inVar.GetInteger() >> 5) & 0xF, inVar.GetInteger() >> 9, fmt, buf.Get());	// Short
+			buf = FormatDate (inVar.GetInteger(), (short) RWStr::ToInteger (format).value_or (0));	// 0 = short
 			break;
-		}
 
 		case RWValue::eValue_Time:
-		{
-//			snprintf (result = buf, sizeof (buf), "%02d.%02d.%02d", inVar.GetInteger() / 3600, inVar.GetInteger() / 60 % 60, inVar.GetInteger() % 60);
-			int	fmt = 0;
-			if (format.length() > 0) {
-				CText s  = format;
-				fmt = atoi(s.GetCStr());
-			}
-			PA_FormatTime (inVar.GetInteger(), fmt, buf.Get());	// HH:MM:SS
+			buf = FormatTime (inVar.GetInteger(), (short) RWStr::ToInteger (format).value_or (0));
 			break;
-		}
 
 		case RWValue::eValue_BLOB:
-			buf.AssignAscii ("###BLOB Value###");
+			buf = u"###BLOB Value###";
 			break;
 
 		case RWValue::eValue_PictRefScreen:
@@ -178,16 +147,15 @@ RWTextValue	FormatVariable (const RWValue &inVar, const CText inFormat)
 		case RWValue::eValue_PicturePNG:
 		case RWValue::eValue_PictureTIFF:
 		case RWValue::eValue_PictureEMF:
-			buf.AssignAscii ("###Picture Value###");
+			buf = u"###Picture Value###";
 			break;
 
 		default:
-			buf.AssignAscii ("###Unknown Data Type###");
+			buf = u"###Unknown Data Type###";
 			break;
 	}
 
-	RWTextValue	re (buf.Release());
-	return re;
+	return buf;
 }
 
 

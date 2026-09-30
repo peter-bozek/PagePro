@@ -17,9 +17,7 @@ SRReportWriter::SRReportWriter (SRDataSource &inDataSource, SRReportData &inData
 		mFlags (inFlags & ~1),	//mbs 05112010
 		mBreakLevels (-1),
 		mCurrentIteration (0),
-		mOutFile (0),
-		mOutXML (0),
-		mOutXMLRoot (0)
+		mOutXML (NULL)
 {
 	mSource.SetReportWriter (this);
 	mData.SetReportWriter (this);
@@ -342,7 +340,7 @@ Yield4D();
 
 	if (mOutXML != NULL)
 	{
-		mOutXMLRoot = mData.Write (mOutXML);
+		mOutXMLRoot = mData.Write (*mOutXML);
 		mSource.Write (mOutXMLRoot);
 	}
 
@@ -360,39 +358,29 @@ Yield4D();
 
 
 // ---------------------------------------------------------------------------
-// ReportToFile														  [public]
+// ReportToXML														  [public]
 // ---------------------------------------------------------------------------
-// Generate the report
+// Generate the report as an RWXML document ("Report" root element).
+// The old version returned NULL: ReportToFile deleted the document it built.
 
-void
-SRReportWriter::ReportToFile (FILE *fd)
+std::unique_ptr<RWXmlDocument>
+SRReportWriter::ReportToXML (void)
 {
-	mOutXML = new XMLDocument ("Untitled.ppxml");
-	Report();
-	if (mOutXML) {
-		XMLPrinter printer(fd);
-		mOutXML->Print(&printer);
-		delete mOutXML;
-		mOutXML = NULL;
-		mOutXMLRoot = NULL;
+	std::unique_ptr<RWXmlDocument>	doc (new RWXmlDocument);
+
+	mOutXML = doc.get();
+	try
+	{
+		Report();
 	}
-	return;
-}
-
-
-// ---------------------------------------------------------------------------
-// Report															  [public]
-// ---------------------------------------------------------------------------
-// Generate the report
-
-XMLDocument*
-SRReportWriter::ReportToXML (FILE *fd)
-{
-	mOutXML = new XMLDocument ("Untitled.ppxml");
-	ReportToFile (fd);
-	XMLDocument*	doc = mOutXML;
+	catch (...)
+	{
+		mOutXML = NULL;
+		mOutXMLRoot = RWXmlNode();
+		throw;
+	}
 	mOutXML = NULL;
-	mOutXMLRoot = NULL;
+	mOutXMLRoot = RWXmlNode();
 
 	return doc;
 }
@@ -441,9 +429,7 @@ SRReportWriter::InitBreakTable (void)
 		&&	mData.GetBodySection()->NeedsProcessing()
 	)
 	{
-		auto_ptr <char>	aBreaks (new char [mBreakLevels + 1]);
-		char	*breaks = aBreaks.get();
-		memset (breaks, 0, (mBreakLevels + 1) * sizeof (char));
+		std::vector<char>	breaks (size_t (mBreakLevels + 1), 0);
 
 		sections = mData.GetBreakHeaders();
 		for (sit = sections->begin(); sit != sections->end(); sit++)
@@ -465,7 +451,7 @@ SRReportWriter::InitBreakTable (void)
 		{
 			if (breaks [breakLevel] == 1)	// only header is present?
 			{
-				sec = new SRBreakSection (&mData, "BreakFooter", breakLevel);
+				sec = new SRBreakSection (&mData, u"BreakFooter", breakLevel);
 				sections->push_back (sec);
 			}
 		}

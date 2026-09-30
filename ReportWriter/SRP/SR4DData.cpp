@@ -1,4 +1,5 @@
 # include	"SR4DData.h"
+# include	"RWString4D.h"
 # include	"4DPluginAPI.h"
 // using namespace    FourDAPIEx;
 
@@ -125,32 +126,29 @@ SR4DData::GetPictureFrom4D (void *ph, RWValue &outValue, bool inForPDF)
 			u = PA_GetPictureData (ph, index, NULL);
 			if (PA_GetLastError() != 0)
 				break;
-            CText	        s = PA_GetUnistring (&u);
-			long			l = PA_GetUnistringLength (&u);
-            
-            // convert s to lowercase?
-            
-            if (s.find((UniChar *) u".pict", 1) != string::npos)
+			RWString	s = RWStr::FromPA (&u);
+
+			if (s.find (u".pict", 1) != RWString::npos)
 			{
 				best = index;
 				bestKind = RWValue::eValue_PicturePICT;
 			}
-			else if (s.find(".pdf;", 1) != string::npos)
+			else if (s.find (u".pdf;", 1) != RWString::npos)
 			{
 				best = index;
 				bestKind = RWValue::eValue_PicturePDF;
 			}
-			else if (s.find(".jpg;", 1) != string::npos)
+			else if (s.find (u".jpg;", 1) != RWString::npos)
 			{
 				best = index;
 				bestKind = RWValue::eValue_PictureJPG;
 			}
-			else if (s.find(".png;", 1) != string::npos)
+			else if (s.find (u".png;", 1) != RWString::npos)
 			{
 				best = index;
 				bestKind = RWValue::eValue_PicturePNG;
 			}
-			else if (s.find(".tif;", 1) != string::npos)
+			else if (s.find (u".tif;", 1) != RWString::npos)
 			{
 				best = index;
 				bestKind = RWValue::eValue_PictureTIFF;
@@ -266,32 +264,15 @@ SR4DData::GetCurrentPicture (void *ph)
 
 SR4DVariable::SR4DVariable (const CText inName, long inIndex)
 	:	SR4DData(),
-#ifdef	const CText_IsChar
-		mName (0),
-#endif
 		mIndex (inIndex)
 {
-	if (inName)
+	if (!inName.empty() && inName[0] == u'=')	//mbs 17062010
 	{
-
-#ifdef	const CText_IsChar
-		if (*inName == '=')
-		{
-			mIndex = SR4DVariable_Expression;
-			inName++;
-		}
-		CText t (reinterpret_cast <const UTF8Char*> (inName), CText::_nullTerminated_, true);
-		mName = t.Release();
-#else
-		if (*inName == '=')	//mbs 17062010
-		{
-			mIndex = SR4DVariable_Expression;
-			mName = inName + 1;
-		}
-		else
-			mName = inName;
-#endif
+		mIndex = SR4DVariable_Expression;
+		mName = inName.substr (1);
 	}
+	else
+		mName = inName;
 	return;
 }
 
@@ -299,11 +280,6 @@ SR4DVariable::SR4DVariable (const CText inName, long inIndex)
 
 SR4DVariable::~SR4DVariable (void)
 {
-#ifdef	const CText_IsChar
-	if (mName)
-		::free (mName);
-#endif
-
 	return;
 }
 
@@ -321,16 +297,16 @@ SR4DVariable::Fetch (long inIteration, bool inSeek)
 		PA_Variable	v;
 		if (mIndex == SR4DVariable_Expression)	//mbs 17062010
 		{
-			PA_Unistring	ustr = PA_CreateUnistring (mName);	
+			PA_Unistring	ustr = RWStr::CreatePA (mName);	
 			v = PA_ExecuteFunction (&ustr);
 			PA_DisposeUnistring (&ustr);
 		}
 		else
 		{
-			v = PA_GetVariable (mName);
+			v = PA_GetVariable (RWStr::ToPA (mName));
 			if (PA_GetVariableKind (v) == eVK_Undefined)
 			{
-				PA_Unistring	ustr = PA_CreateUnistring (mName);
+				PA_Unistring	ustr = RWStr::CreatePA (mName);
 				v = PA_ExecuteFunction (&ustr);
 				PA_DisposeUnistring (&ustr);
 			}
@@ -387,8 +363,7 @@ SR4DVariable::Fetch (long inIteration, bool inSeek)
 					CText t (PA_GetUnistring (&u4d), PA_GetUnistringLength (&u4d));
 					mCurrent.SetText ((CText) t.u8_str(), true);
 				#else
-					RWTextValue	t ((const CText) PA_GetUnistring (&u4d));	//mbs 13122009	need a copy!
-					mCurrent.SetText (t.Detach(), true);
+					mCurrent.SetText (RWStr::FromPA (&u4d));
 				#endif
 				PA_DisposeUnistring (&u4d);
 				break;
@@ -444,8 +419,7 @@ SR4DVariable::Fetch (long inIteration, bool inSeek)
 								CText t (PA_GetUnistring (&u4d), PA_GetUnistringLength (&u4d));
 								mCurrent.SetText ((CText) t.CopyUTF8(), true);
 							#else
-								RWTextValue	t ((const CText) PA_GetUnistring (&u4d));	//mbs 13122009	need a copy!
-								mCurrent.SetText (t.Detach(), true);
+								mCurrent.SetText (RWStr::FromPA (&u4d));
 							#endif
 							break;
 						}
@@ -523,8 +497,7 @@ SR4DField::Fetch (long inIteration, bool inSeek)
 						CText t (PA_GetUnistring (&u4d), PA_GetUnistringLength (&u4d));
 						mCurrent.SetText ((CText) t.CopyUTF8(), true);
 					#else
-						RWTextValue	t ((const CText) PA_GetUnistring (&u4d));	//mbs 13122009	need a copy!
-						mCurrent.SetText (t.Detach(), true);
+						mCurrent.SetText (RWStr::FromPA (&u4d));
 					#endif
 					PA_DisposeUnistring (&u4d);
 					break;

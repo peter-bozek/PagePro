@@ -20,6 +20,7 @@
 # include	"pugixml.hpp"
 
 # include	<iterator>
+# include	<type_traits>
 # include	<utility>
 # include	<vector>
 
@@ -98,6 +99,11 @@ public:
 	void				SetAttrBool (RWStringView inName, bool inValue);		// written as 1 / 0
 	bool				RemoveAttr (RWStringView inName);
 
+	// typed setter: bool as 1 / 0 (what the readers parse), integers in decimal,
+	// float as "%.8g", double as "%.15g", text as is
+	template <class T>
+	void				SetAttribute (RWStringView inName, const T &inValue);
+
 	// text content: first text child of an element (pugixml "text()")
 	RWString			Text (void) const;
 	void				SetText (RWStringView inText);
@@ -127,6 +133,22 @@ private:
 };
 
 inline	RWXmlNode	RWXmlElementIterator::operator * (void) const	{ return RWXmlNode (mNode); }
+
+template <class T>
+void
+RWXmlNode::SetAttribute (RWStringView inName, const T &inValue)
+{
+	if constexpr (std::is_same<T, bool>::value)
+		SetAttrBool (inName, inValue);
+	else if constexpr (std::is_enum<T>::value || std::is_integral<T>::value)
+		SetAttrInt (inName, (long long) inValue);
+	else if constexpr (std::is_same<T, float>::value)
+		SetAttrDouble (inName, (double) inValue, "%.8g");		// float precision, no "0.100000001"
+	else if constexpr (std::is_floating_point<T>::value)
+		SetAttrDouble (inName, (double) inValue, "%.15g");
+	else
+		SetAttr (inName, RWStringView (inValue));
+}
 
 
 struct	RWXmlResult

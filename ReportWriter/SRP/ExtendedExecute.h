@@ -82,7 +82,7 @@ enum exec_condition {
 
 class ExecLine   {
 public:
-					ExecLine (UTF16Char* line, int len);
+					ExecLine (const char16_t* line, int len);
 					~ExecLine (void);
 	void			InsertCommand (char * block, int size);
 	void			InsertCondition (char * block, int size);
@@ -128,7 +128,7 @@ typedef std::stack<Tokens*>		ExecStack;
 class ExtendedExecute
 {
 public:
-				ExtendedExecute (UTF16Char* method, long len);
+				ExtendedExecute (const PA_Unichar* method, long len);
 				ExtendedExecute (const ExtendedExecute &inOther);	//mbs 05112010
 				ExtendedExecute (void);
 				~ExtendedExecute (void);
@@ -152,9 +152,9 @@ public:
 
 	
 private:
-	int			ParseStatement (UTF16Char* method, char * &outTokens, int &outLen);
-	int			ParseForStatement (UTF16Char* method, char * &outTokensInit, int &outLenInit, char * &outTokensAdd, int &outLenAdd, char * &outTokensCond, int &outLenCond);
-	ExecLine *	ExecLineFactory (UTF16Char* methodLine, long len, char * tokens, int tokensLen, int &ioIndent);
+	int			ParseStatement (const char16_t* method, char * &outTokens, int &outLen);
+	int			ParseForStatement (const char16_t* method, char * &outTokensInit, int &outLenInit, char * &outTokensAdd, int &outLenAdd, char * &outTokensCond, int &outLenCond);
+	ExecLine *	ExecLineFactory (const char16_t* methodLine, long len, char * tokens, int tokensLen, int &ioIndent);
 	
 	void		LogParsing (void);
 protected:

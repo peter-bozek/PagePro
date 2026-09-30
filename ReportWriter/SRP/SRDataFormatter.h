@@ -6,7 +6,8 @@
 
 namespace	SRDataFormatter
 {
-	RWTextValue		FormatVariable (const RWValue &inVar, const CText inFormat);
+	// value as text, formatted by 4D (numbers, dates, times) or by the simple rules below
+	RWString		FormatVariable (const RWValue &inVar, RWStringView inFormat);
 }
 
 #endif

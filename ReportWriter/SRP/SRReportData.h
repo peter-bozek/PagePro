@@ -17,11 +17,11 @@ class	SRReportData
 friend class	SRReportWriter;
 	
 public:
-									SRReportData (XMLDocument *inXML);
+									SRReportData (RWXmlDocument *inXML);
 	virtual							~SRReportData (void);
 
 inline			SRReportWriter	*	GetReportWriter (void) const;
-		const	XMLElement	*	    GetReport (void) const;
+		RWXmlNode				GetReport (void) const;
 				const CText			GetName (void) const;
 //inline			SRSectionList	*	GetSections (void);
 inline			SRSectionList	*	GetPageSections (void);
@@ -45,12 +45,12 @@ inline			bool				IsSimple (void) const;
 protected:
 inline			void				SetReportWriter (SRReportWriter *inReportWriter);
 				void				ParseReport (void);
-                XMLElement*		    Write (XMLDocument *outXML) const;
+                RWXmlNode				Write (RWXmlDocument &outXML) const;
 
 private:
-				void				ParseStyleSet (XMLElement *inStyleSet);
-				void				ParseSection (XMLElement *inSection);
-				void				ParseObjects (SRObjListD *inParent, XMLElement *inObject);
+				void				ParseStyleSet (RWXmlNode inStyleSet);
+				void				ParseSection (RWXmlNode inSection);
+				void				ParseObjects (SRObjListD *inParent, RWXmlNode inObject);
 //				void				ParseDataSource (XMLElement *inNode);
 
 			// defensive programming - not implemented
@@ -61,7 +61,7 @@ private:
 private:
 static	const PSObjProps	sProperties[];
 		SRReportWriter	*	mReportWriter;
-		XMLDocument 	*	mXML;
+		RWXmlDocument	*		mXML;
 		RWTextValue			mName;
 		RWTextValue			mID;
 

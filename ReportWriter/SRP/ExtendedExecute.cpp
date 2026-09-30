@@ -8,6 +8,7 @@
  */
 
 # include	"ExtendedExecute.h"
+# include	"RWString4D.h"
 
 FILE * fileref;
 
@@ -15,7 +16,7 @@ FILE * fileref;
  ExecLine		constructor
  */
 
-ExecLine::ExecLine (UTF16Char* line, int len) :
+ExecLine::ExecLine (const char16_t* line, int len) :
 mIndent (0)		,
 mCondition (ex_plain),
 mTrueLine (-1)		,
@@ -118,7 +119,7 @@ ExecLine::ExecuteCondition (void)
  ExtendedExecute constructor
 */
 
-ExtendedExecute::ExtendedExecute (UTF16Char* method, long len) : mMethod (method, len) 
+ExtendedExecute::ExtendedExecute (const PA_Unichar* method, long len) : mMethod (RWStr::FromPA (method, size_t (len))) 
 {
 	// Init(); init need to be done before execution - coditions are evaluaded here pB 2010-12
 }
@@ -196,16 +197,16 @@ ExtendedExecute::Init (void)
 		while (pos <= mMethod.length()) {
 			// find end of line (\r or \n)
 			std::size_t lineEnd = pos;
-			while (lineEnd < mMethod.length() && mMethod[lineEnd] != static_cast<UniChar>('\r') && mMethod[lineEnd] != static_cast<UniChar>('\n')) {
+			while (lineEnd < mMethod.length() && mMethod[lineEnd] != u'\r' && mMethod[lineEnd] != u'\n') {
 				lineEnd++;
 			}
 
 			if (lineEnd > pos) {
 				CText temp = mMethod.substr(pos, lineEnd - pos);
 				// Append a comment marker to make sure tokenization succeeds consistently
-				temp += RWTextValue::UTF_8_to_UTF16(" //");
+				temp += RWString (u" //");
 
-				PA_Unistring ustr = PA_CreateUnistring (const_cast<PA_Unichar*>(temp.c_str()));
+				PA_Unistring ustr = RWStr::CreatePA (temp);
 				char * tokens = 0;
 				int tokenLen = PA_Tokenize (&ustr, tokens);
 				tokens = new char [tokenLen];
@@ -213,7 +214,7 @@ ExtendedExecute::Init (void)
 				PA_DisposeUnistring (&ustr);
 
 				PA_Unistring normLine = PA_Detokenize (tokens, tokenLen);
-				ExecLine* newline =  ExecLineFactory (PA_GetUnistring (&normLine), PA_GetUnistringLength (&normLine), tokens, tokenLen, indent);
+				ExecLine* newline =  ExecLineFactory (reinterpret_cast <const char16_t*> (PA_GetUnistring (&normLine)), PA_GetUnistringLength (&normLine), tokens, tokenLen, indent);
 				PA_DisposeUnistring (&normLine);
 
 				mLines.push_back (newline);
@@ -223,13 +224,13 @@ ExtendedExecute::Init (void)
 			if (lineEnd >= mMethod.length()) break;
 			std::size_t nextPos = lineEnd + 1;
 			if (nextPos < mMethod.length()) {
-				UniChar c = mMethod[nextPos - 1];
-				UniChar c2 = mMethod[nextPos];
-				if ((c == static_cast<UniChar>('\r') && c2 == static_cast<UniChar>('\n')) || (c == static_cast<UniChar>('\n') && c2 == static_cast<UniChar>('\r'))) {
+				char16_t c = mMethod[nextPos - 1];
+				char16_t c2 = mMethod[nextPos];
+				if ((c == u'\r' && c2 == u'\n') || (c == u'\n' && c2 == u'\r')) {
 					nextPos++;
 				}
 			}
-			pos = (lineEnd < mMethod.length()) ? (lineEnd + 1) : mMethod.length();
+			pos = nextPos;	// past "\r\n" too
 		}
 
 		// Set up jumps after lines are created
@@ -245,7 +246,7 @@ ExtendedExecute::Init (void)
 double
 ExtendedExecute::EvaluateExpression (CText &expression)
 {
-	PA_Unistring	ustr = PA_CreateUnistring (const_cast<PA_Unichar*>(expression.c_str()));
+	PA_Unistring	ustr = RWStr::CreatePA (expression);
 	char *			tokens = 0;
 	int				tokenLen = PA_Tokenize (&ustr, tokens);
 	tokens = new char [tokenLen];
@@ -427,13 +428,13 @@ ExtendedExecute::SetJumps (void)
 }
 
 int	
-ExtendedExecute::ParseStatement (UTF16Char* method, char * &outTokens, int &outLen)
+ExtendedExecute::ParseStatement (const char16_t* method, char * &outTokens, int &outLen)
 {
 	CText		line (method);
 
 	// Find '(' and ')', using standard string ops
-	std::basic_string<UniChar>::size_type fromPos = line.find(static_cast<UniChar>('('));
-	std::basic_string<UniChar>::size_type toPos = line.rfind(static_cast<UniChar>(')'));
+	size_t fromPos = line.find(u'(');
+	size_t toPos = line.rfind(u')');
 
 	if (toPos == CText::npos) {
 		if (!line.empty()) toPos = line.length() - 1;
@@ -443,7 +444,7 @@ ExtendedExecute::ParseStatement (UTF16Char* method, char * &outTokens, int &outL
 		if (toPos >= fromPos) {
 			CText			cond = line.substr(fromPos, toPos - fromPos + 1);
 
-			PA_Unistring	ustr = PA_CreateUnistring (const_cast<PA_Unichar*>(cond.c_str()));
+			PA_Unistring	ustr = RWStr::CreatePA (cond);
 			char *			tokens = 0;
 			int				tokenLen = PA_Tokenize (&ustr, tokens);
 
@@ -462,12 +463,12 @@ ExtendedExecute::ParseStatement (UTF16Char* method, char * &outTokens, int &outL
 }
 
 int	
-ExtendedExecute::ParseForStatement (UTF16Char* method, char * &outTokensInit, int &outLenInit, char * &outTokensAdd, int &outLenAdd, char * &outTokensCond, int &outLenCond)
+ExtendedExecute::ParseForStatement (const char16_t* method, char * &outTokensInit, int &outLenInit, char * &outTokensAdd, int &outLenAdd, char * &outTokensCond, int &outLenCond)
 {
 	CText		line (method);
 
-	std::basic_string<UniChar>::size_type fromPos = line.find(static_cast<UniChar>('('));
-	std::basic_string<UniChar>::size_type toPos = line.rfind(static_cast<UniChar>(')'));
+	size_t fromPos = line.find(u'(');
+	size_t toPos = line.rfind(u')');
 	if (toPos == CText::npos) {
 		toPos = line.length();
 	}
@@ -480,57 +481,57 @@ ExtendedExecute::ParseForStatement (UTF16Char* method, char * &outTokensInit, in
 		CText			part4;
 		double			step;
 
-		std::basic_string<UniChar>::size_type delim1 = condition.find(static_cast<UniChar>(';'));
+		size_t delim1 = condition.find(u';');
 		if (delim1 != CText::npos) {
 			part1 = condition.substr(0, delim1);
 		}
 
-		std::basic_string<UniChar>::size_type delim2 = condition.find(static_cast<UniChar>(';'), (delim1 == CText::npos ? 0 : delim1 + 1));
+		size_t delim2 = condition.find(u';', (delim1 == CText::npos ? 0 : delim1 + 1));
 		if (delim2 != CText::npos) {
 			part2 = condition.substr(delim1 + 1, delim2 - delim1 - 1);
 			if (part2.length() == 0) {
-				part2 = RWTextValue::UTF_8_to_UTF16("0x01");
+				part2 = RWString (u"0x01");
 			}
 		}
 
-		std::basic_string<UniChar>::size_type delim3 = condition.find(static_cast<UniChar>(';'), delim2 == CText::npos ? 0 : delim2 + 1);
+		size_t delim3 = condition.find(u';', delim2 == CText::npos ? 0 : delim2 + 1);
 		if (delim3 != CText::npos) {
 			part3 = condition.substr(delim2 + 1, delim3 - delim2 - 1);
 			part4 = condition.substr(delim3 + 1);
 			if (part4.length() == 0) {
-				part4 = RWTextValue::UTF_8_to_UTF16("0x01");
+				part4 = RWString (u"0x01");
 			}
 		} else {
 			part3 = condition.substr(delim2 + 1);
-			part4 = RWTextValue::UTF_8_to_UTF16("0x01");
+			part4 = RWString (u"0x01");
 		}
 
-		CText			init = part1 + RWTextValue::UTF_8_to_UTF16(":=") + part2;
+		CText			init = part1 + RWString (u":=") + part2;
 		CText			cond;
 
 		step = EvaluateExpression(part4);
 		if (fabs(step) < 1e-5) {
 			step = 1;
 
-			part4 = RWTextValue::UTF_8_to_UTF16("0x01");
+			part4 = RWString (u"0x01");
 		}
 		if (step >= 0)
-			cond = part1 + RWTextValue::UTF_8_to_UTF16("<=") + part3;
+			cond = part1 + RWString (u"<=") + part3;
 		else
-			cond = part1 + RWTextValue::UTF_8_to_UTF16(">=") + part3;
+			cond = part1 + RWString (u">=") + part3;
 
 		CText			incr;
 		if (step >= 0)
-			incr = part1 + RWTextValue::UTF_8_to_UTF16(":=") + part1 + RWTextValue::UTF_8_to_UTF16("+") + part4;
+			incr = part1 + RWString (u":=") + part1 + RWString (u"+") + part4;
 		else
-			incr = part1 + RWTextValue::UTF_8_to_UTF16(":=") + part1 + RWTextValue::UTF_8_to_UTF16("-") + part4;
+			incr = part1 + RWString (u":=") + part1 + RWString (u"-") + part4;
 
 
 		PA_Unistring	ustr;
 		char *			tokens = 0;
 		int				tokenLen;
 
-		ustr = PA_CreateUnistring (const_cast<PA_Unichar*>(init.c_str()));
+		ustr = RWStr::CreatePA (init);
 		tokenLen = PA_Tokenize (&ustr, tokens);
 		tokens = new char [tokenLen];
 		tokenLen = PA_Tokenize (&ustr, tokens);
@@ -539,7 +540,7 @@ ExtendedExecute::ParseForStatement (UTF16Char* method, char * &outTokensInit, in
 		outLenInit = tokenLen;
 
 		tokens = 0;
-		ustr = PA_CreateUnistring (const_cast<PA_Unichar*>(incr.c_str()));
+		ustr = RWStr::CreatePA (incr);
 		tokenLen = PA_Tokenize (&ustr, tokens);
 		tokens = new char [tokenLen];
 		tokenLen = PA_Tokenize (&ustr, tokens);
@@ -548,7 +549,7 @@ ExtendedExecute::ParseForStatement (UTF16Char* method, char * &outTokensInit, in
 		outLenAdd = tokenLen;
 
 		tokens = 0;
-		ustr = PA_CreateUnistring (const_cast<PA_Unichar*>(cond.c_str()));
+		ustr = RWStr::CreatePA (cond);
 		tokenLen = PA_Tokenize (&ustr, tokens);
 		tokens = new char [tokenLen];
 		tokenLen = PA_Tokenize (&ustr, tokens);
@@ -563,7 +564,7 @@ ExtendedExecute::ParseForStatement (UTF16Char* method, char * &outTokensInit, in
 }
 
 ExecLine *
-ExtendedExecute::ExecLineFactory (UTF16Char* methodLine, long len, char * tokens, int tokensLen, int &ioIndent) 
+ExtendedExecute::ExecLineFactory (const char16_t* methodLine, long len, char * tokens, int tokensLen, int &ioIndent) 
 {
 	ExecLine *	line = new ExecLine (methodLine, len);
 	char *	condition;

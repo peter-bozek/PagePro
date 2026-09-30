@@ -109,13 +109,13 @@ enum	ELicenceBits
 //# define	TARGET_BOMB	1325375999UL	// using date -ur gives us "Sat Dec 31 23:59:59 UTC 2011"
 # define	kDemoExpiry	1200UL			// seconds
 # define	kBaseXOR	0xA55ABAAB
-static const CText  	kPPVersion = (UniChar*) u"A010";
+static const CText  	kPPVersion = u"A010";
 //static const std::string_view kPPVersion = "A011";
 
 static	ELicense		sLicense = eLicense_Demo;
 static	unsigned long	sLicenseFlags = 0;
 static	unsigned long	sLicenseExpiry = 0;
-static	RWStyle			sLicenseStyle (NULL, NULL);
+static	RWStyle			sLicenseStyle (NULL, RWXmlNode());
 
 
 ELicense	RW_GetLicense (void)
@@ -361,25 +361,25 @@ ELicense	RW_SetLicense (const string &inLicense)
 
 void	RW_CheckLicense (RWPageComposer *inComposer, const SRect *inRect, bool inForPrinting)
 {
-    UniChar	*msg;
+	const char16_t	*msg;
 	switch (RW_GetLicense())
 	{
 //		case eLicense_Beta:				msg = "Beta version (" kVersionString ") of PagePro"; break;
-		case eLicense_Beta:				inForPrinting? msg = (UniChar*) u"BETA of PagePro": msg = (UniChar*) u"BETA"; break;
-		case eLicense_Demo:				inForPrinting? msg = (UniChar*) u"DEMO of PagePro": msg = (UniChar*) u"DEMO"; break;
-		case eLicense_ExpiredDemo:		inForPrinting? msg = (UniChar*) u"DEMO of PagePro": msg = (UniChar*) u"DEMO"; break;  // pB there is no expired demo
-		case eLicense_Expired:			inForPrinting? msg = (UniChar*) u"EXPIRED PagePro LICENSE": msg = (UniChar*) u"EXPIRED LICENSE"; break;
-		case eLicense_ExpiredOEM:		msg = (UniChar*) u"EXPIRED OEM LICENSE"; break;
+		case eLicense_Beta:				inForPrinting? msg = u"BETA of PagePro": msg = u"BETA"; break;
+		case eLicense_Demo:				inForPrinting? msg = u"DEMO of PagePro": msg = u"DEMO"; break;
+		case eLicense_ExpiredDemo:		inForPrinting? msg = u"DEMO of PagePro": msg = u"DEMO"; break;  // pB there is no expired demo
+		case eLicense_Expired:			inForPrinting? msg = u"EXPIRED PagePro LICENSE": msg = u"EXPIRED LICENSE"; break;
+		case eLicense_ExpiredOEM:		msg = u"EXPIRED OEM LICENSE"; break;
 		case eLicense_Invalid:
 		case eLicense_Environment:
-		case eLicense_UserCount:		inForPrinting? msg = (UniChar*) u"INVALID PagePro LICENSE": msg = (UniChar*) u"INVALID LICENSE"; break;
+		case eLicense_UserCount:		inForPrinting? msg = u"INVALID PagePro LICENSE": msg = u"INVALID LICENSE"; break;
 		default:						msg = NULL; break;
 	}
 	if (msg != 0)
 	{
 		CText	demo;
 		demo.assign (msg);
-		inComposer->DrawTextBox (demo.c_str(), &sLicenseStyle, *inRect, false, false, false, NULL);
+		inComposer->DrawTextBox (demo, &sLicenseStyle, *inRect, false, false, false, NULL);
 	}
 }
 

@@ -232,7 +232,7 @@ const
 // ---------------------------------------------------------------------------
 
 void
-SRHeader::Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID)
+SRHeader::Parse (SRReportData *inReport, RWXmlNode inNode, long inStyleID)
 {
 	mStyleID = inStyleID;
 
@@ -295,63 +295,31 @@ SRHeader::Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID)
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-void
-SRHeader::WriteSelf (FILE *fd, const char* inObjectType)
-{
-	fprintf (fd, "<%s", inObjectType);
-	if (mStyleID != 0)
-		fprintf (fd, " style=\"%ld\"", mStyleID);
-	if (mWidth != 0)
-		fprintf (fd, " width=\"%g\"", mWidth);
-	if (mHeight)
-		fprintf (fd, " height=\"%g\"", mHeight);
-	if (mColSpan > 1)
-		fprintf (fd, " colspan=\"%d\"", mColSpan);
-	if (mRowSpan > 1)
-		fprintf (fd, " rowspan=\"%d\"", mRowSpan);
-	if (mIsAttributed)
-		fprintf (fd, " attr=\"1\"");
-
-	if (not mParsedText.IsEmpty())
-	{
-		fprintf (fd, ">");
-		RWTools::WriteText (fd, mParsedText);
-		fprintf (fd, "</%s>\r\n", inObjectType);
-	}
-	else
-		fprintf (fd, " />\r\n");
-
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRHeader::WriteSelf ( XMLElement *inParent, const char *inObjectType)
+RWXmlNode
+SRHeader::WriteSelf (RWXmlNode inParent, const char *inObjectType)
 {
-    XMLElement	* elem = inParent->GetDocument()->NewElement(inObjectType);
+	RWXmlNode	elem = inParent.Append (RWStr::FromASCII (inObjectType));
 	if (mStyleID != 0)
-		elem->SetAttribute ("style", (int)mStyleID);
+		elem.SetAttribute (u"style", (int)mStyleID);
 	if (mWidth != 0)
-		elem->SetAttribute ("width", mWidth);
+		elem.SetAttribute (u"width", mWidth);
 	if (mHeight)
-		elem->SetAttribute ("height", mHeight);
+		elem.SetAttribute (u"height", mHeight);
 	if (mColSpan > 1)
-		elem->SetAttribute ("colspan", mColSpan);
+		elem.SetAttribute (u"colspan", mColSpan);
 	if (mRowSpan > 1)
-		elem->SetAttribute ("rowspan", mRowSpan);
+		elem.SetAttribute (u"rowspan", mRowSpan);
 	if (mIsAttributed)
-		elem->SetAttribute ("attr", 1);
-
-    XMLElement	*node = inParent->InsertEndChild (elem)->ToElement();
+		elem.SetAttribute (u"attr", 1);
 
 	if (not mParsedText.IsEmpty())
-		RWTools::WriteText (node, mParsedText);
+		RWTools::WriteText (elem, mParsedText);
 
-	return node;
+	return elem;
 }
 
 
@@ -429,51 +397,35 @@ SRHeader::ParseText (SRTable *inParent)
 		long	textLen = mText.StrLength();
 		long	curPos = 0, delta = 0, endPos;
 		
-		CText	result (mText);
+		RWString	result (mText);
 		if (mIsDynamic)
 		{
-			CText varName;
-			CText format;
+			RWString	varName;
+			RWString	format;
 			while (curPos < textLen && RWTools::ParseTextForVar (false, mText, textLen, curPos, endPos, varName, format))
 			{
-				const CText	varname = varName;
-				bool		encode = mIsAttributed;
-				if (!varname.empty() && varname[0] == '+')
+				RWStringView	varname = varName;
+				bool			encode = mIsAttributed;
+				if (!varname.empty() && varname[0] == u'+')
 				{
-					varname.erase(0, 1);
+					varname.remove_prefix (1);
 					encode = false;
 				}
-				RWTextValue	varText;
+				RWString	varText;
 				if (!varname.empty())
-					varText = inParent->GetVariableText (varname);
+					varText = inParent->GetVariableText (RWString (varname), format);
 				varName.clear();
 				format.clear();
-                
-				size_t	varLen;
-				if (varText)
-					varLen = varText.size();
-				else
-					varLen = 0;
-				result.clear (curPos - delta, endPos - curPos);
-				if (varLen > 0)
-				{
-					if (encode)
-					{
-						CXMLText	encoded;
-						CText	    us (varText, varLen);
-						TiXmlBase::PutString ((const char*) us.GetUTF8(), &encoded);
-						us.AssignUTF8 ((const UTF8Char*) encoded.c_str(), encoded.length());
-						result.Insert (curPos - delta, us);
-						varLen = us.StrLength();
-					}
-					else
-						result.Insert (curPos - delta, varText, varLen);
-				}
-				delta += endPos - curPos - varLen;
+
+				result.erase (curPos - delta, endPos - curPos);
+				if (encode)
+					varText = RWTools::EscapeAttributedString (varText);
+				result.insert (curPos - delta, varText);
+				delta += endPos - curPos - (long) varText.size();
 				curPos = endPos;
 			}
 		}
-		mParsedText.Attach (result.Release());
+		mParsedText = result;
 	}
 	return;
 }
@@ -667,7 +619,7 @@ SRColumn::SetID (long inID)
 // ---------------------------------------------------------------------------
 
 void
-SRColumn::Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID)
+SRColumn::Parse (SRReportData *inReport, RWXmlNode inNode, long inStyleID)
 {
 	mStyleID = inStyleID;
 
@@ -717,7 +669,7 @@ SRColumn::Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID)
 				mPrintRowNum = false;
 				mSource.FromXML (value);
 				if (mSource)
-					if (*mSource == '[')
+					if (mSource[0] == u'[')
 						mVar = inReport->GetReportWriter()->CreateField (mSource, ECalcType_None);
 					else
 						mVar = inReport->GetReportWriter()->CreateVariable (mSource, SR4DVariable::SR4DVariable_ArrayAuto, ECalcType_None);
@@ -753,7 +705,7 @@ SRColumn::Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID)
 	{
 		mPrintRowNum = false;
         if (not mSource.IsEmpty()) {
-			if (*mSource == '[')
+			if (mSource[0] == u'[')
 				mVar = inReport->GetReportWriter()->CreateField (mSource, ECalcType_None);
 			else
 				mVar = inReport->GetReportWriter()->CreateVariable (mSource, SR4DVariable::SR4DVariable_ArrayAuto, ECalcType_None);
@@ -767,68 +719,31 @@ SRColumn::Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID)
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-void
-SRColumn::WriteSelf (FILE *fd, const char* inObjectType)
-{
-	fprintf (fd, "<%s id=\"%ld\"", inObjectType, mId);
-	if (mStyleID != 0)
-		fprintf (fd, " style=\"%ld\"", mStyleID);
-	if (mWidth != 0)
-		fprintf (fd, " width=\"%g\"", mWidth);
-	if (not mGrid)
-		fprintf (fd, " grid=\"0\"");
-	if (not mFormat.IsEmpty())
-	{
-		CXMLText		name = mFormat.ToXML();
-		TIXML_STRING	tsname (name);
-		mFormat.FreeXML (name);
-		TIXML_STRING	encoded;
-		TiXmlBase::PutString (tsname, &encoded);
-		fprintf (fd, " format=\"%s\"", encoded.c_str());
-	}
-	if (mPrintRowNum)
-		fprintf (fd, " rownum=\"1\"");
-	if (mPrintRepeatingValues != 1)
-		fprintf (fd, " duplicates=\"0\"");
-	if (mIsAttributed)
-		fprintf (fd, " attr=\"1\"");
-	fprintf (fd, " />\r\n");
-
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRColumn::WriteSelf (XMLElement *inParent, const char *inObjectType)
+RWXmlNode
+SRColumn::WriteSelf (RWXmlNode inParent, const char *inObjectType)
 {
-		elem (inObjectType);
-	elem.SetAttribute ("id", mId);
+	RWXmlNode	elem = inParent.Append (RWStr::FromASCII (inObjectType));
+	elem.SetAttribute (u"id", mId);
 	if (mStyleID != 0)
-		elem.SetAttribute ("style", mStyleID);
+		elem.SetAttribute (u"style", mStyleID);
 	if (mWidth != 0)
-		elem.SetAttribute ("width", mWidth);
+		elem.SetAttribute (u"width", mWidth);
 	if (not mGrid)
-		elem.SetAttribute ("grid", 0L);
+		elem.SetAttribute (u"grid", 0);
 	if (not mFormat.IsEmpty())
-	{
-		CXMLText	xml = mFormat.ToXML();
-		elem.SetAttribute ("format", xml);
-		mFormat.FreeXML (xml);
-	}
+		elem.SetAttr (u"format", mFormat);
 	if (mPrintRowNum)
-		elem.SetAttribute ("rownum", 1L);
+		elem.SetAttribute (u"rownum", 1);
 	if (mPrintRepeatingValues != 1)
-		elem.SetAttribute ("duplicates", 0L);
+		elem.SetAttribute (u"duplicates", 0);
 	if (mIsAttributed)
-		elem.SetAttribute ("attr", 1);
+		elem.SetAttribute (u"attr", 1);
 
-	XMLNode	*node = inParent->InsertEndChild (elem);
-
-	return node->ToElement();
+	return elem;
 }
 
 
@@ -902,7 +817,7 @@ SRColumn::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 SRTable*
-SRTable::Create (SRReportData *inReport, XMLElement *inNode, long inOrder)
+SRTable::Create (SRReportData *inReport, RWXmlNode inNode, long inOrder)
 {
 	SRTable	*table = new SRTable (inReport, inOrder);
 	table->LoadXML (inNode);
@@ -952,55 +867,43 @@ SRTable::~SRTable (void)
 // ---------------------------------------------------------------------------
 
 void
-SRTable::ParseHeading (XMLElement *inNode)
+SRTable::ParseHeading (RWXmlNode inNode)
 {
 	mNumTopHeadings = 0;
 	mFixedColumns = true;
 
-    XMLElement	*elem;
-	XMLNode		*node, *next;
-
-	for (node = inNode->FirstChildElement ("tr"); node; node = next)
-	{
-		next = node->NextSibling();
-		elem = node->ToElement();
-		if (elem == NULL || !STR_EQUALS (elem->Value(), "tr"))
-			continue;
-		mNumTopHeadings++;
-	}
+	for (RWXmlNode row : inNode.Children())
+		if (STR_EQUALS (row.Name(), "tr"))
+			mNumTopHeadings++;
 
 	if (mNumTopHeadings > 0)
 	{
 		mHeaders = new SRHdrList [mNumTopHeadings];
 		int	line = 0;
 		int	numRows = 0, numCols = -1;
-		for (node = inNode->FirstChildElement ("tr"); node && line < mNumTopHeadings; node = next, line++)
+		for (RWXmlNode row : inNode.Children())
 		{
-			next = node->NextSibling();
-			elem = node->ToElement();
-			if (elem == NULL || !STR_EQUALS (elem->Value(), "tr"))
+			if (!STR_EQUALS (row.Name(), "tr"))
 				continue;
+			if (line >= mNumTopHeadings)
+				break;
 
-			long			styleID = mStyleID;
-			const char		*style = elem->Attribute ("style");
-			if (style)
+			long	styleID = mStyleID;
+			if (row.HasAttr (u"style"))
 			{
 				styleID = 0;
-				if (sscanf (style, "%li", &styleID) != 1)
+				if (!RWStr::ReadNumber (row.Attr (u"style"), styleID))
 					styleID = mStyleID;
 			}
-            XMLElement	*tdElem = elem->FirstChildElement ("td");
-			XMLNode		*tdNode, *tdNext;
-			int				thisLineNumCols = 0;
-			for (tdNode = tdElem; tdNode; tdNode = tdNext)
+
+			int		thisLineNumCols = 0;
+			for (RWXmlNode cell : row.Children())
 			{
-				tdNext = tdNode->NextSibling();
-				tdElem = tdNode->ToElement();
-				if (tdElem == NULL || !STR_EQUALS (tdElem->Value(), "td"))
+				if (!STR_EQUALS (cell.Name(), "td"))
 					continue;
 
 				SRHeader	*hdr = new SRHeader (this);
-				hdr->Parse (mReportData, tdElem, styleID);
+				hdr->Parse (mReportData, cell, styleID);
 				mHeaders [line].push_back (hdr);
 				thisLineNumCols += hdr->GetColSpan();
 				if (hdr->GetRowSpan() + line > numRows)
@@ -1010,6 +913,7 @@ SRTable::ParseHeading (XMLElement *inNode)
 				numCols = thisLineNumCols;
 			else
 				assert (numCols >= thisLineNumCols);
+			line++;
 		}
 		if (numCols > 0 && mNumColumns > 0)
 			assert (numCols == mNumColumns);
@@ -1034,125 +938,37 @@ SRTable::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 //	mFixedH = false;
 	mFixedV = false;
 
-	XMLAttribute	*attrib;
-#if	0
-//	mStyle = inReport->GetStyle (mStyleID);
-
-	for (attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next())
+	// "draw" other than 1 means the part is not drawn (DMTable support) - mbs 08122009
+	auto	drawn = [] (RWXmlNode inElem) -> bool
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
-
-		if (STR_EQUALS (name, "style"))
-		{
-			mStyleID = 0;
-			sscanf (value, "%li", &mStyleID);
-		}
-		else if (STR_EQUALS (name, "frame"))
-		{
-			sscanf (value, "%i", &mFrame);
-			if (mFrame < 0 || mFrame > 2)
-				mFrame = 1;
-		}
-		else if (STR_EQUALS (name, "frameOffset"))
-		{
-			mFrameOffset = 2;
-			sscanf (value, "%g", &mFrameOffset);
-			if (mFrameOffset < 0)
-				mFrameOffset = 0;
-			else if (mFrameOffset > 64)
-				mFrameOffset = 64;
-		}
-		else if (STR_EQUALS (name, "frameThickness"))
-		{
-			mFrameThickness = 0;
-			sscanf (value, "%g", &mFrameThickness);
-			if (mFrameThickness < 0 || mFrameThickness > 10)
-				mFrameThickness = 1;
-		}
-		else if (STR_EQUALS (name, "rowHeight"))
-		{
-			mRowHeight = 0;
-			sscanf (value, "%g", &mRowHeight);
-		}
-		else if (STR_EQUALS (name, "cols"))
-		{
-			mNumColumns = 0;
-			sscanf (value, "%i", &mNumColumns);
-		}
-	}
-
-    XMLElement	*elem = inNode->FirstChildElement ("Script");
-//	if (elem != NULL)
-//		GetDataSource().ParseScript (mScript, elem);
-#endif
-
-    XMLElement	*elem = inNode->FirstChildElement ("Head");
-
-	long		lVal;
-	const char	*cVal;
-	if (elem != NULL)
-	{
-		//mbs 08122009	don't parse if not drawn - support for DMTable
-		lVal = 1;
-		cVal = elem->Attribute ("draw");
-		if (cVal)
-		{
-			if (sscanf (cVal, "%li", &lVal) != 1)
-				lVal = 1;
-		}
-		if (lVal == 1)
-			ParseHeading (elem);	// fixed table heading
-		elem = inNode;
-	}
-//	else
-	{
-		elem = inNode->FirstChildElement ("Columns");
-		if (elem != NULL)
-		{
-			//mbs 08122009	don't parse if not drawn - support for DMTable
+		long	lVal = 1;
+		if (inElem.HasAttr (u"draw") && !RWStr::ReadNumber (inElem.Attr (u"draw"), lVal))
 			lVal = 1;
-			cVal = elem->Attribute ("draw");
-			if (cVal)
-			{
-				if (sscanf (cVal, "%li", &lVal) != 1)
-					lVal = 1;
-			}
-			if (lVal != 1)
-				elem = NULL;
-		}
-		if (elem != NULL)
-		{
-			for (attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next())
-			{
-				const CXMLText	name = attrib->Name();
-				const CXMLText	value = attrib->Value();
+		return lVal == 1;
+	};
 
-				if (STR_EQUALS (name, "rowHeight"))
-				{
-					mRowHeight = 0;
-					sscanf (value, "%g", &mRowHeight);
-				}
-			}
-		}
+	RWXmlNode	elem = inNode.Child (u"Head");
+	if (elem && drawn (elem))
+		ParseHeading (elem);	// fixed table heading
+
+	elem = inNode.Child (u"Columns");
+	if (elem && !drawn (elem))
+		elem = RWXmlNode();
+	if (elem && elem.HasAttr (u"rowHeight"))
+	{
+		mRowHeight = 0;
+		RWStr::ReadNumber (elem.Attr (u"rowHeight"), mRowHeight);
 	}
 
 	if (/* mDataID && */ elem)
 	{
-		XMLNode	*node, *next;
-
-		inNode = elem;
-		for (node = elem->FirstChildElement(); node; node = next)
+		for (RWXmlNode col : elem.Children())
 		{
-			next = node->NextSibling();
-			elem = node->ToElement();
-			if (elem == NULL || !STR_EQUALS (elem->Value(), "Col"))
-			{
+			if (!STR_EQUALS (col.Name(), "Col"))
 				continue;
-			}
 
 			SRColumn	*column = new SRColumn (this);
-			column->Parse (mReportData, elem, mStyleID);
+			column->Parse (mReportData, col, mStyleID);
 			mColumns.push_back (column);
 			if (column->GetID() == 0)
 				column->SetID (mColumns.size());
@@ -1318,7 +1134,7 @@ SRTable::CreateHeadersFromColumns (void)
 	for (it = mColumns.begin(); it != mColumns.end(); it++)
 	{
 		column = *it;
-		if (column->GetTitle())
+		if (!column->GetTitle().empty())
 		{
 			hasHeader = true;
 			break;
@@ -1425,7 +1241,7 @@ SRTable::Reset (void)
 void
 SRTable::FetchValue (bool inUseOld)
 {
-	if (mScript != NULL)
+	if (!mScript.Get().empty())
 		GetDataSource().RunScript (mScript, this);
 
 	long	emitted = 0;
@@ -1562,26 +1378,15 @@ SRTable::EmitValues (SRColList::iterator inStartCol, long inRowNum)
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-void
-SRTable::Write (FILE *fd, bool inIsInBody, bool inUseCalculator)
-{
-	std::sort<SRColList::iterator, SRColumnCompareID> (mColumns.begin(), mColumns.end(), SRColumnCompareID());
-	WriteSelf (fd, "Table");
-	fprintf (fd, "</Table>\r\n");
-
-	return;
-}
-
-
 // ---------------------------------------------------------------------------
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRTable::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
+RWXmlNode
+SRTable::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
 	std::sort<SRColList::iterator, SRColumnCompareID> (mColumns.begin(), mColumns.end(), SRColumnCompareID());
-    XMLElement	*me = WriteSelf (inParent, "Table");
+    RWXmlNode me = WriteSelf (inParent, "Table");
 
 	return me;
 }
@@ -1591,95 +1396,36 @@ SRTable::Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator)
 // WriteSelf													   [protected]
 // ---------------------------------------------------------------------------
 
-void
-SRTable::WriteSelf (FILE *fd, const char* inObjectType)
+RWXmlNode
+SRTable::WriteSelf (RWXmlNode inParent, const char *inObjectType)
 {
-	SRObject::WriteSelf (fd, inObjectType);
+    RWXmlNode me = SRObject::WriteSelf (inParent, inObjectType);
 
 	if (mDataID != 0)
-		fprintf (fd, " dataID=\"%ld\"", mDataID);
+		me.SetAttribute (u"dataID", mDataID);
 	if (mStyleID != 0)
-		fprintf (fd, " style=\"%ld\"", mStyleID);
+		me.SetAttribute (u"style", mStyleID);
 	if (mFrame != 1)
-		fprintf (fd, " frame=\"%d\"", mFrame);
+		me.SetAttribute (u"frame", mFrame);
 	if (mFrameOffset != 2)
-		fprintf (fd, " frameOffset=\"%g\"", mFrameOffset);
+		me.SetAttribute (u"frameOffset", mFrameOffset);
 	if (mFrameThickness != 1)
-		fprintf (fd, " frameThickness=\"%g\"", mFrameThickness);
+		me.SetAttribute (u"frameThickness", mFrameThickness);
 	if (mHGridThickness != 0.5)
-		fprintf (fd, " hGridThickness=\"%g\"", mHGridThickness);
+		me.SetAttribute (u"hGridThickness", mHGridThickness);
 	if (mFrameColor != cBlackColor)
-		fprintf (fd, " frameColor=\"%s\"", (const char*) mFrameColor);
+		me.SetAttribute (u"frameColor", mFrameColor.ToString());
 
 	if (mRowHeight != 0)
-		fprintf (fd, " rowHeight=\"%g\"", mRowHeight);
-	fprintf (fd, " cols=\"%d\">\r\n", mNumColumns);
+		me.SetAttribute (u"rowHeight", mRowHeight);
+	me.SetAttribute (u"cols", mNumColumns);
 
 	if (mNumTopHeadings > 0)
 	{
-		fprintf (fd, "<Head>\r\n");
+		RWXmlNode	headers = me.Append (u"Head");
 		for (int line = 0; line < mNumTopHeadings; line++)
 		{
-			fprintf (fd, "<tr>\r\n");
-			SRHdrList::const_iterator	hdr = mHeaders [line].begin();
-			while (hdr != mHeaders [line].end())
-			{
-				(*hdr)->WriteSelf (fd, "td");
-				hdr++;
-			}
-			fprintf (fd, "</tr>\r\n");
-		}
-		fprintf (fd, "</Head>\r\n");
-	}
-
-	if (mColumns.size() > 0)
-	{
-		fprintf (fd, "<Columns>\r\n");
-		SRColList::const_iterator	col = mColumns.begin();
-		while (col != mColumns.end())
-		{
-			(*col)->WriteSelf (fd, "Col");
-			col++;
-		}
-		fprintf (fd, "</Columns>\r\n");
-	}
-
-	return;
-}
-
-
-XMLElement*
-SRTable::WriteSelf (XMLElement *inParent, const char *inObjectType)
-{
-    XMLElement	*me = SRObject::WriteSelf (inParent, inObjectType);
-
-	if (mDataID != 0)
-		me->SetAttribute ("dataID", mDataID);
-	if (mStyleID != 0)
-		me->SetAttribute ("style", mStyleID);
-	if (mFrame != 1)
-		me->SetAttribute ("frame", mFrame);
-	if (mFrameOffset != 2)
-		me->SetAttribute ("frameOffset", mFrameOffset);
-	if (mFrameThickness != 1)
-		me->SetAttribute ("frameThickness", mFrameThickness);
-	if (mHGridThickness != 0.5)
-		me->SetAttribute ("hGridThickness", mHGridThickness);
-	if (mFrameColor != cBlackColor)
-		me->SetAttribute ("frameColor", (const char*) mFrameColor);
-
-	if (mRowHeight != 0)
-		me->SetAttribute ("rowHeight", mRowHeight);
-	me->SetAttribute ("cols", mNumColumns);
-
-	if (mNumTopHeadings > 0)
-	{
-        XMLElement	head ("Head");
-        XMLElement	*headers = me->InsertEndChild (head)->ToElement();
-		for (int line = 0; line < mNumTopHeadings; line++)
-		{
-            XMLElement	tr ("tr");
-            XMLElement	*headerline = headers->InsertEndChild (tr)->ToElement();
+			RWXmlNode	headerline = headers.Append (u"tr");
 			SRHdrList::const_iterator	hdr = mHeaders [line].begin();
 			while (hdr != mHeaders [line].end())
 			{
@@ -1691,8 +1437,7 @@ SRTable::WriteSelf (XMLElement *inParent, const char *inObjectType)
 
 	if (mColumns.size() > 0)
 	{
-        XMLElement	cols ("Columns");
-        XMLElement	*columns = me->InsertEndChild (cols)->ToElement();
+		RWXmlNode	columns = me.Append (u"Columns");
 		SRColList::const_iterator	col = mColumns.begin();
 		while (col != mColumns.end())
 		{
@@ -1718,7 +1463,7 @@ SRTable::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropFrame:			outValue.SetInteger (mFrame); break;
 		case PSObjPropFrameOffset:		outValue.SetReal (mFrameOffset); break;
 		case PSObjPropFrameThickness:	outValue.SetReal (mFrameThickness); break;
-		case PSObjPropFrameColor:		outValue.SetXMLText ((const char*) mFrameColor); break;
+		case PSObjPropFrameColor:		outValue.SetText (mFrameColor.ToString()); break;
 		case PSObjPropHGridThickness:	outValue.SetReal (mHGridThickness); break;
 		case PSObjPropHeight:			outValue.SetReal (mRowHeight); break;
 		case PSObjPropNumCols:			outValue.SetInteger (mNumColumns); break;

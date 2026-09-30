@@ -38,8 +38,7 @@ public:
 	virtual		void			Reset (void);
 	virtual		void			FetchValue (bool inUseOld);
 	virtual		void			FetchCalcValue (void);
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator) = 0;
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator) = 0;
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) = 0;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -53,8 +52,7 @@ public:
 protected:
 								SRObject (SRReportData *inReport, long inOrder, EObject_Kind inKind);
     virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
-	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-    virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType);
 
 private:
 			// defensive programming - not implemented
@@ -80,7 +78,6 @@ protected:
 /*
 template <class T>
 struct SRlessPosition
-	: std::binary_function<T, T, bool>
 {
 	bool operator()(const T& x, const T& y) const { return x->ComparePosition (y) < 0; }
 };
@@ -90,7 +87,6 @@ typedef	SRlessPosition<SRObject*>		SRObjectComparePosition;
 
 template <class T>
 struct SRlessOrder
-	: std::binary_function<T, T, bool>
 {
 	bool operator()(const T& x, const T& y) const { return x->CompareOrder (y) < 0; }
 };
@@ -103,13 +99,12 @@ class	SRGroup
 	:	public	SRObject
 {
 public:
-    static		SRGroup		*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SRGroup		*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
 	virtual		void			Reset (void);
 	virtual		void			FetchValue (bool inUseOld);
 	virtual		void			FetchCalcValue (void);
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) override;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -123,8 +118,7 @@ protected:
 	virtual						~SRGroup (void);
 //	virtual		bool			GetObjects (OSType id, const PSObjListD* &outList) const;
 //	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
-	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-    virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType) override;
 
 private:
 			// defensive programming - not implemented
@@ -144,10 +138,9 @@ class	SRLine
 	:	public	SRObject
 {
 public:
-    static		SRLine		*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SRLine		*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) override;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -156,8 +149,7 @@ protected:
 								SRLine (SRReportData *inReport, long inOrder);
 	virtual						~SRLine (void);
 //	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
-	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-    virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType) override;
 
 private:
 			// defensive programming - not implemented
@@ -177,10 +169,9 @@ class	SROval
 	:	public	SRLine
 {
 public:
-    static		SROval		*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SROval		*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) override;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -190,8 +181,7 @@ protected:
 								SROval (void);
 	virtual						~SROval (void);
 //	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
-	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-    virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType) override;
 
 private:
 			// defensive programming - not implemented
@@ -210,10 +200,9 @@ class	SRRect
 	:	public	SROval
 {
 public:
-    static		SRRect		*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SRRect		*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) override;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -222,8 +211,7 @@ protected:
 								SRRect (SRReportData *inReport, long inOrder);
 	virtual						~SRRect (void);
 //	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
-	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-    virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType) override;
 
 private:
 			// defensive programming - not implemented
@@ -243,10 +231,9 @@ class	SRPict
 	:	public	SROval
 {
 public:
-    static		SRPict		*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SRPict		*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) override;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -255,8 +242,7 @@ protected:
 								SRPict (SRReportData *inReport, long inOrder);
 	virtual						~SRPict (void);
     virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
-	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-    virtual		XMLElement*	    WriteSelf (XMLElement *inParent, const char *inObjectType);
+    virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType) override;
 
 private:
 			// defensive programming - not implemented
@@ -286,10 +272,9 @@ class	SRText
 	:	public	SROval
 {
 public:
-    static		SRText		*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SRText		*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) override;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -301,8 +286,7 @@ protected:
     virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 				RWTextValue		ParseText (bool& outStillDynamic) const;
 				RWTextValue		LocalizeText (void) const;
-	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-    virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType) override;
 
 private:
 			// defensive programming - not implemented
@@ -333,13 +317,12 @@ friend class	SRReportData;
 friend class	SRObject;
 
 public:
-    static		SRVariable	*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SRVariable	*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
 	virtual		void			Reset (void);
 	virtual		void			FetchValue (bool inUseOld);
 	virtual		void			FetchCalcValue (void);
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) override;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -383,7 +366,7 @@ class	SRField
 friend class	SRReportData;
 
 public:
-    static		SRField		*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SRField		*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
 //	virtual		void			Reset (void);
 	virtual		void			FetchValue (bool inUseOld);
@@ -434,10 +417,9 @@ inline			int				GetRowSpan (void) const;
 protected:
 								SRHeader (SRTable* father);
 								SRHeader (const CText inText, int inColSpan, int inRowSpan, long inStyleID, SRTable* father);
-    void			Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID);
+    void			Parse (SRReportData *inReport, RWXmlNode inNode, long inStyleID);
 inline			void			AdjustStartCol (int inCol);
-				void			WriteSelf (FILE *fd, const char *inObjectType);
-    XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType);
 
 private:
 			// defensive programming - not implemented
@@ -482,11 +464,10 @@ protected:
 								SRColumn (SRTable * father);
 								SRColumn (long inWidth, long inStyleID, SRTable * father);
 								SRColumn (const SRColumn &inOriginal);
-    void			Parse (SRReportData *inReport, XMLElement *inNode, long inStyleID);
+    void			Parse (SRReportData *inReport, RWXmlNode inNode, long inStyleID);
 inline			void			SetStyle (long inStyleID);
 inline			void			SetID (long inID);
-				void			WriteSelf (FILE *fd, const char *inObjectType);
-    XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType);
 
 private:
 			// defensive programming - not implemented
@@ -516,13 +497,12 @@ class	SRTable
 	:	public	SRObject
 {
 public:
-    static		SRTable		*	Create (SRReportData *inReport, XMLElement *inNode, long inOrder);
+    static		SRTable		*	Create (SRReportData *inReport, RWXmlNode inNode, long inOrder);
 
 	virtual		void			Reset (void);
 	virtual		void			FetchValue (bool inUseOld);
 //	virtual		void			FetchCalcValue (void);
-	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-    virtual		XMLElement*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
+    virtual		RWXmlNode		Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator) override;
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -531,10 +511,9 @@ protected:
 								SRTable (SRReportData *inReport, long inOrder);
 	virtual						~SRTable (void);
     virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
-	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-    virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
+    virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType) override;
 
-    void			ParseHeading (XMLElement *inNode);
+    void			ParseHeading (RWXmlNode inNode);
 				SRColList	*	GetColumns (void);
 				void			AdjustHeaders (void);
 				void			AdjustColumns (void);

@@ -9,6 +9,8 @@
 class	SR4DData;
 
 
+# include	<memory>
+
 class	SRReportWriter
 	:	public	RWCalcDataProvider
 {
@@ -16,8 +18,8 @@ public:
 								SRReportWriter (SRDataSource &inDataSource, SRReportData &inData, long inFlags);
 								~SRReportWriter (void);
 
-				void			ReportToFile (FILE *fd);
-				XMLDocument*	ReportToXML (FILE *fd);
+	// processes the report; the result is an RWXML (".rwxml") document
+				std::unique_ptr<RWXmlDocument>	ReportToXML (void);
 
 inline			SRDataSource&	GetDataSource (void) const;
 inline	const	SRReportData&	GetReportData (void) const;
@@ -65,9 +67,8 @@ private:
 	bool						mEmitCalculator;
 
 	RWTextValue					mVarNames [RW_VarNamesSRCount];
-	FILE*						mOutFile;
-	XMLDocument*				mOutXML;
-    XMLElement*				mOutXMLRoot;
+	RWXmlDocument*				mOutXML;		// set while ReportToXML runs
+	RWXmlNode					mOutXMLRoot;
 };
 
 

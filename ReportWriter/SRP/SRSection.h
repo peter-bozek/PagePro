@@ -16,10 +16,10 @@ public:
 		ePageThrow_After
 	};
 
-    virtual		void				Parse (SRReportData *inReport, XMLElement *inNode);
-    virtual		void				Write (XMLElement *inParent, bool inUseCalculator) const = 0;
+    virtual		void				Parse (SRReportData *inReport, RWXmlNode inNode);
+    virtual		void				Write (RWXmlNode inParent, bool inUseCalculator) const = 0;
 
-				const CXMLText		GetType (void) const;
+				const RWString		GetType (void) const;
 				const CText			GetName (void) const;
 				SRObjListD		*	GetObjects (void);
 				EPageThrow			GetPageThrow (void) const;
@@ -36,10 +36,10 @@ public:
 	virtual							~SRSection (void);
 
 protected:
-									SRSection (const CXMLText inType);
+									SRSection (RWStringView inType);
 
-                XMLElement  *		WriteSection (XMLElement *inParent, const CXMLText inSectionName) const;
-//				void				WriteSection (FILE *fd, const CXMLText inSectionName) const; // REMOVED
+                RWXmlNode			WriteSection (RWXmlNode inParent, RWStringView inSectionName) const;
+//				void				WriteSection (FILE *fd, const RWString inSectionName) const; // REMOVED
 //				void				WriteSpecial (FILE *fd, bool inUseCalculator) const;
 
 private:
@@ -50,7 +50,7 @@ private:
 protected:
 	static const PSObjProps	sProperties[];
 	SRReportData		*	mReportData;
-	CXMLText				mType;
+	RWString				mType;
 	RWTextValue				mName;
 	RWTextValue				mID;
 	SRObjListD				mObjects;
@@ -69,11 +69,11 @@ class	SRHeaderFooterSection
 	:	public	SRSection
 {
 public:
-									SRHeaderFooterSection (const CXMLText inType);
+									SRHeaderFooterSection (RWStringView inType);
 //	virtual							~SRHeaderFooterSection (void);
 
-    virtual		void				Parse (SRReportData *inReport, XMLElement *inNode);
-    virtual		void				Write (XMLElement *inParent, bool inUseCalculator) const;
+    virtual		void				Parse (SRReportData *inReport, RWXmlNode inNode) override;
+    virtual		void				Write (RWXmlNode inParent, bool inUseCalculator) const override;
 	virtual		const PSObjProps *	GetProperties (void) const;
 	virtual		bool				GetProperty (OSType id, RWValue &outValue);
 	virtual		bool				SetProperty (OSType id, RWValue &inValue);
@@ -106,12 +106,12 @@ public:
 		eBreakOn_Variable,
 		eBreakOn_Array
 	};
-									SRBreakSection (const CXMLText inType);
-									SRBreakSection (SRReportData *inReport, const CXMLText inType, int inLevel);
+									SRBreakSection (RWStringView inType);
+									SRBreakSection (SRReportData *inReport, RWStringView inType, int inLevel);
 	virtual							~SRBreakSection (void);
 
-    virtual		void				Parse (SRReportData *inReport, XMLElement *inNode);
-    virtual		void				Write (XMLElement *inParent, bool inUseCalculator) const;
+    virtual		void				Parse (SRReportData *inReport, RWXmlNode inNode) override;
+    virtual		void				Write (RWXmlNode inParent, bool inUseCalculator) const override;
 	virtual		const PSObjProps *	GetProperties (void) const;
 	virtual		bool				GetProperty (OSType id, RWValue &outValue);
 	virtual		bool				SetProperty (OSType id, RWValue &inValue);
@@ -140,17 +140,17 @@ class	SRPageSection
 	:	public	SRSection
 {
 public:
-									SRPageSection (const CXMLText inType);
+									SRPageSection (RWStringView inType);
 									SRPageSection (bool inEmpty);
 	virtual							~SRPageSection (void);
 
 //	virtual		void				Parse (SRReportData *inReport,  *inNode);
 //	virtual		void				Write (FILE *fd, bool inUseCalculator) const;
-    virtual		void				Write (XMLElement *inParent, bool inUseCalculator) const;
+    virtual		void				Write (RWXmlNode inParent, bool inUseCalculator) const override;
 //	virtual		const PSObjProps *	GetProperties (void) const;
 //	virtual		bool				GetProperty (OSType id, RWValue &outValue);
 //	virtual		bool				SetProperty (OSType id, RWValue &inValue);
-				XMLElement*		    WritePage (XMLElement *inParent, bool inSimple, bool inStart) const;
+				RWXmlNode			WritePage (RWXmlNode inParent, bool inSimple, bool inStart) const;
 				const CText			GetPageOrientation (void) const;
 				const CText			GetPageSize (void) const;
 
@@ -173,15 +173,15 @@ class	SRWatermarkSection
 	:	public	SRHeaderFooterSection
 {
 public:
-									SRWatermarkSection (const CXMLText inType);
+									SRWatermarkSection (RWStringView inType);
 	virtual							~SRWatermarkSection (void);
 
-	virtual		void				Parse (SRReportData *inReport,XMLElement  *inNode);
-	virtual		void				Write (XMLElement *inParent, bool inUseCalculator) const;
+	virtual		void				Parse (SRReportData *inReport, RWXmlNode inNode) override;
+	virtual		void				Write (RWXmlNode inParent, bool inUseCalculator) const override;
 	virtual		const PSObjProps *	GetProperties (void) const;
 	virtual		bool				GetProperty (OSType id, RWValue &outValue);
 	virtual		bool				SetProperty (OSType id, RWValue &inValue);
-                XMLElement*		    WritePage (XMLElement *inParent, bool inSimple, bool inStart) const;
+                RWXmlNode			WritePage (RWXmlNode inParent, bool inSimple, bool inStart) const;
 
 private:
 			// defensive programming - not implemented

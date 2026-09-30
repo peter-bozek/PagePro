@@ -340,6 +340,20 @@ static	void	TestXmlWrite (void)
 	root.Append (u"Empty");
 	root.Append (u"Value").SetText (u"42");
 
+	// typed setter
+	RWXmlNode	typed = root.Append (u"Typed");
+	typed.SetAttribute (u"b", true);
+	typed.SetAttribute (u"i", 42L);
+	typed.SetAttribute (u"f", 0.1f);
+	typed.SetAttribute (u"d", 0.1);
+	typed.SetAttribute (u"s", RWString (u"ž"));
+	CHECK (typed.Attr (u"b") == u"1");
+	CHECK (typed.Attr (u"i") == u"42");
+	CHECK (typed.Attr (u"f") == u"0.1");
+	CHECK (typed.Attr (u"d") == u"0.1");
+	CHECK (typed.Attr (u"s") == u"ž");
+	root.Remove (typed);
+
 	// UTF-16 round trip
 	RWString		saved = doc.SaveString();
 	RWXmlDocument	copy;

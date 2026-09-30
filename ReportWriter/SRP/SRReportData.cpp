@@ -60,7 +60,7 @@ const PSObject::PSObjProps	SRReportData::sProperties[] = {
 // SRReportData								Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-SRReportData::SRReportData (XMLDocument *inXML)
+SRReportData::SRReportData (RWXmlDocument *inXML)
 	:	PSObject (eObject_Document),
 		mReportWriter (0),
 		mXML (inXML),
@@ -96,12 +96,11 @@ SRReportData::~SRReportData (void)
 // GetReport														  [public]
 // ---------------------------------------------------------------------------
 
-const XMLElement*
+RWXmlNode
 SRReportData::GetReport (void)
 const
 {
-//	return mXML->FirstChild ("SRReport")->ToElement();
-	return mXML->RootElement();
+	return mXML->Root();		// "SRReport"
 }
 
 
@@ -124,33 +123,18 @@ const
 void
 SRReportData::ParseReport (void)
 {
-//	XMLNode		*report = mXML->FirstChild ("SRReport");	// should be same as mXML->RootElement();
-	XMLNode		*report = mXML->RootElement();
-	XMLNode		*node = NULL, *next;
-    XMLElement	*elem;
-	const CXMLText	value;
+	RWXmlNode	report = mXML->Root();		// "SRReport"
+	if (!report)
+		return;
 
-	if (report)
+	PSObject::LoadXML (report);
+	//mbs 20052011	add default style -> needed for SRText's RWStyle parsing
+	RWStyle	*style = new RWStyle (&mStyles, RWXmlNode());
+	mStyles.insert (pair<long,RWStyle*> (style->GetID (), style));
+
+	for (RWXmlNode elem : report.Children())
 	{
-		elem = report->ToElement();
-		if (elem /* && (value = elem->Attribute ("Version")) != NULL && STR_EQUALS (value, "1.0") */)
-		{
-			PSObject::LoadXML (elem);
-			node = report->FirstChildElement();
-			//mbs 20052011	add default style -> needed for SRText's RWStyle parsing
-			RWStyle	*style = new RWStyle (&mStyles, NULL);
-			mStyles.insert (pair<long,RWStyle*> (style->GetID (), style));
-		}
-	}
-
-	for ( ; node; node = next )
-	{
-		next = node->NextSibling();
-		elem = node->ToElement();
-		if (elem == NULL)
-			continue;
-
-		value = elem->Value();
+		const RWString	value = elem.Name();
 		if (STR_EQUALS (value, "StyleSet"))
 			ParseStyleSet (elem);
 		else if (STR_EQUALS (value, "Watermark"))
@@ -161,10 +145,6 @@ SRReportData::ParseReport (void)
 			ParseSection (elem);
 //		else if (STR_EQUALS (value, "DataSource"))	--> parsed by SRDataSource
 //			ParseDataSource (elem);
-//		else if (STR_EQUALS (value, "Editor"))
-//			ParseEditorSettings (elem);
-//		else if (STR_EQUALS (value, "Guides"))
-//			ParseGuides (elem);
 		else if (not mReportWriter->IsExport())	//mbs 05112010
 		{
 /*
@@ -245,19 +225,11 @@ SRReportData::ParseReport (void)
 // ---------------------------------------------------------------------------
 
 void
-SRReportData::ParseStyleSet (XMLElement *inStyleSet)
+SRReportData::ParseStyleSet (RWXmlNode inStyleSet)
 {
-	XMLNode	*node;
-//	RWStyle		*style = new RWStyle (NULL);
-
-//	mStyles.push_back (style);	// add default style
-
-	for ( node = inStyleSet->FirstChildElement(); node; node = node->NextSibling() )
+	for (RWXmlNode elem : inStyleSet.Children())
 	{
-        XMLElement	*elem = node->ToElement();
-		if (elem == NULL)
-			continue;
-		if (!STR_EQUALS (elem->Value(), "Style"))
+		if (!STR_EQUALS (elem.Name(), "Style"))
 			continue;
 
 		RWStyle	*style = new RWStyle (&mStyles, elem);
@@ -274,9 +246,9 @@ SRReportData::ParseStyleSet (XMLElement *inStyleSet)
 // ---------------------------------------------------------------------------
 
 void
-SRReportData::ParseSection (XMLElement *inSection)
+SRReportData::ParseSection (RWXmlNode inSection)
 {
-	const CXMLText	value = inSection->Value();
+	const RWString	value = inSection.Name();
 	if (STR_EQUALS (value, "Watermark"))
 	{
 		if (mWatermark == NULL)
@@ -353,20 +325,14 @@ SRReportData::ParseSection (XMLElement *inSection)
 // ---------------------------------------------------------------------------
 
 void
-SRReportData::ParseObjects (SRObjListD *inParent, XMLElement *inObject)
+SRReportData::ParseObjects (SRObjListD *inParent, RWXmlNode inObject)
 {
-	XMLNode	*node, *next;
 	int			seqID = 0;
 
-	for ( node = inObject->FirstChildElement(); node; node = next )
+	for (RWXmlNode elem : inObject.Children())
 	{
-		next = node->NextSibling();
-        XMLElement	*elem = node->ToElement();
-		if (elem == NULL)
-			continue;
-
 		SRObject		*obj = NULL;
-		const CXMLText	value = elem->Value();
+		const RWString	value = elem.Name();
 
 		if (STR_EQUALS (value, "Group"))
 		{
@@ -431,198 +397,105 @@ SRReportData::ParseObjects (SRObjListD *inParent, XMLElement *inObject)
 // Write															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-SRReportData::Write (XMLDocument *outXML)
+RWXmlNode
+SRReportData::Write (RWXmlDocument &outXML)
 const
 {
-/*
+	RWXmlNode	report = outXML.Node().Append (u"Report");
+	report.SetAttr (u"Version", u"1.0");
+	if (not mName.IsEmpty())
+		report.SetAttr (u"name", mName);
+	if (not mID.IsEmpty())
+		report.SetAttr (u"id", mID);
+	report.SetAttribute (u"pageWidth", mPageWidth);
+	report.SetAttribute (u"pageHeight", mPageHeight);
+	report.SetAttr (u"pageMargins", mPageMargins.ToString());
+	if (mUsePhysical)
+		report.SetAttribute (u"usePhysical", 1);
+	if (not mSimple)
+		report.SetAttribute (u"Dynamic", 1);
+	if (mReportRotation)
+		report.SetAttribute (u"rotation", 1);
+	if (mReportMirror)
+		report.SetAttribute (u"mirror", 1);
+
+	RWXmlNode	styles = report.Append (u"StyleSet");
+	for (const auto &entry : mStyles)
 	{
-		TiXmlDeclaration	decl ("1.0", "utf-8", "yes");
-		outXML->InsertEndChild (decl);
+		const	RWStyle	*style = entry.second;
+		RWXmlNode		elem = styles.Append (u"Style");
+		elem.SetAttribute (u"id", style->GetID());
+		elem.SetAttr (u"font", style->GetFName());
+
+		RWString	name;
+		if (style->GetBaseID() == -1)
+			name = style->GetName();
+		else if (RWStyle *baseStyle = GetStyle (style->GetBaseID()))
+			name = baseStyle->GetName();
+		if (!name.empty())
+			elem.SetAttr (u"name", name);
+
+		elem.SetAttribute (u"size", style->GetSize());
+		if (style->ShouldWrap())
+			elem.SetAttribute (u"wrap", 1);
+		int	v = style->GetStyle();
+		if (v & RWStyle::st_bold)
+			elem.SetAttribute (u"bold", 1);
+		if (v & RWStyle::st_italic)
+			elem.SetAttribute (u"italic", 1);
+		if (v & RWStyle::st_underline)
+			elem.SetAttribute (u"underline", 1);
+		if (v & RWStyle::st_strikethrough)
+			elem.SetAttribute (u"strikethrough", 1);
+		v = style->GetJustification();
+		if (v != RWStyle::st_default)
+			elem.SetAttribute (u"align", v);
+		v = style->GetVerticalJustification();
+		if (v != RWStyle::st_default)
+			elem.SetAttribute (u"valign", v);
+
+		SRGBColor	rgb = style->GetTextColor();
+		if (rgb != RWStyle::cDefTextColor)
+			elem.SetAttr (u"textColor", rgb.ToString());
+		rgb = style->GetBackColor();
+		if (rgb != RWStyle::cDefBackColor)
+			elem.SetAttr (u"backColor", rgb.ToString());
+		rgb = style->GetFrameColor();
+		if (rgb != RWStyle::cDefFrameColor)
+			elem.SetAttr (u"frameColor", rgb.ToString());
+		float	f = style->GetRotation();
+		if (f != 0)
+			elem.SetAttribute (u"rotation", f);
+		f = style->GetBaseLineShift();
+		if (f != 0)
+			elem.SetAttribute (u"baseLineShift", f);
+		f = style->GetHorizontalScale();
+		if (f != 1)
+			elem.SetAttribute (u"hScale", f);
+		f = style->GetLineSpacing();
+		if (f != 1.2f)
+			elem.SetAttribute (u"lineSpacing", f);
 	}
-*/
-// Removed TiXmlDeclaration insertion block; using tinyxml2 style
-
-    XMLElement*	report = NULL;
-	{
-        XMLElement* root = outXML->NewElement("Report");
-		root->SetAttribute ("Version", "1.0");
-//		const CXMLText	s = GetReport()->Attribute ("Name");
-		if (not mName.IsEmpty())
-		{
-//			root.SetAttribute ("Name", (const char*) mName);
-			CXMLText	name = mName.ToXML();
-			root->SetAttribute ("name", name.c_str());
-			mName.FreeXML (name);
-		}
-		if (not mID.IsEmpty())
-		{
-			CXMLText	name = mID.ToXML();
-			root->SetAttribute ("id", name.c_str());
-			mID.FreeXML (name);
-		}
-		root->SetAttribute ("pageWidth", mPageWidth);
-		root->SetAttribute ("pageHeight", mPageHeight);
-		root->SetAttribute ("pageMargins", (const char*) mPageMargins);
-		if (mUsePhysical)
-			root->SetAttribute ("usePhysical", 1);
-		if (not mSimple)
-			root->SetAttribute ("Dynamic", 1);
-        if (mReportRotation)
-            root->SetAttribute ("rotation", 1);
-        if (mReportMirror)
-            root->SetAttribute ("mirror", 1);
-		report = outXML->InsertEndChild(root)->ToElement();
-	}
-
-    XMLElement*	styles = NULL;
-	{
-        XMLElement* stylesElem = outXML->NewElement("StyleSet");
-		styles = report->InsertEndChild(stylesElem)->ToElement();
-	}
-
-	{
-		RWStyleList::const_iterator	it;
-
-		for (it = mStyles.begin(); it != mStyles.end(); it++)
-		{
-			const	RWStyle	*style = (*it).second;
-            XMLElement* elem = outXML->NewElement("Style");
-			elem->SetAttribute ("id", style->GetID());
-			RWTextValue	fname (style->GetFName());
-			CXMLText	name = fname.ToXML();
-			elem->SetAttribute ("font", name.c_str());
-			fname.FreeXML (name);
-            
-            if (style->GetBaseID() == -1) {
-                fname = style->GetName();
-            } else {
-                RWStyle * baseStyle = GetStyle (style->GetBaseID());
-                fname = baseStyle->GetName();
-            }
-            if(!fname.IsEmpty()) {
-                name = fname.ToXML();
-                elem->SetAttribute ("name", name.c_str());
-                fname.FreeXML (name);
-            }
-
-			elem->SetAttribute ("size", style->GetSize());
-			if (style->ShouldWrap())
-				elem->SetAttribute ("wrap", 1);
-//			if (style->IsFramed())
-//				elem->SetAttribute ("frame", 1);
-			int	v = style->GetStyle();
-			if (v & RWStyle::st_bold)
-				elem->SetAttribute ("bold", 1);
-			if (v & RWStyle::st_italic)
-				elem->SetAttribute ("italic", 1);
-			if (v & RWStyle::st_underline)
-				elem->SetAttribute ("underline", 1);
-			if (v & RWStyle::st_strikethrough)
-				elem->SetAttribute ("strikethrough", 1);
-			v = style->GetJustification();
-			if (v != RWStyle::st_default)
-//				elem.SetAttribute ("align", sJustification [v]);
-				elem->SetAttribute ("align", v);
-			v = style->GetVerticalJustification();
-			if (v != RWStyle::st_default)
-//				elem.SetAttribute ("valign", sVAlignment [v]);
-				elem->SetAttribute ("valign", v);
-//			float	f = style->GetHorizontalOffset();
-//			if (f != 0)
-//				elem.SetAttribute ("hOffset", f);
-//			f = style->GetVerticalOffset();
-//			if (f != 0)
-//				elem.SetAttribute ("vOffset", f);
-
-			SRGBColor	rgb = style->GetTextColor();
-			if (rgb != RWStyle::cDefTextColor)
-				elem->SetAttribute ("textColor", (const char*) rgb);
-			rgb = style->GetBackColor();
-			if (rgb != RWStyle::cDefBackColor)
-				elem->SetAttribute ("backColor", (const char*) rgb);
-			rgb = style->GetFrameColor();
-			if (rgb != RWStyle::cDefFrameColor)
-				elem->SetAttribute ("frameColor", (const char*) rgb);
-//			if (style->GetPSName() != NULL)
-//				elem.SetAttribute ("fontPS", style->GetPSName());
-			float	f = style->GetRotation();
-			if (f != 0)
-				elem->SetAttribute ("rotation", f);
-			f = style->GetBaseLineShift();
-			if (f != 0)
-				elem->SetAttribute ("baseLineShift", f);
-			f = style->GetHorizontalScale();
-			if (f != 1)
-				elem->SetAttribute ("hScale", f);
-			f = style->GetLineSpacing();
-			if (f != 1.2)
-				elem->SetAttribute ("lineSpacing", f);
-			styles->InsertEndChild(elem);
-		}
-	}
-
 
 	if (not mReportWriter->IsExport())	//mbs 05112010
 	{
-/*
-		if (mPageSetup.GetBlob())
+		// print setup blobs of the platform printing APIs
+		auto	writeBlob = [&report] (const RWValue &inValue, RWStringView inName, RWStringView inKind)
 		{
-            XMLElement* pageSetup = outXML->NewElement("PageSetup");
-			styles = report->InsertEndChild(pageSetup)->ToElement();
-			styles->SetAttribute ("kind", "Classic");
-			styles->SetAttribute ("encoding", "base64");
-			RWTools::WriteData (styles, mPageSetup.GetBlob());
-		}
-*/
-		if (mPageFormat.GetBlob())
-		{
-            XMLElement* pageFormat = outXML->NewElement("PageFormat");
-			styles = report->InsertEndChild(pageFormat)->ToElement();
-			styles->SetAttribute ("kind", "Carbon");
-			styles->SetAttribute ("encoding", "base64");
-			RWTools::WriteData (styles, mPageFormat.GetBlob());
-		}
-		if (mPrintSettings.GetBlob())
-		{
-            XMLElement* printSettings = outXML->NewElement("PrintSettings");
-			styles = report->InsertEndChild(printSettings)->ToElement();
-			styles->SetAttribute ("kind", "Carbon");
-			styles->SetAttribute ("encoding", "base64");
-			RWTools::WriteData (styles, mPrintSettings.GetBlob());
-		}
-		if (mDevMode.GetBlob())
-		{
-            XMLElement* devMode = outXML->NewElement("DevMode");
-			styles = report->InsertEndChild(devMode)->ToElement();
-			styles->SetAttribute ("kind", "Win32");
-			styles->SetAttribute ("encoding", "base64");
-			RWTools::WriteData (styles, mDevMode.GetBlob());
-		}
-		if (mDeviceNames.GetBlob())
-		{
-            XMLElement* deviceNames = outXML->NewElement("DeviceNames");
-			styles = report->InsertEndChild(deviceNames)->ToElement();
-			styles->SetAttribute ("kind", "Win32");
-			styles->SetAttribute ("encoding", "base64");
-			RWTools::WriteData (styles, mDeviceNames.GetBlob());
-		}
-		if (mPageSetupDialog.GetBlob())
-		{
-            XMLElement* pageSetupDlg = outXML->NewElement("PageSetupDlg");
-			styles = report->InsertEndChild(pageSetupDlg)->ToElement();
-			styles->SetAttribute ("kind", "Win32");
-			styles->SetAttribute ("encoding", "base64");
-			RWTools::WriteData (styles, mPageSetupDialog.GetBlob());
-		}
-		if (mPrintDialog.GetBlob())
-		{
-            XMLElement* printDlg = outXML->NewElement("PrintDlg");
-			styles = report->InsertEndChild(printDlg)->ToElement();
-			styles->SetAttribute ("kind", "Win32");
-			styles->SetAttribute ("encoding", "base64");
-			RWTools::WriteData (styles, mPrintDialog.GetBlob());
-		}
+			if (inValue.GetBlob())
+			{
+				RWXmlNode	elem = report.Append (inName);
+				elem.SetAttr (u"kind", inKind);
+				elem.SetAttr (u"encoding", u"base64");
+				RWTools::WriteData (elem, inValue.GetBlob());
+			}
+		};
+		writeBlob (mPageFormat, u"PageFormat", u"Carbon");
+		writeBlob (mPrintSettings, u"PrintSettings", u"Carbon");
+		writeBlob (mDevMode, u"DevMode", u"Win32");
+		writeBlob (mDeviceNames, u"DeviceNames", u"Win32");
+		writeBlob (mPageSetupDialog, u"PageSetupDlg", u"Win32");
+		writeBlob (mPrintDialog, u"PrintDlg", u"Win32");
 	}
 
 	return report;
@@ -645,7 +518,7 @@ SRReportData::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropWidth:			outValue.SetReal (mPageWidth); break;
 		case PSObjPropHeight:			outValue.SetReal (mPageHeight); break;
 		case PSObjPropPaper:			outValue.SetBoolean (mUsePhysical); break;
-		case PSObjPropMargins:			outValue.SetXMLText ((const char*) mPageMargins); break;
+		case PSObjPropMargins:			outValue.SetText (mPageMargins.ToString()); break;
 
         case PSObjPropObjectRotation:	outValue.SetBoolean (mReportRotation); break;
         case PSObjPropMirror:			outValue.SetBoolean (mReportMirror); break;
