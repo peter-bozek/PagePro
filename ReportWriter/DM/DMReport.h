@@ -39,14 +39,14 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-	virtual		XMLElement*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
+	virtual		RWXmlNode		WriteXML (RWXmlNode inParent, const PSObjProps* pes = NULL) override;
 	
 protected:
 	DMStyle (RWStyleContainer *inContainer, DMBase *inParent);
 	DMStyle (RWStyleContainer *inContainer, DMBase *inParent, long inBaseID);
 	//	virtual		DMBase		*	Clone (DMBase *inParent);
 	
-	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 	
 private:
 	// defensive programming - not implemented
@@ -91,7 +91,7 @@ public:
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
 //	virtual		PSObjList	*	GetObjects (OSType id);
-	virtual		XMLElement*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
+	virtual		RWXmlNode		WriteXML (RWXmlNode inParent, const PSObjProps* pes = NULL) override;
 
 	virtual		void			AdjustDrawingPosition (RWPageComposer *inComposer, const SPoint inParent);
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
@@ -105,9 +105,9 @@ protected:
 //	virtual		DMBase		*	Clone (DMBase *inParent);
 
 	virtual		bool			GetObjects (OSType id, PSObjListD* &outList);
-	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
-	virtual		void			LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode);
-//	virtual		bool			WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
+	virtual		void			LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode) override;
+//	virtual		bool			WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode) override;
 
 private:
 	// defensive programming - not implemented
@@ -154,7 +154,7 @@ protected:
 									DMHeaderFooterSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inType);
 									DMHeaderFooterSection (DMBase *inParent, const DMSection &inOriginal);
 
-	virtual		void				LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 
 private:
 			// defensive programming - not implemented
@@ -201,7 +201,7 @@ protected:
 									DMBreakSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inType);
 									DMBreakSection (DMBase *inParent, const DMBreakSection &inOriginal);
 
-	virtual		void				LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 
 private:
 			// defensive programming - not implemented
@@ -329,7 +329,7 @@ protected:
 									DMWatermarkSection (DMBase *inParent, const CXMLText inType);
 									DMWatermarkSection (DMBase *inParent, const DMBodySection &inOriginal);
 
-	virtual		void				LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 
 private:
 			// defensive programming - not implemented
@@ -354,7 +354,7 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const = 0;
 //	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 //	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		XMLElement*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
+//	virtual		RWXmlNode		WriteXML (RWXmlNode inParent, const PSObjProps* pes = NULL) override;
 
 				SRDataSource*	GetRealDataSource (void);
 				void			ClearDataSource (void);
@@ -364,7 +364,7 @@ protected:
 								DMDataSource (DMBase *inParent, const DMDataSource &inOriginal);
 //	virtual		DMBase		*	Clone (DMBase *inParent);
 
-//	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+//	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 
 private:
 	// defensive programming - not implemented
@@ -403,14 +403,14 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		XMLElement*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
+//	virtual		RWXmlNode		WriteXML (RWXmlNode inParent, const PSObjProps* pes = NULL) override;
 
 protected:
 								DM4DDataSource (DMBase *inParent);
 								DM4DDataSource (DMBase *inParent, const DM4DDataSource &inOriginal);
 //	virtual		DMBase		*	Clone (DMBase *inParent);
 
-	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 
 private:
 	// defensive programming - not implemented
@@ -459,7 +459,7 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-	virtual		XMLElement  *	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
+	virtual		RWXmlNode		WriteXML (RWXmlNode inParent, const PSObjProps* pes = NULL) override;
 
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode, double inWidth, SRGBColor inColor);
 	virtual		EHitTest		HitTest (SPoint &inWhere, DMBase* &outObjectHit);
@@ -502,7 +502,7 @@ public:
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
 	virtual		PSObjList	*	GetObjects (OSType id);
-	virtual		XMLElement  *	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
+	virtual		RWXmlNode		WriteXML (RWXmlNode inParent, const PSObjProps* pes = NULL) override;
 
 				void			ParseObjects (const PSObjProps* pes, XMLElement *inNode, DMBase *inParent, PSObjListD &objList);
 
@@ -545,9 +545,9 @@ protected:
 //	virtual		DMBase		*	Clone (DMBase *inParent);
 
 	virtual		bool			GetObjects (OSType id, PSObjListD* &outList);
-	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
-	virtual		void			LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode);
-	virtual		bool			WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
+	virtual		void			LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode) override;
+	virtual		bool			WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode) override;
 
 				void			AddObject (DMBase *inObject);
 				void			DeleteObject (DMBase *inObject);
@@ -636,8 +636,8 @@ protected:
 inline	const PSObject::PSObjProps *	DMStyle::GetProperties (void) const								{ return RWStyle::sProperties; }
 //inline		bool						DMStyle::GetProperty (OSType id, RWValue &outValue)				{ return RWStyle::GetProperty (id, outValue); }
 //inline		bool						DMStyle::SetProperty (OSType id, RWValue &inValue)				{ return RWStyle::SetProperty (id, inValue); }
-inline		XMLElement  *				DMStyle::WriteXML (XMLNode *inParent, const PSObjProps* pes)	{ return RWStyle::WriteXML (inParent, pes); }
-inline		void						DMStyle::LoadXML (XMLElement *inNode, const PSObjProps* pes)	{ return RWStyle::LoadXML (inNode, pes); }
+inline	RWXmlNode			DMStyle::WriteXML (RWXmlNode inParent, const PSObjProps* pes)	{ return RWStyle::WriteXML (inParent, pes); }
+inline	void				DMStyle::LoadXML (RWXmlNode inNode, const PSObjProps* pes)	{ return RWStyle::LoadXML (inNode, pes); }
 
 inline	const PSObject::PSObjProps *	DMSection::GetProperties (void) const				{ return sProperties; }
 inline	const PSObject::PSObjProps *	DMHeaderFooterSection::GetProperties (void) const	{ return sProperties; }

@@ -11,7 +11,7 @@ public:
 						RWDataSourceProvider (void);
 virtual					~RWDataSourceProvider (void);
 
-    virtual		void		ParseReport (const XMLElement *inReport);
+    virtual		void		ParseReport (RWXmlNode inReport) override;
 
 		RWDataProvider&	GetDataProvider (void);
 

@@ -141,7 +141,7 @@ public:
 				void			IncreaseBatchLevel (void);
 				void			DecreaseBatchLevel (void);
 	
-    virtual		void			ParseReport (const XMLElement *inReport);
+    virtual		void			ParseReport (RWXmlNode inReport);
 	virtual		void		*	FinishReport (size_t &outSize) = 0;
 
 inline			float			GetReportPageWidth (void) const;

@@ -31,9 +31,8 @@ public:
 		bool				GetTableCellData (RWDataID inDataID, long inRow, long inColumn, RWValue &outValue, long &outStartRow, long &outNumRows) const;	//mbs 06102006
 
 // persistency
-		void				Parse (XMLElement const *inParent);
-		void				Write (FILE *fd) const;
-		void				Write (XMLElement *inParent) const;
+		void				Parse (RWXmlNode inParent);
+		void				Write (RWXmlNode inParent) const;
 
 typedef	RWMap <RWDataID, RWValue>		RWObjectDataMap;
 	class	tableData
@@ -68,9 +67,8 @@ typedef	RWMap<RWDataID, tableData*>		RWTableMap;
 		tableData	*		GetTableObject (RWDataID inDataID) const;
 
 protected:
-    static	void				ParseValue (XMLElement const *inNode, RWDataID &outID, RWValue &outVar);
-    static	void				WriteValue (FILE *fd, RWDataID inID, const RWValue &inVar);
-    static	void				WriteValue (XMLElement *inParent, RWDataID inID, const RWValue &inVar);
+	static	void				ParseValue (RWXmlNode inNode, RWDataID &outID, RWValue &outVar);
+	static	void				WriteValue (RWXmlNode inParent, RWDataID inID, const RWValue &inVar);
 
 private:
 			// defensive programming - not implemented

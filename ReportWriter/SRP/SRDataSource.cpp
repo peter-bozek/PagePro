@@ -221,7 +221,7 @@ SRDataSource::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 void
-SRDataSource::ParseReport (const  XMLElement *inReport)
+SRDataSource::ParseReport (RWXmlNode inReport)
 {
 	if (inReport != NULL)
 	{

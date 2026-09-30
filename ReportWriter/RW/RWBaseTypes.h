@@ -42,7 +42,9 @@ struct ATSURGBAlphaColor {
 };
 #endif
 
-typedef	unsigned long	TextEncoding;
+#if	!VERSIONMAC
+typedef	unsigned long	TextEncoding;	// CoreServices defines it on the Mac
+#endif
 
 struct QDPoint {
   short               v;

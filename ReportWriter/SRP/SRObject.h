@@ -52,7 +52,7 @@ public:
 
 protected:
 								SRObject (SRReportData *inReport, long inOrder, EObject_Kind inKind);
-    virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+    virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
     virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
@@ -122,7 +122,7 @@ protected:
 								SRGroup (SRReportData *inReport, long inOrder);
 	virtual						~SRGroup (void);
 //	virtual		bool			GetObjects (OSType id, const PSObjListD* &outList) const;
-//	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+//	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
     virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
@@ -155,7 +155,7 @@ public:
 protected:
 								SRLine (SRReportData *inReport, long inOrder);
 	virtual						~SRLine (void);
-//	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+//	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
     virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
@@ -189,7 +189,7 @@ protected:
 								SROval (SRReportData *inReport, long inOrder);
 								SROval (void);
 	virtual						~SROval (void);
-//	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+//	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
     virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
@@ -221,7 +221,7 @@ public:
 protected:
 								SRRect (SRReportData *inReport, long inOrder);
 	virtual						~SRRect (void);
-//	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+//	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
     virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
@@ -254,7 +254,7 @@ public:
 protected:
 								SRPict (SRReportData *inReport, long inOrder);
 	virtual						~SRPict (void);
-    virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+    virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
     virtual		XMLElement*	    WriteSelf (XMLElement *inParent, const char *inObjectType);
 
@@ -298,7 +298,7 @@ protected:
 								SRText (SRReportData *inReport, long inOrder);
 //								SRText (void);
 	virtual						~SRText (void);
-    virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+    virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 				RWTextValue		ParseText (bool& outStillDynamic) const;
 				RWTextValue		LocalizeText (void) const;
 	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
@@ -349,7 +349,7 @@ public:
 protected:
 								SRVariable (SRReportData *inReport, long inOrder);
 	virtual						~SRVariable (void);
-    virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+    virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 //	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
 //	virtual		*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
@@ -397,7 +397,7 @@ public:
 protected:
 								SRField (SRReportData *inReport, long inOrder);
 	virtual						~SRField (void);
-//	virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+//	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 //	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
 //	virtual		*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
@@ -530,7 +530,7 @@ public:
 protected:
 								SRTable (SRReportData *inReport, long inOrder);
 	virtual						~SRTable (void);
-    virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+    virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
     virtual		XMLElement*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 

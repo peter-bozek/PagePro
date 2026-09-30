@@ -192,10 +192,10 @@ PSObject::FindPropertyByID (OSType id, const PSObjProps *pes)
 // ---------------------------------------------------------------------------
 
 const PSObject::PSObjProps*
-PSObject::FindPropertyByName (const CXMLText inName, const PSObjProps *pes)
+PSObject::FindPropertyByName (RWStringView inName, const PSObjProps *pes)
 {
 	for ( ; pes->name != NULL; pes++)
-		if (STR_EQUALS (pes->name, inName))
+		if (RWStr::EqualsNoCase (inName, pes->name))
 			return pes;
 	return NULL;
 }
@@ -229,16 +229,14 @@ PSObject::GetProperty (OSType id, RWValue &outValue)
 			break;
 
 		case PSObjPropKind:
-			outValue.SetXMLText (sKind [mObjectKind]);
+			outValue.SetText (RWStr::FromASCII (sKind [mObjectKind]));
 			break;
 
 		case PSObjPropXML:
 		{
-			XMLDocument	xml;
-			WriteXML (&xml);
-			ostringstream	ostr;
-			ostr << xml;
-			outValue.SetXMLText (strdup (ostr.str().c_str()), true);
+			RWXmlDocument	xml;
+			WriteXML (xml.Node());
+			outValue.SetText (xml.SaveString (false));
 			return true;
 		}
 
@@ -252,26 +250,14 @@ PSObject::GetProperty (OSType id, RWValue &outValue)
 
 
 bool
-PSObject::GetProperty (OSType id, RWTextValue &outValue)
+PSObject::GetProperty (OSType id, RWString &outValue)
 {
-/*
-	if (id == PSProps_OID)
-	{
-		char	buf [16];
-		snprintf (buf, sizeof (buf), "oid:%lx", (long) this);
-		outValue = (const UTF8Char *) buf;
-		return true;
-	}
-	else
-*/
-	{
-		RWValue	value;
+	RWValue	value;
 
-		if (GetProperty (id, value))
-		{
-			value.GetTextValue (outValue, NULL);
-			return true;
-		}
+	if (GetProperty (id, value))
+	{
+		value.GetTextValue (outValue, NULL);
+		return true;
 	}
 	return false;
 }
@@ -287,16 +273,16 @@ PSObject::SetProperty (OSType id, RWValue &inValue)
 	switch (id)
 	{
 		case PSObjPropXML:
-			if (inValue.CoerceValue (RWValue::eValue_XMLText))
+			if (inValue.GetKind() == RWValue::eValue_Text)
 			{
-				XMLDocument	xml;
-				xml.Parse (inValue.GetXMLText());
-				if (xml.Error())
+				RWXmlDocument	xml;
+				RWXmlResult		result = xml.LoadString (inValue.GetText());
+				if (!result)
 				{
-					printf ("PSObject::SetProperty:: Could not load XML. Error='%s'.\n", xml.ErrorDesc());
+					printf ("PSObject::SetProperty:: Could not load XML. Error='%s'.\n", RWStr::ToUTF8 (result.description).c_str());
 					break;
 				}
-				LoadXML (xml.RootElement());
+				LoadXML (xml.Root());
 				return true;
 			}
 			break;
@@ -326,6 +312,7 @@ PSObject::GetObjects (OSType id, PSObjListD* &outList)
 //	outList = NULL;
 	return false;
 }
+
 
 
 // ---------------------------------------------------------------------------
@@ -403,21 +390,17 @@ PSObject::SetRealProperty (RWValue &inValue, float &outValue, double inMin, doub
 }
 
 
+
 // ---------------------------------------------------------------------------
 // SetXMLStringProperty									   [static][protected]
 // ---------------------------------------------------------------------------
 
 bool
-PSObject::SetXMLStringProperty (RWValue &inValue, CXMLText &outValue)
+PSObject::SetXMLStringProperty (RWValue &inValue, RWString &outValue)
 {
-	if (inValue.CoerceValue (RWValue::eValue_XMLText))
-	{
-		if (outValue)
-			free (outValue);
-		outValue = reinterpret_cast <CXMLText> (strdup (reinterpret_cast <const char*> (inValue.GetXMLText())));
-	}
-	else
+	if (inValue.GetKind() != RWValue::eValue_Text)
 		return false;
+	outValue = inValue.GetText();
 	return true;
 }
 
@@ -427,12 +410,11 @@ PSObject::SetXMLStringProperty (RWValue &inValue, CXMLText &outValue)
 // ---------------------------------------------------------------------------
 
 bool
-PSObject::SetStringProperty (RWValue &inValue, RWTextValue &outValue)
+PSObject::SetStringProperty (RWValue &inValue, RWString &outValue)
 {
-	if (inValue.CoerceValue (RWValue::eValue_Text))
-		outValue = inValue.GetText();
-	else
+	if (inValue.GetKind() != RWValue::eValue_Text)
 		return false;
+	outValue = inValue.GetText();
 	return true;
 }
 
@@ -450,17 +432,17 @@ PSObject::SetStringProperty (RWValue &inValue, ExtendedExecute &outScript)
 	return true;
 }
 
+
 // ---------------------------------------------------------------------------
-// SetStringProperty									   [static][protected]
+// SetRectProperty										   [static][protected]
 // ---------------------------------------------------------------------------
 
 bool
 PSObject::SetRectProperty (RWValue &inValue, SRect &outValue)
 {
-	if (inValue.CoerceValue (RWValue::eValue_XMLText))
-		outValue = inValue.GetXMLText();
-	else
+	if (inValue.GetKind() != RWValue::eValue_Text)
 		return false;
+	outValue = inValue.GetText();
 	return true;
 }
 
@@ -472,8 +454,8 @@ PSObject::SetRectProperty (RWValue &inValue, SRect &outValue)
 bool
 PSObject::SetColorProperty (RWValue &inValue, SRGBColor &outValue)
 {
-	if (inValue.CoerceValue (RWValue::eValue_XMLText))
-		outValue = inValue.GetXMLText();
+	if (inValue.GetKind() == RWValue::eValue_Text)
+		outValue = inValue.GetText();
 	else if (inValue.CoerceValue (RWValue::eValue_Integer))
 		outValue = (unsigned long) inValue.GetInteger();
 	else
@@ -483,31 +465,35 @@ PSObject::SetColorProperty (RWValue &inValue, SRGBColor &outValue)
 
 
 // ---------------------------------------------------------------------------
+// ListIndex															[local]
+// ---------------------------------------------------------------------------
+// inIndex if it is a valid index into the NULL terminated inList, -1 otherwise
+
+static	long
+ListIndex (long inIndex, const char **inList)
+{
+	if (inIndex < 0 || inList == NULL)
+		return -1;
+	for (long i = 0; inList[i] != NULL; i++)
+		if (i == inIndex)
+			return inIndex;
+	return -1;
+}
+
+
+// ---------------------------------------------------------------------------
 // SetListProperty										   [static][protected]
 // ---------------------------------------------------------------------------
+// the list item's name, or its index
 
 long
 PSObject::SetListProperty (RWValue &inValue, const char ** inList)
 {
-	long				lVal = -1;
-	if (inValue.CoerceValue (RWValue::eValue_XMLText))
-		lVal = RWTools::FindInList (inValue.GetXMLText(), inList);
-//	else if (inValue.CoerceValue (RWValue::eValue_Integer))
+	long	lVal = -1;
+	if (inValue.GetKind() == RWValue::eValue_Text)
+		lVal = RWTools::FindInList (inValue.GetText(), inList);
 	if (lVal == -1 && inValue.CoerceValue (RWValue::eValue_Integer))
-	{
-		lVal = (unsigned long) inValue.GetInteger();
-		if (lVal >= 0)
-		{
-			int	count = 0;
-			while (count <= lVal && *inList != NULL)
-			{
-				count++;
-				inList++;
-			}
-			if (count <= lVal)
-				lVal = -1;
-		}
-	}
+		lVal = ListIndex (inValue.GetInteger(), inList);
 	return lVal;
 }
 
@@ -533,72 +519,54 @@ PSObject::SetListProperty (RWValue &inValue, const char ** inList, int &outValue
 // ---------------------------------------------------------------------------
 // SetProperty														 [private]
 // ---------------------------------------------------------------------------
+// property from its XML text
 
 void
-PSObject::SetProperty (const PSObjProps* pes, const CXMLText inValue)
+PSObject::SetProperty (const PSObjProps* pes, RWStringView inValue)
 {
 	RWValue	value;
-	long	lVal;
 	switch (pes->kind)
 	{
 		case PSProps_Boolean:
-			lVal = 0;
-			sscanf (inValue, "%li", &lVal);
-			value.SetBoolean (lVal != 0);
+			value.SetBoolean (RWStr::ToInteger (inValue).value_or (0) != 0);
 			break;
 
 		case PSProps_Integer:
-			lVal = 0;
-			sscanf (inValue, "%li", &lVal);
+		{
+			long	lVal = (long) RWStr::ToInteger (inValue).value_or (0);
 			if (lVal >= pes->limits.minF && lVal <= pes->limits.maxF)
 				value.SetInteger (lVal);
 			break;
+		}
 
 		case PSProps_Real:
 		{
-			double	fVal = 0;
-			sscanf (inValue, "%lg", &fVal);
+			double	fVal = RWStr::ToDouble (inValue).value_or (0);
 			if (fVal >= pes->limits.minF && fVal <= pes->limits.maxF)
 				value.SetReal (fVal);
 			break;
 		}
 
 		case PSProps_XMLString:
-			value.SetXMLText (inValue);
-			break;
-
 		case PSProps_String:
-		{
-			CText	t (reinterpret_cast <const UTF8Char*> (inValue), CText::_nullTerminated_);
-			value.SetText (t.Release(), true);
-			break;
-		}
-
 		case PSProps_Rect:
 		case PSProps_Color:
-			value.SetXMLText (inValue);
+			value.SetText (RWString (inValue));
 			break;
 
 		case PSProps_List:
-			lVal = RWTools::FindInList (inValue, pes->limits.list);
+		{
+			long	lVal = RWTools::FindInList (inValue, pes->limits.list);
+			if (lVal < 0)
+			{
+				std::optional<long long>	index = RWStr::ToInteger (inValue);
+				if (index)
+					lVal = ListIndex ((long) *index, pes->limits.list);
+			}
 			if (lVal >= 0)
 				value.SetInteger (lVal + pes->limits.minF);
-			else if (sscanf (inValue, "%li", &lVal) == 1)
-			{
-				if (lVal >= 0)
-				{
-					int	count = 0;
-					const char ** inList = pes->limits.list;
-					while (count <= lVal && *inList != NULL)
-					{
-						count++;
-						inList++;
-					}
-					if (count > lVal)
-						value.SetInteger (lVal + pes->limits.minF);
-				}
-			}
 			break;
+		}
 
 		case PSProps_BLOB:
 		case PSProps_Objects:
@@ -608,7 +576,6 @@ PSObject::SetProperty (const PSObjProps* pes, const CXMLText inValue)
 
 		case PSProps_OID:
 			// ignored
-			break;
 			break;
 	}
 	if (value.GetKind() != RWValue::eValue_Undefined)
@@ -623,7 +590,7 @@ PSObject::SetProperty (const PSObjProps* pes, const CXMLText inValue)
 // ---------------------------------------------------------------------------
 
 void
-PSObject::LoadXML (XMLElement *inNode, const PSObjProps* ppes)
+PSObject::LoadXML (RWXmlNode inNode, const PSObjProps* ppes)
 {
 	if (ppes == NULL)
 		ppes = GetProperties();
@@ -635,19 +602,21 @@ PSObject::LoadXML (XMLElement *inNode, const PSObjProps* ppes)
 		if (pes->handling == PSProps_None || not pes->writable)
 			continue;
 
+		RWString	name = RWStr::FromASCII (pes->name);
+
 		if (pes->handling == PSProps_Attribute)
 		{
-			const CXMLText	value = inNode->Attribute (pes->name);
-			if (value && *value)
+			RWString	value = inNode.Attr (name);
+			if (!value.empty())
 				SetProperty (pes, value);
 		}
 		else
 		{
-            XMLElement	*elem = inNode;
+			RWXmlNode	elem = inNode;
 			if (pes->handling == PSProps_OneChild || pes->handling == PSProps_OneContainer)
 			{
-				elem = inNode->FirstChildElement (pes->name);
-				if (elem == NULL)
+				elem = inNode.Child (name);
+				if (!elem)
 					continue;
 				if (pes->kind == PSProps_Objects || pes->kind == PSProps_BLOB)
 				{
@@ -655,8 +624,8 @@ PSObject::LoadXML (XMLElement *inNode, const PSObjProps* ppes)
 					continue;
 				}
 			}
-			else if ((pes->kind == PSProps_Objects) && ((pes->handling == PSProps_Childs) || (pes->handling == PSProps_Container))) 
-                // pB changed 2011-9
+			else if ((pes->kind == PSProps_Objects) && ((pes->handling == PSProps_Childs) || (pes->handling == PSProps_Container)))
+				// pB changed 2011-9
 			{
 				loadChilds = true;
 				continue;
@@ -664,11 +633,11 @@ PSObject::LoadXML (XMLElement *inNode, const PSObjProps* ppes)
 
 assert (pes->kind < PSProps_BLOB);
 
-			CText	text = RWTools::ParseIntoText (elem);
-			if (text && *text)
+			RWString	text = RWTools::ParseIntoText (elem);
+			if (!text.empty())
 			{
 				RWValue	value;
-				value.SetText (text, true);
+				value.SetText (std::move (text));
 				SetProperty (pes->id, value);
 			}
 		}
@@ -676,15 +645,9 @@ assert (pes->kind < PSProps_BLOB);
 
 	if (loadChilds)
 	{
-		XMLNode		*node, *next;
-        XMLElement	*elem;
-		for (node = inNode->FirstChildElement() ; node; node = next )
+		for (RWXmlNode elem : inNode.Children())
 		{
-			next = node->NextSibling();
-			elem = node->ToElement();
-			if (elem == NULL)
-				continue;
-			pes = FindPropertyByName (elem->Value(), ppes);
+			pes = FindPropertyByName (elem.Name(), ppes);
 			if (pes && pes->kind == PSProps_Objects && (pes->handling == PSProps_Childs || pes->handling == PSProps_Container))
 				LoadXMLObjects (pes, elem);
 		}
@@ -699,7 +662,7 @@ assert (pes->kind < PSProps_BLOB);
 // ---------------------------------------------------------------------------
 
 void
-PSObject::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+PSObject::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 }
 
@@ -707,22 +670,19 @@ PSObject::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
 // ---------------------------------------------------------------------------
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
+// Writes the object as a child element of inParent (named after its kind) and
+// returns it. Property tables without a kind entry write into inParent itself.
 
-XMLElement*
-PSObject::WriteXML (XMLNode *inParent, const PSObjProps* ppes)
+RWXmlNode
+PSObject::WriteXML (RWXmlNode inParent, const PSObjProps* ppes)
 {
 	if (ppes == NULL)
 		ppes = GetProperties();
 	const PSObjProps*	pes = FindPropertyByID (PSObjPropKind, ppes);
 
-    XMLElement	*me = NULL, *container;
-	{
-        XMLElement	lme (pes? (pes->limits.list ? pes->limits.list [GetKind()] : pes->name) : "");
-		if (!pes)
-			me = inParent->ToElement();
-		if (me == NULL)
-			me = inParent->InsertEndChild (lme)->ToElement();
-	}
+	RWXmlNode	me = inParent;
+	if (pes)
+		me = inParent.Append (RWStr::FromASCII (pes->limits.list ? pes->limits.list [GetKind()] : pes->name));
 
 	for (pes = ppes; pes->name != NULL; pes++)
 	{
@@ -735,82 +695,65 @@ PSObject::WriteXML (XMLNode *inParent, const PSObjProps* ppes)
 		if (pes->kind != PSProps_Objects && not GetProperty (pes->id, value))
 			continue;
 
+		RWString	name = RWStr::FromASCII (pes->name);
+
 		switch (pes->kind)
 		{
 			case PSProps_Boolean:
 				if (value.GetKind() == RWValue::eValue_Boolean && value.GetBoolean() != (pes->limits.defF != 0))
-					me->SetAttribute (pes->name, int (value.GetBoolean()));
+					me.SetAttrBool (name, value.GetBoolean());
 				break;
 
 			case PSProps_Integer:
 				if (value.GetKind() == RWValue::eValue_Integer && value.GetInteger() != pes->limits.defF)
-					me->SetAttribute (pes->name, value.GetInteger());
+					me.SetAttrInt (name, value.GetInteger());
 				break;
 
 			case PSProps_Real:
 				if (value.GetKind() == RWValue::eValue_Real && value.GetReal() != pes->limits.defF)
-					me->SetAttribute (pes->name, value.GetReal());
+					me.SetAttrDouble (name, value.GetReal(), "%.15g");
 				break;
 
 			case PSProps_XMLString:
 			case PSProps_String:
-				if (value.CoerceValue (RWValue::eValue_XMLText))
+				if (value.GetKind() == RWValue::eValue_Text)	// ••• TODO ••• should we write empty string properties?!?
 				{
-					if (value.GetXMLText() != NULL)	// ••• TODO ••• should we write empty string properties?!?
-					{
-						if (pes->handling >= PSProps_OneChild)
-						{
-							{
-                                XMLElement	elem (pes->name);
-								container = me->InsertEndChild (elem)->ToElement();
-							}
-							RWTools::WriteText (container, value.GetXMLText());
-						}
-						else if (pes->handling == PSProps_Value)
-						{
-							RWTools::WriteText (me, value.GetXMLText());
-						}
-						else // if (pes->handling == PSProps_Attribute
-						{
-							me->SetAttribute (pes->name, value.GetXMLText());
-						}
-					}
+					if (pes->handling >= PSProps_OneChild)
+						RWTools::WriteText (me.Append (name), value.GetText());
+					else if (pes->handling == PSProps_Value)
+						RWTools::WriteText (me, value.GetText());
+					else // if (pes->handling == PSProps_Attribute
+						me.SetAttr (name, value.GetText());
 				}
 				break;
 
 			case PSProps_Rect:
-				if (value.CoerceValue (RWValue::eValue_XMLText))
-					me->SetAttribute (pes->name, value.GetXMLText());
-				break;
-
 			case PSProps_Color:
-				if (value.CoerceValue (RWValue::eValue_XMLText))
-//					if (! STR_EQUALS (value.GetXMLText(), (const char *) cBlackColor))
-						me->SetAttribute (pes->name, value.GetXMLText());
+				if (value.GetKind() == RWValue::eValue_Text)
+					me.SetAttr (name, value.GetText());
 				break;
 
 			case PSProps_List:
 				if (value.GetKind() == RWValue::eValue_Integer && value.GetInteger() != pes->limits.defF)
-					me->SetAttribute (pes->name, pes->limits.list [int (value.GetInteger() - pes->limits.minF)]);
-				else if (value.GetKind() == RWValue::eValue_XMLText)
 				{
-					long	lVal = RWTools::FindInList (value.GetXMLText(), pes->limits.list);
+					long	index = ListIndex (long (value.GetInteger() - pes->limits.minF), pes->limits.list);
+					if (index >= 0)
+						me.SetAttr (name, RWStr::FromASCII (pes->limits.list [index]));
+				}
+				else if (value.GetKind() == RWValue::eValue_Text)
+				{
+					long	lVal = RWTools::FindInList (value.GetText(), pes->limits.list);
 					if (lVal >= 0 && lVal != pes->limits.defF)
-						me->SetAttribute (pes->name, value.GetXMLText());
+						me.SetAttr (name, value.GetText());
 				}
 				break;
 
 			case PSProps_BLOB:
 			{
-//				container = me;
-                XMLElement	sub (pes->name);
-//				if (pes->handling == PSProps_OneContainer || pes->handling == PSProps_Container)
-					container = &sub;
-				if (WriteXMLObjects (pes, container))
-				{
-					if (container != me)
-						container = me->InsertEndChild (sub)->ToElement();
-				}
+				// the container is kept only when the object writes something into it
+				RWXmlNode	container = me.Append (name);
+				if (!WriteXMLObjects (pes, container))
+					me.Remove (container);
 				break;
 			}
 
@@ -818,27 +761,19 @@ PSObject::WriteXML (XMLNode *inParent, const PSObjProps* ppes)
 			{
 assert (pes->handling >= PSProps_OneChild);
 
-				container = me;
-                XMLElement	sub (pes->name);
-				if (pes->handling == PSProps_OneContainer || pes->handling == PSProps_Container)
-					container = &sub;
+				bool		ownContainer = (pes->handling == PSProps_OneContainer || pes->handling == PSProps_Container);
+				RWXmlNode	container = ownContainer ? me.Append (name) : me;
 				if (WriteXMLObjects (pes, container))
 				{
-					if (container != me)
-						container = me->InsertEndChild (sub)->ToElement();
-					
 					PSObjListD*	objects = NULL;
 					if (GetObjects (pes->id, objects))
 					{
-						PSObjListD::const_iterator	it;
-						PSObject					*obj;
-						for (it = objects->begin(); it != objects->end(); it++)
-						{
-							obj = *it;
+						for (PSObject *obj : *objects)
 							obj->WriteXML (container);
-						}
 					}
 				}
+				else if (ownContainer)
+					me.Remove (container);
 				break;
 			}
 
@@ -846,7 +781,6 @@ assert (pes->handling >= PSProps_OneChild);
 				break;
 		}
 	}
-
 
 	return me;
 }
@@ -857,7 +791,7 @@ assert (pes->handling >= PSProps_OneChild);
 // ---------------------------------------------------------------------------
 
 bool
-PSObject::WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+PSObject::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 	return true;
 }

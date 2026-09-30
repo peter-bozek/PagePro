@@ -11,7 +11,7 @@ extern	"C"		void Yield4D (void);
 // RWReportData								Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWReportData::RWReportData (XMLDocument *inXML)
+RWReportData::RWReportData (RWXmlDocument *inXML)
 	:	mReportWriter (0),
 		mXML (inXML),
 //		mName (0),
@@ -38,12 +38,11 @@ RWReportData::~RWReportData (void)
 // GetReport														  [public]
 // ---------------------------------------------------------------------------
 
-const XMLElement*
+RWXmlNode
 RWReportData::GetReport (void)
 const
 {
-//	return mXML->FirstChild ("Report")->ToElement();
-	return mXML->RootElement();
+	return mXML->Root();
 }
 
 
@@ -66,53 +65,26 @@ const
 void
 RWReportData::ParseReport (void)
 {
-    XMLNode		*report = mXML->RootElement();	// should be same as mXML->FirstChild ("Report");
-    XMLNode		*node = NULL, *next;
-    XMLElement	*elem;
-	CXMLText	value;
+	RWXmlNode	report = mXML->Root();	// should be "Report"
 
-	if (report)
+	if (!report || report.Attr (u"Version") != u"1.0")
+		return;
+
+	if (report.AttrInt (u"Dynamic", 0) != 0)
+		mIsDynamic = true;
+	if (report.HasAttr (u"name"))
+		mName = report.Attr (u"name");
+
+	for (RWXmlNode elem : report.Children())
 	{
-		elem = report->ToElement();
-        if (elem && (value = elem->Attribute ("Version")).length() > 0 &&  (value.compare( "1.0") == 0))
-		{
-			node = report->FirstChildElement();
-			if ((value = elem->Attribute ("Dynamic")).length() > 0 && std::stoi (value) != 0)
-				mIsDynamic = true;
-			if ((value = elem->Attribute ("name")).length() > 0)
-				mName.FromXML (value);
-		}
-	}
-
-	for ( ; node; node = next )
-	{
-		next = node->NextSibling();
-		elem = node->ToElement();
-		if (elem == NULL)
-		{
-//			report->RemoveChild (node);
-			continue;
-		}
-
-		value = elem->Value();
-		if (value.compare( "StyleSet") == 0)
-		{
+		if (elem.NameIs ("StyleSet"))
 			ParseStyleSet (elem);
-//			report->RemoveChild (node);
-		}
-		else if (value.compare( "Header") == 0 || value.compare("Page") == 0  || value.compare("Footer") == 0 )
+		else if (elem.NameIs ("Header") || elem.NameIs ("Page") || elem.NameIs ("Footer"))
 			ParseSection (elem);
-		else if (STR_EQUALS (value, "Watermark"))
+		else if (STR_EQUALS (elem.Name(), "Watermark"))
 			ParseSection (elem);
-		else if (value.compare("BreakHeader") == 0  || value.compare("BreakFooter") == 0 )
-		{
+		else if (elem.NameIs ("BreakHeader") || elem.NameIs ("BreakFooter"))
 			ParseSection (elem);
-		}
-		else
-		{
-//			report->RemoveChild (node);
-			continue;
-		}
 	}
 
 	return;
@@ -124,17 +96,13 @@ RWReportData::ParseReport (void)
 // ---------------------------------------------------------------------------
 
 void
-RWReportData::ParseStyleSet (XMLElement *inStyleSet)
+RWReportData::ParseStyleSet (RWXmlNode inStyleSet)
 {
-    XMLNode	*node;
 	RWStyle		*style;
 
-	for ( node = inStyleSet->FirstChildElement(); node; node = node->NextSibling() )
+	for (RWXmlNode elem : inStyleSet.Children())
 	{
-        XMLElement	*elem = node->ToElement();
-		if (elem == NULL)
-			continue;
-        if ( strcasecmp(elem->Value(), "Style") != 0)
+		if (!STR_EQUALS (elem.Name(), "Style"))
 			continue;
 
 		style = new RWStyle (&mStyles, elem);
@@ -144,7 +112,7 @@ RWReportData::ParseStyleSet (XMLElement *inStyleSet)
 	//mbs 23122009	create default only if not present
 	if (mStyles.FindStyle (0) == NULL || mStyles.FindStyle (0)->GetID() != 0)
 	{
-		style = new RWStyle (&mStyles, NULL);
+		style = new RWStyle (&mStyles, RWXmlNode());
 		mStyles.insert (pair<long,RWStyle*> (0, style));	// add default style
 	}
 
@@ -157,51 +125,44 @@ RWReportData::ParseStyleSet (XMLElement *inStyleSet)
 // ---------------------------------------------------------------------------
 
 void
-RWReportData::ParseSection (XMLElement *inSection)
+RWReportData::ParseSection (RWXmlNode inSection)
 {
+	const RWString	sectionName = inSection.Name();
+
 	if (mIsDynamic)
 	{
-		if (strcasecmp (inSection->Value(), "Page") == 0)
+		if (STR_EQUALS (sectionName, "Page"))
 		{
 			RWPageSection	*pageSection = new RWPageSection;
 			pageSection->Parse (this, inSection);
 			mBody.push_back (pageSection);
 
-			XMLNode	*node, *next;
-
-			for ( node = inSection->FirstChildElement(); node; node = next )
+			for (RWXmlNode elem : inSection.Children())
 			{
-				next = node->NextSibling();
-                XMLElement	*elem = node->ToElement();
-				if (elem == NULL)
-				{
-					continue;
-				}
+				const RWString	value = elem.Name();
 
-				const CXMLText	value = elem->Value();
-
-				if (strcasecmp (value.c_str(), "Body") == 0)
+				if (STR_EQUALS (value, "Body"))
 				{
 					RWSection	*body = new RWSection (RWSection::eSectionKind_Body);
 					body->Parse (this, elem);
 					mBody.push_back (body);
 					ParseObjects (body->GetKeepTogether(), body->GetObjects(), elem);
 				}
-				else if (strncasecmp (value.c_str(), "Break", strlen("Break")) == 0)
+				else if (STR_STARTS_WITH (value, "Break"))
 				{
 					RWBreakSection	*breakLevel = new RWBreakSection (value);
 					breakLevel->Parse (this, elem);
 					mBody.push_back (breakLevel);
 					ParseObjects (breakLevel->GetKeepTogether(), breakLevel->GetObjects(), elem);
 				}
-				else if (strcasecmp (value.c_str(), "Header") == 0 || strcasecmp (value.c_str(), "Footer") == 0)
+				else if (STR_EQUALS (value, "Header") || STR_EQUALS (value, "Footer"))
 				{
 					RWHeaderFooterSection	*headerFooter = new RWHeaderFooterSection (value);
 					headerFooter->Parse (this, elem);
 					mPageSections.push_back (headerFooter);
 					ParseObjects (headerFooter->GetKeepTogether(), headerFooter->GetObjects(), elem);
 				}
-				else if (strcasecmp (value.c_str(), "Watermark") == 0)
+				else if (STR_EQUALS (value, "Watermark"))
 				{
 					if (mWatermark == NULL)
 					{
@@ -215,54 +176,30 @@ RWReportData::ParseSection (XMLElement *inSection)
 	}
 	else
 	{
-		if (STR_EQUALS (inSection->Value(), "Page"))
+		if (STR_EQUALS (sectionName, "Page"))
 		{
 			RWPageSection	*pageSection = new RWPageSection;
 			pageSection->Parse (this, inSection);
 			mBody.push_back (pageSection);
 			ParseObjects (pageSection->GetKeepTogether(), pageSection->GetObjects(), inSection);
 		}
-/*
-		else if (STR_EQUALS (inSection->Value(), "BreakHeader"))
+		else if (STR_EQUALS (sectionName, "Header") || STR_EQUALS (sectionName, "Footer"))
 		{
-			RWBreakSection	*breakSection = new RWBreakSection (inSection->Value());
-			breakSection->Parse (this, inSection);
-			mBreakHeaders.push_back (breakSection);
-			ParseObjects (breakSection->GetKeepTogether(), breakSection->GetObjects(), inSection);
-		}
-		else if (STR_EQUALS (inSection->Value(), "BreakFooter"))
-		{
-			RWBreakSection	*breakSection = new RWBreakSection (inSection->Value());
-			breakSection->Parse (this, inSection);
-			mBreakFooters.push_back (breakSection);
-			ParseObjects (breakSection->GetKeepTogether(), breakSection->GetObjects(), inSection);
-		}
-*/
-		else if (STR_EQUALS (inSection->Value(), "Header") || STR_EQUALS (inSection->Value(), "Footer"))
-		{
-			RWHeaderFooterSection	*headerFooter = new RWHeaderFooterSection (inSection->Value());
+			RWHeaderFooterSection	*headerFooter = new RWHeaderFooterSection (sectionName);
 			headerFooter->Parse (this, inSection);
 			mPageSections.push_back (headerFooter);
 			ParseObjects (headerFooter->GetKeepTogether(), headerFooter->GetObjects(), inSection);
 		}
-		else if (STR_EQUALS (inSection->Value(), "Watermark"))
+		else if (STR_EQUALS (sectionName, "Watermark"))
 		{
 			if (mWatermark == NULL)
 			{
-				mWatermark = new RWWatermarkSection (inSection->Value());
+				mWatermark = new RWWatermarkSection (sectionName);
 				mWatermark->Parse (this, inSection);
 				ParseObjects (mWatermark->GetKeepTogether(), mWatermark->GetObjects(), inSection);
 			}
 		}
 	}
-
-//	XMLElement	*elem = inSection->FirstChildElement();
-//	if (elem && STR_EQUALS (elem->Value(), "Objects"))
-//	{
-//		ParseObjects (section->GetKeepTogether(), section->GetObjects(), elem);
-//	}
-//	else if (elem)
-//		inSection->RemoveChild (elem);
 
 	return;
 }
@@ -273,24 +210,15 @@ RWReportData::ParseSection (XMLElement *inSection)
 // ---------------------------------------------------------------------------
 
 void
-RWReportData::ParseObjects (bool inKeepTogether, RWObjList *inParent, XMLElement *inObject)
+RWReportData::ParseObjects (bool inKeepTogether, RWObjList *inParent, RWXmlNode inObject)
 {
-	XMLNode	*node, *next;
 	RWObject	*obj;
 	int			seqID = 0;
 
-	for ( node = inObject->FirstChildElement(); node; node = next )
+	for (RWXmlNode elem : inObject.Children())
 	{
-		next = node->NextSibling();
-        XMLElement	*elem = node->ToElement();
-		if (elem == NULL)
-		{
-//			inObject->RemoveChild (node);
-			continue;
-		}
-
 		obj = NULL;
-		const CXMLText	value = elem->Value();
+		const RWString	value = elem.Name();
 
 		if (STR_EQUALS (value, "Group"))
 		{

@@ -177,7 +177,9 @@ RWDataProvider::tableData::tableData (RWDataID id, long inNumRows, long inNumCol
 		fTranspose (inTranspose),
 		fTableData (0)
 {
-	fTableData = new RWObjectDataMap [inNumColumns];
+	if (fNumCols < 0)		// "cols" missing in the XML
+		fNumCols = 0;
+	fTableData = new RWObjectDataMap [fNumCols];
 	return;
 }
 
@@ -254,12 +256,14 @@ RWDataProvider::tableData::PutCellData (long inRow, long inColumn, const RWValue
 	long			row = fTranspose ? inColumn : inRow;
 	long			col = fTranspose ? inRow : inColumn;
 	RWObjectDataMap	*cd = GetColumn (col);
+	if (cd == NULL)
+		return;
 
 	if (fNumRows < row)
 		fNumRows = row;
 
 	bool	insert = true;
-	if (row > 1)	// eliminate duplicate (repeating) values
+	if (row > 1 && !cd->empty())	// eliminate duplicate (repeating) values; "--end()" of an empty map was undefined
 	{
 /*	1) insertion is done sequentially
     2) map is always sorted
@@ -370,36 +374,51 @@ const
 
 
 
-static	const char	*sValueTag = "v";	// "Value"
-static	const char	*sIDTag = "id";		// "id"
-static	const char	*sKindTag = "k";	// "kind"
-static	const char	*sColumnTag = "c";	// "Column"
+static	const char16_t	*kValueTag = u"v";		// "Value"
+static	const char16_t	*kIDTag = u"id";		// "id"
+static	const char16_t	*kKindTag = u"k";		// "kind"
+static	const char16_t	*kColumnTag = u"c";		// "Column"
 
 
-// inNode should point to "Value" element
+// ---------------------------------------------------------------------------
+// ReadDateParts													   [local]
+// ---------------------------------------------------------------------------
+// "a<sep>b<sep>c" as three integers
+
+static	bool
+ReadDateParts (RWStringView inText, char16_t inSeparator, long outParts[3])
+{
+	std::vector<RWString>	parts = RWStr::Split (RWStr::Trim (inText), inSeparator);
+	if (parts.size() != 3)
+		return false;
+	for (int i = 0; i < 3; i++)
+	{
+		std::optional<long long>	value = RWStr::ToInteger (parts[i]);
+		if (!value)
+			return false;
+		outParts[i] = (long) *value;
+	}
+	return true;
+}
+
+
+// ---------------------------------------------------------------------------
+// ParseValue													   [protected]
+// ---------------------------------------------------------------------------
+// inNode is a "v" (Value) element
+
 void
-RWDataProvider::ParseValue (XMLElement const *inNode, RWDataID &outID, RWValue &outVar)
+RWDataProvider::ParseValue (RWXmlNode inNode, RWDataID &outID, RWValue &outVar)
 {
 	outVar.Free();
 
-	RWValue::EValue_Kind	    kind = RWValue::eValue_Undefined;
-	const XMLAttribute			*attrib;
+	if (inNode.HasAttr (kIDTag))
+		outID = (RWDataID) inNode.AttrInt (kIDTag, 0);
 
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
-	{
-		const CXMLText	name(attrib->Name());
-		const CXMLText	value = attrib->Value();
-
-		if (name.compare( sIDTag) == 0)
-		{
-			outID = 0;
-			sscanf (value.c_str(), "%lu", &outID);
-		}
-		else if (name.compare( sKindTag) == 0)
-		{
-			kind = RWValue::EValue_Kind (std::stol(value));
-		}
-	}
+	long	kindValue = (long) inNode.AttrInt (kKindTag, RWValue::eValue_Undefined);
+	if (kindValue == 4)						// eValue_XMLText (UTF-8 text) in older data
+		kindValue = RWValue::eValue_Text;
+	RWValue::EValue_Kind	kind = RWValue::EValue_Kind (kindValue);
 
 	switch (kind)
 	{
@@ -411,7 +430,7 @@ RWDataProvider::ParseValue (XMLElement const *inNode, RWDataID &outID, RWValue &
 		case RWValue::eValue_PictRefPrint:	// invalid case!
 			// ••• TODO •••	what to do?!?
 			break;
-			
+
 		case RWValue::eValue_BLOB:
 		case RWValue::eValue_PicturePICT:
 		case RWValue::eValue_PicturePDF:
@@ -429,84 +448,63 @@ RWDataProvider::ParseValue (XMLElement const *inNode, RWDataID &outID, RWValue &
 			break;
 		}
 
+		case RWValue::eValue_Text:
+			outVar.SetText (RWTools::ParseIntoText (inNode));
+			break;
+
 		case RWValue::eValue_Boolean:
 		case RWValue::eValue_Integer:
 		case RWValue::eValue_Real:
-		case RWValue::eValue_XMLText:
-		case RWValue::eValue_Text:
 		case RWValue::eValue_DateTime:
 		case RWValue::eValue_Date:
 		case RWValue::eValue_Time:
 		{
-			RWTextValue	text = RWTools::ParseIntoText (inNode);
-			if (kind == RWValue::eValue_Text)
+			RWString	text = RWTools::ParseIntoText (inNode);
+			long		lVal = 0;
+			double		dVal = 0;
+			long		parts[3];
+
+			switch (kind)
 			{
-				outVar.SetText (text.Detach(), true);
+				case RWValue::eValue_Boolean:
+					lVal = RWStr::ToInteger (text).value_or (0) != 0;
+					break;
+
+				case RWValue::eValue_Integer:
+				case RWValue::eValue_DateTime:
+					lVal = (long) RWStr::ToInteger (text).value_or (0);
+					break;
+
+				case RWValue::eValue_Real:
+					dVal = RWStr::ToDouble (text).value_or (0);
+					break;
+
+				case RWValue::eValue_Date:
+					// day: 0 - 31 ==> 5 bits
+					// month: 0 - 12 ==> 4 bits
+					// day | (month << 5) | (year << 9)
+					if (ReadDateParts (text, u'-', parts))
+						lVal = (parts[0] << 9) | (parts[1] << 5) | parts[2];
+					break;
+
+				case RWValue::eValue_Time:
+					if (ReadDateParts (text, u':', parts))
+						lVal = (parts[0] * 3600L) + (parts[1] * 60L) + parts[2];
+					break;
+
+				default:	// to shut up compiler
+					break;
 			}
+
+			if (kind == RWValue::eValue_Real)
+				outVar.SetReal (dVal);
 			else
-			{
-				long		lVal = 0;
-				double		dVal = 0;
-				CXMLText	u8text = text.ToXML();
-				text.Free();
-				if (!u8text.empty())
-				{
-					if (kind == RWValue::eValue_XMLText)
-					{
-						outVar.SetXMLText (u8text, true);
-						break;	// to not free u8text
-					}
-
-					switch (kind)
-					{
-						case RWValue::eValue_Boolean:
-						case RWValue::eValue_Integer:
-//						case RWValue::eValue_PictureRef:	// invalid case!
-							sscanf (u8text.c_str(), "%ld", &lVal);
-							if (kind == RWValue::eValue_Boolean)
-								lVal = (lVal != 0);
-							break;
-
-						case RWValue::eValue_Real:
-							sscanf (u8text.c_str(), "%lg", &dVal);
-							break;
-
-						case RWValue::eValue_DateTime:
-							sscanf (u8text.c_str(), "%lu", &lVal);
-							break;
-
-						case RWValue::eValue_Date:
-						{
-							// day: 0 - 31 ==> 5 bits
-							// month: 0 - 12 ==> 4 bits
-							// day | (month << 5) | (year << 9)
-							int	d, m, y;
-							if (sscanf (u8text.c_str(), "%d-%d-%d", &y, &m, &d) == 3)
-								lVal = (y << 9) | (m << 5) | d;
-							break;
-						}
-
-						case RWValue::eValue_Time:
-						{
-							int	h, m, s;
-							if (sscanf (u8text.c_str(), "%d:%d:%d", &h, &m, &s) == 3)
-								lVal = (h * 3600L) + (m * 60L) + s;
-							break;
-						}
-
-						default:	// to shut up compiler
-							break;
-					}
-					RWTextValue::FreeXML (u8text);
-				}
-
-				if (kind == RWValue::eValue_Real)
-					outVar.SetReal (dVal);
-				else
-					outVar.SetInteger (lVal, kind);
-			}
+				outVar.SetInteger (lVal, kind);
 			break;
 		}
+
+		default:
+			break;
 	}
 
 # if	_4D_Package_
@@ -517,15 +515,20 @@ RWDataProvider::ParseValue (XMLElement const *inNode, RWDataID &outID, RWValue &
 }
 
 
+// ---------------------------------------------------------------------------
+// WriteValue													   [protected]
+// ---------------------------------------------------------------------------
+// appends a "v" (Value) element
+
 void
-RWDataProvider::WriteValue (FILE *fd, RWDataID inID, const RWValue &inVar)
+RWDataProvider::WriteValue (RWXmlNode inParent, RWDataID inID, const RWValue &inVar)
 {
-	char		buf [64];
-	char		*result = NULL;
-	CText   	text;
-	long		size = 0;
 	RWValue::EValue_Kind	kind = inVar.GetKind();
-	fprintf (fd, "<%s %s=\"%lu\" %s=\"%d\"", sValueTag, sIDTag, inID, sKindTag, kind);
+	RWString				text;
+
+	RWXmlNode	me = inParent.Append (kValueTag);
+	me.SetAttrInt (kIDTag, (long long) inID);
+	me.SetAttrInt (kKindTag, kind);
 
 	switch (kind)
 	{
@@ -534,159 +537,36 @@ RWDataProvider::WriteValue (FILE *fd, RWDataID inID, const RWValue &inVar)
 
 		case RWValue::eValue_Boolean:
 		case RWValue::eValue_Integer:
-			snprintf (buf, sizeof (buf), "%ld", inVar.GetInteger());
-			result = buf;
+			text = RWStr::Format ("%ld", inVar.GetInteger());
 			break;
 
 		case RWValue::eValue_Real:
-			snprintf (buf, sizeof (buf), "%.15lg", inVar.GetReal());
-			result = buf;
+			text = RWStr::Format ("%.15lg", inVar.GetReal());
 			break;
 
-		case RWValue::eValue_XMLText:
-			result = const_cast <char*> (inVar.GetXMLText().c_str());
-			break;
-			
 		case RWValue::eValue_Text:
 			text = inVar.GetText();
 			break;
 
 		case RWValue::eValue_DateTime:
-			snprintf (buf, sizeof (buf), "%lu", inVar.GetInteger());
-			result = buf;
+			text = RWStr::Format ("%lu", (unsigned long) inVar.GetInteger());
 			break;
 
 		case RWValue::eValue_Date:
 			// day: 0 - 31 ==> 5 bits
 			// month: 0 - 12 ==> 4 bits
 			// day | (month << 5) | (year << 9)
-			snprintf (buf, sizeof (buf), "%04ld-%02ld-%02ld", inVar.GetInteger() >> 9, (inVar.GetInteger() >> 5) & 0xF, inVar.GetInteger() & 0x1F);
-			result = buf;
+			text = RWStr::Format ("%04ld-%02ld-%02ld", inVar.GetInteger() >> 9, (inVar.GetInteger() >> 5) & 0xF, inVar.GetInteger() & 0x1F);
 			break;
 
 		case RWValue::eValue_Time:
-			snprintf (buf, sizeof (buf), "%02ld:%02ld:%02ld", inVar.GetInteger() / 3600, inVar.GetInteger() / 60 % 60, inVar.GetInteger() % 60);
-			result = buf;
+			text = RWStr::Format ("%02ld:%02ld:%02ld", inVar.GetInteger() / 3600, inVar.GetInteger() / 60 % 60, inVar.GetInteger() % 60);
 			break;
 
 		case RWValue::eValue_PictRefScreen:	// invalid case!
 		case RWValue::eValue_PictRefPrint:	// invalid case!
 			// ••• TODO •••	what to do?!?
-			snprintf (buf, sizeof (buf), "%ld", inVar.GetInteger());
-			result = buf;
-			break;
-			
-		case RWValue::eValue_BLOB:
-		case RWValue::eValue_PicturePICT:
-		case RWValue::eValue_PicturePDF:
-		case RWValue::eValue_PictureJPG:
-		case RWValue::eValue_PicturePNG:
-		case RWValue::eValue_PictureTIFF:
-		case RWValue::eValue_PictureEMF:
-			result = reinterpret_cast <char*> (inVar.GetBlobData());
-			size = inVar.GetBlobSize();
-			break;
-
-//		default:
-//			break;
-	}
-
-	if (result != NULL || !text.empty())
-	{
-		if (kind >= RWValue::eValue_BLOB)
-		{
-			if (size == 0)	// should not occur...
-				fprintf (fd, " />");
-			else
-			{
-				fprintf (fd, " format=\"%s\" encoding=\"base64\">\r\n", RWValue::GetPictFormats() [kind - RWValue::eValue_BLOB]);
-				RWTools::WriteData (fd, inVar.GetBlob());
-				fprintf (fd, "</%s>\r\n", sValueTag);
-			}
-		}
-		else	// text
-		{
-			fprintf (fd, ">");
-			if (!text.empty())
-				RWTools::WriteText (fd, text);
-			else
-				RWTools::WriteText (fd, result);
-			fprintf (fd, "</%s>\r\n", sValueTag);
-		}
-	}
-	else
-		fprintf (fd, " />\r\n");
-
-# if	_4D_Package_
-	Yield4D();
-# endif
-
-	return;
-}
-
-
-void
-RWDataProvider::WriteValue (XMLElement *inParent, RWDataID inID, const RWValue &inVar)
-{
-	char			buf [64];
-	char			*result = NULL;
-    CText		    text;
-	long			size = 0;
-    
-	RWValue::EValue_Kind	kind = inVar.GetKind();
-    
-    XMLElement *	   me = inParent->InsertNewChildElement (sValueTag);
-	me->SetAttribute (sIDTag, (unsigned int) inID);
-	me->SetAttribute (sKindTag, kind);
-    inParent = me; // inParent->InsertEndChild (me)->ToElement();
-
-	switch (kind)
-	{
-		case RWValue::eValue_Undefined:
-			break;
-
-		case RWValue::eValue_Boolean:
-		case RWValue::eValue_Integer:
-			snprintf (buf, sizeof (buf), "%ld", inVar.GetInteger());
-			result = buf;
-			break;
-
-		case RWValue::eValue_Real:
-			snprintf (buf, sizeof (buf), "%.15lg", inVar.GetReal());
-			result = buf;
-			break;
-
-		case RWValue::eValue_XMLText:
-			result = const_cast <char*> (inVar.GetXMLText().c_str());
-			break;
-			
-		case RWValue::eValue_Text:
-			text = (CText) inVar.GetText();
-			break;
-
-		case RWValue::eValue_DateTime:
-			snprintf (buf, sizeof (buf), "%lu", inVar.GetInteger());
-			result = buf;
-			break;
-
-		case RWValue::eValue_Date:
-			// day: 0 - 31 ==> 5 bits
-			// month: 0 - 12 ==> 4 bits
-			// day | (month << 5) | (year << 9)
-			snprintf (buf, sizeof (buf), "%04ld-%02ld-%02ld", inVar.GetInteger() >> 9, (inVar.GetInteger() >> 5) & 0xF, inVar.GetInteger() & 0x1F);
-			result = buf;
-			break;
-
-		case RWValue::eValue_Time:
-			snprintf (buf, sizeof (buf), "%02ld:%02ld:%02ld", inVar.GetInteger() / 3600, inVar.GetInteger() / 60 % 60, inVar.GetInteger() % 60);
-			result = buf;
-			break;
-
-		case RWValue::eValue_PictRefScreen:	// invalid case!
-		case RWValue::eValue_PictRefPrint:	// invalid case!
-			// ••• TODO •••	what to do?!?
-			snprintf (buf, sizeof (buf), "%ld", inVar.GetInteger());
-			result = buf;
+			text = RWStr::Format ("%ld", (long) (intptr_t) inVar.GetPictureRef());
 			break;
 
 		case RWValue::eValue_BLOB:
@@ -696,33 +576,17 @@ RWDataProvider::WriteValue (XMLElement *inParent, RWDataID inID, const RWValue &
 		case RWValue::eValue_PicturePNG:
 		case RWValue::eValue_PictureTIFF:
 		case RWValue::eValue_PictureEMF:
-			result = reinterpret_cast <char*> (inVar.GetBlobData());
-			size = inVar.GetBlobSize();
-			break;
-
-//		default:
-//			break;
-	}
-
-	if (result != NULL || text.empty())
-	{
-		if (kind >= RWValue::eValue_BLOB)
-		{
-			if (size != 0)	// should be always true...
+			if (inVar.GetBlobSize() != 0)	// should be always true...
 			{
-				inParent->SetAttribute ("format", RWValue::GetPictFormats() [kind - RWValue::eValue_BLOB]);
-				inParent->SetAttribute ("encoding", "base64");
-				RWTools::WriteData (inParent, inVar.GetBlob());
+				me.SetAttr (u"format", RWStr::FromASCII (RWValue::GetPictFormats() [kind - RWValue::eValue_BLOB]));
+				me.SetAttr (u"encoding", u"base64");
+				RWTools::WriteData (me, inVar.GetBlob());
 			}
-		}
-		else	// text
-		{
-			if (text.empty())
-				RWTools::WriteText (inParent, text);
-			else
-				RWTools::WriteText (inParent, result);
-		}
+			break;
 	}
+
+	if (!text.empty())
+		RWTools::WriteText (me, text);
 
 # if	_4D_Package_
 	Yield4D();
@@ -732,126 +596,51 @@ RWDataProvider::WriteValue (XMLElement *inParent, RWDataID inID, const RWValue &
 }
 
 
-// inNode should point to "ReportData" element of a report
+// ---------------------------------------------------------------------------
+// Parse															  [public]
+// ---------------------------------------------------------------------------
+// inParent is the "ReportData" element of a report
 
 void
-RWDataProvider::Parse (XMLElement const *inParent)
+RWDataProvider::Parse (RWXmlNode inParent)
 {
-	if (IsEmpty() && inParent != NULL)
+	if (!IsEmpty() || !inParent)
+		return;
+
+	for (RWXmlNode elem : inParent.Child (u"Objects").Children (kValueTag))
 	{
-        XMLElement	const	*firstChild = inParent->FirstChildElement ("Objects");
-        XMLNode             *node;
-        XMLElement	 const  *elem;
-		RWDataID		    id;
-		RWValue			    value;
+		RWDataID	id = 0;
+		RWValue		value;
 
-		if (firstChild != NULL)
-            elem = firstChild->FirstChildElement (sValueTag);
-		if (elem != NULL)
+		ParseValue (elem, id, value);
+		// AddObject(), but uses provided id, not mObjectID
+		mObjectID++;
+		mObjectData.insert (mObjectData.end(), RWObjectDataMap::value_type (id, value));
+	}
+
+	for (RWXmlNode table : inParent.Child (u"Tables").Children (u"Table"))
+	{
+		RWDataID	id = (RWDataID) table.AttrInt (kIDTag, 0);
+		long		rows = (long) table.AttrInt (u"rows", -1);	// for TableData construction - repeating values are not preserved...
+		long		cols = (long) table.AttrInt (u"cols", -1);	// for TableData construction
+		bool		transpose = table.AttrInt (u"transpose", 0) != 0;
+
+		// AddTableObject(), but uses provided id, not mObjectID
+		tableData	*td = new tableData (id, rows, cols, transpose);
+		mTables.insert (mTables.end(), RWTableMap::value_type (id, td));
+
+		long	column = 0;
+		for (RWXmlNode columnElem : table.Children (kColumnTag))
 		{
-			elem = elem->ToElement();
-			if (elem != NULL)
+			column++;
+			for (RWXmlNode row : columnElem.Children (kValueTag))
 			{
-				for ( ; node != NULL; node = node->NextSibling())
-				{
-					elem = node->ToElement();
-					if (elem == NULL)
-						continue;
-					if (strcasecmp (elem->Value(), sValueTag) == 0)
-					{
-						id = 0;
-						value.Free();
+				RWDataID	rowID = 0;
+				RWValue		value;
 
-						ParseValue (elem, id, value);
-						// AddObject(), but uses provided id, not mObjectID
-						mObjectID++;
-						RWObjectDataMap::value_type	data (id, value);
-						mObjectData.insert (mObjectData.end(), data);
-					}
-				}
-			}
-		}
-
-
-        firstChild = inParent->FirstChildElement ("Tables");
-		if (firstChild != NULL)
-            elem = firstChild->FirstChildElement ("Table");
-		if (elem != NULL)
-		{
-			elem = elem->ToElement();
-			if (elem != NULL)
-			{
-				for ( ; node != NULL; node = node->NextSibling())
-				{
-					elem = node->ToElement();
-					if (elem == NULL)
-						continue;
-					if (strcasecmp (elem->Value(), "Table") != 0)
-						continue;
-
-					const XMLAttribute	*attrib;
-					id = 0;
-					long	rows = -1;	// for TableData construction - repeating values are not preserved...
-					long	cols = -1;	// for TableData construction
-					bool	transpose = false;
-
-					for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
-					{
-						const char *	name = attrib->Name();
-						const char *	avalue = attrib->Value();
-
-						if (strcasecmp (name, sIDTag) == 0)
-						{
-							id = 0;
-							sscanf (avalue, "%lu", &id);
-						}
-						else if (strcasecmp (name, "rows") == 0)
-						{
-							rows = atol (avalue);
-						}
-						else if (strcasecmp (name, "cols") == 0)
-						{
-							cols = atol (avalue);
-						}
-						else if (strcasecmp (name, "transpose") == 0)
-						{
-							transpose = (atol (avalue) != 0);
-						}
-					}
-
-					// AddTableObject(), but uses provided id, not mObjectID
-					tableData	*td = new tableData (id, rows, cols, transpose);
-					mTables.insert (mTables.end(), RWTableMap::value_type (id, td));
-
-					XMLNode	const	*column = elem->FirstChildElement (sColumnTag);
-					cols = 0;
-
-					for ( ; column != NULL; column = column->NextSibling())
-					{
-						elem = column->ToElement();
-						if (elem == NULL)
-							continue;
-
-						XMLNode const	*row = column->FirstChildElement (sValueTag);
-						cols++;
-
-						for ( ; row != NULL; row = row->NextSibling())
-						{
-							elem = row->ToElement();
-							if (elem == NULL)
-								continue;
-							if (strcasecmp (elem->Value(), sValueTag))
-							{
-								id = 0;
-								value.Free();
-
-								ParseValue (elem, id, value);
-								// PutTableCellData(), but uses provided td
-								td->PutCellData (id, cols, value);
-							}
-						}	// Value
-					}	// Column
-				}	// Table
+				ParseValue (row, rowID, value);
+				// PutTableCellData(), but uses provided td
+				td->PutCellData (rowID, column, value);
 			}
 		}
 	}
@@ -860,105 +649,47 @@ RWDataProvider::Parse (XMLElement const *inParent)
 }
 
 
+// ---------------------------------------------------------------------------
+// Write															  [public]
+// ---------------------------------------------------------------------------
+
 void
-RWDataProvider::Write (FILE *fd)
+RWDataProvider::Write (RWXmlNode inParent)
 const
 {
-	RWObjectDataMap::const_iterator	oit;
-
 	if (mObjectData.size() != 0)
 	{
-		fprintf (fd, "<Objects size=\"%lu\">\r\n", mObjectData.size());
+		RWXmlNode	objects = inParent.Append (u"Objects");
+		objects.SetAttrInt (u"size", (long long) mObjectData.size());
 
-		for (oit = mObjectData.begin(); oit != mObjectData.end(); oit++)
-		{
-			WriteValue (fd, oit->first, oit->second);
-		}
-
-		fprintf (fd, "</Objects>\r\n");
+		for (const auto &object : mObjectData)
+			WriteValue (objects, object.first, object.second);
 	}
 
 	if (mTables.size() != 0)
 	{
-		fprintf (fd, "<Tables size=\"%lu\">\r\n", mTables.size());
-		RWTableMap::const_iterator	tit;
+		RWXmlNode	tables = inParent.Append (u"Tables");
+		tables.SetAttrInt (u"size", (long long) mTables.size());
 
-		for (tit = mTables.begin(); tit != mTables.end(); tit++)
+		for (const auto &entry : mTables)
 		{
-			const RWTableMap::value_type	&tvalue (*tit);
-			tableData	*td = tvalue.second;
-			fprintf (fd, "<Table %s=\"%lu\"%s rows=\"%ld\" cols=\"%ld\">\r\n",
-				sIDTag, td->fDataID, td->fTranspose ? " transpose=\"1\"" : "", td->fNumRows, td->fNumCols);
-			RWObjectDataMap	*c = td->fTableData;
+			const tableData	*td = entry.second;
+			RWXmlNode		table = tables.Append (u"Table");
+			table.SetAttrInt (kIDTag, (long long) td->fDataID);
+			if (td->fTranspose)
+				table.SetAttr (u"transpose", u"1");
+			table.SetAttrInt (u"rows", td->fNumRows);
+			table.SetAttrInt (u"cols", td->fNumCols);
+
+			const RWObjectDataMap	*c = td->fTableData;
 			for (long coln = 1; coln <= td->fNumCols; coln++, c++)
 			{
-				fprintf (fd, "<%s %s=\"%lu\" size=\"%lu\"", sColumnTag, sIDTag, coln, c->size());
-				if (c->size() > 0)
-				{
-					fprintf (fd, ">\r\n");
-					for (oit = c->begin(); oit != c->end(); oit++)
-					{
-						WriteValue (fd, oit->first, oit->second);
-					}
-					fprintf (fd, "</%s>\r\n", sColumnTag);
-				}
-				else
-					fprintf (fd, " />\r\n");
-			}
-			fprintf (fd, "</Table>\r\n");
-		}
-		fprintf (fd, "</Tables>\r\n");
-	}
+				RWXmlNode	column = table.Append (kColumnTag);
+				column.SetAttrInt (kIDTag, coln);
+				column.SetAttrInt (u"size", (long long) c->size());
 
-	return;
-}
-
-
-void
-RWDataProvider::Write (XMLElement *inParent)
-const
-{
-	RWObjectDataMap::const_iterator	oit;
-
-	if (mObjectData.size() != 0)
-	{
-        XMLElement *	objects = inParent->InsertNewChildElement ("Objects");
-        objects->SetAttribute ("size", (unsigned int) mObjectData.size());
-
-		for (oit = mObjectData.begin(); oit != mObjectData.end(); oit++)
-		{
-			WriteValue (objects, oit->first, oit->second);
-		}
-	}
-
-	if (mTables.size() != 0)
-	{
-        XMLElement *	tables = inParent->InsertNewChildElement ("Tables");
-        tables->SetAttribute ("size", (unsigned int) mTables.size());
-		RWTableMap::const_iterator	tit;
-
-		for (tit = mTables.begin(); tit != mTables.end(); tit++)
-		{
-			const RWTableMap::value_type	&tvalue (*tit);
-			tableData				*td = tvalue.second;
-            XMLElement * 			table = tables->InsertNewChildElement("Table");
-			table->SetAttribute (sIDTag, (unsigned int) td->fDataID);
-			if (td->fTranspose)
-				table->SetAttribute ("transpose", "1");
-			table->SetAttribute ("rows",  (unsigned int) td->fNumRows);
-			table->SetAttribute ("cols",  (unsigned int) td->fNumCols);
-
-            RWObjectDataMap			*c = td->fTableData;
-			for (unsigned int coln = 1; coln <= td->fNumCols; coln++, c++)
-			{
-                XMLElement *    column = table->InsertNewChildElement (sColumnTag);
-				column->SetAttribute (sIDTag, coln);
-				column->SetAttribute ("size", (unsigned int) c->size());
-
-				for (oit = c->begin(); oit != c->end(); oit++)
-				{
-					WriteValue (column, oit->first, oit->second);
-				}
+				for (const auto &cell : *c)
+					WriteValue (column, cell.first, cell.second);
 			}
 		}
 	}

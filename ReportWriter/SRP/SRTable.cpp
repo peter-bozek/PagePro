@@ -1025,7 +1025,7 @@ SRTable::ParseHeading (XMLElement *inNode)
 // ---------------------------------------------------------------------------
 
 void
-SRTable::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+SRTable::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	SRObject::LoadXML (inNode);
 

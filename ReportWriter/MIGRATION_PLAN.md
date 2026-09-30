@@ -23,7 +23,7 @@ Rules for new and ported code:
 
 ## Phases
 
-- [ ] **0. Baseline.** Put the project under version control: only `ET/` and `en.lproj` are tracked in git today. Collect a regression corpus of real `.srxml` / `.rwxml` files plus the exported XML/HTML/CSV they produce. Decide whether the Carbon composer (`RWMacPageComposer`, ATSUI, `PMPrintSession`) and `DMArea` Carbon code stay in the target. They are a separate porting problem.
+- [ ] **0. Baseline.** ~~Put the project under version control~~ (done: branch `pugixml-migration`, commit `c024911`). Collect a regression corpus of real `.srxml` / `.rwxml` files plus the exported XML/HTML/CSV they produce. Decide whether the Carbon composer (`RWMacPageComposer`, ATSUI, `PMPrintSession`) and `DMArea` Carbon code stay in the target. They are a separate porting problem.
 - [x] **1. Libraries.** `pugixml/` (compiled into the target) and `rapidjson/include/` (header-only). Header search paths added in all three Xcode configurations.
 - [x] **2. Foundation.** `RW/RWString.{h,cpp}`, `RW/RWString4D.h`, `RW/RWXml.{h,cpp}`, `RW/RWJson.h`. Tests in `tests/RWFoundationTests.cpp`; run `tests/run_tests.sh` (ASan + UBSan, macOS 11 deployment target).
 - [x] **3. Core types (`RW/RWBaseTypes`).** Done; covered by `tests/RWBaseTypesTests.cpp`.
@@ -45,7 +45,24 @@ Rules for new and ported code:
 
   Per-file compile errors after phase 3 (C++ syntax check, excluding the Cocoa noise in `DMArea` / `RWMacPageComposer`). These are the work lists for phases 4–7; almost all come from TinyXML types, `char*` text and `UniChar*` ↔ `char16_t*` at the 4D boundary:
   RW 526 (RWCTPageComposer 163, RWObject 60, RWTable 58, RWReportWriter 39, RWSection 37, RWReportData 31, RWPageComposer 30, RWDataProvider 28), SRP 340 (SRObject 72, SRTable 51, SRReportData 29, SRSection 22, ExtendedExecute 22, SRReportWriter 20), ET 101, DM 285 (DMReport 100, DMObject 77, PSObject 46).
-- [ ] **4. RW module.** `RWReportData`, `RWSection`, `RWStyle`, `RWObject`, `RWDataProvider` (delete `Write (FILE*)` / `WriteValue (FILE*)`), XML use in the page composers.
+- [x] **4. RW module.** Every RW file in the target compiles, plus `DM/PSObject` (the property engine RW styles, SRP and DM objects all share). Covered by `tests/RWBaseTypesTests.cpp` (data provider round trip).
+  - XML reading uses `RWXmlNode`. Attribute loops became `for (auto &[name, value] : node.Attributes())`, and `sscanf` became `RWStr::ReadNumber`, which also leaves the variable unchanged on failure.
+  - Virtual signatures changed across modules, with `override` on every derived declaration so a mismatch is a compile error: `ParseReport` (data sources incl. `SRDataSource`, page composers incl. Windows), and `LoadXML` / `WriteXML` / `LoadXMLObjects` / `WriteXMLObjects` (all `PSObject` descendants in DM and SRP). The DM / SRP bodies are ported in their phases.
+  - `RWDataProvider` writes and reads the unchanged `<Objects>` / `<Tables>` format; `FILE*` writers deleted; kind 4 (old UTF-8 text) is read as text.
+  - Mac: `RWStringCF.h` (`RWString` ↔ `CFString`). `RWMacPageComposer.cpp` and `DMArea.cpp` import AppKit, so their Xcode file type is now Objective-C++ (they could not compile as C++). `RWMacCGPageComposer.cpp`, the base class of the CoreText composer, was missing from the target and is added. `RWMacPageComposer.h` includes ApplicationServices (PrintCore, ATSUI, CoreText). The `TextEncoding` typedef in `RWBaseTypes.h` is Windows-only now (it clashed with CoreServices).
+  - Legacy Mac Roman sources converted to UTF-8 / LF in separate commits (no code changes).
+  - **Bugs fixed** (all from the earlier partial port unless noted):
+    - `RWStyle`: every style's font was replaced by the default (`!mFontName.empty()`); `operator ==` reported styles equal only when the fonts differed; `GetFName` returned `NULL` into a string.
+    - `RWPageComposer::ParseReport`: a report's `Size` was always replaced by A4; `usePhysical` was a pointer assigned to `bool` (always true).
+    - `RWObject::Parse`: the `r` (position) attribute was read with the wrong order and separator, so only one coordinate was set.
+    - `std::basic_string (str, n)` means "from position n", not "first n characters": text-variable substitution in `RWText` produced empty text. Same pattern still in SRP / DM / ET: `SRObject.cpp:1994,2022,2060`, `SRTable.cpp:463`, `DMObject.cpp:4564,4596`, `ETObject.cpp:572,579`.
+    - `RWDataProvider::Parse` iterated an uninitialised pointer and skipped exactly the `<v>` cells; `WriteValue` wrote the empty string for numbers and vice versa.
+    - `RWDataProvider::tableData`: `--end()` on an empty column (original code), NULL column, `new [-1]` when `cols` is missing.
+    - `RWObject.h`: position / order comparators had lost their `template` line, so `std::sort` of objects did not compile.
+    - `RWMacPageComposer::ParseReport` dereferenced a missing `PageFormat` / `PrintSettings` child.
+    - `RWTable::ParseHeading` counted comment nodes as heading rows.
+  - **Not compilable, needs a decision** (phase 0): `RWPDFPageComposer.cpp` includes `RWll.h`, which is not in the project; `RWPoDoFoPageComposer.cpp` needs the PoDoFo library. Both are in the target. Either supply the libraries or remove the two files from the target (the CoreText composer produces PDF on the Mac).
+  Per-file compile errors after phase 4 (the next phases' work lists): RW 24, all in files outside the target or needing missing libraries (RWDemoDataSource 11, RWPaper 9, RWll / RWPDFPageComposer / RWPoDoFoPageComposer / RWWinPageComposer 1 each). SRP 368 (RW4DText 85, SRObject 84, SRTable 60, SRReportData 26, SRDataSource 24, SRSection 23, ExtendedExecute 22, SRDataFormatter 17, SR4DData 15, SRReportWriter 6). DM 289 (DMReport 128, DMObject 82, DMArea 54 as Objective-C++, DMUndo 15, UIScrollBar 10). ET 59.
 - [ ] **5. SRP module.**
   - Delete every `Write (FILE*)`, `WriteSelf (FILE*)`, `WriteSection (FILE*)`, `WriteSpecial (FILE*)`, `WritePage (FILE*)` and `SRDataSource::Write*/WriteReportData (FILE*)`. They are unreachable: `SRReportWriter::Report` already builds a tree.
   - Port the tree writers to `RWXmlNode`.

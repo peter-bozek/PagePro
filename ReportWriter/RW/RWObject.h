@@ -57,7 +57,7 @@ public:
 
 protected:
 								RWObject (int inOrder);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode);
 				RWTextValue		GetVariableText (const CText inVariableName, const CText inFormat) const;
 				void			AlignOnPage (const SRect &origRect, SRect &ioRect) const;	//mbs 04082010	left/center/right
 
@@ -83,16 +83,20 @@ protected:
 };
 
 
+template <class T>
 struct RWlessPosition
 {
 	bool operator()(const T& x, const T& y) const { return x->ComparePosition (y) < 0; }
 };
+typedef	RWlessPosition<RWObject*>		RWObjectComparePosition;
 
 
+template <class T>
 struct RWlessOrder
 {
 	bool operator()(const T& x, const T& y) const { return x->CompareOrder (y) < 0; }
 };
+typedef	RWlessOrder<RWObject*>		RWObjectCompareOrder;
 
 
 // group object
@@ -100,7 +104,7 @@ class	RWGroup
 	:	public	RWObject
 {
 public:
-    static		RWGroup		*	Create (RWReportData *inReport, XMLElement *inNode, int inOrder);
+    static		RWGroup		*	Create (RWReportData *inReport, RWXmlNode inNode, int inOrder);
 
 	virtual		bool			GetGrow (void) const;										// variable height dependant on content ?
 	virtual		void			Reset (bool inAll);
@@ -116,7 +120,7 @@ public:
 protected:
 								RWGroup (int inOrder);
 	virtual						~RWGroup (void);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
 
 private:
 			// defensive programming - not implemented
@@ -136,7 +140,7 @@ class	RWLine
 	:	public	RWObject
 {
 public:
-    static		RWLine		*	Create (RWReportData *inReport, XMLElement *inNode, int inOrder);
+    static		RWLine		*	Create (RWReportData *inReport, RWXmlNode inNode, int inOrder);
 
 	virtual		EObject_Kind	GetKind (void) const;
 	virtual		bool			GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool inIsOverflow, bool *outRemoveRow);
@@ -146,7 +150,7 @@ public:
 protected:
 								RWLine (int inOrder);
 	virtual						~RWLine (void);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
 
 private:
 			// defensive programming - not implemented
@@ -165,7 +169,7 @@ class	RWOval
 	:	public	RWObject
 {
 public:
-    static		RWOval		*	Create (RWReportData *inReport, XMLElement *inNode, int inOrder);
+    static		RWOval		*	Create (RWReportData *inReport, RWXmlNode inNode, int inOrder);
 
 	virtual		EObject_Kind	GetKind (void) const;
 	virtual		bool			GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool inIsOverflow, bool *outRemoveRow);
@@ -175,7 +179,7 @@ public:
 protected:
 								RWOval (int inOrder);
 	virtual						~RWOval (void);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
 
 private:
 			// defensive programming - not implemented
@@ -195,7 +199,7 @@ class	RWRect
 	:	public	RWOval
 {
 public:
-    static		RWRect		*	Create (RWReportData *inReport, XMLElement *inNode, int inOrder);
+    static		RWRect		*	Create (RWReportData *inReport, RWXmlNode inNode, int inOrder);
 
 	virtual		EObject_Kind	GetKind (void) const;
 //	virtual		bool			GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool inIsOverflow, bool *outRemoveRow);
@@ -205,7 +209,7 @@ public:
 protected:
 								RWRect (int inOrder);
 	virtual						~RWRect (void);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
 
 private:
 			// defensive programming - not implemented
@@ -224,7 +228,7 @@ class	RWPict
 	:	public	RWObject
 {
 public:
-    static		RWPict		*	Create (RWReportData *inReport, XMLElement *inNode, int inOrder);
+    static		RWPict		*	Create (RWReportData *inReport, RWXmlNode inNode, int inOrder);
 
 	virtual		EObject_Kind	GetKind (void) const;
 	virtual		bool			GetGrow (void) const;										// variable height dependant on content ?
@@ -235,7 +239,7 @@ public:
 protected:
 								RWPict (int inOrder);
 	virtual						~RWPict (void);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
 
 private:
 			// defensive programming - not implemented
@@ -268,7 +272,7 @@ class	RWText
 	:	public	RWObject
 {
 public:
-    static		RWText		*	Create (RWReportData *inReport, XMLElement *inNode, int inOrder);
+    static		RWText		*	Create (RWReportData *inReport, RWXmlNode inNode, int inOrder);
 
 	virtual		EObject_Kind	GetKind (void) const;
 	virtual		bool			GetGrow (void) const;										// variable height dependant on content ?
@@ -284,7 +288,7 @@ public:
 protected:
 								RWText (int inOrder);
 	virtual						~RWText (void);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
 				RWTextValue		ParseText (void);
 
 private:
@@ -321,7 +325,7 @@ class	RWVariable
 friend class	RWReportData;
 
 public:
-    static		RWVariable	*	Create (RWReportData *inReport, XMLElement *inNode, int inOrder);
+    static		RWVariable	*	Create (RWReportData *inReport, RWXmlNode inNode, int inOrder);
 
 	virtual		EObject_Kind	GetKind (void) const;
 	virtual		bool			GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool inIsOverflow, bool *outRemoveRow);
@@ -331,7 +335,7 @@ public:
 protected:
 								RWVariable (int inOrder);
 	virtual						~RWVariable (void);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
 
 				void			GetVariableData (void);
 				void			SetVariableText (const CText inConstValue);
@@ -369,7 +373,7 @@ inline			bool			IsAttributed (void) const;
 protected:
 								RWHeader (void);
 								RWHeader (const CText inText, int inColSpan, int inRowSpan, RWStyle *inStyle);
-                void			Parse (RWReportData *inReport, XMLElement *inNode, long inStyleID);
+                void			Parse (RWReportData *inReport, RWXmlNode inNode, long inStyleID);
 inline			void			SetWidth (float inWidth);
 inline			void			SetHeight (float inHeight);
 inline			void			AdjustStartCol (int inCol);
@@ -412,7 +416,7 @@ protected:
 								RWColumn (void);
 								RWColumn (float inWidth, RWStyle *inStyle);
 								RWColumn (const RWColumn &inOriginal);
-    void			Parse (RWReportData *inReport, XMLElement *inNode, long inStyleID);
+    void			Parse (RWReportData *inReport, RWXmlNode inNode, long inStyleID);
 inline			void			SetStyle (RWStyle *inStyle);
 
 private:
@@ -438,7 +442,7 @@ class	RWTable
 	:	public	RWObject
 {
 public:
-    static		RWTable		*	Create (RWReportData *inReport, XMLElement *inNode, int inOrder);
+    static		RWTable		*	Create (RWReportData *inReport, RWXmlNode inNode, int inOrder);
 
 	virtual		void			Reset (bool inAll);
 	virtual		EObject_Kind	GetKind (void) const;
@@ -450,8 +454,8 @@ public:
 protected:
 								RWTable (int inOrder);
 	virtual						~RWTable (void);
-    virtual		void			Parse (RWReportData *inReport, XMLElement *inNode);
-    void			ParseHeading (XMLElement *inNode);
+    virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
+    void			ParseHeading (RWXmlNode inNode);
 				void			AdjustHeaders (void);
 				void			AdjustColumns (void);
 				void			CalculateAll (RWPageComposer &inComposer);

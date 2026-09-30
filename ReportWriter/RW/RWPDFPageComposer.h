@@ -32,7 +32,7 @@ public:
 
 protected:
 								RWPDFPageComposer (void);
-	virtual		void			ParseReport (const XMLElement *inReport);
+	virtual		void			ParseReport (RWXmlNode inReport) override;
 	virtual		void*			FinishReport (size_t &outSize);
 
 				int				FindFont (const char *inFontName);

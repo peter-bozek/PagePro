@@ -24,7 +24,6 @@ inline	bool operator == (const RWColumn &x, const RWColumn &y)
 
 template <class T>
 struct RWless
-	: std::binary_function<T, T, bool>
 {
 	bool operator()(const T& x, const T& y) const {return (*x < *y);}
 };
@@ -239,50 +238,47 @@ const
 // ---------------------------------------------------------------------------
 
 void
-RWHeader::Parse (RWReportData *inReport, XMLElement *inNode, long inStyleID)
+RWHeader::Parse (RWReportData *inReport, RWXmlNode inNode, long inStyleID)
 {
 	long			styleID = inStyleID;
-    const XMLAttribute	*attrib;
 
-	for (attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next())
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-        const CXMLText	value = attrib->Value();
 
-		if (name.compare( "style") == 0)
+		if (RWStr::Equals (name, "style"))
 		{
 			styleID = 0;
-			if (sscanf (value.c_str(), "%li", &styleID) != 1)
+			if (!RWStr::ReadNumber (value, styleID))
 				styleID = inStyleID;
 		}
-		else if (name.compare( "width") == 0)
+		else if (RWStr::Equals (name, "width"))
 		{
 			mWidth = 0;
-			sscanf (value.c_str(), "%g", &mWidth);
+			RWStr::ReadNumber (value, mWidth);
 		}
-		else if (name.compare( "height") == 0)
+		else if (RWStr::Equals (name, "height"))
 		{
 			mHeight = 0;
-			sscanf (value.c_str(), "%g", &mHeight);
+			RWStr::ReadNumber (value, mHeight);
 		}
-		else if (name.compare( "colspan") == 0)
+		else if (RWStr::Equals (name, "colspan"))
 		{
 			mColSpan = 1;
-			sscanf (value.c_str(), "%i", &mColSpan);
+			RWStr::ReadNumber (value, mColSpan);
 			if (mColSpan < 1)
 				mColSpan = 1;
 		}
-		else if (name.compare("rowspan") == 0)
+		else if (RWStr::Equals (name, "rowspan"))
 		{
 			mRowSpan = 1;
-			sscanf (value.c_str(), "%i", &mRowSpan);
+			RWStr::ReadNumber (value, mRowSpan);
 			if (mRowSpan < 1)
 				mRowSpan = 1;
 		}
-		else if (name.compare( "attr") == 0)
+		else if (RWStr::Equals (name, "attr"))
 		{
 			long	lVal = 1;
-			sscanf (value.c_str(), "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mIsAttributed = (lVal != 0);
 		}
 	}
@@ -495,37 +491,34 @@ RWColumn::SetStyle (RWStyle *inStyle)
 // ---------------------------------------------------------------------------
 
 void
-RWColumn::Parse (RWReportData *inReport, XMLElement *inNode, long inStyleID)
+RWColumn::Parse (RWReportData *inReport, RWXmlNode inNode, long inStyleID)
 {
 	long			styleID = inStyleID;
-    XMLAttribute const	*attrib;
 	long			lVal;
 
-	for (attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next())
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-        const CXMLText	name = attrib->Name();
-        const CXMLText	value = attrib->Value();
 
 		if (STR_EQUALS (name, "id"))
 		{
 			mId = 0;
-			sscanf (value, "%i", &mId);
+			RWStr::ReadNumber (value, mId);
 		}
 		else if (STR_EQUALS (name, "style"))
 		{
 			styleID = 0;
-			if (sscanf (value, "%li", &styleID) != 1)
+			if (!RWStr::ReadNumber (value, styleID))
 				styleID = inStyleID;
 		}
 		else if (STR_EQUALS (name, "width"))
 		{
 			mWidth = 0;
-			sscanf (value, "%g", &mWidth);
+			RWStr::ReadNumber (value, mWidth);
 		}
 		else if (STR_EQUALS (name, "grid"))
 		{
 			lVal = 1;
-			sscanf (value, "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mGrid = (lVal != 0);
 		}
 		else if (STR_EQUALS (name, "format"))
@@ -535,19 +528,19 @@ RWColumn::Parse (RWReportData *inReport, XMLElement *inNode, long inStyleID)
 		else if (STR_EQUALS (name, "rownum"))
 		{
 			lVal = 1;
-			sscanf (value, "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mPrintRowNum = (lVal != 0);
 		}
 		else if (STR_EQUALS (name, "duplicates"))
 		{
 			lVal = 1;
-			sscanf (value, "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mPrintRepeatingValues = (lVal != 0);
 		}
 		else if (STR_EQUALS (name, "attr"))
 		{
 			lVal = 1;
-			sscanf (value, "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mIsAttributed = (lVal != 0);
 		}
 	}
@@ -565,7 +558,7 @@ RWColumn::Parse (RWReportData *inReport, XMLElement *inNode, long inStyleID)
 // ---------------------------------------------------------------------------
 
 RWTable*
-RWTable::Create (RWReportData *inReport, XMLElement *inNode, int inOrder)
+RWTable::Create (RWReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	RWTable	*table = new RWTable (inOrder);
 	table->Parse (inReport, inNode);
@@ -658,20 +651,14 @@ RWTable::Reset (bool inAll)
 // ---------------------------------------------------------------------------
 
 void
-RWTable::ParseHeading (XMLElement *inNode)
+RWTable::ParseHeading (RWXmlNode inNode)
 {
 	mNumTopHeadings = 0;
 	mFixedColumns = true;
 
-    XMLElement	*elem;
-	XMLNode		*node, *next;
-
-	for (node = inNode->FirstChildElement ("tr"); node; node = next)
+	for (RWXmlNode row : inNode.Children (u"tr"))
 	{
-		next = node->NextSibling();
-		elem = node->ToElement();
-		if (elem == NULL ||  (elem->Value().compare( "tr") != 0)
-			continue;
+		(void) row;
 		mNumTopHeadings++;
 	}
 
@@ -680,33 +667,27 @@ RWTable::ParseHeading (XMLElement *inNode)
 		mHeaders = new RWHdrList [mNumTopHeadings];
 		int	line = 0;
 		int	numRows = 0, numCols = -1;
-		for (node = inNode->FirstChildElement ("tr"); node && line < mNumTopHeadings; node = next, line++)
+		for (RWXmlNode row : inNode.Children (u"tr"))
 		{
-			next = node->NextSibling();
-			elem = node->ToElement();
-			if (elem == NULL ||  (elem->Value().compare( "tr") != 0)
-				continue;
+			if (line >= mNumTopHeadings)
+				break;
 
-			long			styleID = mStyleID;
-            const CXMLText	style = elem->Attribute ("style");
-			if (style)
+			long	styleID = mStyleID;
+			if (row.HasAttr (u"style"))
 			{
 				styleID = 0;
-				if (sscanf (style, "%li", &styleID) != 1)
+				if (!RWStr::ReadNumber (row.Attr (u"style"), styleID))
 					styleID = mStyleID;
 			}
-            XMLElement	*tdElem = elem->FirstChildElement ("td");
-			XMLNode		*tdNode, *tdNext;
-			int				thisLineNumCols = 0;
-			for (tdNode = tdElem; tdNode; tdNode = tdNext)
+
+			int		thisLineNumCols = 0;
+			for (RWXmlNode cell : row.Children())
 			{
-				tdNext = tdNode->NextSibling();
-				tdElem = tdNode->ToElement();
-				if (tdElem == NULL || !STR_EQUALS (tdElem->Value(), "td"))
+				if (!STR_EQUALS (cell.Name(), "td"))
 					continue;
 
 				RWHeader	*hdr = new RWHeader;
-				hdr->Parse (mReportData, tdElem, styleID);
+				hdr->Parse (mReportData, cell, styleID);
 				mHeaders [line].push_back (hdr);
 				thisLineNumCols += hdr->GetColSpan();
 				if (hdr->GetRowSpan() + line > numRows)
@@ -716,6 +697,7 @@ RWTable::ParseHeading (XMLElement *inNode)
 				numCols = thisLineNumCols;
 			else
 				assert (numCols >= thisLineNumCols);
+			line++;
 		}
 		if (numCols > 0 && mNumColumns > 0)
 			assert (numCols == mNumColumns);
@@ -731,7 +713,7 @@ RWTable::ParseHeading (XMLElement *inNode)
 // ---------------------------------------------------------------------------
 
 void
-RWTable::Parse (RWReportData *inReport, XMLElement *inNode)
+RWTable::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 
@@ -740,32 +722,29 @@ RWTable::Parse (RWReportData *inReport, XMLElement *inNode)
 //	mBindH = false;
 	mBindV = false;
 
-	XMLAttribute	*attrib;
-	for (attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next())
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
 
 		if (STR_EQUALS (name, "dataID"))
 		{
 			mDataID = 0;
-			sscanf (value, "%li", &mDataID);
+			RWStr::ReadNumber (value, mDataID);
 		}
 		else if (STR_EQUALS (name, "style"))
 		{
 			mStyleID = 0;
-			sscanf (value, "%li", &mStyleID);
+			RWStr::ReadNumber (value, mStyleID);
 		}
 		else if (STR_EQUALS (name, "frame"))
 		{
-			sscanf (value, "%i", &mFrame);
+			RWStr::ReadNumber (value, mFrame);
 			if (mFrame < 0 || mFrame > 2)
 				mFrame = 1;
 		}
 		else if (STR_EQUALS (name, "frameOffset"))
 		{
 			mFrameOffset = 2;
-			sscanf (value, "%g", &mFrameOffset);
+			RWStr::ReadNumber (value, mFrameOffset);
 			if (mFrameOffset < 0)
 				mFrameOffset = 0;
 			else if (mFrameOffset > 64)
@@ -774,7 +753,7 @@ RWTable::Parse (RWReportData *inReport, XMLElement *inNode)
 		else if (STR_EQUALS (name, "frameThickness"))
 		{
 			mFrameThickness = 0;
-			sscanf (value, "%g", &mFrameThickness);
+			RWStr::ReadNumber (value, mFrameThickness);
 			if (mFrameThickness < 0 || mFrameThickness > 10)
 				mFrameThickness = 1;
 		}
@@ -785,57 +764,55 @@ RWTable::Parse (RWReportData *inReport, XMLElement *inNode)
 		else if (STR_EQUALS (name, "hGridThickness"))
 		{
 			mHGridThickness = 0;
-			sscanf (value, "%g", &mHGridThickness);
+			RWStr::ReadNumber (value, mHGridThickness);
 			if (mHGridThickness < 0 || mHGridThickness > 10)
 				mHGridThickness = 0.5;
 		}
 		else if (STR_EQUALS (name, "rowHeight"))
 		{
 			mRowHeight = 0;
-			sscanf (value, "%g", &mRowHeight);
+			RWStr::ReadNumber (value, mRowHeight);
 		}
 		else if (STR_EQUALS (name, "cols"))
 		{
 			mNumColumns = 0;
-			sscanf (value, "%i", &mNumColumns);
+			RWStr::ReadNumber (value, mNumColumns);
 		}
 	}
 
-    XMLElement	*elem;
+	RWXmlNode	elem;
 /*
 	if (mDataID == 0)
 		elem = inNode;
 	else
-		elem = inNode->FirstChildElement ("Table");
+		elem = inNode.Child (u"Table");
 
-	if (elem != NULL)
+	if (elem)
 	{
 		ParseHeading (elem);	// fixed table heading
 		elem = inNode;
 	}
 	else
 */
-	elem = inNode->FirstChildElement ("Head");
+	elem = inNode.Child (u"Head");
 
-	if (elem != NULL)
+	if (elem)
 	{
 		ParseHeading (elem);	// fixed table heading
 		elem = inNode;
 	}
 
 	{
-		elem = inNode->FirstChildElement ("Columns");
-		if (elem != NULL)
+		elem = inNode.Child (u"Columns");
+		if (elem)
 		{
-			for (attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next())
+			for (const auto &[name, value] : elem.Attributes())
 			{
-				const CXMLText	name = attrib->Name();
-				const CXMLText	value = attrib->Value();
 
 				if (STR_EQUALS (name, "rowHeight"))
 				{
 					mRowHeight = 0;
-					sscanf (value, "%g", &mRowHeight);
+					RWStr::ReadNumber (value, mRowHeight);
 				}
 			}
 		}
@@ -843,21 +820,13 @@ RWTable::Parse (RWReportData *inReport, XMLElement *inNode)
 
 	if (mDataID && elem)
 	{
-		XMLNode	*node, *next;
-
-		inNode = elem;
-		for (node = elem->FirstChildElement(); node; node = next)
+		for (RWXmlNode col : elem.Children())
 		{
-			next = node->NextSibling();
-			elem = node->ToElement();
-			if (elem == NULL || !STR_EQUALS (elem->Value(), "Col"))
-			{
-//				inNode->RemoveChild (node);
+			if (!STR_EQUALS (col.Name(), "Col"))
 				continue;
-			}
 
 			RWColumn	*column = new RWColumn;
-			column->Parse (inReport, elem, mStyleID);
+			column->Parse (inReport, col, mStyleID);
 			mColumns.push_back (column);
 		}
 	}
@@ -1369,12 +1338,7 @@ RWTable::CalculateAll (RWPageComposer &inComposer)
 	// calculate row height - every column might use different style
 	if (mRowHeight <= 0)	//mbs 09082010	don't adjust height if set by user
 	{
-		#if	CChar_Size == 1
-			#define	rowTextMeasurement	((const CText) "ROW Úg")
-		#else
-			CText	us (reinterpret_cast <const UTF8Char*> ("ROW Úg"));
-			#define	rowTextMeasurement	(us.GetU16Str())
-		#endif
+		const RWString	rowTextMeasurement = u"ROW Úg";
 
 		for (col = -1; col < mNumColumns; col++)
 		{
@@ -1728,7 +1692,7 @@ RWTable::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 				}
 
 				const CText	ctext = header->GetText();
-				if (ctext && *ctext)
+				if (!ctext.empty())
 					inComposer.DrawTextBox (ctext, style, r, style->ShouldWrap(), header->IsAttributed(), true, NULL);
 
 				r.left = r.right;

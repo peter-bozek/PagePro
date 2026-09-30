@@ -241,7 +241,7 @@ RWPDFPageComposer::FinishReport (size_t &outSize)
 // Initialize PDF (title, creator, ...)
 
 void
-RWPDFPageComposer::ParseReport (const XMLElement *inReport)
+RWPDFPageComposer::ParseReport (RWXmlNode inReport)
 {
 	RWPageComposer::ParseReport (inReport);
 

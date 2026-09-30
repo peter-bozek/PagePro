@@ -30,7 +30,7 @@ RWDataSource::~RWDataSource (void)
 // ---------------------------------------------------------------------------
 
 void
-RWDataSource::ParseReport (const XMLElement *inReport)
+RWDataSource::ParseReport (RWXmlNode inReport)
 {
 	return;
 }

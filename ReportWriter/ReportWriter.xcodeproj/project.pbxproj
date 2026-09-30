@@ -64,6 +64,7 @@
 		B8729E566CCB10A18D7B86E3 /* RWString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 302672E938BCD3A1839D17ED /* RWString.cpp */; };
 		E1170334DFE80D2DFC7D2B13 /* RWXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0475D027BAF4D58FCE82BB9E /* RWXml.cpp */; };
 		777136D274BAE8AE2E65FE47 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 453AE3927F2325A3947271B9 /* pugixml.cpp */; };
+		55269F99D433E9CFBE139C37 /* RWMacCGPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DC14767A06C3A88E9B07032F /* RWMacCGPageComposer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -176,7 +177,7 @@
 		D26EBFDB2AF274EE001E7074 /* RWDataSourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWDataSourceProvider.h; sourceTree = "<group>"; };
 		D26EBFDC2AF274EE001E7074 /* RWObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWObject.h; sourceTree = "<group>"; };
 		D26EBFDD2AF274EE001E7074 /* ETSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ETSection.cpp; sourceTree = "<group>"; };
-		D26EBFDE2AF274EE001E7074 /* RWMacPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWMacPageComposer.cpp; sourceTree = "<group>"; };
+		D26EBFDE2AF274EE001E7074 /* RWMacPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RWMacPageComposer.cpp; sourceTree = "<group>"; };
 		D26EBFDF2AF274EE001E7074 /* RWDataSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWDataSource.cpp; sourceTree = "<group>"; };
 		D26EBFE02AF274EE001E7074 /* RWTextFormatter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWTextFormatter.cpp; sourceTree = "<group>"; };
 		D26EBFE42AF274EE001E7074 /* RWTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWTable.cpp; sourceTree = "<group>"; };
@@ -188,7 +189,7 @@
 		D26EC02B2AF44891001E7074 /* DMUndo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMUndo.cpp; sourceTree = "<group>"; };
 		D26EC02C2AF44891001E7074 /* PSObjProps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSObjProps.h; sourceTree = "<group>"; };
 		D26EC02D2AF44891001E7074 /* UIScrollBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIScrollBar.h; sourceTree = "<group>"; };
-		D26EC02E2AF44891001E7074 /* DMArea.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMArea.cpp; sourceTree = "<group>"; };
+		D26EC02E2AF44891001E7074 /* DMArea.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DMArea.cpp; sourceTree = "<group>"; };
 		D26EC02F2AF44891001E7074 /* DMObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMObject.cpp; sourceTree = "<group>"; };
 		D26EC0302AF44891001E7074 /* PSObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSObject.h; sourceTree = "<group>"; };
 		D26EC0312AF44891001E7074 /* DMReport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMReport.cpp; sourceTree = "<group>"; };
@@ -206,6 +207,9 @@
 		487BA6D04F90754620F3392E /* pugixml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugixml.hpp; sourceTree = "<group>"; };
 		FE574AA54321327F404FABA4 /* pugiconfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugiconfig.hpp; sourceTree = "<group>"; };
 		453AE3927F2325A3947271B9 /* pugixml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pugixml.cpp; sourceTree = "<group>"; };
+		23CCEFE0F1785C05DFC706A8 /* RWMacCGPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWMacCGPageComposer.h; sourceTree = "<group>"; };
+		DC14767A06C3A88E9B07032F /* RWMacCGPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWMacCGPageComposer.cpp; sourceTree = "<group>"; };
+		50FFC6632610D90AFC041BB0 /* RWStringCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWStringCF.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -387,6 +391,9 @@
 		D26EBFAC2AF274EE001E7074 /* RW */ = {
 			isa = PBXGroup;
 			children = (
+				23CCEFE0F1785C05DFC706A8 /* RWMacCGPageComposer.h */,
+				DC14767A06C3A88E9B07032F /* RWMacCGPageComposer.cpp */,
+				50FFC6632610D90AFC041BB0 /* RWStringCF.h */,
 				BC0A20D03806F473C84005DD /* RWString.h */,
 				302672E938BCD3A1839D17ED /* RWString.cpp */,
 				1C2E84224FA1010FF69D3E5F /* RWString4D.h */,
@@ -589,6 +596,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55269F99D433E9CFBE139C37 /* RWMacCGPageComposer.cpp in Sources */,
 				B8729E566CCB10A18D7B86E3 /* RWString.cpp in Sources */,
 				E1170334DFE80D2DFC7D2B13 /* RWXml.cpp in Sources */,
 				777136D274BAE8AE2E65FE47 /* pugixml.cpp in Sources */,

@@ -38,7 +38,7 @@ public:
 	virtual		void			RestoreClip (RWClipInfoRef &ioClipInfo);
 	virtual		void	*		GetContext (void) const;
 	virtual		void			SetContext (void *inContext);
-	virtual		RWNativePageComposer*	CreateComposerForPrinting (void) const;
+	// CreateComposerForPrinting: RWNativePageComposer is RWCTPageComposer, which implements it
 
 	virtual		void			SaveContext (RWContextInfoRef &outContext)		{ if (mGC) CGContextSaveGState (mGC); }
 	virtual		void			RestoreContext (RWContextInfoRef &ioContext)	{ if (mGC) CGContextRestoreGState (mGC); }

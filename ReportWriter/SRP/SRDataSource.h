@@ -39,7 +39,7 @@ public:
 						SRDataSource (void);
 						~SRDataSource (void);
 
-virtual		void		ParseReport (const  XMLElement *inReport);
+virtual		void		ParseReport (RWXmlNode inReport) override;
 inline		void		SetReportWriter (SRReportWriter *inReportWriter);
 			long		GetNumberOfIterations (void) const;
 			long		GetCurrentIteration (void) const;

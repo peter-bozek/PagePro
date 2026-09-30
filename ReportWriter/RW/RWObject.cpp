@@ -113,59 +113,53 @@ const
 // ---------------------------------------------------------------------------
 
 void
-RWObject::Parse (RWReportData *inReport, XMLElement *inNode)
+RWObject::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	mReportData = inReport;
 //	mNode = inNode;
 
-	XMLAttribute const	*attrib;
 	long			lVal;
 
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
 
 		if (STR_EQUALS (name, "r"))
 		{
-			mPosition.top = 0;
-			mPosition.left = 0;
-			mPosition.bottom = 0;
-			mPosition.right = 0;
-			sscanf (value.c_str(), "%lg,%lg,%lg,%lg", &mPosition.top, &mPosition.left, &mPosition.bottom, &mPosition.right);
-//			mPosition = value;
+			// "left;top;right;bottom" as SRObject::WriteSelf writes it (the sscanf that
+			// replaced this read "top,left,bottom,right" and so only got one number)
+			mPosition = value;
 		}
 #if 1	// OLD_RW_FORMAT
 		else if (STR_EQUALS (name, "t"))
 		{
 			mPosition.top = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.top);
+			RWStr::ReadNumber (value, mPosition.top);
 		}
 		else if (STR_EQUALS (name, "l"))
 		{
 			mPosition.left = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.left);
+			RWStr::ReadNumber (value, mPosition.left);
 		}
 		else if (STR_EQUALS (name, "b"))
 		{
 			mPosition.bottom = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.bottom);
+			RWStr::ReadNumber (value, mPosition.bottom);
 		}
 		else if (STR_EQUALS (name, "ri"))
 		{
 			mPosition.right = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.right);
+			RWStr::ReadNumber (value, mPosition.right);
 		}
 		else if (STR_EQUALS (name, "h") || STR_EQUALS (name, "height"))
 		{
 			mPosition.bottom = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.bottom);
+			RWStr::ReadNumber (value, mPosition.bottom);
 			mPosition.bottom += mPosition.top; // pB  causes problems with table - height contain row height - need to be renamed
 		}
 		else if (STR_EQUALS (name, "w") || STR_EQUALS (name, "width"))
 		{
 			mPosition.right = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.right);
+			RWStr::ReadNumber (value, mPosition.right);
 			mPosition.right += mPosition.left;
 		}
 #endif
@@ -173,33 +167,33 @@ RWObject::Parse (RWReportData *inReport, XMLElement *inNode)
 		else if (STR_EQUALS (name, "fixH"))
 		{
 			lVal = 0;
-			sscanf (value, "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mFixedH = (lVal != 0);
 		}
 */
 		else if (STR_EQUALS (name, "fixV"))
 		{
 			lVal = 0;
-			sscanf (value.c_str(), "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mFixedV = (lVal != 0);
 		}
 /*
 		else if (STR_EQUALS (name, "bindH"))
 		{
 			lVal = 0;
-			sscanf (value, "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mBindH = (lVal != 0);
 		}
 */
 		else if (STR_EQUALS (name, "bindV"))
 		{
 			lVal = 0;
-			sscanf (value.c_str(), "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mBindV = (lVal != 0);
 		}
 		else if (STR_EQUALS (name, "align"))
 		{
-			if (sscanf (value.c_str(), "%li", &lVal) == 1)
+			if (RWStr::ReadNumber (value, lVal))
 			{
 				if (lVal >= eAlign_None && lVal <= eAlign_Right)
 					mAlignment = EAlignment (lVal);
@@ -213,7 +207,7 @@ RWObject::Parse (RWReportData *inReport, XMLElement *inNode)
 		}
 		else if (STR_EQUALS (name, "draw"))
 		{
-			if (sscanf (value.c_str(), "%li", &lVal) == 1)
+			if (RWStr::ReadNumber (value, lVal))
 			{
 				if (lVal >= eDraw_No && lVal <= eDraw_Always)
 					mDraw = EDraw (lVal);
@@ -564,7 +558,7 @@ const
 // ---------------------------------------------------------------------------
 
 RWGroup*
-RWGroup::Create (RWReportData *inReport, XMLElement *inNode, int inOrder)
+RWGroup::Create (RWReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	RWGroup	*group = new RWGroup (inOrder);
 	group->Parse (inReport, inNode);
@@ -645,23 +639,20 @@ RWGroup::SetKeepTogether (void)
 // ---------------------------------------------------------------------------
 
 void
-RWGroup::Parse (RWReportData *inReport, XMLElement *inNode)
+RWGroup::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 
-	XMLAttribute const	*attrib;
 	long			    lVal;
 
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
 
 /*
 		if (STR_EQUALS (name, "expandH"))
 		{
 			lVal = 0;
-			sscanf (value, "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mExpandH = (lVal != 0);
 		}
 		else
@@ -669,7 +660,7 @@ RWGroup::Parse (RWReportData *inReport, XMLElement *inNode)
 		if (STR_EQUALS (name, "expandV"))
 		{
 			lVal = 0;
-			sscanf (value.c_str(), "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mExpandV = (lVal != 0);
 		}
 	}
@@ -964,7 +955,7 @@ RWGroup::GetObjects (void)
 // ---------------------------------------------------------------------------
 
 RWLine*
-RWLine::Create (RWReportData *inReport, XMLElement *inNode, int inOrder)
+RWLine::Create (RWReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	RWLine	*line = new RWLine (inOrder);
 	line->Parse (inReport, inNode);
@@ -999,30 +990,27 @@ RWLine::~RWLine (void)
 // ---------------------------------------------------------------------------
 
 void
-RWLine::Parse (RWReportData *inReport, XMLElement *inNode)
+RWLine::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 
 //	XMLNode	*node = inNode->FirstChild ("Definition");
 //	if (node)
-//		elem = node->FirstChildElement ("LineProps");
+//		elem = node.Child (u"LineProps");
 
-    XMLElement	*elem = inNode->FirstChildElement ("LineProps");
-	if (elem == NULL)
+    RWXmlNode elem = inNode.Child (u"LineProps");
+	if (!elem)
 		elem = inNode;
 
 	if (elem)
 	{
-		XMLAttribute const	*attrib;
-		for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
+		for (const auto &[name, value] : elem.Attributes())
 		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
 
 			if (STR_EQUALS (name, "thickness"))
 			{
 				mThickness = 1;
-				sscanf (value.c_str(), "%g", &mThickness);
+				RWStr::ReadNumber (value, mThickness);
 				if (mThickness < 0 || mThickness > 10)
 					mThickness = 1;
 			}
@@ -1032,7 +1020,7 @@ RWLine::Parse (RWReportData *inReport, XMLElement *inNode)
 			}
 			else if (STR_EQUALS (name, "flags"))
 			{
-				mFlags = (unsigned short) (atol (value.c_str()) & 0x07);
+				mFlags = (unsigned short) ((long) RWStr::ToInteger (value).value_or (0) & 0x07);
 			}
 		}
 	}
@@ -1103,7 +1091,7 @@ RWLine::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 // ---------------------------------------------------------------------------
 
 RWOval*
-RWOval::Create (RWReportData *inReport, XMLElement *inNode, int inOrder)
+RWOval::Create (RWReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	RWOval	*rect = new RWOval (inOrder);
 	rect->Parse (inReport, inNode);
@@ -1139,7 +1127,7 @@ RWOval::~RWOval (void)
 // ---------------------------------------------------------------------------
 
 void
-RWOval::Parse (RWReportData *inReport, XMLElement *inNode)
+RWOval::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 
@@ -1147,22 +1135,19 @@ RWOval::Parse (RWReportData *inReport, XMLElement *inNode)
 //	if (node)
 //		node = node->FirstChild ("RectProps");
 
-    XMLElement	*elem = inNode->FirstChildElement (GetKind() == eObject_Oval ? "OvalProps" : "RectProps");
-	if (elem == NULL)
+	RWXmlNode	elem = inNode.Child (GetKind() == eObject_Oval ? u"OvalProps" : u"RectProps");
+	if (!elem)
 		elem = inNode;
 
 	if (elem)
 	{
-		XMLAttribute const	*attrib;
-		for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
+		for (const auto &[name, value] : elem.Attributes())
 		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
 
 			if (STR_EQUALS (name, "thickness"))
 			{
 				mThickness = 1;
-				sscanf (value.c_str(), "%g", &mThickness);
+				RWStr::ReadNumber (value, mThickness);
 				if (mThickness < 0 || mThickness > 10)
 					mThickness = 1;
 			}
@@ -1229,7 +1214,7 @@ RWOval::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 // ---------------------------------------------------------------------------
 
 RWRect*
-RWRect::Create (RWReportData *inReport, XMLElement *inNode, int inOrder)
+RWRect::Create (RWReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	RWRect	*rect = new RWRect (inOrder);
 	rect->Parse (inReport, inNode);
@@ -1264,7 +1249,7 @@ RWRect::~RWRect (void)
 // ---------------------------------------------------------------------------
 
 void
-RWRect::Parse (RWReportData *inReport, XMLElement *inNode)
+RWRect::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWOval::Parse (inReport, inNode);
 
@@ -1272,33 +1257,30 @@ RWRect::Parse (RWReportData *inReport, XMLElement *inNode)
 //	if (node)
 //		node = node->FirstChild ("RectProps");
 
-    XMLElement	*elem = inNode->FirstChildElement ("RectProps");
-	if (elem == NULL)
+    RWXmlNode elem = inNode.Child (u"RectProps");
+	if (!elem)
 		elem = inNode;
 
 	if (elem)
 	{
-		XMLAttribute const	*attrib;
-		for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
+		for (const auto &[name, value] : elem.Attributes())
 		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
 
 			if (STR_EQUALS (name, "rows"))
 			{
-				mRows = atol (value.c_str());
+				mRows = (long) RWStr::ToInteger (value).value_or (0);
 				if (mRows < 2)
 					mRows = 1;
 			}
 			else if (STR_EQUALS (name, "cols"))
 			{
-				mCols = atol (value.c_str());
+				mCols = (long) RWStr::ToInteger (value).value_or (0);
 				if (mCols < 2)
 					mCols = 1;
 			}
 			else if (STR_EQUALS (name, "flags"))
 			{
-				mFlags = (unsigned short) (atol (value.c_str()) & RWRect_Full);
+				mFlags = (unsigned short) ((long) RWStr::ToInteger (value).value_or (0) & RWRect_Full);
 			}
 		}
 	}
@@ -1342,7 +1324,7 @@ RWRect::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 // ---------------------------------------------------------------------------
 
 RWPict*
-RWPict::Create (RWReportData *inReport, XMLElement *inNode, int inOrder)
+RWPict::Create (RWReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	RWPict	*pict = new RWPict (inOrder);
 	pict->Parse (inReport, inNode);
@@ -1398,7 +1380,7 @@ RWPict::~RWPict (void)
 // ---------------------------------------------------------------------------
 
 void
-RWPict::Parse (RWReportData *inReport, XMLElement *inNode)
+RWPict::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 
@@ -1406,24 +1388,21 @@ RWPict::Parse (RWReportData *inReport, XMLElement *inNode)
 //	if (node)
 //		node = node->FirstChild ("PictProps");
 
-    XMLElement	*elem = inNode->FirstChildElement ("PictProps");
-	if (elem == NULL)
+    RWXmlNode elem = inNode.Child (u"PictProps");
+	if (!elem)
 		elem = inNode;
 
 	if (elem)
 	{
-		XMLAttribute const	*attrib;
-		for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
+		for (const auto &[name, value] : elem.Attributes())
 		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
 			long			lVal;
 
 /*
 			if (STR_EQUALS (name, "expandH"))
 			{
 				lVal = 0;
-				sscanf (value, "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mExpandH = (lVal != 0);
 			}
 			else
@@ -1431,17 +1410,17 @@ RWPict::Parse (RWReportData *inReport, XMLElement *inNode)
 			if (STR_EQUALS (name, "expandV"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mExpandV = (lVal != 0);
 			}
 			else if (STR_EQUALS (name, "dataID"))
 			{
-				mDataID = atol (value.c_str());
+				mDataID = (long) RWStr::ToInteger (value).value_or (0);
 			}
 			else if (STR_EQUALS (name, "format"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				if (lVal < ePictFormat_First || lVal >= ePictFormat_Last)
 					mFormat = ePictFormat_Normal;
 				else
@@ -1450,20 +1429,20 @@ RWPict::Parse (RWReportData *inReport, XMLElement *inNode)
 			else if (STR_EQUALS (name, "frame"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mFrame = (lVal != 0);
 			}
 			else if (STR_EQUALS (name, "frameOffset"))
 			{
 				mFrameOffset = 2;
-				sscanf (value.c_str(), "%g", &mFrameOffset);
+				RWStr::ReadNumber (value, mFrameOffset);
 				if (mFrameOffset < 0 || mFrameOffset > 20)
 					mFrameOffset = 2;
 			}
 			else if (STR_EQUALS (name, "frameThickness"))
 			{
 				mFrameThickness = 1;
-				sscanf (value.c_str(), "%g", &mFrameThickness);
+				RWStr::ReadNumber (value, mFrameThickness);
 				if (mFrameThickness < 0 || mFrameThickness > 10)
 					mFrameThickness = 1;
 			}
@@ -1474,7 +1453,7 @@ RWPict::Parse (RWReportData *inReport, XMLElement *inNode)
             else if (STR_EQUALS (name, "rotation"))
             {
                 mObjectRotation = 0;
-                sscanf (value.c_str(), "%g", &mObjectRotation);
+                RWStr::ReadNumber (value, mObjectRotation);
             }
             else if (STR_EQUALS (name, "fillColor"))
             {
@@ -1485,8 +1464,8 @@ RWPict::Parse (RWReportData *inReport, XMLElement *inNode)
 
 	if (mDataID == 0)
 	{
-		elem = elem->FirstChildElement ("ImageData");
-		if (elem == NULL)
+		elem = elem.Child (u"ImageData");
+		if (!elem)
 			elem = inNode;
 
 		SBlob	pictData;
@@ -1612,7 +1591,7 @@ RWPict::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 // ---------------------------------------------------------------------------
 
 RWText*
-RWText::Create (RWReportData *inReport, XMLElement *inNode, int inOrder)
+RWText::Create (RWReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	RWText	*text = new RWText (inOrder);
 	text->Parse (inReport, inNode);
@@ -1666,7 +1645,7 @@ RWText::~RWText (void)
 // ---------------------------------------------------------------------------
 
 void
-RWText::Parse (RWReportData *inReport, XMLElement *inNode)
+RWText::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 	long	mStyleID = 0;
@@ -1674,69 +1653,66 @@ RWText::Parse (RWReportData *inReport, XMLElement *inNode)
 //	if (node)
 //		node = node->FirstChild (GetKind() == eObject_Text ? "TextProps" : "VariableProps");
 
-    XMLElement	*elem = inNode->FirstChildElement (GetKind() == eObject_Text ? "TextProps" : "VariableProps");
-	if (elem == NULL)
+	RWXmlNode	elem = inNode.Child (GetKind() == eObject_Text ? u"TextProps" : u"VariableProps");
+	if (!elem)
 		elem = inNode;
 
 	if (elem)
 	{
-		XMLAttribute const	*attrib;
 		long			lVal;
 
-		for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
+		for (const auto &[name, value] : elem.Attributes())
 		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
 
 			if (STR_EQUALS (name, "style"))
 			{
 				mStyleID = 0;
-				sscanf (value.c_str(), "%li", &mStyleID);
+				RWStr::ReadNumber (value, mStyleID);
 			}
 /*
 			else if (STR_EQUALS (name, "expandH"))
 			{
 				lVal = 0;
-				sscanf (value, "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mExpandH = (lVal != 0);
 			}
 */
 			else if (STR_EQUALS (name, "expandV"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mExpandV = (lVal != 0);
 			}
 			else if (STR_EQUALS (name, "dynamic"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mIsDynamic = (lVal != 0);
 			}
 			else if (STR_EQUALS (name, "attributed"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mIsAttributed = (lVal != 0);
 			}
 			else if (STR_EQUALS (name, "keepTogether"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mKeepTogether = (lVal != 0);
 			}
 			/*
 			else if (STR_EQUALS (name, "drawIfEmpty"))
 			{
 				lVal = 0;
-				sscanf (value, "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				if (lVal >= eEmpty_Draw && lVal <= eEmpty_RemoveRow)
 					mDrawIfEmpty = EEmpty (lVal);
 			}
 */
 			else if (STR_EQUALS (name, "empty"))
 			{
-				if (sscanf (value.c_str(), "%li", &lVal) == 1)
+				if (RWStr::ReadNumber (value, lVal))
 				{
 					if (lVal >= eEmpty_Draw && lVal <= eEmpty_RemoveRow)
 						mDrawIfEmpty = EEmpty (lVal);
@@ -1751,20 +1727,20 @@ RWText::Parse (RWReportData *inReport, XMLElement *inNode)
 			else if (STR_EQUALS (name, "frame"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mFrame = (lVal != 0);
 			}
 			else if (STR_EQUALS (name, "frameOffset"))
 			{
 				mFrameOffset = 2;
-				sscanf (value.c_str(), "%g", &mFrameOffset);
+				RWStr::ReadNumber (value, mFrameOffset);
 				if (mFrameOffset < 0 || mFrameOffset > 20)
 					mFrameOffset = 2;
 			}
 			else if (STR_EQUALS (name, "frameThickness"))
 			{
 				mFrameThickness = 1;
-				sscanf (value.c_str(), "%g", &mFrameThickness);
+				RWStr::ReadNumber (value, mFrameThickness);
 				if (mFrameThickness < 0 || mFrameThickness > 10)
 					mFrameThickness = 1;
 			}
@@ -1778,7 +1754,7 @@ RWText::Parse (RWReportData *inReport, XMLElement *inNode)
 			}
 			else if (STR_EQUALS (name, "val"))
 			{
-				mVarValue.SetReal (atof (value.c_str()));
+				mVarValue.SetReal (RWStr::ToDouble (value).value_or (0));
 			}
 		}
 
@@ -2191,23 +2167,23 @@ RWText::ParseText (void)
 		long	textLen = mText.StrLength();
 		long	curPos = 0, delta = 0, endPos;
 
-		CText	result (mText, textLen);
+		RWString	result (mText);		// was "(mText, textLen)": the substring *from* textLen, i.e. empty
 		CText   varName;
 		CText   format;
         
 		while (curPos < textLen && RWTools::ParseTextForVar (mIsAttributed, mText, textLen, curPos, endPos, varName, format))
 		{
-			const UniChar *	varname = varName.c_str();
-			bool		    encode = mIsAttributed;
-            
-			if (varname && *varname == '+')
+			RWStringView	varname = varName;
+			bool			encode = mIsAttributed;
+
+			if (!varname.empty() && varname[0] == u'+')
 			{
-				varname++;
+				varname.remove_prefix (1);
 				encode = false;
 			}
 			RWTextValue	varText;
-			if (varname && *varname)
-				varText = GetVariableText (varname, format.c_str());
+			if (!varname.empty())
+				varText = GetVariableText (RWString (varname), format);
 			
             
 			size_t	varLen;
@@ -2220,10 +2196,7 @@ RWText::ParseText (void)
 			{
 				if (encode)
 				{
-					CXMLText	encoded;
-					CText	us (varText, varLen);
-                    
-                    us = RWTools::EscapeAttributedString(us);
+					RWString	us = RWTools::EscapeAttributedString (varText);
 
 //					TiXmlBase::PutString ((const char*) us.GetUTF8(), &encoded);
 //					us.AssignUTF8 ((const UTF8Char*) encoded.c_str(), encoded.length());
@@ -2231,7 +2204,7 @@ RWText::ParseText (void)
 					varLen = us.length();
 				}
 				else
-					result.insert (curPos - delta, varText, varLen);
+					result.insert (curPos - delta, varText);
 			}
 			delta += endPos - curPos - varLen;
 			curPos = endPos;
@@ -2250,7 +2223,7 @@ RWText::ParseText (void)
 // ---------------------------------------------------------------------------
 
 RWVariable*
-RWVariable::Create (RWReportData *inReport, XMLElement *inNode, int inOrder)
+RWVariable::Create (RWReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	RWVariable	*var = new RWVariable (inOrder);
 	var->Parse (inReport, inNode);
@@ -2290,28 +2263,25 @@ RWVariable::~RWVariable (void)
 // ---------------------------------------------------------------------------
 
 void
-RWVariable::Parse (RWReportData *inReport, XMLElement *inNode)
+RWVariable::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWText::Parse (inReport, inNode);
 
-    XMLElement	*elem = inNode->FirstChildElement ("VariableProps");
-	if (elem == NULL)
+    RWXmlNode elem = inNode.Child (u"VariableProps");
+	if (!elem)
 		elem = inNode;
 //	if (elem)
 //	{
-//		mSource.FromXML (elem->Attribute ("source"));
-//		mFormat.FromXML (elem->Attribute ("format"));
-//		elem = elem->FirstChildElement ("Calc");
+//		mSource.FromXML (elem.Attr (u"source"));
+//		mFormat.FromXML (elem.Attr (u"format"));
+//		elem = elem.Child (u"Calc");
 //	}
 	if (elem)
 	{
-		XMLAttribute const	*attrib;
 		long			lVal;
 
-		for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
+		for (const auto &[name, value] : elem.Attributes())
 		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
 
 			if (STR_EQUALS (name, "source") || STR_EQUALS (name, "src"))
 			{
@@ -2324,7 +2294,7 @@ RWVariable::Parse (RWReportData *inReport, XMLElement *inNode)
 			else if (STR_EQUALS (name, "calc"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				if (lVal >= ECalcType_None && lVal < ECalcType_Last)
 					mCalcType = ECalcType (lVal);
 			}

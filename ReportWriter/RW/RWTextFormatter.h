@@ -47,7 +47,7 @@ TFWord::TFWord (int start, int length, RWStyle* style)
 		mIsSpace (false),
 		mIsTab (false),
 		mNewLine (false),
-		mStyle (NULL, NULL)
+		mStyle (NULL, RWXmlNode())
 {
 	mStyle.CloneFrom (style);
 }

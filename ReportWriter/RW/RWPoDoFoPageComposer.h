@@ -20,7 +20,7 @@ public:
 								RWPoDoFoPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter);	//mbs 25072011	printer
 	virtual						~RWPoDoFoPageComposer (void);
 
-	virtual		void			ParseReport (const XMLElement *inReport);
+	virtual		void			ParseReport (RWXmlNode inReport) override;
 	virtual		void*			FinishReport (size_t &outSize);
 
 	virtual		void			GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect);

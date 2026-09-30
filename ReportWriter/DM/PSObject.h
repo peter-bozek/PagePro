@@ -94,7 +94,7 @@ public:
 	inline	virtual				~PSObject (void);
 
 	static	const PSObjProps*	FindPropertyByID (OSType id, const PSObjProps *pes);
-	static	const PSObjProps*	FindPropertyByName (const CText inName, const PSObjProps *pes);
+	static	const PSObjProps*	FindPropertyByName (RWStringView inName, const PSObjProps *pes);
 	static		int				CountProperties (const PSObjProps *pes);
 
 	inline		EObject_Kind	GetKind (void) const;
@@ -104,12 +104,12 @@ public:
 	virtual		PSObjList	*	GetObjects (OSType id);
 				void			GetProperties (PSPropsMap &outMap) const;
 
-				bool			GetProperty (OSType id, RWTextValue &outValue);
+				bool			GetProperty (OSType id, RWString &outValue);
 
-    virtual		XMLElement*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
+	virtual		RWXmlNode		WriteXML (RWXmlNode inParent, const PSObjProps* pes = NULL);
 	virtual		long			GetInternalID() {return mInternalID; };
 private:
-				void			SetProperty (const PSObjProps* pes, const CText inValue);
+				void			SetProperty (const PSObjProps* pes, RWStringView inValue);
 
 protected:
 	static		bool			SetBooleanProperty (RWValue &inValue, bool &outValue);
@@ -117,8 +117,8 @@ protected:
 	static		bool			SetIntegerProperty (RWValue &inValue, int &outValue, int inMin = INT_MIN, int inMax = INT_MAX);
 	static		bool			SetRealProperty (RWValue &inValue, double &outValue, double inMin = -INFINITY, double inMax = INFINITY);
 	static		bool			SetRealProperty (RWValue &inValue, float &outValue, double inMin = -INFINITY, double inMax = INFINITY);
-	static		bool			SetXMLStringProperty (RWValue &inValue, CXMLText &outValue);
-	static		bool			SetStringProperty (RWValue &inValue, RWTextValue &outValue);
+	static		bool			SetXMLStringProperty (RWValue &inValue, RWString &outValue);
+	static		bool			SetStringProperty (RWValue &inValue, RWString &outValue);
 	static		bool			SetStringProperty (RWValue &inValue, ExtendedExecute &outScript);
 	static		bool			SetRectProperty (RWValue &inValue, SRect &outValue);
 	static		bool			SetColorProperty (RWValue &inValue, SRGBColor &outValue);
@@ -126,9 +126,9 @@ protected:
 	static		bool			SetListProperty (RWValue &inValue, const char ** inList, int &outValue);
 
 	virtual		bool			GetObjects (OSType id, PSObjListD* &outList);
-    virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
-    virtual		void			LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode);
-    virtual		bool			WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL);
+	virtual		void			LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode);
+	virtual		bool			WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode);
 
 	static		long			GetNextId() {return mObjectCounter++;}
 public:

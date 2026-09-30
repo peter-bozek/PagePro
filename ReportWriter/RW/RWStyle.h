@@ -56,22 +56,22 @@ public:
 			stf_MASK				= 0x00002FFF
 		};
 
-    RWStyle (RWStyleContainer *inContainer, XMLElement *inElem);
+								RWStyle (RWStyleContainer *inContainer, RWXmlNode inElem);
 								RWStyle (const RWStyle& inOriginal);
 		virtual					~RWStyle (void);
 //				RWStyle	*		Clone (void) const;
 				void			CloneFrom (const RWStyle *inStyle);
 
 
-	virtual	const PSObjProps *	GetProperties (void) const;
-	virtual		bool			GetProperty (OSType id, RWValue &outValue);
-	virtual		bool			SetProperty (OSType id, RWValue &inValue);
+	virtual	const PSObjProps *	GetProperties (void) const override;
+	virtual		bool			GetProperty (OSType id, RWValue &outValue) override;
+	virtual		bool			SetProperty (OSType id, RWValue &inValue) override;
 //	virtual		XMLElement*	WriteXML (XMLNode *inParent);
 
 protected:
 //	virtual		DMBase		*	Clone (DMBase *inParent);
 
-    virtual		void			LoadXML (XMLElement *inNode, const PSObjProps* pes = NULL);
+	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 
 public:
 	inline		long			GetID (void) const;

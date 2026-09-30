@@ -35,7 +35,7 @@ public:
 								RWWinPageComposer (unsigned long inFlags, UString &inDst, UString &inPrinter);	//mbs 25072011	printer
 	virtual						~RWWinPageComposer (void);
 
-	virtual		void			ParseReport (const TiXmlElement *inReport);
+	virtual		void			ParseReport (RWXmlNode inReport) override;
 	virtual		void*			FinishReport (size_t &outSize);
 
 	virtual		void			GetPageBounds (ConstCText inOrientation, ConstCText inSize, SRect &outRect);

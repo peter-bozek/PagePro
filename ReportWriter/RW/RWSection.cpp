@@ -6,7 +6,7 @@
 // RWSection								Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWSection::RWSection (const CXMLText inKind)
+RWSection::RWSection (RWStringView inKind)
 	:	mKind (eSectionKind_Body),
 		mHeight (0),
 		mMinSpace (0),
@@ -214,57 +214,44 @@ RWSection::Reset (bool inAll)
 // ---------------------------------------------------------------------------
 
 void
-RWSection::Parse (RWReportData * /*inReport*/, XMLElement *inNode)
+RWSection::Parse (RWReportData * /*inReport*/, RWXmlNode inNode)
 {
-	const XMLAttribute	*attrib;
-	long			lVal;
-
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
-
 		if (STR_EQUALS (name, "height"))
 		{
 			mHeight = 0;
-			sscanf (value.c_str(), "%g", &mHeight);
+			RWStr::ReadNumber (value, mHeight);
 		}
 		else if (STR_EQUALS (name, "minSpace"))
 		{
 			mMinSpace = 0;
-			sscanf (value.c_str(), "%g", &mMinSpace);
+			RWStr::ReadNumber (value, mMinSpace);
 		}
 		else if (STR_EQUALS (name, "draw"))
 		{
-			lVal = 0;
-			sscanf (value.c_str(), "%li", &lVal);
-			mDraw = (lVal != 0);
+			mDraw = false;
+			RWStr::ReadNumber (value, mDraw);
 		}
-//		else if (STR_EQUALS (name, "name"))
-//		{
-//			mName.FromXML (value);
-//		}
 		else if (STR_EQUALS (name, "keepTogether"))
 		{
-			lVal = 0;
-			sscanf (value.c_str(), "%li", &lVal);
-			mKeepTogether = (lVal != 0);
+			mKeepTogether = false;
+			RWStr::ReadNumber (value, mKeepTogether);
 		}
 		else if (STR_EQUALS (name, "bindToBottom"))
 		{
-			lVal = 0;
-			sscanf (value.c_str(), "%li", &lVal);
-			mFromBottom = (lVal != 0);
+			mFromBottom = false;
+			RWStr::ReadNumber (value, mFromBottom);
 		}
 		else if (STR_EQUALS (name, "fixedHeight"))
 		{
-			lVal = 0;
-			sscanf (value.c_str(), "%li", &lVal);
-			mFixedHeight = (lVal != 0);
+			mFixedHeight = false;
+			RWStr::ReadNumber (value, mFixedHeight);
 		}
 		else if (STR_EQUALS (name, "pageThrow"))
 		{
-			if (sscanf (value.c_str(), "%li", &lVal) == 1)
+			long	lVal;
+			if (RWStr::ReadNumber (value, lVal))
 			{
 				if (lVal >= ePageThrow_None && lVal <= ePageThrow_After)
 					mPageThrow = EPageThrow (lVal);
@@ -278,7 +265,7 @@ RWSection::Parse (RWReportData * /*inReport*/, XMLElement *inNode)
 		}
 #if	TARGET_DEBUG
 		else if (STR_EQUALS (name, "iteration"))
-			sscanf (value, "%li", &mIteration);
+			RWStr::ReadNumber (value, mIteration);
 #endif
 	}
 
@@ -480,7 +467,7 @@ RWSection::ExpandFillFooter (const SRect &inRect)	//mbs 06012010
 // RWHeaderFooterSection					Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWHeaderFooterSection::RWHeaderFooterSection (const CXMLText inKind)
+RWHeaderFooterSection::RWHeaderFooterSection (RWStringView inKind)
 	:	RWSection (inKind),
 		mFixed (-1),
 		mFirstPage (true),
@@ -521,52 +508,45 @@ const
 // ---------------------------------------------------------------------------
 
 void
-RWHeaderFooterSection::Parse (RWReportData *inReport, XMLElement *inNode)
+RWHeaderFooterSection::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWSection::Parse (inReport, inNode);
 
-	XMLAttribute	*attrib;
-	long			lVal;
-	long			fillPage = 0;
+	long	fillPage = 0;
 
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
-
 		if (STR_EQUALS (name, "fixed"))
 		{
 			mFixed = 0;
-			sscanf (value, "%g", &mFixed);
+			RWStr::ReadNumber (value, mFixed);
 		}
 		else if (STR_EQUALS (name, "firstPage"))
 		{
-			lVal = 0;
-			sscanf (value, "%li", &lVal);
-			mFirstPage = (lVal != 0);
+			mFirstPage = false;
+			RWStr::ReadNumber (value, mFirstPage);
 		}
 		else if (STR_EQUALS (name, "evenPage"))
 		{
-			sscanf (value, "%i", &mEvenPage);
+			RWStr::ReadNumber (value, mEvenPage);
 			if (mEvenPage < 0 || mEvenPage > 2)
 				mEvenPage = 1;
 		}
 		else if (STR_EQUALS (name, "oddPage"))
 		{
-			sscanf (value, "%i", &mOddPage);
+			RWStr::ReadNumber (value, mOddPage);
 			if (mOddPage < 0 || mOddPage > 2)
 				mOddPage = 1;
 		}
 		else if (STR_EQUALS (name, "lastPage"))
 		{
-			lVal = 0;
-			sscanf (value, "%li", &lVal);
-			mLastPage = (lVal != 0);
+			mLastPage = false;
+			RWStr::ReadNumber (value, mLastPage);
 		}
 		else if (STR_EQUALS (name, "fillPage"))
 		{
 			fillPage = 0;
-			sscanf (value, "%li", &fillPage);
+			RWStr::ReadNumber (value, fillPage);
 		}
 	}
 
@@ -750,7 +730,7 @@ RWHeaderFooterSection::GetBounds (RWReportWriter *inWriter, RWPageComposer &inCo
 // ---------------------------------------------------------------------------
 // RWBreakSection							Constructor				  [public]
 // ---------------------------------------------------------------------------
-RWBreakSection::RWBreakSection (const CXMLText inKind)
+RWBreakSection::RWBreakSection (RWStringView inKind)
 	:	RWSection (inKind),
 		mLevel (0),
 //		mBreakOn (0),
@@ -793,35 +773,21 @@ RWBreakSection::Reset (bool inAll)
 // ---------------------------------------------------------------------------
 
 void
-RWBreakSection::Parse (RWReportData *inReport, XMLElement *inNode)
+RWBreakSection::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWSection::Parse (inReport, inNode);
 
-	XMLAttribute	*attrib;
-	long			lVal;
-
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
-
-/*
-		if (STR_EQUALS (name, "breakOn"))
-		{
-			mBreakOn.FromXML (value);
-		}
-		else
-*/
 		if (STR_EQUALS (name, "level"))
 		{
 			mLevel = 0;
-			sscanf (value, "%d", &mLevel);
+			RWStr::ReadNumber (value, mLevel);
 		}
 		else if (STR_EQUALS (name, "always"))
 		{
-			lVal = 0;
-			sscanf (value, "%li", &lVal);
-			mPrintAlways = (lVal != 0);
+			mPrintAlways = false;
+			RWStr::ReadNumber (value, mPrintAlways);
 		}
 	}
 
@@ -920,24 +886,16 @@ RWPageSection::~RWPageSection (void)
 // ---------------------------------------------------------------------------
 
 void
-RWPageSection::Parse (RWReportData *inReport, XMLElement *inNode)
+RWPageSection::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWSection::Parse (inReport, inNode);
 
-	XMLAttribute	*attrib;
-
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-
 		if (STR_EQUALS (name, "Orientation"))
-		{
-			mPageOrientation.FromXML (attrib->Value());
-		}
+			mPageOrientation = value;
 		else if (STR_EQUALS (name, "Size"))
-		{
-			mPageSize.FromXML (attrib->Value());
-		}
+			mPageSize = value;
 	}
 
 	return;
@@ -974,7 +932,7 @@ const
 // RWWatermarkSection						Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWWatermarkSection::RWWatermarkSection (const CXMLText inKind)
+RWWatermarkSection::RWWatermarkSection (RWStringView inKind)
 	:	RWHeaderFooterSection (inKind),
 		mOnTop (false)
 {
@@ -995,19 +953,12 @@ RWWatermarkSection::~RWWatermarkSection (void)
 // ---------------------------------------------------------------------------
 
 void
-RWWatermarkSection::Parse (RWReportData *inReport, XMLElement *inNode)
+RWWatermarkSection::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWHeaderFooterSection::Parse (inReport, inNode);
 
-	const CXMLText	value = inNode->Attribute ("onTop");
-
-	if (value)
-	{
-		long			lVal = 0;
-
-		sscanf (value, "%li", &lVal);
-		mOnTop = (lVal != 0);
-	}
+	if (inNode.HasAttr (u"onTop"))
+		mOnTop = inNode.AttrInt (u"onTop", 0) != 0;
 
 	mFixed = -1;
 	mHeight = 0;

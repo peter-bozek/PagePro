@@ -800,7 +800,7 @@ DMSection::~DMSection (void)
 // ---------------------------------------------------------------------------
 
 void
-DMSection::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMSection::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 /*
  if (mType)
@@ -989,7 +989,7 @@ DMSection::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 void
-DMSection::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+DMSection::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 //	DMObject::LoadXMLObjects (pes, inNode);
 
@@ -1003,8 +1003,8 @@ DMSection::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-DMSection::WriteXML (XMLNode *inParent, const PSObjProps* pes)
+RWXmlNode
+DMSection::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
     XMLElement	*me = DMBase::WriteXML (inParent, pes);
 	me->SetValue (mType);
@@ -1074,7 +1074,7 @@ DMHeaderFooterSection::DMHeaderFooterSection (DMBase *inParent, ESection_Kind in
 // ---------------------------------------------------------------------------
 
 void
-DMHeaderFooterSection::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMHeaderFooterSection::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	mFixed = -1;
 	mFirstPage = true;
@@ -1182,7 +1182,7 @@ DMBreakSection::DMBreakSection (DMBase *inParent, ESection_Kind inKind, const CX
 // ---------------------------------------------------------------------------
 
 void
-DMBreakSection::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMBreakSection::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	mLevel = 0;
 	mPrintAlways = false;
@@ -1500,7 +1500,7 @@ DMWatermarkSection::DMWatermarkSection (DMBase *inParent, const CXMLText inType)
 // ---------------------------------------------------------------------------
 
 void
-DMWatermarkSection::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMWatermarkSection::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	mOnTop = false;
 
@@ -1670,7 +1670,7 @@ DM4DDataSource::~DM4DDataSource (void)
 // ---------------------------------------------------------------------------
 
 void
-DM4DDataSource::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DM4DDataSource::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	const CXMLText	value = inNode->Attribute (FindPropertyByID (PSObjPropType, GetProperties())->name);
 assert (value != NULL && STR_EQUALS (value, s4DKind [0]));
@@ -1878,8 +1878,8 @@ DMGuide::SetProperty (OSType id, RWValue &inValue)
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-DMGuide::WriteXML (XMLNode *inParent, const PSObjProps* pes)
+RWXmlNode
+DMGuide::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
     XMLElement	*me = DMBase::WriteXML (inParent, pes);
 	me->SetValue (mVertical ? "Vertical" : "Horizontal");
@@ -2283,7 +2283,7 @@ DMReport::GetReport (XMLDocument &outXML)
 // ---------------------------------------------------------------------------
 
 void
-DMReport::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMReport::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	DMBase::LoadXML (inNode, pes);
 	if (mSections.begin() != mSections.end())
@@ -2810,7 +2810,7 @@ DMReport::ParseObjects (const PSObjProps* pes, XMLElement *inNode, DMBase *inPar
 // ---------------------------------------------------------------------------
 
 void
-DMReport::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+DMReport::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 	DMSection	*sec = NULL;
 
@@ -3043,7 +3043,7 @@ DMReport::GetObjects (OSType id, PSObjListD* &outList)
 // ---------------------------------------------------------------------------
 
 bool
-DMReport::WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 	switch (pes->id)
 	{
@@ -3162,8 +3162,8 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode)
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-DMReport::WriteXML (XMLNode *inParent, const PSObjProps* pes)
+RWXmlNode
+DMReport::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
     XMLElement	*me = DMBase::WriteXML (inParent, pes);
 //	me->SetAttribute (FindPropertyByID (PSObjPropVersion, GetProperties())->name, CURRENT_VERSION);

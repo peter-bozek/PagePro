@@ -382,7 +382,7 @@ const
 // ---------------------------------------------------------------------------
 
 void
-SRObject::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+SRObject::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	if (inNode != NULL)
 		PSObject::LoadXML (inNode);
@@ -1442,7 +1442,7 @@ SRPict::~SRPict (void)
 // ---------------------------------------------------------------------------
 
 void
-SRPict::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+SRPict::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	SROval::LoadXML (inNode);
 
@@ -1720,7 +1720,7 @@ SRText::~SRText (void)
 // ---------------------------------------------------------------------------
 
 void
-SRText::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+SRText::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	SROval::LoadXML (inNode);
 
@@ -2130,7 +2130,7 @@ SRVariable::~SRVariable (void)
 // ---------------------------------------------------------------------------
 
 void
-SRVariable::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+SRVariable::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	SRText::LoadXML (inNode);
 

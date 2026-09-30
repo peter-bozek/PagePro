@@ -56,7 +56,7 @@ const PSObject::PSObjProps	RWStyle::sProperties[] = {
 // RWStyle									Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWStyle::RWStyle (RWStyleContainer *inContainer, XMLElement *inElem)
+RWStyle::RWStyle (RWStyleContainer *inContainer, RWXmlNode inElem)
 	:	PSObject (eObject_Style),
 		mContainer (inContainer),
 		mId (0),
@@ -257,7 +257,7 @@ RWStyle::operator == (const RWStyle& inStyle) const
 		)
 		
 	{
-		if (inStyle.mFontName.equal( mFontName) == 0)
+		if (inStyle.mFontName == mFontName)		// was "equal (...) == 0", i.e. "fonts differ"
 			return true;
 		
 	}
@@ -444,17 +444,15 @@ RWStyle::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-RWStyle::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+RWStyle::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 
 	if (inNode)
 		PSObject::LoadXML (inNode, pes);
 
-	if (!mFontName.empty())
-	{
-		mFontName = cDefFontName;
-	}
+	if (mFontName.empty())		// was "!mFontName.empty()", which replaced every font by the default
+		mFontName = RWStr::FromASCII (cDefFontName);
 
 	return;
 }
@@ -481,7 +479,7 @@ const
 	const	RWStyle	*style = GetStyleForFeature (stf_Font);
 	if (style != NULL)
 		return style->mFontName;
-	return NULL;	// cDefFontName;
+	return RWStr::FromASCII (cDefFontName);
 }
 
 float
@@ -635,17 +633,17 @@ RWStyle::GetProperty (OSType id, RWValue &outValue)
 			if(outValue.GetKind() == RWValue::eValue_Integer)
 				outValue.SetInteger (GetJustification()); 
 			else
-				outValue.SetXMLText (sJustification [GetJustification()]);
+				outValue.SetText (RWStr::FromASCII (sJustification [GetJustification()]));
 			break;									
 		case PSObjPropVertAlign:		
 			if(outValue.GetKind() == RWValue::eValue_Integer)
 				outValue.SetInteger (GetVerticalJustification()); 
 			else
-				outValue.SetXMLText (sVAlignment [GetVerticalJustification()]);
+				outValue.SetText (RWStr::FromASCII (sVAlignment [GetVerticalJustification()]));
 			break;									
-		case PSObjPropTextColor:		outValue.SetXMLText ((const char*) GetTextColor()); break;
-		case PSObjPropBackColor:		outValue.SetXMLText ((const char*) GetBackColor()); break;
-		case PSObjPropFrameColor:		outValue.SetXMLText ((const char*) GetFrameColor()); break;
+		case PSObjPropTextColor:		outValue.SetText (GetTextColor().ToString()); break;
+		case PSObjPropBackColor:		outValue.SetText (GetBackColor().ToString()); break;
+		case PSObjPropFrameColor:		outValue.SetText (GetFrameColor().ToString()); break;
 		case PSObjPropRotation:			outValue.SetReal (GetRotation()); break;
 		case PSObjPropBaseLineShift:	outValue.SetReal (GetBaseLineShift()); break;
 		case PSObjPropHorizontalScale:	outValue.SetReal (GetHorizontalScale()); break;

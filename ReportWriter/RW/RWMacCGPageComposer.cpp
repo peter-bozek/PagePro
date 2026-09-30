@@ -125,17 +125,6 @@ static	CGColorSpaceRef GetGenericRGBColorSpace (void)
 }
 
 
-RWNativePageComposer*
-RWMacCGPageComposer::CreateComposerForPrinting (void)
-const
-{
-//	RWMacCGPageComposer	*pc = new RWMacCGPageComposer ((GetFlags() & eUserFlagsMask) | eDestinationPrinter, mDestination);
-	RWMacCGPageComposer	*pc = new RWMacCGPageComposer (*this);
-	pc->mFlags = (GetFlags() & eUserFlagsMask) | eDestinationPrinter;
-	return pc;
-}
-
-
 // ---------------------------------------------------------------------------
 // RWMacCGPageComposer						Constructor				  [public]
 // ---------------------------------------------------------------------------

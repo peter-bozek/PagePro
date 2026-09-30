@@ -9,6 +9,7 @@
 
 #include "RWCTPageComposer.h"
 #include "RWStyle.h"
+#include "RWStringCF.h"
 
 struct	RWMacPrintTextContext
 {
@@ -30,7 +31,7 @@ public:
 
 protected:
 				void			Free();
-    void			ApplyAttributes (const CText inText, CGFontRef font, long *attributes, long start, long end);
+				void			ApplyAttributes (const CText inText, CTFontRef font, long *attributes, long start, long end);
 
 private:
 	// defensive programming - not implemented
@@ -120,12 +121,12 @@ RWCTPageComposer::StyleChanged (RWStyle *inStyle)
 CTFontRef
 RWCTPageComposer::CreateFont (const CText inName, long inNameLength, float inSize, int style)
 {
-	CFStringRef	fontName = CFStringCreateWithCharacters (kCFAllocatorDefault, inName.c_str(), inNameLength);
+	RWStringView	name = RWStringView (inName).substr (0, size_t (std::max (inNameLength, 0L)));
+	CFStringRef	fontName = RWStr::CreateCFString (name);
 	CTFontRef	font = CTFontCreateWithName (fontName, inSize, NULL);
 	if (font == NULL)
 	{
-		CText	us (inName, inNameLength);
-		printf ("RWCTPageComposer::CreateFont: font '%s' not found!\n", us.GetUTF8());
+		printf ("RWCTPageComposer::CreateFont: font '%s' not found!\n", RWStr::ToUTF8 (name).c_str());
 		::CFRelease (fontName);
 		fontName = CFStringCreateWithCString (kCFAllocatorDefault, RWStyle::cDefFontName, kCFStringEncodingUTF8);
 		font = CTFontCreateWithName (fontName, inSize, NULL);
@@ -194,7 +195,8 @@ RWCTPageComposer::MapStyle (RWStyle *inStyle)
 		styleDict = CFDictionaryCreateMutable (kCFAllocatorDefault, 4, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 		// require (styleDict != NULL, CFDictionaryCreateMutable);
 
-		CTFontRef	font = CreateFont (inStyle->GetFName(), CText::StrLength (inStyle->GetFName()), inStyle->GetSize(), inStyle->GetStyle());
+		CText		fontName = inStyle->GetFName();
+		CTFontRef	font = CreateFont (fontName, (long) fontName.size(), inStyle->GetSize(), inStyle->GetStyle());
 		CFDictionaryAddValue (styleDict, kCTFontAttributeName, font);
 		::CFRelease (font);
 
@@ -250,7 +252,7 @@ CFDictionaryCreateMutable:
 
 
 void
-RWCTPageComposer::DrawTextBox (const CText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWCTPageComposer::DrawTextBox (CText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
 if (sUseTF)
 	RWPageComposer::DrawTextBox (inText, inStyle, inRect, inWrap, inAttributed, inFit, ioPrintText);
@@ -268,7 +270,7 @@ else
 		
 		try
 		{
-			if (inText != NULL && *inText)
+			if (!inText.empty())
 			{
 				if (ioPrintText == NULL)	// RWTable support
 				{
@@ -298,7 +300,7 @@ else
 	}
 	else if (ioPrintText != NULL && *ioPrintText != NULL)	// nothing to do if we don't draw and ioPrintText is empty
 	{
-		if (inText != NULL && *inText)
+		if (!inText.empty())
 			static_cast <RWCTPrintText*> (*ioPrintText)->Draw (*this, r, inFit, NULL);
 	}
 }
@@ -312,7 +314,7 @@ if (sUseTF)
 	return RWPageComposer::MeasureText (inText, inStyle, ioRect, inWrap, inAttributed, inFit, ioPrintText);
 else
 {
-	if (inText != NULL && *inText)
+	if (!inText.empty())
 	{
 		if (ioPrintText == NULL)	// RWTable support
 		{
@@ -384,12 +386,12 @@ RWCTPrintText::ApplyAttributes (const CText inText, CTFontRef font, long *attrib
 	CTFontRef	fontA;
 	for (i = start; i < end; i += 2)
 	{
-		const CText	as = inText + attributes[i];
+		const char16_t	*as = inText.c_str() + attributes[i];
 		if (*as == '/')
 			continue;
 		for (j = i + 2; j < end; j += 2)
 		{
-			const CText	ae = inText + attributes[j];
+			const char16_t	*ae = inText.c_str() + attributes[j];
 			if (*ae != '/')
 			{
 				if (*ae == *as)
@@ -489,7 +491,7 @@ RWCTPrintText::ApplyAttributes (const CText inText, CTFontRef font, long *attrib
 					style |= RWStyle::st_bold;
 				if (sstyle & kCTFontItalicTrait)
 					style |= RWStyle::st_italic;
-				fontA = RWCTPageComposer::CreateFont (fontName.Get(), fontName.StrLength(), CTFontGetSize (font), style);
+				fontA = RWCTPageComposer::CreateFont (fontName, (long) fontName.size(), CTFontGetSize (font), style);
 				//mbs 25052010	CFAttributedStringSetAttribute will crash if the font is the same!
 				if (fontA != 0)
 				{
@@ -610,7 +612,7 @@ RWCTPrintText::ApplyAttributes (const CText inText, CTFontRef font, long *attrib
 
 					if (rv & 1)
 					{
-						fontA = RWCTPageComposer::CreateFont (fontName.Get(), fontName.StrLength(), size, curStyle);	//mbs 10062010	curStyle instead of sstyle!!!
+						fontA = RWCTPageComposer::CreateFont (fontName, (long) fontName.size(), size, curStyle);	//mbs 10062010	curStyle instead of sstyle!!!
 						//mbs 25052010	CFAttributedStringSetAttribute will crash if the font is the same!
 						if (fontA != 0)
 						{
@@ -719,12 +721,12 @@ void
 RWCTPrintText::Init (RWCTPageComposer &inComposer, const CText inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit)
 {
 	Free();
-	auto_ptr<long>	aattributes;
+	std::vector<long>	aattributes;
 	long	*attributes = NULL;
 	if (inAttributed)
 	{
 		mText.Attach (RWTools::SplitAttributedString (inText, &aattributes));
-		attributes = aattributes.get();
+		attributes = aattributes.data();
 	}
 	else
 		mText = inText;
@@ -739,9 +741,9 @@ RWCTPrintText::Init (RWCTPageComposer &inComposer, const CText inText, SRect &io
 
 	if (not mText.IsEmpty())
 	{
-		mTextLength = CText::StrLength (mText);
+		mTextLength = mText.size();
 		CFDictionaryRef		styleDict = static_cast <RWCTPageComposer&> (inComposer).MapStyle (mStyle);
-		CFStringRef			cfText = CFStringCreateWithCharacters (kCFAllocatorDefault, mText, mTextLength);
+		CFStringRef			cfText = RWStr::CreateCFString (mText);
 		mCFText = (CFMutableAttributedStringRef) CFAttributedStringCreate (kCFAllocatorDefault, cfText, styleDict);
 		::CFRelease (cfText);
 		if (inAttributed && attributes && attributes[0] > 2)
@@ -964,7 +966,7 @@ RWCTPrintText::Draw (RWCTPageComposer &inComposer, SRect &ioRect, bool inFit, vo
 double	RWCTPageComposer::MeasureWord (const CText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
 {
 	CFDictionaryRef			styleDict = MapStyle (inStyle);
-	CFStringRef				cfText = CFStringCreateWithCharacters (kCFAllocatorDefault, inText.c_str(), inTextLength);
+	CFStringRef				cfText = RWStr::CreateCFString (RWStringView (inText).substr (0, size_t (std::max (inTextLength, 0))));
 	CFAttributedStringRef	attrString = (CFMutableAttributedStringRef) CFAttributedStringCreate (kCFAllocatorDefault, cfText, styleDict);
 	CFRelease (cfText);
 	CTLineRef				line = CTLineCreateWithAttributedString (attrString); 
@@ -984,7 +986,7 @@ void	RWCTPageComposer::DrawWord (const CText inText, int inTextLength, float inX
 	if (mPageIsOpen)
 	{
 		CFDictionaryRef			styleDict = MapStyle (inStyle);
-		CFStringRef				cfText = CFStringCreateWithCharacters (kCFAllocatorDefault, inText, inTextLength);
+		CFStringRef				cfText = RWStr::CreateCFString (RWStringView (inText).substr (0, size_t (std::max (inTextLength, 0))));
 		CFAttributedStringRef	attrString = (CFMutableAttributedStringRef) CFAttributedStringCreate (kCFAllocatorDefault, cfText, styleDict);
 		CFRelease (cfText);
 		CTLineRef				line = CTLineCreateWithAttributedString (attrString); 
@@ -1011,7 +1013,7 @@ void	RWCTPageComposer::DrawWord (const CText inText, int inTextLength, float inX
 bool	RWCTPageComposer::IsUnicodeFont (RWStyle *inStyle)
 {
 	CText font = inStyle->GetFName();
-	if (font == "Zapf Dingbats")
+	if (font == u"Zapf Dingbats")
 		return false;
 	
 	return true;

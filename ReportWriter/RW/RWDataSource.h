@@ -13,7 +13,7 @@ public:
 						RWDataSource (void);
 virtual					~RWDataSource (void);
 
-virtual		void		ParseReport (const XMLElement *inReport);
+virtual		void		ParseReport (RWXmlNode inReport);
 
 #if 0
 virtual		bool		IsDynamic (void) const;

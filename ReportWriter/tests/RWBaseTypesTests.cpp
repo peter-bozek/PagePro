@@ -9,6 +9,7 @@
 
 # include	"RWBaseTypes.h"
 # include	"RWStyle.h"
+# include	"RWDataProvider.h"
 
 # include	<cstdio>
 # include	<cstring>
@@ -331,6 +332,75 @@ static	void	TestVariables (void)
 	CHECK (!RWTools::ParseTextForVar (false, beyond, 3, start, end, name, format));	// starts after inTextLen
 }
 
+static	void	TestReadNumber (void)
+{
+	long	l = 7;
+	CHECK (RWStr::ReadNumber (u" 42", l) && l == 42);
+	CHECK (!RWStr::ReadNumber (u"x", l) && l == 42);			// unchanged on failure
+	float	f = 1;
+	CHECK (RWStr::ReadNumber (u"2.5pt", f) && f == 2.5f);
+	bool	b = false;
+	CHECK (RWStr::ReadNumber (u"3", b) && b);
+	CHECK (RWStr::ReadNumber (u"0", b) && !b);
+	int		i = 0;
+	CHECK (RWStr::ReadNumber (u"0x10", i) && i == 16);
+}
+
+static	void	TestDataProvider (void)
+{
+	RWDataProvider	source;
+	RWValue			v;
+
+	v.SetText (u"Žltý\rkôň");
+	RWDataID	textID = source.AddObject (v);
+	v.SetInteger (-42);
+	RWDataID	intID = source.AddObject (v);
+	v.SetReal (3.25);
+	RWDataID	realID = source.AddObject (v);
+	v.SetInteger (15 | (6 << 5) | (2025 << 9), RWValue::eValue_Date);
+	RWDataID	dateID = source.AddObject (v);
+	v.SetInteger (10 * 3600 + 20 * 60 + 30, RWValue::eValue_Time);
+	RWDataID	timeID = source.AddObject (v);
+	char	bytes[] = { 1, 2, 3, 0, 5 };
+	RWValue	blob (RWValue::eValue_PicturePNG, bytes, sizeof (bytes));
+	RWDataID	blobID = source.AddObject (blob);
+
+	RWDataID	tableID = source.AddTableObject (2, false);
+	v.SetText (u"a1");
+	source.PutTableCellData (tableID, 1, 1, v);
+	v.SetInteger (7);
+	source.PutTableCellData (tableID, 2, 2, v);
+
+	RWXmlDocument	doc;
+	RWXmlNode		data = doc.Node().Append (u"ReportData");
+	source.Write (data);
+
+	RWXmlDocument	loaded;
+	CHECK (loaded.LoadString (doc.SaveString()).ok);
+	RWDataProvider	parsed;
+	parsed.Parse (loaded.Root());
+
+	RWValue	out;
+	CHECK (parsed.GetObject (textID, out) && out.GetKind() == RWValue::eValue_Text && out.GetText() == u"Žltý\rkôň");
+	CHECK (parsed.GetObject (intID, out) && out.GetKind() == RWValue::eValue_Integer && out.GetInteger() == -42);
+	CHECK (parsed.GetObject (realID, out) && out.GetKind() == RWValue::eValue_Real && out.GetReal() == 3.25);
+	CHECK (parsed.GetObject (dateID, out) && out.GetKind() == RWValue::eValue_Date && out.GetInteger() == (15 | (6 << 5) | (2025 << 9)));
+	CHECK (parsed.GetObject (timeID, out) && out.GetKind() == RWValue::eValue_Time && out.GetInteger() == 10 * 3600 + 20 * 60 + 30);
+	CHECK (parsed.GetObject (blobID, out) && out.GetKind() == RWValue::eValue_PicturePNG && out.GetBlobSize() == sizeof (bytes)
+		&& memcmp (out.GetBlobData(), bytes, sizeof (bytes)) == 0);
+
+	CHECK (parsed.GetTableColumnCount (tableID) == 2);
+	CHECK (parsed.GetTableCellData (tableID, 1, 1, out) && out.GetText() == u"a1");
+	CHECK (parsed.GetTableCellData (tableID, 2, 2, out) && out.GetInteger() == 7);
+
+	// kind 4 was UTF-8 text (eValue_XMLText) in older data
+	RWXmlDocument	legacy;
+	CHECK (legacy.LoadString (u"<ReportData><Objects><v id=\"3\" k=\"4\">old text</v></Objects></ReportData>").ok);
+	RWDataProvider	old;
+	old.Parse (legacy.Root());
+	CHECK (old.GetObject (3, out) && out.GetKind() == RWValue::eValue_Text && out.GetText() == u"old text");
+}
+
 
 int		main (void)
 {
@@ -343,6 +413,8 @@ int		main (void)
 	TestXmlData();
 	TestAttributed();
 	TestVariables();
+	TestReadNumber();
+	TestDataProvider();
 
 	std::printf ("%d checks, %d failed\n", sChecks, sFailures);
 	return sFailures == 0 ? 0 : 1;

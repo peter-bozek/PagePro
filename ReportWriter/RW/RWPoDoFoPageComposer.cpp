@@ -343,7 +343,7 @@ RWPoDoFoPageComposer::FinishReport (size_t &outSize)
 // Initialize PDF (title, creator, ...)
 
 void
-RWPoDoFoPageComposer::ParseReport (const XMLElement *inReport)
+RWPoDoFoPageComposer::ParseReport (RWXmlNode inReport)
 {
 //	if (mBatchLevel == 0)
 	{

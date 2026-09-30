@@ -956,7 +956,7 @@ DMBase::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMBase::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMBase::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	PSObject::LoadXML (inNode, pes);
@@ -1430,7 +1430,7 @@ DMObject::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMObject::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMObject::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMBase::LoadXML (inNode, pes);
@@ -1576,7 +1576,7 @@ DMGroup::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMGroup::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMGroup::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMObject::LoadXML (inNode, pes);
@@ -1589,7 +1589,7 @@ DMGroup::LoadXML (XMLElement *inNode, const PSObjProps* pes)
 // ---------------------------------------------------------------------------
 
 void
-DMGroup::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+DMGroup::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 	//	DMObject::LoadXMLObjects (pes, inNode);
 	
@@ -1723,7 +1723,7 @@ DMLine::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMLine::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMLine::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMObject::LoadXML (inNode, pes);
@@ -1833,7 +1833,7 @@ DMOval::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMOval::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMOval::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMLine::LoadXML (inNode, pes);
@@ -1937,7 +1937,7 @@ DMRect::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMRect::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMRect::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMOval::LoadXML (inNode, pes);
@@ -2061,7 +2061,7 @@ DMPict::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMPict::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMPict::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMOval::LoadXML (inNode, pes);
@@ -2070,7 +2070,7 @@ DMPict::LoadXML (XMLElement *inNode, const PSObjProps* pes)
 
 #if	0
 void
-DMPict::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMPict::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	DMOval::LoadXML (inNode, pes);
 	
@@ -2104,7 +2104,7 @@ DMPict::LoadXML (XMLElement *inNode, const PSObjProps* pes)
 // ---------------------------------------------------------------------------
 
 void
-DMPict::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+DMPict::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 //	DMOval::LoadXMLObjects (pes, inNode);
 
@@ -2134,8 +2134,8 @@ assert (pes->id == PSObjPropData);
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
 #if	0
-XMLElement*
-DMPict::WriteXML (XMLNode *inParent, const PSObjProps* pes)
+RWXmlNode
+DMPict::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
     XMLElement	*me = DMObject::WriteXML (inParent, pes);
     XMLElement	*data = new XMLElement (sPictDataProperties [0]);
@@ -2154,7 +2154,7 @@ DMPict::WriteXML (XMLNode *inParent, const PSObjProps* pes)
 // ---------------------------------------------------------------------------
 
 bool
-DMPict::WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+DMPict::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 #if	0
 	if (mPicture.GetKind() == RWValue::eValue_PictRefScreen || mPicture.GetKind() == RWValue::eValue_PictRefPrint)
@@ -2315,7 +2315,7 @@ DMText::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMText::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMText::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMOval::LoadXML (inNode, pes);
@@ -2545,7 +2545,7 @@ DMVariable::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMVariable::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMVariable::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMText::LoadXML (inNode, pes);
@@ -2735,7 +2735,7 @@ DMHeader::~DMHeader (void)
 // ---------------------------------------------------------------------------
 
 void
-DMHeader::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMHeader::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	DMBase::LoadXML (inNode, pes);
 	return;
@@ -2746,8 +2746,8 @@ DMHeader::LoadXML (XMLElement *inNode, const PSObjProps* pes)
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
 
-TiXmlElement*
-DMHeader::WriteXML (XMLNode *inParent, const PSObjProps* pes)
+RWXmlNode
+DMHeader::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
     XMLElement	*me = NULL;
 	if (mVisible)
@@ -2919,7 +2919,7 @@ DMColumn::~DMColumn (void)
 // ---------------------------------------------------------------------------
 
 void
-DMColumn::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMColumn::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	DMBase::LoadXML (inNode, pes);
 	return;
@@ -2930,8 +2930,8 @@ DMColumn::LoadXML (XMLElement *inNode, const PSObjProps* pes)
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
 
-*
-DMColumn::WriteXML (XMLNode *inParent, const PSObjProps* pes)
+RWXmlNode
+DMColumn::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
     XMLElement	*me = DMBase::WriteXML (inParent, pes);
 	me->SetValue ("Col");
@@ -3168,7 +3168,7 @@ DMTable::Init (void)
 // ---------------------------------------------------------------------------
 
 void
-DMTable::LoadXML (XMLElement *inNode, const PSObjProps* pes)
+DMTable::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
 	Init();
 	DMOval::LoadXML (inNode, pes);
@@ -3190,7 +3190,7 @@ DMTable::LoadXML (XMLElement *inNode, const PSObjProps* pes)
 // ---------------------------------------------------------------------------
 
 void
-DMTable::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+DMTable::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 //	DMOval::LoadXMLObjects (pes, inNode);
 
@@ -3256,7 +3256,7 @@ DMTable::LoadXMLObjects (const PSObjProps* pes, XMLElement *inNode)
 // ---------------------------------------------------------------------------
 
 bool
-DMTable::WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode)
+DMTable::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 {
 	switch (pes->id)
 	{
@@ -3292,8 +3292,8 @@ DMTable::WriteXMLObjects (const PSObjProps* pes, XMLElement *inNode)
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
 
-XMLElement*
-DMTable::WriteXML (XMLNode *inParent, const PSObjProps* pes)
+RWXmlNode
+DMTable::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
     XMLElement	*me = DMBase::WriteXML (inParent, pes);
 	return me;

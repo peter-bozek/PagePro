@@ -23,6 +23,7 @@
 # include	<string>
 # include	<string_view>
 # include	<optional>
+# include	<type_traits>
 # include	<vector>
 
 typedef	std::u16string			RWString;
@@ -69,6 +70,11 @@ namespace	RWStr
 	// Integers accept an optional sign and a "0x" prefix for hexadecimal.
 	std::optional<long long>	ToInteger (RWStringView inText);
 	std::optional<double>		ToDouble (RWStringView inText);
+	// sscanf ("%li" / "%lg") replacement: stores the number in ioValue and returns true,
+	// or leaves ioValue unchanged and returns false. bool receives "number != 0".
+	template <class T>
+	bool						ReadNumber (RWStringView inText, T &ioValue);
+
 	RWString					FromInteger (long long inValue);
 	RWString					FromDouble (double inValue, const char *inPrintfFormat = "%g");
 
@@ -78,6 +84,29 @@ namespace	RWStr
 									__attribute__ ((format (printf, 1, 2)))
 #endif
 									;
+}
+
+
+template <class T>
+bool
+RWStr::ReadNumber (RWStringView inText, T &ioValue)
+{
+	static_assert (std::is_arithmetic<T>::value, "ReadNumber needs a number type");
+	if constexpr (std::is_floating_point<T>::value)
+	{
+		std::optional<double>	value = ToDouble (inText);
+		if (!value)
+			return false;
+		ioValue = T (*value);
+	}
+	else
+	{
+		std::optional<long long>	value = ToInteger (inText);
+		if (!value)
+			return false;
+		ioValue = T (*value);
+	}
+	return true;
 }
 
 #endif

@@ -12,15 +12,12 @@
 # include	"PSObjProps.h"
 
 //wchar_t on Mac is UTF32 -> CText does NOT support conversion from/to UTF32!!!
-const UTF16Char breakAfterUTF16NoWrap[] = { '\n', '\r', 0 };
-const UTF16Char breakAfterUTF16[] = { ' ', '\t', '.', ',', ';', ':', ')', '>', '}', '\n', '\r', 0 };
-const UTF16Char breakBeforeUTF16[] = { ' ', '\t', '(', '<', '{', 0 };
 
 //CText	RWTFPrintText::breakAfter (L" \t.,:;)}\n\r");
 //CText	RWTFPrintText::breakBefore (L" \t({");
-CText	RWTFPrintText::breakAfterNoWrap (breakAfterUTF16NoWrap);
-CText	RWTFPrintText::breakAfter (breakAfterUTF16);
-CText	RWTFPrintText::breakBefore (breakBeforeUTF16);
+CText	RWTFPrintText::breakAfterNoWrap (u"\n\r");
+CText	RWTFPrintText::breakAfter (u" \t.,;:)>}\n\r");
+CText	RWTFPrintText::breakBefore (u" \t(<{");
 
 
 void
@@ -150,11 +147,11 @@ TFWord::GetWordMetrix (RWPageComposer &inComposer, const CText inText)
 {
 	double	ascent, descent, leading;
 	if (mPrintableLength > 0)
-		mWidth = inComposer.MeasureWord (inText.c_str() + mStartChar, mPrintableLength, &mStyle, ascent, descent, leading) * mStyle.GetHorizontalScale();
+		mWidth = inComposer.MeasureWord (inText.substr (mStartChar, mPrintableLength), mPrintableLength, &mStyle, ascent, descent, leading) * mStyle.GetHorizontalScale();
 	else
 	{
 		double width;
-		width = inComposer.MeasureWord (inText.c_str(), mLength, &mStyle, ascent, descent, leading);
+		width = inComposer.MeasureWord (inText.substr (0, mLength), mLength, &mStyle, ascent, descent, leading);
 		mWidth = 0;
 	}
 	mBaseline = ascent;
@@ -223,12 +220,12 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 	
 	Free();
 	
-    unique_ptr<long>	aattributes;
+	std::vector<long>	aattributes;
 	long	*attributes = NULL;
 	if (inAttributed)
 	{
 		mText.Attach (RWTools::SplitAttributedString (inText, &aattributes));
-		attributes = aattributes.get();
+		attributes = aattributes.data();
 	}
 	else
 		mText = inText;
@@ -249,16 +246,16 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 		 First split text to words
 		 		 */
 		int				firstChar = 0;
-		int				found = 0;
-		const           UTF16Char	*as, *begin;
-        begin = cText.front();
+		size_t			found = 0;
+		const char16_t	*as, *begin;
+		begin = cText.c_str();
 
         if (inWrap)
 		{
-			for (as = cText.begin(); *as != 0; as++)
+			for (as = begin; *as != 0; as++)
 			{
 				found = breakBefore.find (*as, 0);
-				if (found != std::variant_npos)
+				if (found != CText::npos)
 				{
 					if (firstChar < (as - begin))
 					{
@@ -282,7 +279,7 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 				}
 				
 				found = breakAfter.find (*as, 0);
-				if (found != std::variant_npos)
+				if (found != CText::npos)
 				{
 					if (firstChar < (as - begin + 1))
 					{
@@ -326,7 +323,7 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 				}
 				
 				found = breakAfterNoWrap.find (*as, 0);
-				if (found != std::variant_npos)
+				if (found != CText::npos)
 				{
 					if (firstChar < (as - begin + 1))
 					{
@@ -523,12 +520,12 @@ RWTFPrintText::ApplyAttributes (const CText inText, long *attributes, long start
 	long		i, j, level = 1;
 	for (i = start, j = start; i < end; i = j + 2)	//mbs 13022011	added initialization for j - crash on invalid attributed string "i>i</i>"
 	{
-		const CText	as = inText + attributes[i];
+		const char16_t	*as = inText.c_str() + attributes[i];
 		if (*as == '/')
 			continue;
 		for (j = i + 2; j < end; j += 2)
 		{
-			const CText	ae = inText + attributes[j];
+			const char16_t	*ae = inText.c_str() + attributes[j];
 			if (*ae != '/')
 			{
 				if (*ae == *as)
@@ -874,13 +871,13 @@ RWTFPrintText::DrawLine (RWPageComposer &inComposer, SRect &ioRect, int inLine)
 		{
 			len += nextWord->mPrintableLength;
 		} else {
-			inComposer.DrawWord (cText + w->mStartChar, len, ioRect.left + w->mStartInLine, baseline, &w->mStyle);
+			inComposer.DrawWord (cText.substr (w->mStartChar, len), len, ioRect.left + w->mStartInLine, baseline, &w->mStyle);
 			w = nextWord;
 			len = w->mPrintableLength;	
 		}
 		word++;
 	}
-	inComposer.DrawWord (cText + w->mStartChar, len, ioRect.left + w->mStartInLine , baseline, &w->mStyle);
+	inComposer.DrawWord (cText.substr (w->mStartChar, len), len, ioRect.left + w->mStartInLine , baseline, &w->mStyle);
 	
 	
 }

@@ -1,4 +1,5 @@
 # include	"RWMacPageComposer.h"
+# include	"RWStringCF.h"
 # include	"RWStyle.h"
 # include	<memory>
 
@@ -151,7 +152,7 @@ const
 {
 	CFURLRef	dstURL = 0;
 
-	if (mDestination.StrLength() > 0 && GetDestination() != eDestinationPrinter)
+	if (!mDestination.empty() && GetDestination() != eDestinationPrinter)
 	{
 		#if	0 && __MACH__ && !_MSL_USING_MW_C_HEADERS
 			dstURL = CFURLCreateWithFileSystemPath (NULL,
@@ -161,11 +162,11 @@ const
 		#else
 			#if	0	//mbs 25072011	leak?!?
 				dstURL = CFURLCreateWithFileSystemPath (NULL,
-							CFStringCreateWithCharacters (NULL, mDestination.GetU16Str(), mDestination.StrLength()),
+							RWStr::CreateCFString (mDestination),
 							kCFURLHFSPathStyle,
 							false);
 			#else
-				CFStringRef dest = CFStringCreateWithCharacters (kCFAllocatorDefault, mDestination.GetU16Str(), mDestination.StrLength());
+				CFStringRef dest = RWStr::CreateCFString (mDestination);
 				if (dest)
 				{
 					dstURL = CFURLCreateWithFileSystemPath (kCFAllocatorDefault, dest, kCFURLHFSPathStyle, false);
@@ -370,9 +371,9 @@ RWMacPageComposer::OpenSessionSafe (bool inDoPageSetup, bool inDoJobSetup, unsig
 	if (mPrintSession == NULL)
 		status = PMCreateSession (&mPrintSession);
 
-	if (status == noErr &&mPrinterName.StrLength() > 0)	//mbs 25072011	printer
+	if (status == noErr &&!mPrinterName.empty())	//mbs 25072011	printer
 	{
-		CFStringRef printerName = CFStringCreateWithCharacters (kCFAllocatorDefault, mPrinterName.GetU16Str(), mPrinterName.StrLength());
+		CFStringRef printerName = RWStr::CreateCFString (mPrinterName);
         CFArrayRef  printers = NULL;
         OSStatus err = PMServerCreatePrinterList( kPMServerLocal, &printers );
         if( err == noErr )
@@ -440,7 +441,7 @@ RWMacPageComposer::OpenSessionSafe (bool inDoPageSetup, bool inDoJobSetup, unsig
 
 		if (status == noErr && mPrintSettings != NULL && not mJobName.IsEmpty())
 		{
-			CFStringRef	n = CFStringCreateWithCharacters (kCFAllocatorDefault, mJobName, mJobName.StrLength());
+			CFStringRef	n = RWStr::CreateCFString (mJobName);
 			if (n)
 			{
 				PMPrintSettingsSetJobName (mPrintSettings, n);
@@ -758,7 +759,7 @@ RWMacPageComposer::SetPrintSettings (const SBlob &inPrintSettings)
 // Get default page size & page orientation
 
 void
-RWMacPageComposer::ParseReport (const XMLElement *inReport)
+RWMacPageComposer::ParseReport (RWXmlNode inReport)
 {
 /*
 	if (mBatch)
@@ -775,13 +776,11 @@ RWMacPageComposer::ParseReport (const XMLElement *inReport)
 		blob.Init();
 		try
 		{
-			XMLNode		*node = NULL;
-            XMLElement	*elem = NULL;
+			RWXmlNode	elem;
 			if ((mFlags & (eUseDefPageSetup | eUse4DPageSetup)) == 0)
 			{
-				node = inReport->FirstChild ("PageFormat");
-				elem = node->ToElement();
-				if (elem != NULL) // && PMUnflattenPageFormat != (void*) kUnresolvedCFragSymbolAddress)
+				elem = inReport.Child (u"PageFormat");
+				if (elem) // && PMUnflattenPageFormat != (void*) kUnresolvedCFragSymbolAddress)
 				{
 					RWTools::ReadData (elem, blob);
 					SetPageFormat (blob);
@@ -791,9 +790,8 @@ RWMacPageComposer::ParseReport (const XMLElement *inReport)
 
 			if ((mFlags & (eUseDefJobSetup | eUse4DJobSetup)) == 0)
 			{
-				node = inReport->FirstChild ("PrintSettings");
-				elem = node->ToElement();
-				if (elem != NULL) // && PMUnflattenPrintSettings != (void*) kUnresolvedCFragSymbolAddress)
+				elem = inReport.Child (u"PrintSettings");
+				if (elem) // && PMUnflattenPrintSettings != (void*) kUnresolvedCFragSymbolAddress)
 				{
 					RWTools::ReadData (elem, blob);
 					SetPrintSettings (blob);

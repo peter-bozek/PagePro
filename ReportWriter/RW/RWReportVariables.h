@@ -11,18 +11,18 @@
 inline	void	RWInitReportVariable (RWTextValue *mVarNames)
 {
 	// RWReportWriter variables
-	mVarNames [RW_VarPage]		= "PAGE";
-	mVarNames [RW_VarPages]		= "PAGES";
-	mVarNames [RW_VarSubPage]	= "SUBPAGE";
-	mVarNames [RW_VarSubPages]	= "SUBPAGES";
-	mVarNames [RW_VarHorPage]	= "HORPAGE";
-	mVarNames [RW_VarHorPages]	= "HORPAGES";
-	mVarNames [RW_VarFrame]		= "FRAME";
-	mVarNames [RW_VarFrames]	= "FRAMES";
-	mVarNames [RW_VarDateTime]	= "DATETIME";
-	mVarNames [RW_VarDate]		= "DATE";
-	mVarNames [RW_VarTime]		= "TIME";
-	mVarNames [RW_VarName]		= "NAME";
+	mVarNames [RW_VarPage]		= u"PAGE";
+	mVarNames [RW_VarPages]		= u"PAGES";
+	mVarNames [RW_VarSubPage]	= u"SUBPAGE";
+	mVarNames [RW_VarSubPages]	= u"SUBPAGES";
+	mVarNames [RW_VarHorPage]	= u"HORPAGE";
+	mVarNames [RW_VarHorPages]	= u"HORPAGES";
+	mVarNames [RW_VarFrame]		= u"FRAME";
+	mVarNames [RW_VarFrames]	= u"FRAMES";
+	mVarNames [RW_VarDateTime]	= u"DATETIME";
+	mVarNames [RW_VarDate]		= u"DATE";
+	mVarNames [RW_VarTime]		= u"TIME";
+	mVarNames [RW_VarName]		= u"NAME";
 }
 
 inline	void	SRInitReportVariable (RWTextValue *mVarNames)
@@ -33,7 +33,7 @@ inline	void	SRInitReportVariable (RWTextValue *mVarNames)
 //	mVarNames [RW_VarSRDate]	= "SRDate";
 //	mVarNames [RW_VarSRTime]	= "SRTime";
 //	mVarNames [RW_VarSRRecord]	= "SRRecord";
-	mVarNames [RW_VarRWDate]	= "RWDate";
-	mVarNames [RW_VarRWTime]	= "RWTime";
-	mVarNames [RW_VarRWRecord]	= "RWRecord";
+	mVarNames [RW_VarRWDate]	= u"RWDate";
+	mVarNames [RW_VarRWTime]	= u"RWTime";
+	mVarNames [RW_VarRWRecord]	= u"RWRecord";
 }

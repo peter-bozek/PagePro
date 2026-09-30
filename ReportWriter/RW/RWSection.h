@@ -29,12 +29,12 @@ public:
 		ePageThrow_After
 	};
 
-									RWSection (const CXMLText inKind);
+									RWSection (RWStringView inKind);
 									RWSection (ESection_Kind inKind);
 	virtual							~RWSection (void);
 
 	virtual		void				Reset (bool inAll);
-    virtual		void				Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void				Parse (RWReportData *inReport, RWXmlNode inNode);
 	virtual		bool				WillingToPrint (RWReportWriter *inWriter, bool inCollision) const;
 
 	virtual		void				PositionObjects (RWReportWriter *inWriter, RWPageComposer &inComposer, bool inIsOverflow);
@@ -79,10 +79,10 @@ class	RWHeaderFooterSection
 	:	public	RWSection
 {
 public:
-									RWHeaderFooterSection (const CXMLText inKind);
+									RWHeaderFooterSection (RWStringView inKind);
 	virtual							~RWHeaderFooterSection (void);
 
-    virtual		void				Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void				Parse (RWReportData *inReport, RWXmlNode inNode) override;
 	virtual		bool				WillingToPrint (RWReportWriter *inWriter, bool inCollision) const;
 
 	virtual		void				PositionObjects (RWReportWriter *inWriter, RWPageComposer &inComposer, bool inIsOverflow);
@@ -108,11 +108,11 @@ class	RWBreakSection
 	:	public	RWSection
 {
 public:
-									RWBreakSection (const CXMLText inKind);
+									RWBreakSection (RWStringView inKind);
 	virtual							~RWBreakSection (void);
 
 	virtual		void				Reset (bool inAll);
-    virtual		void				Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void				Parse (RWReportData *inReport, RWXmlNode inNode) override;
 	virtual		bool				WillingToPrint (RWReportWriter *inWriter, bool inCollision) const;
 	virtual		bool				IsPrintAlways () const;
 
@@ -141,7 +141,7 @@ public:
 									RWPageSection (void);
 	virtual							~RWPageSection (void);
 
-    virtual		void				Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void				Parse (RWReportData *inReport, RWXmlNode inNode) override;
 				const CText			GetPageOrientation (void) const;
 				const CText			GetPageSize (void) const;
 
@@ -161,10 +161,10 @@ class	RWWatermarkSection
 	:	public	RWHeaderFooterSection
 {
 public:
-									RWWatermarkSection (const CXMLText inKind);
+									RWWatermarkSection (RWStringView inKind);
 	virtual							~RWWatermarkSection (void);
 
-    virtual		void				Parse (RWReportData *inReport, XMLElement *inNode);
+    virtual		void				Parse (RWReportData *inReport, RWXmlNode inNode) override;
 				bool				IsOnTop (void) const;
 
 private:

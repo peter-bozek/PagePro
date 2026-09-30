@@ -1125,7 +1125,7 @@ RWWinPageComposer::FinishReport (size_t &outSize)
 // Get default page size & page orientation
 
 void
-RWWinPageComposer::ParseReport (const TiXmlElement *inReport)
+RWWinPageComposer::ParseReport (RWXmlNode inReport)
 {
 /*
 	if (mBatch)

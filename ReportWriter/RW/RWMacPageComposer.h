@@ -6,6 +6,7 @@
 // Text drawing using ATSUI
 
 # include	"RWPageComposer.h"
+# include	<ApplicationServices/ApplicationServices.h>	// PrintCore (PM...), ATSUI, CoreText
 
 # include	<map>
 # define	RWStyleToATSUStyleMap	std::map <RWStyle*, ATSUStyle>
@@ -24,7 +25,7 @@ public:
 			PMDestinationType	GetDestinationType (void) const;
 			CFURLRef			GetDestinationURL (void) const;
 
-    virtual		void			ParseReport (const XMLElement *inReport);
+    virtual		void			ParseReport (RWXmlNode inReport) override;
 	virtual		void*			FinishReport (size_t &outSize);
 
 	virtual		void			GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect);

@@ -190,72 +190,48 @@ RWPageComposer::~RWPageComposer (void)
 // Initialize PDF (title, creator, ...)
 
 void
-RWPageComposer::ParseReport (const XMLElement *inReport)
+RWPageComposer::ParseReport (RWXmlNode inReport)
 {
 	if (mBatchLevel == 0)
 	{
-		CXMLText	value = inReport->Attribute ("Size");
-		if (!value.empty())
-			value = RWPageSizes [0].name;	// "A4";
-		mPageSize.FromXML (value);
+		RWString	value = inReport.Attr (u"Size");
+		if (value.empty())		// was "!value.empty()", which ignored every report's page size
+			value = RWStr::FromASCII (RWPageSizes [0].name);	// "A4";
+		mPageSize = value;
 
-        value = inReport->Attribute ("pageWidth");
-		if (!value.empty())
+		if (inReport.HasAttr (u"pageWidth"))
 		{
-			mPageWidth = 0;
-			sscanf (value.c_str(), "%g", &mPageWidth);
-            
-            value = inReport->Attribute ("pageHeight");
-            if (!value.empty())
-			{
-				mPageHeight = 0;
-				sscanf (value.c_str(), "%g", &mPageHeight);
-			}
+			mPageWidth = (float) inReport.AttrDouble (u"pageWidth", 0);
+			mPageHeight = (float) inReport.AttrDouble (u"pageHeight", 0);
 			if (mPageWidth < 100 || mPageHeight < 100)
 				mPageWidth = mPageHeight = 0;
 			else
 				mPageRect = SRect (0.0, 0.0, mPageHeight, mPageWidth);
 		}
-		
+
 		// pB 1.3.32
-		value = inReport->Attribute ("Orientation");
+		value = inReport.Attr (u"Orientation");
 		if (!value.empty())
-			mPageOrientation.FromXML (value);
-		else {
-			if (mPageWidth > mPageHeight)
-				mPageOrientation = "Landscape";
-			else 
-				mPageOrientation = "Portrait";
-		}
-			
-        value = inReport->Attribute ("pageMargins");
-        if (!value.empty())
+			mPageOrientation = value;
+		else if (mPageWidth > mPageHeight)
+			mPageOrientation = u"Landscape";
+		else
+			mPageOrientation = u"Portrait";
+
+		value = inReport.Attr (u"pageMargins");
+		if (!value.empty())
 		{
-			mReportPageMargins = value.c_str();
+			mReportPageMargins = value;
 //			mUseReportMargins = (mReportPageMargins.top != 0 || mReportPageMargins.left != 0 || mReportPageMargins.bottom != 0 || mReportPageMargins.right != 0);
 		}
-        value = inReport->Attribute ("usePhysical");
-        if (!value.empty())
+		if (inReport.HasAttr (u"usePhysical"))
 		{
-			mUsePhysical = value.c_str();
+			mUsePhysical = inReport.AttrBool (u"usePhysical");	// was a pointer assigned to bool, i.e. always true
 			mUseReportMargins = (!mUsePhysical);
 		}
-		
-        value = inReport->Attribute ("rotation");
-        if (!value.empty())
-        {
-            mReportRotation = true;
-        } else {
-            mReportRotation = false;
-        }
 
-        value = inReport->Attribute ("mirror");
-        if (!value.empty())
-        {
-            mReportMirror = true;
-        } else {
-            mReportMirror = false;
-        }
+		mReportRotation = inReport.HasAttr (u"rotation");
+		mReportMirror = inReport.HasAttr (u"mirror");
 
 		//mbs 18062010
 		mPaperRect.SetRect (-mReportPageMargins.top, -mReportPageMargins.left, mPageHeight - mReportPageMargins.bottom, mPageWidth - mReportPageMargins.right);
@@ -695,16 +671,16 @@ RWPageComposer::OpenSession (RWPageComposer* &outSession, unsigned long inFlags,
 		//mbs 08102010	needs to parse report template BEFORE opening the session!!!
 		if (inTemplate.length() > 0)
 		{
-			XMLDocument	xml;
-			xml.Parse (RWTextValue::UTF_16_to_UTF8( inTemplate.c_str()).c_str());
-			if (xml.Error())
+			RWXmlDocument	xml;
+			RWXmlResult		parsed = xml.LoadString (inTemplate);
+			if (!parsed)
 			{
-				printf ("Could not load XML. Error='%s'.\n", xml.ErrorName());
+				printf ("Could not load XML. Error='%s'.\n", RWStr::ToUTF8 (parsed.description).c_str());
 				fflush (stdout);
 				result = 1;	// errCantLoadXML;
 			}
 			else
-				session->ParseReport (xml.RootElement());
+				session->ParseReport (xml.Root());
 		}
 
 		//mbs 19012011	needs to set job name BEFORE opening the session!!!

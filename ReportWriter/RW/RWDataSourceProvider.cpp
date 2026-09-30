@@ -26,19 +26,11 @@ RWDataSourceProvider::~RWDataSourceProvider (void)
 // ---------------------------------------------------------------------------
 
 void
-RWDataSourceProvider::ParseReport (const XMLElement *inReport)
+RWDataSourceProvider::ParseReport (RWXmlNode inReport)
 {
-	if (inReport != NULL)
-	{
-		XMLElement const	*node = inReport->FirstChildElement ("ReportData");
-		if (node != NULL)
-		{
-//            XMLElement	*elem = node->ToElement();
-//
-//			if (elem != NULL)
-				mData.Parse (node);
-		}
-	}
+	RWXmlNode	data = inReport.Child (u"ReportData");
+	if (data)
+		mData.Parse (data);
 
 	return;
 }
