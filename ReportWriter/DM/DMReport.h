@@ -512,9 +512,9 @@ public:
 	static		DMReport	*	GetReportOfObject (long inObject);
 	static		DMBase		*	FindObject (long inObject);
 	static		DMBase		*	FindObjectByID (CText &inName);
-				DMBase		*	CreateObject (OSType inKind, long inParent, XMLElement *inNode);
-				DMBase		*	CreateObject (OSType inKind, DMBase *inParent, XMLElement *inNode);
-				DMBase		*	CreateObject (XMLElement *inNode, long inParent);
+				DMBase		*	CreateObject (OSType inKind, long inParent, RWXmlNode inNode);
+				DMBase		*	CreateObject (OSType inKind, DMBase *inParent, RWXmlNode inNode);
+				DMBase		*	CreateObject (RWXmlNode inNode, long inParent);
 				bool			RemoveObject (DMBase *inObject);
 				bool			ChangeObjectParent (DMBase *inObject, long inParent);
 				void			AdjustSections (DMBreakSection *inSection, int inLevel);

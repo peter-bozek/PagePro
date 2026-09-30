@@ -58,13 +58,6 @@ BOOL __stdcall DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID lpvReserved)
 			return 1;
    	}
 }
-#else
-static		void			PickColorCB (void *inData)
-{
-	NColorPickerInfo	*color = reinterpret_cast<NColorPickerInfo*> (inData);
-	if (noErr != ::NPickColor (color))
-		color->newColorChosen = false;
-}
 #endif
 
 #if	__MACH__
@@ -1159,7 +1152,7 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 				bool	useNames = (PA_GetVariableKind (names) == eVK_ArrayUnicode);
 				if (obj == NULL)	// selected objects
 				{
-					auto_ptr<PSObjList>	l (rep->GetObjects (PSObjPropSelected));
+					std::unique_ptr<PSObjList>	l (rep->GetObjects (PSObjPropSelected));
 					if (l->size() == 0)
 						result = errInvalidObjectRef;
 					else if (l->size() == 1)
@@ -1195,7 +1188,7 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 											;	// nothing to do
 										else
 										{
-											mrv.SetXMLText ("<multiple values>");
+											mrv.SetText (u"<multiple values>");
 											propsmap.SetProperty (prs->id, mrv);
 										}
 									}
@@ -1230,14 +1223,14 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 								rv.GetTextValue (value, NULL);
 								PA_Unistring	ustr = PA_CreateUnistring (RW_FourDTypeIDToText (prs->id));
 								PA_SetStringInArray (props, realCount, &ustr);
-								ustr = PA_CreateUnistring (value);
+								ustr = RWStr::CreatePA (value);
 								PA_SetStringInArray (vals, realCount, &ustr);
 								if (useNames)
 								{
 									const PSObject::PSObjProps *ps = PSObject::FindPropertyByID (prs->id, obj->GetProperties());
 									if (ps && ps->name && *ps->name)
 									{
-										CText	n ((UTF8Char*) ps->name, CText::_nullTerminated_);
+										CText	n = RWStr::FromUTF8 (ps->name);
 										ustr = RWStr::CreatePA (n);
 									}
 									else
@@ -1275,14 +1268,14 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 							realCount++;
 							PA_Unistring	ustr = PA_CreateUnistring (RW_FourDTypeIDToText (prs->id));
 							PA_SetStringInArray (props, realCount, &ustr);
-							ustr = PA_CreateUnistring (value);
+							ustr = RWStr::CreatePA (value);
 							PA_SetStringInArray (vals, realCount, &ustr);
 							if (useNames)
 							{
 								const PSObject::PSObjProps *ps = PSObject::FindPropertyByID (prs->id, obj->GetProperties());
 								if (ps && ps->name && *ps->name)
 								{
-									CText	n ((UTF8Char*) ps->name, CText::_nullTerminated_);
+									CText	n = RWStr::FromUTF8 (ps->name);
 									ustr = RWStr::CreatePA (n);
 								}
 								else
@@ -1342,7 +1335,7 @@ long RW_SetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 				long	count = PA_GetArrayNbElements (props);
 				if (obj == NULL)	// selected objects
 				{
-					auto_ptr<PSObjList>	l (rep->GetObjects (PSObjPropSelected));
+					std::unique_ptr<PSObjList>	l (rep->GetObjects (PSObjPropSelected));
 					if (l->size() == 0)
 						result = errInvalidObjectRef;
 					else if (l->size() == 1)
@@ -1353,7 +1346,7 @@ long RW_SetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 						{
 							PA_Unistring	ustr = PA_GetStringInArray (vals, i);
 							RWValue			value;
-							value.SetText (const CText (PA_GetUnistring (&ustr)));
+							value.SetText (RWStr::FromPA (&ustr));
 							ustr = PA_GetStringInArray (props, i);
 							OSType	id = RW_TextToFourDTypeID (PA_GetUnistring (&ustr), PA_GetUnistringLength (&ustr));
 							RWValue	oldrv;
@@ -1389,7 +1382,7 @@ long RW_SetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 					{
 						PA_Unistring	ustr = PA_GetStringInArray (vals, i);
 						RWValue			value;
-						value.SetText (const CText (PA_GetUnistring (&ustr)));
+						value.SetText (RWStr::FromPA (&ustr));
 						ustr = PA_GetStringInArray (props, i);
 						OSType	id = RW_TextToFourDTypeID (PA_GetUnistring (&ustr), PA_GetUnistringLength (&ustr));
 						RWValue	oldrv;
@@ -1444,7 +1437,7 @@ long RW_GetProperty (long inRepRef, long inRef, FourDTypeID id, PA_Pointer &ptr)
 						{
 							RWTextValue	tv;
 							rv.GetTextValue (tv, NULL);
-							PA_Unistring	uni = PA_CreateUnistring (tv);
+							PA_Unistring	uni = RWStr::CreatePA (tv);
 							PA_SetStringVariable (&v, &uni);
 							break;
 						}
@@ -1561,7 +1554,7 @@ long RW_SetProperty (long inRepRef, long inRef, FourDTypeID id, PA_Pointer &ptr)
 				}
 				if (obj == NULL)	// selected objects
 				{
-					auto_ptr<PSObjList>	l (rep->GetObjects (PSObjPropSelected));
+					std::unique_ptr<PSObjList>	l (rep->GetObjects (PSObjPropSelected));
 					if (l->size() == 0)
 						result = errInvalidObjectRef;
 					else if (l->size() == 1)
@@ -1575,7 +1568,7 @@ long RW_SetProperty (long inRepRef, long inRef, FourDTypeID id, PA_Pointer &ptr)
 							case eVK_Unistring:
 							{
 								PA_Unistring	uni = PA_GetStringVariable (v);
-								grv.SetText (PA_GetUnistring (&uni), false);
+								grv.SetText (RWStr::FromPA (&uni));
 								break;
 							}
 							case eVK_Real:
@@ -1687,7 +1680,7 @@ long RW_SetProperty (long inRepRef, long inRef, FourDTypeID id, PA_Pointer &ptr)
 							case eVK_Unistring:
 							{
 								PA_Unistring	uni = PA_GetStringVariable (v);
-								rv.SetText (PA_GetUnistring (&uni), false);
+								rv.SetText (RWStr::FromPA (&uni));
 								break;
 							}
 							case eVK_Real:
@@ -1788,7 +1781,7 @@ long RW_GetObjects (long inRepRef, long inRef, FourDTypeID id, PA_Variable &outV
 				result = errInvalidObjectRef;
 			else
 			{
-				auto_ptr<PSObjList>	objs (obj->GetObjects (id));
+				std::unique_ptr<PSObjList>	objs (obj->GetObjects (id));
 				if (objs.get() == NULL)
 					result = errInvalidRequest;
 				else
@@ -1830,8 +1823,8 @@ long RW_NewObject (long inRepRef, long &outRef, FourDTypeID id, long inParent)
 			result = errInvalidReportRef;
 		else
 		{
-			obj = rep->CreateObject (id, inParent, NULL);
-			outRef = obj->GetInternalID();
+			obj = rep->CreateObject (id, inParent, RWXmlNode());
+			outRef = obj ? obj->GetInternalID() : 0;
 			if (obj)
 			{
 				if (rep->GetPageComposer() != NULL)
@@ -1955,11 +1948,9 @@ long RW_GetObjectXML (long inRepRef, long inRef, CText &outXML)
 				result = errInvalidObjectRef;
 			else
 			{
-				XMLDocument	xml;
-				obj->WriteXML (&xml);
-				ostringstream	ostr;
-				ostr << xml;
-				outXML.AssignUTF8 ((const UTF8Char *) ostr.str().c_str());
+				RWXmlDocument	xml;
+				obj->WriteXML (xml.Node());
+				outXML = xml.SaveString (false);
 			}
 		}
 	}
@@ -1990,17 +1981,11 @@ long RW_NewObjectFromXML (long inRepRef, long &outRef, CText &inXML, long inPare
 			result = errInvalidReportRef;
 		else
 		{
-			XMLDocument	xml;
-			xml.Parse ((const char*) inXML.GetUTF8());
-			if (xml.Error())
+			RWXmlDocument	xml;
+			result = LoadSourceXML (xml, inXML, false);
+			if (result == noErr)
 			{
-				printf ("Could not load XML. Error='%s'.\n", xml.ErrorDesc());
-				fflush (stdout);
-				result = errCantLoadXML;
-			}
-			else
-			{
-				obj = rep->CreateObject (xml.RootElement(), inParent);
+				obj = rep->CreateObject (xml.Root(), inParent);
 				if (obj)
 				{
 					if (rep->GetPageComposer() != NULL)
@@ -2277,7 +2262,7 @@ long RW_PrintSettings (long inRepRef, long inOptions)
 		{
 			CText	empty;
 			RWValue	prop;
-			auto_ptr <RWPageComposer> pc (RWPageComposer::CreatePrinterComposer (inOptions & RWPageComposer::eUserFlagsMask, empty, empty));
+			std::unique_ptr<RWPageComposer> pc (RWPageComposer::CreatePrinterComposer (inOptions & RWPageComposer::eUserFlagsMask, empty, empty));
 			RWNativePageComposer	*opc = static_cast <RWNativePageComposer*> (pc.get());
 #if	MACVER
 			if (inOptions & (RWPageComposer::eUseDefPageSetup | RWPageComposer::eUse4DPageSetup))
@@ -2454,24 +2439,10 @@ long RW_PrintSettings (long inRepRef, long inOptions)
 long RW_ColorPicker (PA_PluginParameters params)
 {
 #if	MACVER
-	SRGBColor	ioColor ((unsigned long) PA_GetLongParameter (params, 1));
-	RGBColor	rgb = ioColor;
-	NColorPickerInfo	color;
-	memset (&color, 0, sizeof (color));
-	color.theColor.color.rgb = *(CMRGBColor*) &rgb;
-	color.flags = kColorPickerDialogIsMoveable | kColorPickerDialogIsModal | kColorPickerInApplicationDialog;
-	color.placeWhere = kAtSpecifiedOrigin;
-	/// ::GetMouse (&color.dialogOrigin);  // ignored anyway
-    
-//	color.pickerType = ???;
-	RW_RunInMainThread (PickColorCB, &color);
-	if (color.newColorChosen)
-	{
-		rgb = *(RGBColor*) (&color.theColor.color.rgb);
-		ioColor = rgb;
-		PA_SetLongParameter	(params, 1, (unsigned long) ioColor);
-		return 1;
-	}
+	// ••• TODO •••	the Carbon color picker (NPickColor) does not exist in 64 bit macOS;
+	//				replace with NSColorPanel or 4D's "Select RGB color" (MIGRATION_PLAN.md)
+	(void) params;
+	return 0;		// no color chosen
 #else
 	CHOOSECOLORW	color;
 	memset (&color, 0, sizeof (color));
