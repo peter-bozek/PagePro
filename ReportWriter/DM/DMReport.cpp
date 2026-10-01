@@ -27,13 +27,13 @@
 # define	DEF_PAGE_HEIGHT	(842)	// - 72)
 # define	DEF_PAGE_MARGIN	(36)
 #if	__APPLE__
-# define	Default_Style_0_XML	"<Style name=\"Default\" id=\"0\" font=\"Lucida Grande\" size=\"12\"/>"
-# define	Editor_Style_1_XML	"<Style name=\"Editor1\" id=\"1\" font=\"Lucida Grande\" size=\"12\" backColor=\"transparent\"/>"
-# define	Editor_Style_2_XML	"<Style name=\"Editor2\" id=\"2\" font=\"Lucida Grande\" size=\"12\" backColor=\"transparent\" align=\"right\"/>"
+# define	Default_Style_0_XML	u"<Style name=\"Default\" id=\"0\" font=\"Lucida Grande\" size=\"12\"/>"
+# define	Editor_Style_1_XML	u"<Style name=\"Editor1\" id=\"1\" font=\"Lucida Grande\" size=\"12\" backColor=\"transparent\"/>"
+# define	Editor_Style_2_XML	u"<Style name=\"Editor2\" id=\"2\" font=\"Lucida Grande\" size=\"12\" backColor=\"transparent\" align=\"right\"/>"
 #else
-# define	Default_Style_0_XML	"<Style name=\"Default\" id=\"0\" font=\"Verdana\" size=\"10\"/>"
-# define	Editor_Style_1_XML	"<Style name=\"Editor1\" id=\"1\" font=\"Verdana\" size=\"10\" backColor=\"transparent\"/>"
-# define	Editor_Style_2_XML	"<Style name=\"Editor2\" id=\"2\" font=\"Verdana\" size=\"10\" backColor=\"transparent\" align=\"right\"/>"
+# define	Default_Style_0_XML	u"<Style name=\"Default\" id=\"0\" font=\"Verdana\" size=\"10\"/>"
+# define	Editor_Style_1_XML	u"<Style name=\"Editor1\" id=\"1\" font=\"Verdana\" size=\"10\" backColor=\"transparent\"/>"
+# define	Editor_Style_2_XML	u"<Style name=\"Editor2\" id=\"2\" font=\"Verdana\" size=\"10\" backColor=\"transparent\" align=\"right\"/>"
 #endif
 
 # define	ALL_BaseProps	\
@@ -657,7 +657,7 @@ const
 // ---------------------------------------------------------------------------
 
 DMStyle*
-DMStyle::Create (RWStyleContainer *inContainer, DMBase *inParent, XMLElement *inNode)
+DMStyle::Create (RWStyleContainer *inContainer, DMBase *inParent, RWXmlNode inNode)
 {
 	DMStyle	*src = new DMStyle (inContainer, inParent);
 	if (inNode)
@@ -688,7 +688,7 @@ DMStyle::Clone (RWStyleContainer *inContainer, DMBase *inParent, long inNewID)
 
 DMStyle::DMStyle (RWStyleContainer *inContainer, DMBase *inParent)
 	:	DMBase (inParent, eObject_Style),
-		RWStyle (inContainer, NULL)
+		RWStyle (inContainer, RWXmlNode())
 {
 }
 
@@ -699,7 +699,7 @@ DMStyle::DMStyle (RWStyleContainer *inContainer, DMBase *inParent)
 
 DMStyle::DMStyle (RWStyleContainer *inContainer, DMBase *inParent, long inBaseID)
 	:	DMBase (inParent, eObject_Style),
-		RWStyle (inContainer, NULL)
+		RWStyle (inContainer, RWXmlNode())
 {
 	mBaseId = inBaseID;
 	mFeatures = stf_Based;
@@ -762,7 +762,7 @@ DMStyle::SetProperty (OSType id, RWValue &inValue)
 // DMSection								Constructor			   [protected]
 // ---------------------------------------------------------------------------
 
-DMSection::DMSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inType)
+DMSection::DMSection (DMBase *inParent, ESection_Kind inKind, RWStringView inType)
 	:	DMBase (inParent, eObject_Section),
 		mSectionKind (inKind),
 		mType (0),
@@ -775,7 +775,7 @@ DMSection::DMSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inT
 		mPageThrowI (ePageThrow_None),
 		mLabelRect (0, 0, 0, 0)
 {
-	mType = reinterpret_cast <CXMLText> (strdup (reinterpret_cast <const char*> (inType)));
+	mType = inType;
 	if (inKind == eSectionKind_Footer)
 		mFromBottom = true;
 
@@ -789,7 +789,6 @@ DMSection::DMSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inT
 
 DMSection::~DMSection (void)
 {
-	free (mType);
 
 	return;
 }
@@ -917,7 +916,7 @@ DMSection::GetProperty (OSType id, RWValue &outValue)
 			if(outValue.GetKind() == RWValue::eValue_Integer)
 				outValue.SetInteger (mPageThrowI); 
 			else
-				outValue.SetXMLText (sPageThrow [mPageThrowI]);
+				outValue.SetText (RWStr::FromASCII (sPageThrow [mPageThrowI]));
 			break;
 		case PSObjPropScript:		outValue.SetText (mScript); break;
 		case PSObjPropObjects:		outValue.SetInteger (mObjects.size()); break;
@@ -1006,8 +1005,8 @@ DMSection::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 RWXmlNode
 DMSection::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
-    XMLElement	*me = DMBase::WriteXML (inParent, pes);
-	me->SetValue (mType);
+    RWXmlNode	me = DMBase::WriteXML (inParent, pes);
+	me.SetName (mType);
 
 	return me;
 }
@@ -1039,12 +1038,12 @@ DMSection::AdjustDrawingPosition (RWPageComposer *inComposer, const SPoint inPar
 // ---------------------------------------------------------------------------
 
 DMHeaderFooterSection*
-DMHeaderFooterSection::Create (DMBase *inParent, XMLElement *inNode, ESection_Kind inKind, const CXMLText inType)
+DMHeaderFooterSection::Create (DMBase *inParent, RWXmlNode inNode, ESection_Kind inKind, RWStringView inType)
 {
 	DMHeaderFooterSection	*sec = NULL;
-	if (inNode != NULL || inType != NULL)
+	if (inNode || !inType.empty())
 	{
-		sec = new DMHeaderFooterSection (inParent, inKind, inType? inType: inNode->Value());
+		sec = new DMHeaderFooterSection (inParent, inKind, !inType.empty() ? RWString (inType) : inNode.Name());
 		if (inNode)
 			sec->LoadXML (inNode);
 	}
@@ -1057,7 +1056,7 @@ DMHeaderFooterSection::Create (DMBase *inParent, XMLElement *inNode, ESection_Ki
 // DMHeaderFooterSection					Constructor			   [protected]
 // ---------------------------------------------------------------------------
 
-DMHeaderFooterSection::DMHeaderFooterSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inType)
+DMHeaderFooterSection::DMHeaderFooterSection (DMBase *inParent, ESection_Kind inKind, RWStringView inType)
 	:	DMSection (inParent, inKind, inType),
 		mFixed (-1),
 		mFirstPage (true),
@@ -1151,12 +1150,12 @@ DMHeaderFooterSection::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMBreakSection*
-DMBreakSection::Create (DMBase *inParent, XMLElement *inNode, ESection_Kind inKind, const CXMLText inType)
+DMBreakSection::Create (DMBase *inParent, RWXmlNode inNode, ESection_Kind inKind, RWStringView inType)
 {
 	DMBreakSection	*sec = NULL;
-	if (inNode != NULL || inType != NULL)
+	if (inNode || !inType.empty())
 	{
-		sec = new DMBreakSection (inParent, inKind, inType? inType: inNode->Value());
+		sec = new DMBreakSection (inParent, inKind, !inType.empty() ? RWString (inType) : inNode.Name());
 		if (inNode)
 			sec->LoadXML (inNode);
 	}
@@ -1168,7 +1167,7 @@ DMBreakSection::Create (DMBase *inParent, XMLElement *inNode, ESection_Kind inKi
 // ---------------------------------------------------------------------------
 // DMBreakSection							Constructor			   [protected]
 // ---------------------------------------------------------------------------
-DMBreakSection::DMBreakSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inType)
+DMBreakSection::DMBreakSection (DMBase *inParent, ESection_Kind inKind, RWStringView inType)
 	:	DMSection (inParent, inKind, inType),
 		mLevel (0),
 		mPrintAlways (false),
@@ -1232,7 +1231,7 @@ DMBreakSection::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropBreakType:		if(outValue.GetKind() == RWValue::eValue_Integer)
 											outValue.SetInteger (mBreakTypeI); 
 										else
-											outValue.SetXMLText (sBreakType [mBreakTypeI]);
+											outValue.SetText (RWStr::FromASCII (sBreakType [mBreakTypeI]));
 										break;
 		case PSObjPropAlias:			outValue.SetText (mAlias); break;
 
@@ -1309,13 +1308,13 @@ DMBreakSection::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMScrapSection*
-DMScrapSection::Create (DMBase *inParent, XMLElement *inNode, const CXMLText inType)
+DMScrapSection::Create (DMBase *inParent, RWXmlNode inNode, RWStringView inType)
 {
 	DMScrapSection	*sec = NULL;
-	if (inNode != NULL || inType != NULL)
+	if (inNode || !inType.empty())
 	{
-		sec = new DMScrapSection (inParent, inType? inType: inNode->Value());
-		sec->mName = "Scrap";
+		sec = new DMScrapSection (inParent, !inType.empty() ? RWString (inType) : inNode.Name());
+		sec->mName = u"Scrap";
 		if (inNode)
 			sec->LoadXML (inNode);
 		sec->mDraw = false;
@@ -1329,7 +1328,7 @@ DMScrapSection::Create (DMBase *inParent, XMLElement *inNode, const CXMLText inT
 // ---------------------------------------------------------------------------
 // DMScrapSection							Constructor			   [protected]
 // ---------------------------------------------------------------------------
-DMScrapSection::DMScrapSection (DMBase *inParent, const CXMLText inType)
+DMScrapSection::DMScrapSection (DMBase *inParent, RWStringView inType)
 	:	DMSection (inParent, eSectionKind_Scrap, inType)
 {
 }
@@ -1341,12 +1340,12 @@ DMScrapSection::DMScrapSection (DMBase *inParent, const CXMLText inType)
 // ---------------------------------------------------------------------------
 
 DMPageSection*
-DMPageSection::Create (DMBase *inParent, XMLElement *inNode, const CXMLText inType)
+DMPageSection::Create (DMBase *inParent, RWXmlNode inNode, RWStringView inType)
 {
 	DMPageSection	*sec = NULL;
-	if (inNode != NULL || inType != NULL)
+	if (inNode || !inType.empty())
 	{
-		sec = new DMPageSection (inParent, inType? inType: inNode->Value());
+		sec = new DMPageSection (inParent, !inType.empty() ? RWString (inType) : inNode.Name());
 		if (inNode)
 			sec->LoadXML (inNode);
 	}
@@ -1358,7 +1357,7 @@ DMPageSection::Create (DMBase *inParent, XMLElement *inNode, const CXMLText inTy
 // ---------------------------------------------------------------------------
 // DMPageSection							Constructor			   [protected]
 // ---------------------------------------------------------------------------
-DMPageSection::DMPageSection (DMBase *inParent, const CXMLText inType)
+DMPageSection::DMPageSection (DMBase *inParent, RWStringView inType)
 	:	DMSection (inParent, eSectionKind_Page, inType)
 {
 }
@@ -1408,12 +1407,12 @@ DMPageSection::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMBodySection*
-DMBodySection::Create (DMBase *inParent, XMLElement *inNode, const CXMLText inType)
+DMBodySection::Create (DMBase *inParent, RWXmlNode inNode, RWStringView inType)
 {
 	DMBodySection	*sec = NULL;
-	if (inNode != NULL || inType != NULL)
+	if (inNode || !inType.empty())
 	{
-		sec = new DMBodySection (inParent, inType? inType: inNode->Value());
+		sec = new DMBodySection (inParent, !inType.empty() ? RWString (inType) : inNode.Name());
 		if (inNode)
 			sec->LoadXML (inNode);
 	}
@@ -1425,7 +1424,7 @@ DMBodySection::Create (DMBase *inParent, XMLElement *inNode, const CXMLText inTy
 // ---------------------------------------------------------------------------
 // DMBodySection							Constructor			   [protected]
 // ---------------------------------------------------------------------------
-DMBodySection::DMBodySection (DMBase *inParent, const CXMLText inType)
+DMBodySection::DMBodySection (DMBase *inParent, RWStringView inType)
 	:	DMSection (inParent, eSectionKind_Body, inType)
 {
 }
@@ -1471,12 +1470,12 @@ DMBodySection::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMWatermarkSection*
-DMWatermarkSection::Create (DMBase *inParent, XMLElement *inNode, const CXMLText inType)
+DMWatermarkSection::Create (DMBase *inParent, RWXmlNode inNode, RWStringView inType)
 {
 	DMWatermarkSection	*sec = NULL;
-	if (inNode != NULL || inType != NULL)
+	if (inNode || !inType.empty())
 	{
-		sec = new DMWatermarkSection (inParent, inType? inType: inNode->Value());
+		sec = new DMWatermarkSection (inParent, !inType.empty() ? RWString (inType) : inNode.Name());
 		if (inNode)
 			sec->LoadXML (inNode);
 	}
@@ -1488,7 +1487,7 @@ DMWatermarkSection::Create (DMBase *inParent, XMLElement *inNode, const CXMLText
 // ---------------------------------------------------------------------------
 // DMWatermarkSection						Constructor			   [protected]
 // ---------------------------------------------------------------------------
-DMWatermarkSection::DMWatermarkSection (DMBase *inParent, const CXMLText inType)
+DMWatermarkSection::DMWatermarkSection (DMBase *inParent, RWStringView inType)
 	:	DMHeaderFooterSection (inParent, eSectionKind_Watermark, inType),
 		mOnTop (false)
 {
@@ -1623,13 +1622,12 @@ DMDataSource::~DMDataSource (void)
 // ---------------------------------------------------------------------------
 
 DM4DDataSource*
-DM4DDataSource::Create (DMBase *inParent, XMLElement *inNode)
+DM4DDataSource::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DM4DDataSource	*src = NULL;
 	if (inParent && inNode)
 	{
-		const CXMLText	value = inNode->Attribute (FindPropertyByID (PSObjPropType, sProperties)->name);
-assert (value != NULL && STR_EQUALS (value, s4DKind [0]));
+assert (STR_EQUALS (inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropType, sProperties)->name)), s4DKind [0]));
 		src = new DM4DDataSource (inParent);
 		src->LoadXML (inNode);
 	}
@@ -1672,8 +1670,7 @@ DM4DDataSource::~DM4DDataSource (void)
 void
 DM4DDataSource::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
-	const CXMLText	value = inNode->Attribute (FindPropertyByID (PSObjPropType, GetProperties())->name);
-assert (value != NULL && STR_EQUALS (value, s4DKind [0]));
+assert (STR_EQUALS (inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropType, GetProperties())->name)), s4DKind [0]));
 
 	mSourceI = eDataSource_Undefined;
 	mNumIterations = -1;
@@ -1700,11 +1697,11 @@ DM4DDataSource::GetProperty (OSType id, RWValue &outValue)
 {
 	switch (id)
 	{
-		case PSObjPropType:			outValue.SetXMLText (s4DKind [0]); break;
+		case PSObjPropType:			outValue.SetText (RWStr::FromASCII (s4DKind [0])); break;
 		case PSObjPropSource:		if(outValue.GetKind() == RWValue::eValue_Integer)
 										outValue.SetInteger (mSourceI); 
 									else
-										outValue.SetXMLText (sSource [mSourceI]);
+										outValue.SetText (RWStr::FromASCII (sSource [mSourceI]));
 									break;
 		case PSObjPropIterations:	outValue.SetInteger (mNumIterations); break;
 		case PSObjPropTableID:		outValue.SetInteger (mMainTable); break;
@@ -1712,12 +1709,12 @@ DM4DDataSource::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropRelateOne:	if(outValue.GetKind() == RWValue::eValue_Integer)
 										outValue.SetInteger (mRelateOneI); 
 									else
-										outValue.SetXMLText (sRelate [mRelateOneI]);
+										outValue.SetText (RWStr::FromASCII (sRelate [mRelateOneI]));
 									break;
 		case PSObjPropRelateMany:	if(outValue.GetKind() == RWValue::eValue_Integer)
 									   outValue.SetInteger (mRelateManyI); 
 									else
-									   outValue.SetXMLText (sRelate [mRelateManyI]);
+									   outValue.SetText (RWStr::FromASCII (sRelate [mRelateManyI]));
 									break;
 		case PSObjPropCallback:		outValue.SetText (mCallBackName); break;
 		case PSObjPropStartScript:	outValue.SetText (mStartScript); break;
@@ -1767,7 +1764,7 @@ DM4DDataSource::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMGuide*
-DMGuide::Create (DMBase *inParent, XMLElement *inNode, bool inVertical)
+DMGuide::Create (DMBase *inParent, RWXmlNode inNode, bool inVertical)
 {
 	DMGuide	*guide = new DMGuide (inParent, inVertical);
 	if (inNode)
@@ -1881,8 +1878,8 @@ DMGuide::SetProperty (OSType id, RWValue &inValue)
 RWXmlNode
 DMGuide::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
-    XMLElement	*me = DMBase::WriteXML (inParent, pes);
-	me->SetValue (mVertical ? "Vertical" : "Horizontal");
+    RWXmlNode	me = DMBase::WriteXML (inParent, pes);
+	me.SetName (mVertical ? u"Vertical" : u"Horizontal");
 
 	return me;
 }
@@ -1897,7 +1894,7 @@ PSObjListD	DMReport::sReports;
 // DMReport									Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-DMReport::DMReport (XMLDocument *inXML)
+DMReport::DMReport (RWXmlDocument *inXML)
 	:	DMBase (NULL, eObject_Document),
 		mSimple (false),
 		mPageWidth (DEF_PAGE_WIDTH),
@@ -1945,24 +1942,23 @@ DMReport::DMReport (XMLDocument *inXML)
 	memset (mSeqIDs, 0, sizeof (mSeqIDs));
 	sReports.push_back (this);
 
-	mDataSource = DM4DDataSource::Create (this, NULL);
+	mDataSource = DM4DDataSource::Create (this, RWXmlNode());
 
 	{
-		XMLDocument	doc;
-		doc.Parse (Editor_Style_1_XML);
-		DMStyle	*style = DMStyle::Create (&mEditorStyles, this, doc.RootElement());
+		RWXmlDocument	doc;
+		doc.LoadString (Editor_Style_1_XML);
+		DMStyle	*style = DMStyle::Create (&mEditorStyles, this, doc.Root());
 		style->SetOrder (1);
 		mEditorStyles.push_back (static_cast <DMBase*> (style));
-		doc.Clear();
-		doc.Parse (Editor_Style_2_XML);
-		style = DMStyle::Create (&mEditorStyles, this, doc.RootElement());
+		doc.LoadString (Editor_Style_2_XML);
+		style = DMStyle::Create (&mEditorStyles, this, doc.Root());
 		style->SetOrder (2);
 		mEditorStyles.push_back (static_cast <DMBase*> (style));
 	}
 
 	if (inXML)
 	{
-        XMLElement	*elem = inXML->RootElement();
+        RWXmlNode	elem = inXML->Root();
 		if (elem)
 			LoadXML (elem);
 	}
@@ -1970,9 +1966,9 @@ DMReport::DMReport (XMLDocument *inXML)
 	//mbs 26072010	copied here from LoadXMLObjects()
 	if (mStyles.size() == 0 || GetStyle (0)->GetID() != 0)
 	{
-		XMLDocument	doc;
-		doc.Parse (Default_Style_0_XML);
-		DMStyle	*style = DMStyle::Create (&mStyles, this, doc.RootElement());
+		RWXmlDocument	doc;
+		doc.LoadString (Default_Style_0_XML);
+		DMStyle	*style = DMStyle::Create (&mStyles, this, doc.Root());
 		mStyles.insert (mStyles.begin(), static_cast <DMBase*> (style));
 	}				
 }
@@ -2102,7 +2098,7 @@ const
 	{
 		const DMBase	*obj = static_cast <const DMBase*> (*iter);
 		if (obj != NULL)
-			if (CText::eCR_Equal == CText::CompareStrings (inName.Get(), inName.StrLength(), (const CText) obj->mID, CText::StrLength (obj->mID), CText::eCF_StrictlyEqual))
+			if (inName == static_cast <const RWString&> (obj->mID))
 				return const_cast <DMBase*> (static_cast <const DMBase*> (obj));
 	}
 
@@ -2199,7 +2195,7 @@ DMReport::FindObjectByID (CText &inName)
 	for (iter = sReports.begin(); iter != sReports.end(); iter++)
 	{
 		const DMReport	*rep = static_cast <const DMReport*> (*iter);
-		if (CText::eCR_Equal == CText::CompareStrings (inName.Get(), inName.StrLength(), (const CText) rep->mID, CText::StrLength (rep->mID), CText::eCF_StrictlyEqual))
+		if (inName == static_cast <const RWString&> (rep->mID))
 			return const_cast <DMBase*> (static_cast <const DMBase*> (rep));
 
 		DMBase	*obj = rep->GetObjectByID (inName);
@@ -2216,7 +2212,7 @@ DMReport::FindObjectByID (CText &inName)
 // ---------------------------------------------------------------------------
 
 void
-DMReport::SetReport (XMLDocument *inXML)
+DMReport::SetReport (RWXmlDocument *inXML)
 {
 //	mObjects.clear();
 	mSelectedObjects.clear();
@@ -2240,7 +2236,7 @@ DMReport::SetReport (XMLDocument *inXML)
 	mPageMargins.SetRect (DEF_PAGE_MARGIN, DEF_PAGE_MARGIN, DEF_PAGE_MARGIN, DEF_PAGE_MARGIN);
 	mDataSource = 0;
 	memset (mSeqIDs, 0, sizeof (mSeqIDs));
-	mDataSource = DM4DDataSource::Create (this, NULL);
+	mDataSource = DM4DDataSource::Create (this, RWXmlNode());
     
 //    mLabelReport = false;
 //    mLabelH = 0;
@@ -2255,7 +2251,7 @@ DMReport::SetReport (XMLDocument *inXML)
     
 	if (inXML)
 	{
-        XMLElement	*elem = inXML->RootElement();
+        RWXmlNode	elem = inXML->Root();
 		if (elem)
 			LoadXML (elem);
 	}
@@ -2267,14 +2263,10 @@ DMReport::SetReport (XMLDocument *inXML)
 // ---------------------------------------------------------------------------
 
 void
-DMReport::GetReport (XMLDocument &outXML)
+DMReport::GetReport (RWXmlDocument &outXML)
 {
-	{
-		TiXmlDeclaration	decl ("1.0", "utf-8", "yes");
-		outXML.InsertEndChild (decl);
-	}
-
-	WriteXML (&outXML);
+	outXML.AddDeclaration (u"utf-8", true);
+	WriteXML (outXML.Node());
 }
 
 
@@ -2294,9 +2286,9 @@ DMReport::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 	//mbs 26072010	moved here from LoadXMLObjects()
 	if (mStyles.size() == 0 || GetStyle (0)->GetID() != 0)
 	{
-		XMLDocument	doc;
-		doc.Parse (Default_Style_0_XML);
-		DMStyle	*style = DMStyle::Create (&mStyles, this, doc.RootElement());
+		RWXmlDocument	doc;
+		doc.LoadString (Default_Style_0_XML);
+		DMStyle	*style = DMStyle::Create (&mStyles, this, doc.Root());
 		mStyles.insert (mStyles.begin(), static_cast <DMBase*> (style));
 	}				
 
@@ -2337,7 +2329,7 @@ DMReport::CalculatePosition (void)
 // ---------------------------------------------------------------------------
 
 DMBase*
-DMReport::CreateObject (OSType inKind, long inParent, XMLElement *inNode)
+DMReport::CreateObject (OSType inKind, long inParent, RWXmlNode inNode)
 {
 	DMBase *parent = NULL;
 	if (inParent)
@@ -2346,7 +2338,7 @@ DMReport::CreateObject (OSType inKind, long inParent, XMLElement *inNode)
 }
 
 DMBase*
-DMReport::CreateObject (OSType inKind, DMBase *inParent, XMLElement *inNode)
+DMReport::CreateObject (OSType inKind, DMBase *inParent, RWXmlNode inNode)
 {
 	DMSection	*sec = NULL;
 	DMBase		*obj = NULL;
@@ -2381,46 +2373,46 @@ DMReport::CreateObject (OSType inKind, DMBase *inParent, XMLElement *inNode)
 			if (mDataSource)
 				delete mDataSource;
 			mDataSource = 0;
-			mDataSource = DM4DDataSource::Create (this, NULL);
+			mDataSource = DM4DDataSource::Create (this, RWXmlNode());
 			return mDataSource;
 			break;
 		}
 
 		case PSObjPropHeaderSection:
 			if (not mSimple)
-				sec = DMHeaderFooterSection::Create (this, inNode, DMSection::eSectionKind_Header, FindPropertyByID (inKind, GetProperties())->name);
+				sec = DMHeaderFooterSection::Create (this, inNode, DMSection::eSectionKind_Header, RWStr::FromASCII (FindPropertyByID (inKind, GetProperties())->name));
 			break;
 		case PSObjPropBrkHdrSection:
 			if (not mSimple)
 			{
-				sec = DMBreakSection::Create (this, inNode, DMSection::eSectionKind_BreakHeader, FindPropertyByID (inKind, GetProperties())->name);
+				sec = DMBreakSection::Create (this, inNode, DMSection::eSectionKind_BreakHeader, RWStr::FromASCII (FindPropertyByID (inKind, GetProperties())->name));
 				static_cast <DMBreakSection*> (sec)->SetBreakLevel (++mMaxBreakHeaderLevel);
 			}
 			break;
 		case PSObjPropScrapSection:
-			sec = DMScrapSection::Create (this, inNode, FindPropertyByID (inKind, GetProperties())->name);
+			sec = DMScrapSection::Create (this, inNode, RWStr::FromASCII (FindPropertyByID (inKind, GetProperties())->name));
 			break;
 		case PSObjPropPageSection:
 			if (mSimple)
-				sec = DMPageSection::Create (this, inNode, FindPropertyByID (inKind, GetProperties())->name);
+				sec = DMPageSection::Create (this, inNode, RWStr::FromASCII (FindPropertyByID (inKind, GetProperties())->name));
 			break;
 		case PSObjPropBodySection:
 			if (not mSimple)
-				sec = DMBodySection::Create (this, inNode, FindPropertyByID (inKind, GetProperties())->name);
+				sec = DMBodySection::Create (this, inNode, RWStr::FromASCII (FindPropertyByID (inKind, GetProperties())->name));
 			break;
 		case PSObjPropBrkFtrSection:
 			if (not mSimple)
 			{
-				sec = DMBreakSection::Create (this, inNode, DMSection::eSectionKind_BreakFooter, FindPropertyByID (inKind, GetProperties())->name);
+				sec = DMBreakSection::Create (this, inNode, DMSection::eSectionKind_BreakFooter, RWStr::FromASCII (FindPropertyByID (inKind, GetProperties())->name));
 				static_cast <DMBreakSection*> (sec)->SetBreakLevel (++mMaxBreakFooterLevel);
 			}
 			break;
 		case PSObjPropFooterSection:
 			if (not mSimple)
-				sec = DMHeaderFooterSection::Create (this, inNode, DMSection::eSectionKind_Footer, FindPropertyByID (inKind, GetProperties())->name);
+				sec = DMHeaderFooterSection::Create (this, inNode, DMSection::eSectionKind_Footer, RWStr::FromASCII (FindPropertyByID (inKind, GetProperties())->name));
 			break;
 		case PSObjPropWatermarkSection:
-			sec = DMWatermarkSection::Create (this, inNode, FindPropertyByID (inKind, GetProperties())->name);
+			sec = DMWatermarkSection::Create (this, inNode, RWStr::FromASCII (FindPropertyByID (inKind, GetProperties())->name));
 			break;
 
 		case PSObjPropOGroup:	obj = DMGroup::Create (inParent, inNode); break;
@@ -2496,7 +2488,7 @@ DMReport::CreateObject (OSType inKind, DMBase *inParent, XMLElement *inNode)
 				{
 					char	buf [32];
 					snprintf (buf, sizeof (buf), "%s_%ld", sKind [obj->GetKind()], ++mSeqIDs [obj->GetKind()]);
-					id.SetXMLText (buf);
+					id.SetText (RWStr::FromASCII (buf));
 				}
 				obj->SetProperty (PSObjPropID, id);
 			}
@@ -2512,7 +2504,7 @@ DMReport::CreateObject (OSType inKind, DMBase *inParent, XMLElement *inNode)
 // ---------------------------------------------------------------------------
 
 DMBase*
-DMReport::CreateObject (XMLElement *inNode, long inParent)
+DMReport::CreateObject (RWXmlNode inNode, long inParent)
 {
 	static const PSObject::PSObjProps	sAllowed[] = {
 		{ PSObjPropOStyle,			true,	PSProps_Childs,		PSProps_Objects,	sKind[eObject_Style],	{ NULL }					},
@@ -2543,14 +2535,11 @@ DMReport::CreateObject (XMLElement *inNode, long inParent)
 		{ 0, 						false,	PSProps_None,		PSProps_Boolean,	NULL,					{ NULL }					}
 	};
 
-	XMLNode			*node, *next;
-	for (node = inNode; node; node = next )
+	for (RWXmlNode elem = inNode; elem; elem = elem.NextElement())
 	{
-		next = node->NextSibling();
-        XMLElement	*elem = node->ToElement();
-		if (elem == NULL)
+		if (!elem.IsElement())
 			continue;
-		const PSObjProps*	pes = FindPropertyByName (elem->Value(), sAllowed);
+		const PSObjProps*	pes = FindPropertyByName (elem.Name(), sAllowed);
 		if (pes)
 		{
 			DMBase	*obj = CreateObject (pes->id, inParent, elem);
@@ -2782,7 +2771,7 @@ DMReport::CloneStyle (DMBase *inObject, DMStyle *inStyle)
 // ---------------------------------------------------------------------------
 
 void
-DMReport::ParseObjects (const PSObjProps* pes, XMLElement *inNode, DMBase *inParent, PSObjListD &objList)
+DMReport::ParseObjects (const PSObjProps* pes, RWXmlNode inNode, DMBase *inParent, PSObjListD &objList)
 {
 	DMObject	*obj = NULL;
 	switch (pes->id)
@@ -2837,8 +2826,7 @@ DMReport::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 		case PSObjPropDataSource:
 		{
 //			const CXMLText	value = inNode->Attribute (FindPropertyByID (PSObjPropType, DM4DDataSource::GetProperties())->name);
-			const CXMLText	value = inNode->Attribute ("type");
-			if (value != NULL && STR_EQUALS (value, s4DKind [0]))
+			if (STR_EQUALS (inNode.Attr (u"type"), s4DKind [0]))
 			{
 				delete mDataSource;
 				mDataSource = 0;
@@ -3064,8 +3052,8 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 		case PSObjPropPageSetup:
 			if (mPageSetup.GetBlobSize() > 0)
 			{
-				inNode->SetAttribute ("kind", "Classic");
-				inNode->SetAttribute ("encoding", "base64");
+				inNode.SetAttr (u"kind", u"Classic");
+				inNode.SetAttr (u"encoding", u"base64");
 				RWTools::WriteData (inNode, mPageSetup.GetBlob());
 			}
 			else
@@ -3076,8 +3064,8 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 		case PSObjPropPageFormat:
 			if (mPageFormat.GetBlobSize() > 0)
 			{
-				inNode->SetAttribute ("kind", "Carbon");
-				inNode->SetAttribute ("encoding", "base64");
+				inNode.SetAttr (u"kind", u"Carbon");
+				inNode.SetAttr (u"encoding", u"base64");
 				RWTools::WriteData (inNode, mPageFormat.GetBlob());
 			}
 			else
@@ -3087,8 +3075,8 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 		case PSObjPropPrintSettings:
 			if (mPrintSettings.GetBlobSize() > 0)
 			{
-				inNode->SetAttribute ("kind", "Carbon");
-				inNode->SetAttribute ("encoding", "base64");
+				inNode.SetAttr (u"kind", u"Carbon");
+				inNode.SetAttr (u"encoding", u"base64");
 				RWTools::WriteData (inNode, mPrintSettings.GetBlob());
 			}
 			else
@@ -3098,8 +3086,8 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 		case PSObjPropDevMode:
 			if (mDevMode.GetBlobSize() > 0)
 			{
-				inNode->SetAttribute ("kind", "Win32");
-				inNode->SetAttribute ("encoding", "base64");
+				inNode.SetAttr (u"kind", u"Win32");
+				inNode.SetAttr (u"encoding", u"base64");
 				RWTools::WriteData (inNode, mDevMode.GetBlob());
 			}
 			else
@@ -3109,8 +3097,8 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 		case PSObjPropDeviceNames:
 			if (mDeviceNames.GetBlobSize() > 0)
 			{
-				inNode->SetAttribute ("kind", "Win32");
-				inNode->SetAttribute ("encoding", "base64");
+				inNode.SetAttr (u"kind", u"Win32");
+				inNode.SetAttr (u"encoding", u"base64");
 				RWTools::WriteData (inNode, mDeviceNames.GetBlob());
 			}
 			else
@@ -3120,8 +3108,8 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 		case PSObjPropPageSetupDlg:
 			if (mPageSetupDialog.GetBlobSize() > 0)
 			{
-				inNode->SetAttribute ("kind", "Win32");
-				inNode->SetAttribute ("encoding", "base64");
+				inNode.SetAttr (u"kind", u"Win32");
+				inNode.SetAttr (u"encoding", u"base64");
 				RWTools::WriteData (inNode, mPageSetupDialog.GetBlob());
 			}
 			else
@@ -3131,8 +3119,8 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 		case PSObjPropPrintDlg:
 			if (mPrintDialog.GetBlobSize() > 0)
 			{
-				inNode->SetAttribute ("kind", "Win32");
-				inNode->SetAttribute ("encoding", "base64");
+				inNode.SetAttr (u"kind", u"Win32");
+				inNode.SetAttr (u"encoding", u"base64");
 				RWTools::WriteData (inNode, mPrintDialog.GetBlob());
 			}
 			else
@@ -3165,7 +3153,7 @@ DMReport::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 RWXmlNode
 DMReport::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
-    XMLElement	*me = DMBase::WriteXML (inParent, pes);
+    RWXmlNode	me = DMBase::WriteXML (inParent, pes);
 //	me->SetAttribute (FindPropertyByID (PSObjPropVersion, GetProperties())->name, CURRENT_VERSION);
 	return me;
 }
@@ -3186,7 +3174,7 @@ DMReport::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropWidth:			outValue.SetReal (mPageWidth); break;
 		case PSObjPropHeight:			outValue.SetReal (mPageHeight); break;
 		case PSObjPropPaper:			outValue.SetBoolean (mUsePhysical); break;
-		case PSObjPropMargins:			outValue.SetXMLText ((const char*)mPageMargins); break;
+		case PSObjPropMargins:			outValue.SetText (mPageMargins.ToString()); break;
 //		case PSObjPropPageSetup:		outValue.Attach (mPageSetup); break;
 		case PSObjPropPageFormat:		outValue.Attach (mPageFormat); break;
 		case PSObjPropPrintSettings:	outValue.Attach (mPrintSettings); break;
@@ -3223,9 +3211,9 @@ DMReport::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropLockSections:		outValue.SetBoolean (mLockSections); break;
 		case PSObjPropShowObjBorders:	outValue.SetBoolean (mShowObjBorders); break;
 			// pB added
-		case PSObjPropGridColor:		outValue.SetXMLText ((const char*) mGridColor); break;
+		case PSObjPropGridColor:		outValue.SetText (mGridColor.ToString()); break;
 		case PSObjPropGridRadius:		outValue.SetReal (mGridRadius); break;
-		case PSObjPropGuideColor:		outValue.SetXMLText ((const char*) mGuideColor); break;
+		case PSObjPropGuideColor:		outValue.SetText (mGuideColor.ToString()); break;
 		case PSObjPropGuideWidth:		outValue.SetReal (mGuideWidth); break;
 			
 		case PSObjPropScale:			outValue.SetReal (mScale); break;
@@ -3629,7 +3617,7 @@ DMReport::DeselectAll (void)
 {
 	if (mSelectedObjects.size() > 0)
 	{
-		auto_ptr<PSObjList> l (new PSObjList (mSelectedObjects));
+		std::unique_ptr<PSObjList> l (new PSObjList (mSelectedObjects));
 		mSelectedObjects.clear();
 		PSObjList::iterator	iter;
 		for (iter = l->begin(); iter != l->end(); iter++)
@@ -4256,12 +4244,8 @@ DMDataSource::GetRealDataSource (void)
 	if (mRealDataSource != NULL)
 		return mRealDataSource;
 
-	XMLDocument	xml;
-    XMLElement	*root;
-	{
-        XMLElement	rep ("Report");
-		root = xml.InsertEndChild (rep)->ToElement();
-	}
+	RWXmlDocument	xml;
+	RWXmlNode		root = xml.Node().Append (u"Report");
 
 	this->WriteXML (root);
 	mRealDataSource = new SRDataSource;

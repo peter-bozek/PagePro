@@ -82,6 +82,7 @@ public:
 	// element name; Value is the content of a text node
 	RWString			Name (void) const;
 	bool				NameIs (std::string_view inASCIIName) const;
+	bool				SetName (RWStringView inName);
 	RWString			Value (void) const;
 
 	// attributes - typed getters return inDefault when the attribute is missing or not a number

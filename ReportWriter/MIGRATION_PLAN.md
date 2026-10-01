@@ -84,7 +84,14 @@ Rules for new and ported code:
     - Attributed text in variables was entity-*decoded* instead of encoded (tinyxml2 `StrPair` misuse); same fix as RW / SRP.
     - `basic_string (str, pos)` misuse in `ETObject` text substitution.
 
-- [ ] **7. DM module.** `DMReport`, `DMObject`, `PSObject`, `DMUndo`. Property tables (`PSObjProps`) keep ASCII names. Add `std::string_view` name overloads to `RWXmlNode` if the per-call conversion shows up in profiles.
+- [x] **7. DM module.** Every DM file compiles (`DMArea.cpp` as Objective-C++); with SRP, RW and ET this leaves only files outside the target (`RW/main.cpp`, `RWDemoDataSource`, `RWPaper`, `RWll`: phase 8), the PDF composers (phase 7b) and `RWWinPageComposer` (Windows, phase 9).
+  - Property tables (`PSObjProps`) keep ASCII names. Possible later optimization: `std::string_view` name overloads on `RWXmlNode` if the per-call conversion shows up in profiles.
+  - Undo snapshots (`DMUndo`) are UTF-16 XML strings (`RWXmlDocument::SaveString` / `LoadString`) instead of `strdup`ed UTF-8.
+  - `DMReport::GetReport (RWXmlDocument&)` adds `<?xml version="1.0" encoding="utf-8" standalone="yes"?>`, as the TinyXML 1 code did. Built-in styles are UTF-16 literals parsed with `LoadString`.
+  - Overrides that renamed the element written by the base class (`td`, `Col`, section type, `Vertical` / `Horizontal`) use the new `RWXmlNode::SetName`.
+  - Section factories take `RWStringView inType` (empty means "use the element name"); `DMSection::mType` is an `RWString` (was a `strdup`ed pointer).
+  - `UIScrollBar` (Mac) no longer uses the 32-bit-only Carbon control API. 64-bit scroll bars were already no-ops and still are. `DMArea.cpp` includes `<Carbon/Carbon.h>` itself for the HIToolbox calls that still exist in 64 bit (key modifier constants, `GetCurrentKeyModifiers`, `HIThemeDrawFocusRect`), since `RWBaseTypes.h` no longer pulls in Carbon.
+  - **Fixes**: `auto_ptr<SRect>` over raw `operator new` storage replaced by `std::vector<SRect>`; `DMText::ParseData` had the same empty-result `basic_string (str, pos)` bug as SRP; the table row measurement string was mis-decoded Mac Roman (`"ROW √ög"`), now `u"ROW Úg"`; `DMVariable` compared its script object to `NULL`, now `!mScript.IsEmpty()`.
 - [ ] **7b. PDF output (decision 2026-10-01).**
   - PDF files are produced by one PoDoFo 1.0 composer on macOS **and** Windows, in 4D desktop and 4D Server. The output is identical on both platforms and does not depend on installed printers. Printing and on-screen preview stay native (CoreText / GDI+).
   - Windows preview uses "Microsoft Print to PDF" instead of "Microsoft XPS Document Writer" (`RWPageComposer::CreatePrinterComposer`).

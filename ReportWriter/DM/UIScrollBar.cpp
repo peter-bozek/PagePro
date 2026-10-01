@@ -279,9 +279,9 @@ UIScrollBar::ScrollProc (long param)
 #else
 
 
-ControlActionUPP	UIScrollBar::sActionProc = nil;
 
-UIScrollBar::UIScrollBar (UIScrollClient *inClient, WindowRef inWindow, const SRect& inRect)
+// 64 bit macOS: the Carbon scroll bar control does not exist; values are kept, nothing is drawn
+UIScrollBar::UIScrollBar (UIScrollClient *inClient, void *inWindow, const SRect& inRect)
 	:	_client (inClient),
 		_rect (inRect),
 		_val (0),
@@ -294,19 +294,7 @@ UIScrollBar::UIScrollBar (UIScrollClient *inClient, WindowRef inWindow, const SR
 		_control (0)
 //		_supportsLiveFeedback (false)
 {
-	if (sActionProc == nil)
-		sActionProc = NewControlActionUPP (ActionProc);
 
-#if !__LP64__
-	Rect	r (_rect);
-	::CreateScrollBarControl (_window, &r, 0, 0, 0, 0, true, sActionProc, &_control);
-	::SetControlReference (_control, (SInt32) this);
-
-	WindowAttributes 	attr;
-	OSStatus			err;
-	err = ::GetWindowAttributes (inWindow, &attr);
-	_composite = ((attr & kWindowCompositingAttribute) != 0);
-#endif
 }
 
 
@@ -314,10 +302,6 @@ UIScrollBar::~UIScrollBar (void)
 {
 	if (_control)
 	{
-#if !__LP64__
-		::SetControlVisibility (_control, false, false);
-		::DisposeControl (_control);
-#endif
     }
 }
 
@@ -348,19 +332,6 @@ UIScrollBar::SetValuesInternal (SInt32 val, SInt32 min, SInt32 max, SInt32 thumb
 
 	if (_min >= _max)	// disable
 	{
-#if !__LP64__
-		::SetControl32BitMinimum (_control, 0);
-		::SetControl32BitMaximum (_control, 0);
-		::SetControl32BitValue (_control, 0);
-		::SetControlViewSize (_control, 0);
-    }
-	else
-	{
-		::SetControl32BitMinimum (_control, _min);
-		::SetControl32BitMaximum (_control, _max);
-		::SetControl32BitValue (_control, _val);
-		::SetControlViewSize (_control, _page);
-#endif
 	}
 }
 
@@ -368,174 +339,26 @@ UIScrollBar::SetValuesInternal (SInt32 val, SInt32 min, SInt32 max, SInt32 thumb
 void
 UIScrollBar::SetEnabled (bool enabled)
 {
-#if !__LP64__
-	if (enabled)
-		::ActivateControl (_control);
-	else
-		::DeactivateControl (_control);
-#endif
 }
 
 
 void
 UIScrollBar::SetVisible (bool visible)
 {
-#if !__LP64__
-	::SetControlVisibility (_control, visible, false);
-#endif
 }
 
 
 void
 UIScrollBar::Update (const SRect* inRect)
 {
-#if !__LP64__
-	if (inRect)
-	{
-		Rect	r;
-		::GetControlBounds (_control, &r);
-		if (*inRect != SRect (r))
-		{
-			r = *inRect;
-			::SetControlBounds (_control, &r);
-		}
-	}
-	SetVisible (true);
-	if (_composite)
-		DrawOneControl (_control);	//mbs 30062011
-//		::HIViewSetNeedsDisplay (_control, true);
-	else
-		::DrawControlInCurrentPort (_control);
-#endif
 }
 
 
-DEFINE_API (void)
-UIScrollBar::ActionProc (ControlRef theControl, ControlPartCode partCode)
-{
-	SInt32			amount = 0;
-	UIScrollBar*	self;
-	
-	if (partCode == kControlNoPart || (theControl == nil))
-		return;
-#if !__LP64__
-
-	self = reinterpret_cast <UIScrollBar*> (::GetControlReference (theControl));
-	if (!self)
-		return;
-
-	switch (partCode)
-	{
-		case kControlUpButtonPart:
-			amount = self->_few;
-			break;
-			
-		case kControlDownButtonPart:
-			amount = -self->_few;
-			break;
-			
-		case kControlPageUpPart:
-			amount = self->_page;
-			break;
-			
-		case kControlPageDownPart:
-			amount = -self->_page;
-			break;
-			
-		case kControlIndicatorPart:
-			amount = self->_val - ::GetControl32BitValue (self->_control);
-			break;
-  	}
-
-	SInt32	newVal = self->_val - amount;
-	if (newVal < self->_min)
-		newVal = self->_min;
-	else if (newVal > self->_max)
-		newVal = self->_max;
-	amount = self->_val - newVal;
-	if (amount == 0)
-		return;
-	
-	self->SetValue (newVal);
-
-	self->_client->HandleScroll (self, amount);
-#endif
-}
 
 
 OSStatus
 UIScrollBar::Track (QDPoint where)
 {
-	ControlPartCode	part;
-	SInt32			newVal, oldVal;
-
-#if !__LP64__
-	if (::GetControlHilite (_control) == kControlInactivePart)
-		return noErr;
-
-	if (not _composite)	//mbs 30062011	after return from input form, there is some 4D control...
-	{
-		ControlRef theControl = ::FindControlUnderMouse (where, _window, &part);
-
-		if (part == kControlNoPart || theControl != _control)
-			return noErr;
-	}
-	oldVal = ::GetControl32BitValue (_control);
-
-	if (_composite)
-	{
-		EventRef	evt = 0;
-		OSStatus	err = ::MacCreateEvent (kCFAllocatorDefault, kEventClassMouse, kEventMouseDown, 0, kEventAttributeNone, &evt);
-		if (evt)
-		{
-			err = ::SetEventParameter (evt, kEventParamWindowRef, typeWindowRef, sizeof (_window), &_window);
-
-//			HIPoint	wh = CGPointMake (where.h, where.v + 20);	//••• TODO •••	why have I to add that 20 ?!?!?!?!	because view -> window!
-			HIViewRef	contentView = 0;
-			HIViewFindByID (HIViewGetRoot (_window), kHIViewWindowContentID, &contentView);
-			HIPoint	wh = CGPointMake (where.h, where.v);
-			HIPointConvert (&wh, kHICoordSpaceView, contentView, kHICoordSpaceWindow, _window);
-			err = ::SetEventParameter (evt, kEventParamWindowMouseLocation, typeHIPoint, sizeof (wh), &wh);
-			wh = CGPointMake (where.h, where.v);
-			HIPointConvert (&wh, kHICoordSpaceView, contentView, kHICoordSpace72DPIGlobal, NULL);
-			err = ::SetEventParameter (evt, kEventParamMouseLocation, typeHIPoint, sizeof (wh), &wh);
-			WindowPartCode	wc = inContent;
-			err = ::SetEventParameter (evt, kEventParamWindowPartCode, typeWindowPartCode, sizeof (wc), &wc);
-			UInt32	km = 0;
-			err = ::SetEventParameter (evt, kEventParamKeyModifiers, typeUInt32, sizeof (km), &km);
-			EventMouseButton mb = kEventMouseButtonPrimary;
-			err = ::SetEventParameter (evt, kEventParamMouseButton, typeMouseButton, sizeof (mb), &mb);
-			km = 1;
-			err = ::SetEventParameter (evt, kEventParamClickCount, typeUInt32, sizeof (km), &km);
-			km = 0;
-			err = ::SetEventParameter (evt, kEventParamMouseChord, typeUInt32, sizeof (km), &km);
-			err = ::HIViewClick (_control, evt);
-			::ReleaseEvent (evt);
-		}
-		if (err != 0)
-			printf ("HIViewClick: %ld\n", err);
-	}
-	else
-	{
-		if (part == kControlIndicatorPart)
-			part = ::HandleControlClick (_control, where, 0, (ControlActionUPP) -1L);
-		else
-			part = ::HandleControlClick (_control, where, 0, sActionProc);
-	}
-
-	newVal = ::GetControl32BitValue (_control);
-
-	if (oldVal != newVal)
-	{
-		SInt32 amount = _val - newVal;
-
-		if (amount != 0)
-		{
-			_val = newVal;
-			_client->HandleScroll (this, amount);
-		}
-	}
-#endif
 	return noErr;
 }
 

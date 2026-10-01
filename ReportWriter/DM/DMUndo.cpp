@@ -10,7 +10,8 @@
 # include	"DMUndo.h"
 # include	"DMArea.h"
 # include	"PSObjProps.h"
-# include	<sstream>
+# include	"RWXml.h"
+# include	<memory>
 
 #if	TARGET_DEBUG
 # include	<XStringTools.h>
@@ -93,22 +94,16 @@ DMUndo::DMSelectionAction::DebugShow (long inEntry)
 
 DMUndo::DMCreateAction::DMCreateAction (SInt32 inObjectID, DMBase *inObject, SInt32 inParentObjectID)
 	:	DMUndoAction (inObjectID),
-		fParentObjectID (inParentObjectID),
-		fData (0)
+		fParentObjectID (inParentObjectID)
 {
 	// save current state
-	XMLDocument	xml;
-	inObject->WriteXML (&xml);
-
-	ostringstream	ostr;
-	ostr << xml;
-	fData = strdup (ostr.str().c_str());
+	RWXmlDocument	xml;
+	inObject->WriteXML (xml.Node());
+	fData = xml.SaveString (false);
 }
 
 DMUndo::DMCreateAction::~DMCreateAction (void)
 {
-	if (fData)
-		free (fData);
 }
 
 void
@@ -127,9 +122,9 @@ void
 DMUndo::DMCreateAction::Redo (DMArea *inArea, DMUndo *inUndo)
 {
 	DMBase	*parent = inUndo->GetObjectByID (fParentObjectID);
-	XMLDocument	xml;
-	xml.Parse (fData);
-	DMBase	*obj = inArea->CreateObject (xml.RootElement(), (long) parent);
+	RWXmlDocument	xml;
+	xml.LoadString (fData);
+	DMBase	*obj = inArea->CreateObject (xml.Root(), (long) parent);
 	inUndo->ModifyObjectByID (fObjectID, obj);
 	inArea->Modified();
 }
@@ -148,38 +143,32 @@ DMUndo::DMCreateAction::DebugShow (long inEntry)
 {
 	printf ("\t\tAction %ld: objectid=%ld, Create: parentid=%ld\n",
 			inEntry, fObjectID, fParentObjectID);
-	printf ("\t\t\t%s\n", fData);
+	printf ("\t\t\t%s\n", RWStr::ToUTF8 (fData).c_str());
 }
 #endif
 
 
 DMUndo::DMDeleteAction::DMDeleteAction (SInt32 inObjectID, DMBase *inObject, SInt32 inParentObjectID)
 	:	DMUndoAction (inObjectID),
-		fParentObjectID (inParentObjectID),
-		fData (0)
+		fParentObjectID (inParentObjectID)
 {
 	// save current state
-	XMLDocument	xml;
-	inObject->WriteXML (&xml);
-
-	ostringstream	ostr;
-	ostr << xml;
-	fData = strdup (ostr.str().c_str());
+	RWXmlDocument	xml;
+	inObject->WriteXML (xml.Node());
+	fData = xml.SaveString (false);
 }
 
 DMUndo::DMDeleteAction::~DMDeleteAction (void)
 {
-	if (fData)
-		free (fData);
 }
 
 void
 DMUndo::DMDeleteAction::Undo (DMArea *inArea, DMUndo *inUndo)
 {
 	DMBase	*parent = inUndo->GetObjectByID (fParentObjectID);
-	XMLDocument	xml;
-	xml.Parse (fData);
-	DMBase	*obj = inArea->CreateObject (xml.RootElement(), (long) parent);
+	RWXmlDocument	xml;
+	xml.LoadString (fData);
+	DMBase	*obj = inArea->CreateObject (xml.Root(), (long) parent);
 	inUndo->ModifyObjectByID (fObjectID, obj);
 	inArea->Modified();
 }
@@ -210,7 +199,7 @@ DMUndo::DMDeleteAction::DebugShow (long inEntry)
 {
 	printf ("\t\tAction %ld: objectid=%ld, Delete: parentid=%ld\n",
 			inEntry, fObjectID, fParentObjectID);
-	printf ("\t\t\t%s\n", fData);
+	printf ("\t\t\t%s\n", RWStr::ToUTF8 (fData).c_str());
 }
 #endif
 
@@ -304,35 +293,25 @@ DMUndo::DMPropertyAction::DebugShow (long inEntry)
 			inEntry, fObjectID, cID);
 	RWTextValue	tv;
 	fOldValue.GetTextValue (tv, NULL);
-	CXMLText	ctv = tv.ToXML();
-	printf ("\t\t\told: %d, %s\n", fOldValue.GetKind(), ctv);
-	tv.FreeXML (ctv);
+	printf ("\t\t\told: %d, %s\n", fOldValue.GetKind(), RWStr::ToUTF8 (tv).c_str());
 	fNewValue.GetTextValue (tv, NULL);
-	ctv = tv.ToXML();
-	printf ("\t\t\tnew: %d, %s\n", fNewValue.GetKind(), ctv);
-	tv.FreeXML (ctv);
+	printf ("\t\t\tnew: %d, %s\n", fNewValue.GetKind(), RWStr::ToUTF8 (tv).c_str());
 }
 #endif
 
 
 DMUndo::DMSnapshotAction::DMSnapshotAction (SInt32 inObjectID, DMBase *inObject, bool inOnUndo)
 	:	DMUndoAction (inObjectID),
-		fOnUndo (inOnUndo),
-		fData (0)
+		fOnUndo (inOnUndo)
 {
 	// save current state
-	XMLDocument	xml;
-	inObject->WriteXML (&xml);
-
-	ostringstream	ostr;
-	ostr << xml;
-	fData = strdup (ostr.str().c_str());
+	RWXmlDocument	xml;
+	inObject->WriteXML (xml.Node());
+	fData = xml.SaveString (false);
 }
 
 DMUndo::DMSnapshotAction::~DMSnapshotAction (void)
 {
-	if (fData)
-		free (fData);
 }
 
 void
@@ -341,7 +320,7 @@ DMUndo::DMSnapshotAction::Undo (DMArea *inArea, DMUndo *inUndo)
 	if (fOnUndo)
 	{
 		RWValue	xml;
-		xml.SetXMLText (fData);
+		xml.SetText (fData);
 		DMBase	*obj = inUndo->GetObjectByID (fObjectID);
 		obj->SetProperty (PSObjPropXML, xml);
 		if (obj->GetKind() == PSObject::eObject_Style)	//mbs 28122009	notify renderer
@@ -356,7 +335,7 @@ DMUndo::DMSnapshotAction::Redo (DMArea *inArea, DMUndo *inUndo)
 	if (not fOnUndo)
 	{
 		RWValue	xml;
-		xml.SetXMLText (fData);
+		xml.SetText (fData);
 		DMBase	*obj = inUndo->GetObjectByID (fObjectID);
 		obj->SetProperty (PSObjPropXML, xml);
 		if (obj->GetKind() == PSObject::eObject_Style)	//mbs 28122009	notify renderer
@@ -378,7 +357,7 @@ DMUndo::DMSnapshotAction::DebugShow (long inEntry)
 {
 	printf ("\t\tAction %ld: objectid=%ld, Snapshot: oldstate=%d\n",
 			inEntry, fObjectID, int (fOnUndo));
-	printf ("\t\t\t%s\n", fData);
+	printf ("\t\t\t%s\n", RWStr::ToUTF8 (fData).c_str());
 }
 #endif
 
@@ -557,7 +536,7 @@ DMUndo::AddSelection (DMArea *inArea)
 #endif
 	fRecording = 2;
 	SInt32	thisObj = GetIDForObject (inArea);
-	auto_ptr<PSObjList>	l (inArea->GetObjects (PSObjPropSelected));
+	std::unique_ptr<PSObjList>	l (inArea->GetObjects (PSObjPropSelected));
 	PSObjList	*selection = l.get();
 	DMSelectionAction	*action = new DMSelectionAction (thisObj, selection->size());
 	DMUndoElement	*elem = fActions.back();

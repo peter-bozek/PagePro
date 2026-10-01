@@ -10,6 +10,7 @@
 # include	"DMArea.h"
 # include	"SRPlugin.h"
 # include	"PSObjProps.h"
+# include	"RWString4D.h"
 # include	"theVersion.h"
 
 // using namespace    FourDAPIEx;
@@ -17,6 +18,8 @@
 #import <Foundation/NSAutoreleasePool.h>
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+// HIToolbox key modifiers (cmdKey, ...), GetCurrentKeyModifiers, HIThemeDrawFocusRect - still in the 64 bit SDK
+# include	<Carbon/Carbon.h>
 extern	"C"		void Yield4D (void);
 
 float	DMArea::sRoundUI = 10;
@@ -272,7 +275,7 @@ DMArea::HandleEvent (PA_PluginParameters params)
 			area = new DMArea;
 			PA_SetAreaReference (params, (void *)area->mInternalID);
 			PA_Unistring	*n = PA_GetAreaName (params);
-			area->mAreaName.Assign (PA_GetUnistring (n), PA_GetUnistringLength (n));
+			area->mAreaName = RWStr::FromPA (n);
 			PA_GetPluginProperties (params, &area->mAreaProperties);
 
 			area->mCurParams = params;
@@ -332,7 +335,7 @@ DMArea::DrawDesign (PA_PluginParameters params)
 {
 	
 	/*
-	auto_ptr		<RWNativePageComposer> screen (RWPageComposer::CreateScreenComposer());
+	std::unique_ptr	<RWNativePageComposer> screen (RWPageComposer::CreateScreenComposer());
 #if	MACVER
 	CGrafPtr		port;
 	Rect			portRect;
@@ -366,10 +369,8 @@ DMArea::DrawDesign (PA_PluginParameters params)
 */
 	
 
-	auto_ptr <RWNativePageComposer> screen (RWPageComposer::CreateScreenComposer());
+	std::unique_ptr <RWNativePageComposer> screen (RWPageComposer::CreateScreenComposer());
 #if	MACVER
-    CGrafPtr		port;
-    Rect			portRect;
     CGContextRef	cg = 0;
     
 	// does not work if fVersionSupported is not set to 0x1400 during initialization!
@@ -377,8 +378,6 @@ DMArea::DrawDesign (PA_PluginParameters params)
     PA_GetPluginProperties (params, &props);
     cg = (CGContextRef) props.fMacPort;
     PA_Rect	portBounds = PA_GetAreaPortBounds (params);
-    SRect	pr (portBounds.fTop, portBounds.fLeft, portBounds.fBottom, portBounds.fRight);
-    portRect = pr;
     CGContextScaleCTM (cg, 1.0, -1.0);
     CGContextTranslateCTM (cg, 0, -(portBounds.fBottom - portBounds.fTop));
 #else
@@ -386,30 +385,28 @@ DMArea::DrawDesign (PA_PluginParameters params)
 	(*screen).SetContext (dc);
 #endif
 	
-	CText			u;
-	RWStyle			style (NULL, NULL);
+	RWStyle			style (NULL, RWXmlNode());
 	{
 		RWValue	size (12.0);
 		style.SetProperty (PSObjPropSize, size);
 	}
-	PA_Unistring	*n = PA_GetAreaName (params);
-	u.Assign (PA_GetUnistring (n), PA_GetUnistringLength (n));
+	RWString		u = RWStr::FromPA (PA_GetAreaName (params));
 	char			buf [32];
 	PA_Rect			ar = PA_GetAreaRect (params);
 	snprintf (buf, sizeof (buf), " w: %d h: %d\rReportWriter v", ar.fRight - ar.fLeft, ar.fBottom - ar.fTop);
-	u.AppendAscii (buf);
-	u.AppendAscii (kVersionString);
+	u += RWStr::FromASCII (buf);
+	u += RWStr::FromASCII (kVersionString);
 #ifdef	TARGET_STR
-	u += ' ';
-	u.AppendAscii (TARGET_STR);
+	u += u' ';
+	u += RWStr::FromASCII (TARGET_STR);
 #endif
-	u += '\r';
-	u.AppendAscii (QUOTEME (kProductCopyright));
+	u += u'\r';
+	u += RWStr::FromUTF8 (QUOTEME (kProductCopyright));
 
 	SRect			r (ar.fTop, ar.fLeft, ar.fBottom, ar.fRight);
 	(*screen).DrawRect (r, 1.0, true, cBlackColor, true, cWhiteColor);
 	r *= 2;
-	(*screen).DrawTextBox (u.Get(), &style, r, true, false, false, NULL);
+	(*screen).DrawTextBox (u, &style, r, true, false, false, NULL);
 	(*screen).StyleChanged (&style);
 	(*screen).SetContext (NULL);
 	PA_CustomizeDesignMode (params);
@@ -421,7 +418,7 @@ DMArea::DrawDesign (PA_PluginParameters params)
 // ---------------------------------------------------------------------------
 
 void
-DMArea::SetReport (XMLDocument *inXML)
+DMArea::SetReport (RWXmlDocument *inXML)
 {
 	mScreen->SetContext (NULL); // v 1.2.4
 	mUndoBuffer.Clear();
@@ -452,7 +449,7 @@ DMArea::GetProperty (OSType id, RWValue &outValue)
 		case 'evtV':				outValue.SetReal (mLastEventPos.v); break;
 		case 'evtM':				outValue.SetInteger (mLastEventModifiers); break;
 		case 'evtK':				outValue.SetInteger (mLastEventKey); break;
-		case 'evtC':				outValue.SetText (mLastEventChar); break;
+		case 'evtC':				outValue.SetText (RWStr::FromPA (mLastEventChar)); break;
 		case 'evtD':				outValue.SetBoolean (mDoubleClick); break;
 		case 'hite':				outValue.SetInteger (mLastEventHit); break;
         case 'hito':				outValue.SetInteger (IsValidObject (mLastObjectHit) ? mLastObjectHit->GetInternalID() : 0); break;
@@ -464,7 +461,7 @@ DMArea::GetProperty (OSType id, RWValue &outValue)
 		case 'scrt':				outValue.SetReal (mScrollPos.v); break;
 		case 'tool':				outValue.SetInteger (mToolI); break;
 
-		case '4Der':				outValue.SetXMLText ((const char*) mNoHitTest); break;
+		case '4Der':				outValue.SetText (mNoHitTest.ToString()); break;
 
 		case 'dpiX':
 		case 'dpiY':
@@ -1198,8 +1195,7 @@ DMArea::HandleUpdate (bool inWindow)
         CGContextRef	cg = 0;
         cg = (CGContextRef) (( (PA_Event**) mCurParams->fParameters)[0])->fMessage;
         PA_Rect	portBounds = PA_GetAreaPortBounds (mCurParams);
-        SRect	pr (portBounds.fTop, portBounds.fLeft, portBounds.fBottom, portBounds.fRight);
-        mPortRect = pr;
+        mPortRect.SetRect (portBounds.fTop, portBounds.fLeft, portBounds.fBottom, portBounds.fRight);
         CGContextScaleCTM (cg, 1.0, -1.0);
         CGContextTranslateCTM (cg, 0, -(portBounds.fBottom - portBounds.fTop));
             
@@ -1654,7 +1650,7 @@ DMArea::DrawRulers (void)
 	double	where;
 	char	str [16];
 
-//	mScreen->DrawTextBox (o.Get(), style, r, false, false, false, NULL);
+//	mScreen->DrawTextBox (o, style, r, false, false, false, NULL);
 	color.red = color.green = color.blue = 17476;
 
 	// horizontal ruler
@@ -1674,11 +1670,11 @@ DMArea::DrawRulers (void)
 				r.bottom = r.top + 5;
 				static_cast <RWPageComposer*> (mScreen)->DrawLine (r, 1.0f, color, RWLine_Vertical);
 				snprintf (str, sizeof (str), "%d", valueInc * (i / valueEvery));
-				o.AssignAscii (str);
+				o = RWStr::FromASCII (str);
 				r.left += 1;
 				r.right = r.left + 100;
 				r.bottom = r.top + 30;
-				mScreen->DrawTextBox (o.Get(), style, r, false, false, false, NULL);
+				mScreen->DrawTextBox (o, style, r, false, false, false, NULL);
 			}
 			else
 			{
@@ -1709,12 +1705,12 @@ DMArea::DrawRulers (void)
 				r.right = r.left + 5;
 				static_cast <RWPageComposer*> (mScreen)->DrawLine (r, 1.0f, color, RWLine_Horizontal);
 				snprintf (str, sizeof (str), "%d", valueInc * (i / valueEvery));
-				o.AssignAscii (str);
+				o = RWStr::FromASCII (str);
 				r.top -= 8;
 				r.left += 5;
 				r.right = r.left + 100;
 				r.bottom = r.bottom + 10;
-				mScreen->DrawTextBox (o.Get(), style, r, false, false, false, NULL);
+				mScreen->DrawTextBox (o, style, r, false, false, false, NULL);
 				r.left = mRulerRectV.left + 1;
 			}
 			else
@@ -2045,15 +2041,15 @@ DMArea::HandleMouse (void)
                         {
                                 //mbs 18062010	use CreateObject to generate mID...
                             case eTool_Select: break;	// to shut up compiler
-                            case eTool_CreateGroup:	hobj = CreateObject (PSObjPropOGroup, parent, NULL); break;	// DMGroup::Create (parent, NULL); break;
-                            case eTool_CreateLine:	hobj = CreateObject (PSObjPropOLine, parent, NULL); break;	// DMLine::Create (parent, NULL); break;
-                            case eTool_CreateRect:	hobj = CreateObject (PSObjPropORect, parent, NULL); break;	// DMRect::Create (parent, NULL); break;
-                            case eTool_CreateOval:	hobj = CreateObject (PSObjPropOOval, parent, NULL); break;	// DMOval::Create (parent, NULL); break;
-                            case eTool_CreatePict:	hobj = CreateObject (PSObjPropOPict, parent, NULL); break;	// DMPict::Create (parent, NULL); break;
-                            case eTool_CreateText:	hobj = CreateObject (PSObjPropOText, parent, NULL); break;	// DMText::Create (parent, NULL); break;
-                            case eTool_CreateVar:	hobj = CreateObject (PSObjPropOVar, parent, NULL); break;	// DMVariable::Create (parent, NULL); break;
-                            case eTool_CreateField:	hobj = CreateObject (PSObjPropOFld, parent, NULL); break;	// DMField::Create (parent, NULL); break;
-                            case eTool_CreateTable:	hobj = CreateObject (PSObjPropOTable, parent, NULL); break;	// DMTable::Create (parent, NULL); break;
+                            case eTool_CreateGroup:	hobj = CreateObject (PSObjPropOGroup, parent, RWXmlNode()); break;	// DMGroup::Create (parent, NULL); break;
+                            case eTool_CreateLine:	hobj = CreateObject (PSObjPropOLine, parent, RWXmlNode()); break;	// DMLine::Create (parent, NULL); break;
+                            case eTool_CreateRect:	hobj = CreateObject (PSObjPropORect, parent, RWXmlNode()); break;	// DMRect::Create (parent, NULL); break;
+                            case eTool_CreateOval:	hobj = CreateObject (PSObjPropOOval, parent, RWXmlNode()); break;	// DMOval::Create (parent, NULL); break;
+                            case eTool_CreatePict:	hobj = CreateObject (PSObjPropOPict, parent, RWXmlNode()); break;	// DMPict::Create (parent, NULL); break;
+                            case eTool_CreateText:	hobj = CreateObject (PSObjPropOText, parent, RWXmlNode()); break;	// DMText::Create (parent, NULL); break;
+                            case eTool_CreateVar:	hobj = CreateObject (PSObjPropOVar, parent, RWXmlNode()); break;	// DMVariable::Create (parent, NULL); break;
+                            case eTool_CreateField:	hobj = CreateObject (PSObjPropOFld, parent, RWXmlNode()); break;	// DMField::Create (parent, NULL); break;
+                            case eTool_CreateTable:	hobj = CreateObject (PSObjPropOTable, parent, RWXmlNode()); break;	// DMTable::Create (parent, NULL); break;
                             case eTool_last: break;	// to shut up compiler
                         }
                         if (hobj)
@@ -2383,15 +2379,15 @@ DMArea::HandleMouse (void)
 					{
 						//mbs 18062010	use CreateObject to generate mID...
 						case eTool_Select: break;	// to shut up compiler
-						case eTool_CreateGroup:	hobj = CreateObject (PSObjPropOGroup, parent, NULL); break;	// DMGroup::Create (parent, NULL); break;
-						case eTool_CreateLine:	hobj = CreateObject (PSObjPropOLine, parent, NULL); break;	// DMLine::Create (parent, NULL); break;
-						case eTool_CreateRect:	hobj = CreateObject (PSObjPropORect, parent, NULL); break;	// DMRect::Create (parent, NULL); break;
-						case eTool_CreateOval:	hobj = CreateObject (PSObjPropOOval, parent, NULL); break;	// DMOval::Create (parent, NULL); break;
-						case eTool_CreatePict:	hobj = CreateObject (PSObjPropOPict, parent, NULL); break;	// DMPict::Create (parent, NULL); break;
-						case eTool_CreateText:	hobj = CreateObject (PSObjPropOText, parent, NULL); break;	// DMText::Create (parent, NULL); break;
-						case eTool_CreateVar:	hobj = CreateObject (PSObjPropOVar, parent, NULL); break;	// DMVariable::Create (parent, NULL); break;
-						case eTool_CreateField:	hobj = CreateObject (PSObjPropOFld, parent, NULL); break;	// DMField::Create (parent, NULL); break;
-						case eTool_CreateTable:	hobj = CreateObject (PSObjPropOTable, parent, NULL); break;	// DMTable::Create (parent, NULL); break;
+						case eTool_CreateGroup:	hobj = CreateObject (PSObjPropOGroup, parent, RWXmlNode()); break;	// DMGroup::Create (parent, NULL); break;
+						case eTool_CreateLine:	hobj = CreateObject (PSObjPropOLine, parent, RWXmlNode()); break;	// DMLine::Create (parent, NULL); break;
+						case eTool_CreateRect:	hobj = CreateObject (PSObjPropORect, parent, RWXmlNode()); break;	// DMRect::Create (parent, NULL); break;
+						case eTool_CreateOval:	hobj = CreateObject (PSObjPropOOval, parent, RWXmlNode()); break;	// DMOval::Create (parent, NULL); break;
+						case eTool_CreatePict:	hobj = CreateObject (PSObjPropOPict, parent, RWXmlNode()); break;	// DMPict::Create (parent, NULL); break;
+						case eTool_CreateText:	hobj = CreateObject (PSObjPropOText, parent, RWXmlNode()); break;	// DMText::Create (parent, NULL); break;
+						case eTool_CreateVar:	hobj = CreateObject (PSObjPropOVar, parent, RWXmlNode()); break;	// DMVariable::Create (parent, NULL); break;
+						case eTool_CreateField:	hobj = CreateObject (PSObjPropOFld, parent, RWXmlNode()); break;	// DMField::Create (parent, NULL); break;
+						case eTool_CreateTable:	hobj = CreateObject (PSObjPropOTable, parent, RWXmlNode()); break;	// DMTable::Create (parent, NULL); break;
 						case eTool_last: break;	// to shut up compiler
 					}
 					if (hobj)
@@ -2964,8 +2960,7 @@ DMArea::TrackObjectBody (SPoint inNow, double when)
         if (static_cast <DMGuide*> (inObj)->IsVertical())
             isGuide++;
     
-    auto_ptr <SRect>        oposStorage (static_cast <SRect*> (::operator new (c * sizeof (SRect))));
-    SRect                   *opos = oposStorage.get();
+    std::vector <SRect>        opos (c);
     
     for (i = 0; i < c; i++)
     {
@@ -3129,8 +3124,7 @@ DMArea::TrackObjectEnd (OSStatus err)
         if (static_cast <DMGuide*> (inObj)->IsVertical())
             isGuide++;
     
-    auto_ptr <SRect>        oposStorage (static_cast <SRect*> (::operator new (c * sizeof (SRect))));
-    SRect                   *opos = oposStorage.get();
+    std::vector <SRect>        opos (c);
 
     if (err != noErr)
     {
@@ -3154,9 +3148,9 @@ DMArea::TrackObjectEnd (OSStatus err)
             {
                 inObj = static_cast <DMBase*> (mSelectedObjects [i]);
                 SRect    r = inObj->GetPosition();
-                v.SetXMLText ((const char*) r);
+                v.SetText (r.ToString());
                 RWValue    ov;
-                ov.SetXMLText ((const char*) opos [i]);
+                ov.SetText (opos [i].ToString());
                 AddUndoProperty (inObj, PSObjPropRect, ov, v);
                 inObj->SetProperty (PSObjPropRect, v);
             }
@@ -3310,8 +3304,7 @@ DMArea::TrackObject (DMBase *inObj, QDPoint wPt, int inHit)
 				isGuide++;
 		SPoint	where = MapToArea (wPt);
 		int		i, c = mSelectedObjects.size();
-		auto_ptr <SRect>	oposStorage (static_cast <SRect*> (::operator new (c * sizeof (SRect))));
-		SRect	*opos = oposStorage.get();
+		std::vector <SRect>	opos (c);
 		for (i = 0; i < c; i++)
 		{
 			inObj = static_cast <DMBase*> (mSelectedObjects [i]);
@@ -3529,9 +3522,9 @@ DMArea::TrackObject (DMBase *inObj, QDPoint wPt, int inHit)
 				{
 					inObj = static_cast <DMBase*> (mSelectedObjects [i]);
 					SRect	r = inObj->GetPosition();
-					v.SetXMLText ((const char*) r);
+					v.SetText (r.ToString());
 					RWValue	ov;
-					ov.SetXMLText ((const char*) opos [i]);
+					ov.SetText (opos [i].ToString());
 					AddUndoProperty (inObj, PSObjPropRect, ov, v);
 					inObj->SetProperty (PSObjPropRect, v);
 				}

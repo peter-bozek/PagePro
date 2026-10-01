@@ -1012,11 +1012,11 @@ DMBase::GetProperty (OSType id, RWValue &outValue)
 	{
 		case PSObjPropID:			outValue.SetText (mID); break;
 		case PSObjPropOrder:		outValue.SetInteger (mSeqID); break;
-		case PSObjPropRect:			outValue.SetXMLText ((const char*) mPosition); break;
+		case PSObjPropRect:			outValue.SetText (mPosition.ToString()); break;
 		case PSObjPropVisible:		outValue.SetBoolean (mVisible); break;
 		case PSObjPropLocked:		outValue.SetInteger (mLocked); break;
 		case PSObjPropSelected:		outValue.SetBoolean (mSelected); break;
-		case PSObjPropDrawingRect:	outValue.SetXMLText ((const char*) mDrawRect); break;
+		case PSObjPropDrawingRect:	outValue.SetText (mDrawRect.ToString()); break;
 
 		case PSObjPropPosTop:		outValue.SetReal (mPosition.top); break;
 		case PSObjPropPosLeft:		outValue.SetReal (mPosition.left); break;
@@ -1456,13 +1456,13 @@ DMObject::GetProperty (OSType id, RWValue &outValue)
 			if(outValue.GetKind() == RWValue::eValue_Integer)
 				outValue.SetInteger (mAlignment); 
 			else
-				outValue.SetXMLText (sAlignment [mAlignment]);
+				outValue.SetText (RWStr::FromASCII (sAlignment [mAlignment]));
 			break;						
 		case PSObjPropDraw:			
 			if(outValue.GetKind() == RWValue::eValue_Integer)
 				outValue.SetInteger (mDraw); 
 			else
-				outValue.SetXMLText (sDraw [mDraw]);
+				outValue.SetText (RWStr::FromASCII (sDraw [mDraw]));
 			break;						
 //		case PSObjPropExpandH:
 //			if (not PSObject::FindPropertyByID (id, GetProperties()))
@@ -1530,7 +1530,7 @@ DMObject::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMGroup*
-DMGroup::Create (DMBase *inParent, XMLElement *inNode)
+DMGroup::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMGroup	*group = new DMGroup (inParent);
 	if (inNode)
@@ -1675,7 +1675,7 @@ DMGroup::AdjustDrawingPosition (RWPageComposer *inComposer, const SPoint inParen
 // ---------------------------------------------------------------------------
 
 DMLine*
-DMLine::Create (DMBase *inParent, XMLElement *inNode)
+DMLine::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMLine	*line = new DMLine (inParent);
 	if (inNode)
@@ -1741,7 +1741,7 @@ DMLine::GetProperty (OSType id, RWValue &outValue)
 	switch (id)
 	{
 		case PSObjPropThickness:	outValue.SetReal (mThickness); break;
-		case PSObjPropLineColor:	outValue.SetXMLText ((const char*) mLineColor); break;
+		case PSObjPropLineColor:	outValue.SetText (mLineColor.ToString()); break;
 		case PSObjPropFlags:		outValue.SetInteger (mFlags); break;
 
 		default:					return DMObject::GetProperty (id, outValue);
@@ -1786,7 +1786,7 @@ DMLine::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMOval*
-DMOval::Create (DMBase *inParent, XMLElement *inNode)
+DMOval::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMOval	*rect = new DMOval (inParent);
 	if (inNode)
@@ -1853,7 +1853,7 @@ DMOval::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropFlags:		return false;
 
 		case PSObjPropFill:			outValue.SetInteger (mFill); break;
-		case PSObjPropFillColor:	outValue.SetXMLText ((const char*) mFillColor); break;
+		case PSObjPropFillColor:	outValue.SetText (mFillColor.ToString()); break;
 
 		default:					return DMLine::GetProperty (id, outValue);
 	}
@@ -1889,7 +1889,7 @@ DMOval::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMRect*
-DMRect::Create (DMBase *inParent, XMLElement *inNode)
+DMRect::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMRect	*rect = new DMRect (inParent);
 	if (inNode)
@@ -2000,7 +2000,7 @@ DMRect::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMPict*
-DMPict::Create (DMBase *inParent, XMLElement *inNode)
+DMPict::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMPict	*rect = new DMPict (inParent);
 	if (inNode)
@@ -2068,35 +2068,6 @@ DMPict::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 	return;
 }
 
-#if	0
-void
-DMPict::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
-{
-	DMOval::LoadXML (inNode, pes);
-	
-	if (inNode)
-	{
-        XMLElement	*elem = inNode->FirstChildElement (sPictDataProperties [0]);
-		if (elem)
-		{
-			int				kind = RWValue::eValue_BLOB;
-			const CXMLText	fmt = elem->Attribute (sPictDataProperties [1]);
-			if (fmt)
-			{
-				long	lVal = RWTools::FindInList (fmt, RWValue::GetPictFormats());
-				if (lVal >= 0)
-					kind = RWValue::EValue_Kind (RWValue::eValue_BLOB + lVal);
-			}
-			SBlob	pictData;
-			pictData.Init();
-			RWTools::ReadData (elem, pictData);
-			mPicture.SetPicture (RWValue::EValue_Kind (kind), pictData, true);
-		}
-	}
-	
-	return;
-}
-#endif
 
 
 // ---------------------------------------------------------------------------
@@ -2113,8 +2084,8 @@ assert (pes->id == PSObjPropData);
 	if (inNode)
 	{
 		int				kind = RWValue::eValue_BLOB;
-		const CXMLText	fmt = inNode->Attribute (sPictDataProperties [1]);
-		if (fmt)
+		const RWString	fmt = inNode.Attr (RWStr::FromASCII (sPictDataProperties [1]));
+		if (!fmt.empty())
 		{
 			long	lVal = RWTools::FindInList (fmt, RWValue::GetPictFormats());
 			if (lVal >= 0)
@@ -2133,20 +2104,6 @@ assert (pes->id == PSObjPropData);
 // ---------------------------------------------------------------------------
 // WriteXML															  [public]
 // ---------------------------------------------------------------------------
-#if	0
-RWXmlNode
-DMPict::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
-{
-    XMLElement	*me = DMObject::WriteXML (inParent, pes);
-    XMLElement	*data = new XMLElement (sPictDataProperties [0]);
-	me->LinkEndChild (data);
-	data->SetAttribute (sPictDataProperties [1], long (mPicture.GetKind()));
-	data->SetAttribute (sPictDataProperties [2], sPictDataProperties [3]);
-	RWTools::WriteData (data, mPicture.GetBlob());
-
-	return me;
-}
-#endif
 
 
 // ---------------------------------------------------------------------------
@@ -2166,8 +2123,8 @@ DMPict::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 	if (mPicture.GetKind() >= RWValue::eValue_BLOB && mPicture.GetBlobSize() > 0)
 	{
 		// ••• TODO •••	format/conversion of the picture
-		inNode->SetAttribute (sPictDataProperties [1], RWValue::GetPictFormats() [mPicture.GetKind() - RWValue::eValue_BLOB]);
-		inNode->SetAttribute (sPictDataProperties [2], sPictDataProperties [3]);
+		inNode.SetAttr (RWStr::FromASCII (sPictDataProperties [1]), RWStr::FromASCII (RWValue::GetPictFormats() [mPicture.GetKind() - RWValue::eValue_BLOB]));
+		inNode.SetAttr (RWStr::FromASCII (sPictDataProperties [2]), RWStr::FromASCII (sPictDataProperties [3]));
 		RWTools::WriteData (inNode, mPicture.GetBlob());
 		return true;
 	}
@@ -2186,7 +2143,7 @@ DMPict::GetProperty (OSType id, RWValue &outValue)
 	switch (id)
 	{
 		case PSObjPropFrameThickness:	outValue.SetReal (mThickness); break;	// same as PSObjPropThickness in DMOval
-		case PSObjPropFrameColor:		outValue.SetXMLText ((const char*) mLineColor); break;	// same as PSObjPropLineColor in DMOval
+		case PSObjPropFrameColor:		outValue.SetText (mLineColor.ToString()); break;	// same as PSObjPropLineColor in DMOval
 
 //		case PSObjPropExpandH:			outValue.SetBoolean (mExpandH); break;
 //		case PSObjPropExpandV:			outValue.SetBoolean (mExpandV); break;
@@ -2202,7 +2159,7 @@ DMPict::GetProperty (OSType id, RWValue &outValue)
 
 		// pB 2011-12
         case PSObjPropObjectRotation:       outValue.SetReal (mObjectRotation); break; // ??
-        case PSObjPropBackColor:        outValue.SetXMLText ((const char*) mFillColor); break;
+        case PSObjPropBackColor:        outValue.SetText (mFillColor.ToString()); break;
 
 		default:						return DMOval::GetProperty (id, outValue);
 	}
@@ -2260,7 +2217,7 @@ DMPict::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMText*
-DMText::Create (DMBase *inParent, XMLElement *inNode)
+DMText::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMText	*text = new DMText (inParent);
 	if (inNode)
@@ -2275,7 +2232,7 @@ DMText::Create (DMBase *inParent, XMLElement *inNode)
 // ---------------------------------------------------------------------------
 
 DMText::DMText (DMBase *inParent)
-	:	DMOval (inParent), mStyle (inParent->GetReport()->GetStyleContainer(), NULL)
+	:	DMOval (inParent), mStyle (inParent->GetReport()->GetStyleContainer(), RWXmlNode())
 {
 	mObjectKind = eObject_Text;
 	mStyle.Clear (0);
@@ -2333,7 +2290,7 @@ DMText::GetProperty (OSType id, RWValue &outValue)
 	switch (id)
 	{
 		case PSObjPropFrameThickness:	outValue.SetReal (mThickness); break;	// same as PSObjPropThickness in DMOval
-		case PSObjPropFrameColor:		outValue.SetXMLText ((const char*) mLineColor); break;	// same as PSObjPropLineDM in DMOval
+		case PSObjPropFrameColor:		outValue.SetText (mLineColor.ToString()); break;	// same as PSObjPropLineDM in DMOval
 
 		case PSObjPropStyle:			outValue.SetInteger (mStyleID); break;
 //		case PSObjPropExpandH:			outValue.SetBoolean (mExpandH); break;
@@ -2345,7 +2302,7 @@ DMText::GetProperty (OSType id, RWValue &outValue)
 			if(outValue.GetKind() == RWValue::eValue_Integer)
 				outValue.SetInteger (mDrawIfEmptyI); 
 			else
-				outValue.SetXMLText (sEmpty [mDrawIfEmptyI]);
+				outValue.SetText (RWStr::FromASCII (sEmpty [mDrawIfEmptyI]));
 			break;			
 		case PSObjPropFrame:			outValue.SetBoolean (mFrame); break;
 		case PSObjPropFrameOffset:		outValue.SetReal (mFrameOffset); break;
@@ -2484,7 +2441,7 @@ DMText::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMVariable*
-DMVariable::Create (DMBase *inParent, XMLElement *inNode)
+DMVariable::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMVariable	*var = new DMVariable (inParent);
 	if (inNode)
@@ -2575,7 +2532,7 @@ DMVariable::GetProperty (OSType id, RWValue &outValue)
 			if(outValue.GetKind() == RWValue::eValue_Integer)
 				outValue.SetInteger (mRepeatI); 
 			else
-				outValue.SetXMLText (sRepeat [mRepeatI]);
+				outValue.SetText (RWStr::FromASCII (sRepeat [mRepeatI]));
 			break;
 		case PSObjPropRepeatOffset:		outValue.SetReal (mRepeatOffset); break;
 		case PSObjPropScript:			outValue.SetText (mScript); break;
@@ -2637,7 +2594,7 @@ DMVariable::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMField*
-DMField::Create (DMBase *inParent, XMLElement *inNode)
+DMField::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMField	*fld = new DMField (inParent);
 	if (inNode)
@@ -2749,11 +2706,11 @@ DMHeader::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 RWXmlNode
 DMHeader::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
-    XMLElement	*me = NULL;
+    RWXmlNode	me;
 	if (mVisible)
 	{
 		me = DMBase::WriteXML (inParent, pes);
-		me->SetValue ("td");
+		me.SetName (u"td");
 	}
 	return me;
 }
@@ -2933,8 +2890,8 @@ DMColumn::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 RWXmlNode
 DMColumn::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
-    XMLElement	*me = DMBase::WriteXML (inParent, pes);
-	me->SetValue ("Col");
+    RWXmlNode	me = DMBase::WriteXML (inParent, pes);
+	me.SetName (u"Col");
 	return me;
 }
 
@@ -3102,7 +3059,7 @@ DMColumn::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 DMTable*
-DMTable::Create (DMBase *inParent, XMLElement *inNode)
+DMTable::Create (DMBase *inParent, RWXmlNode inNode)
 {
 	DMTable	*group = new DMTable (inParent);
 	if (inNode)
@@ -3265,8 +3222,7 @@ DMTable::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 			PSObject::WriteXML (inNode, sPropertiesHead);
 			for (mCurHdrRow = 0; mCurHdrRow < (long) mHeaders.size(); mCurHdrRow++)
 			{
-                XMLElement	sub ("tr");
-                XMLElement	*container = inNode->InsertEndChild (sub)->ToElement();
+                RWXmlNode	container = inNode.Append (u"tr");
 				PSObject::WriteXML (container, sPropertiesHeader);
 			}
 			break;
@@ -3295,8 +3251,7 @@ DMTable::WriteXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 RWXmlNode
 DMTable::WriteXML (RWXmlNode inParent, const PSObjProps* pes)
 {
-    XMLElement	*me = DMBase::WriteXML (inParent, pes);
-	return me;
+	return DMBase::WriteXML (inParent, pes);
 }
 
 
@@ -3313,7 +3268,7 @@ DMTable::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropFrame:			outValue.SetInteger (mFrame); break;
 		case PSObjPropFrameOffset:		outValue.SetReal (mFrameOffset); break;
 		case PSObjPropFrameThickness:	outValue.SetReal (mThickness); break;	// same as PSObjPropThickness in DMOval
-		case PSObjPropFrameColor:		outValue.SetXMLText ((const char*) mLineColor); break;	// same as PSObjPropLineColor in DMOval
+		case PSObjPropFrameColor:		outValue.SetText (mLineColor.ToString()); break;	// same as PSObjPropLineColor in DMOval
 
 		case PSObjPropHGridThickness:	outValue.SetReal (mHGridThickness); break;
 		case PSObjPropHeight:			outValue.SetReal (mRowHeight); break;
@@ -3578,7 +3533,7 @@ DMTable::FixUpGrid (void)
 			char	buf [32];
 			snprintf (buf, sizeof (buf), "%s_%d,%ld", sKind [hdr->GetKind()], line + 1, hdrLine->size());
 			RWValue	v;
-			v.SetXMLText (buf);
+			v.SetText (RWStr::FromASCII (buf));
 			hdr->SetProperty (PSObjPropData, v);
 		}
 	}
@@ -3591,7 +3546,7 @@ DMTable::FixUpGrid (void)
 		char	buf [32];
 		snprintf (buf, sizeof (buf), "%s_%d", sKind [col->GetKind()], mNumColumns);
 		RWValue	v;
-		v.SetXMLText (buf);
+		v.SetText (RWStr::FromASCII (buf));
 		col->SetProperty (PSObjPropSource, v);
 	}
 
@@ -3673,7 +3628,7 @@ DMTable::ResizeGrid (int inNumHeaders, int inNumColumns)
 			char	buf [32];
 			snprintf (buf, sizeof (buf), "%s_%d", sKind [column->GetKind()], mNumColumns);
 			RWValue	v;
-			v.SetXMLText (buf);
+			v.SetText (RWStr::FromASCII (buf));
 			column->SetProperty (PSObjPropSource, v);
 		}
 		while (inNumColumns > mNumColumns);
@@ -3876,7 +3831,7 @@ DMTable::CalculateAll (RWPageComposer *inComposer)
 						height = header->GetHeight();
 						if (width == 0 || height == 0)
 						{
-							if (header->GetText() && *header->GetText())
+							if (!header->GetText().empty())
 							{
 								r.SetRect (0, 0, 200, 0);
 								DMStyle	*style = report->GetStyle (header->GetStyleID());
@@ -3974,7 +3929,7 @@ DMTable::CalculateAll (RWPageComposer *inComposer)
 				width = column->GetDMWidth();
 				if (width == 0)
 				{
-					if ( not mDrawHeaders &&  column->GetSource() && *column->GetSource()) // pB 2010 - returned back - use headers if available
+					if ( not mDrawHeaders &&  !column->GetSource().empty()) // pB 2010 - returned back - use headers if available
 					{
 						r.SetRect (0, 0, 200, 0);
 						DMStyle	*style = report->GetStyle (column->GetStyleID());
@@ -4021,12 +3976,7 @@ DMTable::CalculateAll (RWPageComposer *inComposer)
 		if (mDrawColumns)
 		{
 			// calculate row height - every column might use different style
-#if	CChar_Size == 1
-#define	rowTextMeasurement	((const CText) "ROW √ög")
-#else
-			CText	us (reinterpret_cast <const UTF8Char*> ("ROW √ög"));
-#define	rowTextMeasurement	(us.GetU16Str())
-#endif
+			const RWString	rowTextMeasurement (u"ROW \u00DAg");
 			mRowHeightDM = mRowHeight;
 			for (col = 0; col < mNumColumns; col++)
 			{
@@ -4188,19 +4138,13 @@ DMBase::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode)
 	{
 		if (inMode == eDraw_Order)
 		{
-			char	str [16];
-			snprintf (str, sizeof (str), "%ld", mSeqID);
-			CText	o;
-			o.AssignAscii (str);
-			GetReport()->DrawFrame (this, inMode, -2, o.Get(), mDrawRect, false);
+			GetReport()->DrawFrame (this, inMode, -2, RWStr::FromInteger (mSeqID), mDrawRect, false);
 		}
 		else if (inMode == eDraw_Size)
 		{
 			char	str [16];
 			snprintf (str, sizeof (str), "%g,%g", mPosition.Width(), mPosition.Height());
-			CText	o;
-			o.AssignAscii (str);
-			GetReport()->DrawFrame (this, inMode, -1, o.Get(), mDrawRect, false);
+			GetReport()->DrawFrame (this, inMode, -1, RWStr::FromASCII (str), mDrawRect, false);
 		}
 		else // if (inMode == eDraw_ID)
 			GetReport()->DrawFrame (this, inMode, -1, mID, mDrawRect, false);
@@ -4561,59 +4505,43 @@ DMText::ParseData (RWPageComposer *inComposer)
 			long	textLen = mText.StrLength();
 			long	curPos = 0, delta = 0, endPos;
 			
-			CText	result (mText, textLen);
-			CText varName;
-			CText format;
+			RWString	result (mText);		// was "(mText, textLen)": the substring *from* textLen, i.e. empty
+			RWString	varName;
+			RWString	format;
 			while (curPos < textLen && RWTools::ParseTextForVar (mIsAttributed, mText, textLen, curPos, endPos, varName, format))
 			{
-				const CText	varname = varName.Get();
-				bool		encode = mIsAttributed;
-				if (varname && *varname == '+')
+				RWStringView	varname = varName;
+				bool			encode = mIsAttributed;
+				if (!varname.empty() && varname[0] == u'+')
 				{
-					varname++;
+					varname.remove_prefix (1);
 					encode = false;
 				}
-				RWTextValue	varText;
-				if (varname && *varname)
+				RWString	varText;
+				if (!varname.empty())
 				{
 					RWValue		var;
-					ds->GetVariable (varname, var);
-					varText = ds->FormatVariable (var, format.Get());
+					ds->GetVariable (RWString (varname), var);
+					varText = ds->FormatVariable (var, format);
 				}
-				varName.Free();
-				format.Free();
-				size_t	varLen;
-				if (varText)
-					varLen = varText.StrLength();
-				else
-					varLen = 0;
-				result.Delete (curPos - delta, endPos - curPos);
-				if (varLen > 0)
-				{
-					if (encode)
-					{
-						TIXML_STRING	encoded;
-						CText	us (varText, varLen);
-						TiXmlBase::PutString ((const char*) us.GetUTF8(), &encoded);
-						us.AssignUTF8 ((const UTF8Char*) encoded.c_str(), encoded.length());
-						result.Insert (curPos - delta, us);
-						varLen = us.StrLength();
-					}
-					else
-						result.Insert (curPos - delta, varText, varLen);
-				}
-				delta += endPos - curPos - varLen;
+				varName.clear();
+				format.clear();
+				result.erase (curPos - delta, endPos - curPos);
+				if (encode)
+					varText = RWTools::EscapeAttributedString (varText);
+				result.insert (curPos - delta, varText);
+				delta += endPos - curPos - (long) varText.size();
 				curPos = endPos;
 			}
-			mParsedText.Attach (result.Release());
+			mParsedText = result;
 		}
 	}
 	else 
 	{
 		long	textLen = mText.StrLength();
-		CText	localized;
+		RWString	localized;
 		if (RWTools::ParseTextForXLIFF (mText, textLen, localized) )
-			mParsedText.Attach (localized.Release());
+			mParsedText = localized;
 		else
 			mParsedText = mText;
 						
@@ -4695,7 +4623,7 @@ DMVariable::ParseData (RWPageComposer *inComposer)
 	if (not mText.IsEmpty() && (ds = GetReport()->GetDataSource()) != NULL)
 	{
 		RWValue		var;
-		if (mScript != NULL)
+		if (!mScript.IsEmpty())
 			ds->RunScript (mScript, this);
 		if (ds->GetVariable (mText, mIndex, var, ECalcType_CurrentValue))
 		{
@@ -4753,7 +4681,7 @@ DMField::ParseData (RWPageComposer *inComposer)
 	if (not mText.IsEmpty() && (ds = GetReport()->GetDataSource()) != NULL)
 	{
 		RWValue		var;
-		if (mScript != NULL)
+		if (!mScript.IsEmpty())
 			ds->RunScript (mScript, this);
 		// TODO	pict support
 		if (ds->GetField (mText, var, ECalcType_CurrentValue))
@@ -4863,11 +4791,7 @@ DMColumn::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMod
 				break;
 			case eDraw_Order:
 				{
-					char	str [16];
-					snprintf (str, sizeof (str), "%ld", mLevel);
-					CText	o;
-					o.AssignAscii (str);
-					GetReport()->DrawFrame (this, inMode, -2, o.Get(), mDrawRect, false, &mStyle);
+					GetReport()->DrawFrame (this, inMode, -2, RWStr::FromInteger (mLevel), mDrawRect, false, &mStyle);
 					if (mSelected)
 						GetReport()->DrawSelection (this, mDrawRect);
 				}

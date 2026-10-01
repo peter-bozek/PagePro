@@ -32,7 +32,7 @@ public	RWStyle
 {
 public:
 	//	virtual						~DMStyle (void);
-	static		DMStyle	*		Create (RWStyleContainer *inContainer, DMBase *inParent, XMLElement *inNode);
+	static		DMStyle	*		Create (RWStyleContainer *inContainer, DMBase *inParent, RWXmlNode inNode);
 	DMStyle	*		Clone (RWStyleContainer *inContainer, DMBase *inParent, long inNewID);
 	
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
@@ -100,7 +100,7 @@ public:
 	virtual		void			HandleTrackSelect (SRect &inWhere, UInt32 inFlags);
 
 protected:
-								DMSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inType);
+								DMSection (DMBase *inParent, ESection_Kind inKind, RWStringView inType);
 								DMSection (DMBase *inParent, const DMSection &inOriginal);
 //	virtual		DMBase		*	Clone (DMBase *inParent);
 
@@ -143,7 +143,7 @@ class	DMHeaderFooterSection
 {
 public:
 //	virtual							~DMHeaderFooterSection (void);
-	static	DMHeaderFooterSection*	Create (DMBase *inParent, XMLElement *inNode, ESection_Kind inKind, const CXMLText inType);
+	static	DMHeaderFooterSection*	Create (DMBase *inParent, RWXmlNode inNode, ESection_Kind inKind, RWStringView inType);
 
 	virtual		long				GetUserProperties (const UserProps* &outProps) const;
 	virtual		const PSObjProps *	GetProperties (void) const;
@@ -151,7 +151,7 @@ public:
 	virtual		bool				SetProperty (OSType id, RWValue &inValue);
 	bool							GetFill (void) const;
 protected:
-									DMHeaderFooterSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inType);
+									DMHeaderFooterSection (DMBase *inParent, ESection_Kind inKind, RWStringView inType);
 									DMHeaderFooterSection (DMBase *inParent, const DMSection &inOriginal);
 
 	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
@@ -187,7 +187,7 @@ public:
 		eBreakOn_Array
 	};
 //	virtual							~DMBreakSection (void);
-	static		DMBreakSection	*	Create (DMBase *inParent, XMLElement *inNode, ESection_Kind inKind, const CXMLText inType);
+	static		DMBreakSection	*	Create (DMBase *inParent, RWXmlNode inNode, ESection_Kind inKind, RWStringView inType);
 
 	virtual		long				GetUserProperties (const UserProps* &outProps) const;
 	virtual		const PSObjProps *	GetProperties (void) const;
@@ -198,7 +198,7 @@ public:
 	inline		void				SetBreakLevel (int inLevel);
 
 protected:
-									DMBreakSection (DMBase *inParent, ESection_Kind inKind, const CXMLText inType);
+									DMBreakSection (DMBase *inParent, ESection_Kind inKind, RWStringView inType);
 									DMBreakSection (DMBase *inParent, const DMBreakSection &inOriginal);
 
 	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
@@ -232,13 +232,13 @@ class	DMScrapSection
 {
 public:
 //	virtual							~DMScrapSection (void);
-	static		DMScrapSection	*	Create (DMBase *inParent, XMLElement *inNode, const CXMLText inType);
+	static		DMScrapSection	*	Create (DMBase *inParent, RWXmlNode inNode, RWStringView inType);
 
 	virtual		long				GetUserProperties (const UserProps* &outProps) const;
 	virtual		const PSObjProps *	GetProperties (void) const;
 
 protected:
-									DMScrapSection (DMBase *inParent, const CXMLText inType);
+									DMScrapSection (DMBase *inParent, RWStringView inType);
 									DMScrapSection (DMBase *inParent, const DMScrapSection &inOriginal);
 
 private:
@@ -258,7 +258,7 @@ class	DMPageSection
 {
 public:
 //	virtual							~DMPageSection (void);
-	static		DMPageSection	*	Create (DMBase *inParent, XMLElement *inNode, const CXMLText inType);
+	static		DMPageSection	*	Create (DMBase *inParent, RWXmlNode inNode, RWStringView inType);
 
 	virtual		long				GetUserProperties (const UserProps* &outProps) const;
 	virtual		const PSObjProps *	GetProperties (void) const;
@@ -266,7 +266,7 @@ public:
 	virtual		bool				SetProperty (OSType id, RWValue &inValue);
 
 protected:
-									DMPageSection (DMBase *inParent, const CXMLText inType);
+									DMPageSection (DMBase *inParent, RWStringView inType);
 									DMPageSection (DMBase *inParent, const DMPageSection &inOriginal);
 
 private:
@@ -288,7 +288,7 @@ class	DMBodySection
 {
 public:
 //	virtual							~DMBodySection (void);
-	static		DMBodySection	*	Create (DMBase *inParent, XMLElement *inNode, const CXMLText inType);
+	static		DMBodySection	*	Create (DMBase *inParent, RWXmlNode inNode, RWStringView inType);
 
 	virtual		long				GetUserProperties (const UserProps* &outProps) const;
 	virtual		const PSObjProps *	GetProperties (void) const;
@@ -296,7 +296,7 @@ public:
 //	virtual		bool				SetProperty (OSType id, RWValue &inValue);
 
 protected:
-									DMBodySection (DMBase *inParent, const CXMLText inType);
+									DMBodySection (DMBase *inParent, RWStringView inType);
 									DMBodySection (DMBase *inParent, const DMBodySection &inOriginal);
 
 private:
@@ -316,7 +316,7 @@ class	DMWatermarkSection
 {
 public:
 //	virtual							~DMBodySection (void);
-	static		DMWatermarkSection*	Create (DMBase *inParent, XMLElement *inNode, const CXMLText inType);
+	static		DMWatermarkSection*	Create (DMBase *inParent, RWXmlNode inNode, RWStringView inType);
 
 	virtual		long				GetUserProperties (const UserProps* &outProps) const;
 	virtual		const PSObjProps *	GetProperties (void) const;
@@ -326,7 +326,7 @@ public:
 	DMBase::EHitTest	HitTest (SPoint &inWhere, DMBase* &outObjectHit);
 
 protected:
-									DMWatermarkSection (DMBase *inParent, const CXMLText inType);
+									DMWatermarkSection (DMBase *inParent, RWStringView inType);
 									DMWatermarkSection (DMBase *inParent, const DMBodySection &inOriginal);
 
 	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
@@ -397,7 +397,7 @@ public:
 	};
 
 	virtual						~DM4DDataSource (void);
-	static	DM4DDataSource	*	Create (DMBase *inParent, XMLElement *inNode);
+	static	DM4DDataSource	*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -452,7 +452,7 @@ class	DMGuide
 {
 public:
 	virtual						~DMGuide (void);
-	static		DMGuide		*	Create (DMBase *inParent, XMLElement *inNode, bool inVertical);
+	static		DMGuide		*	Create (DMBase *inParent, RWXmlNode inNode, bool inVertical);
 
 				bool			IsVertical (void) const;
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
@@ -504,7 +504,7 @@ public:
 	virtual		PSObjList	*	GetObjects (OSType id);
 	virtual		RWXmlNode		WriteXML (RWXmlNode inParent, const PSObjProps* pes = NULL) override;
 
-				void			ParseObjects (const PSObjProps* pes, XMLElement *inNode, DMBase *inParent, PSObjListD &objList);
+				void			ParseObjects (const PSObjProps* pes, RWXmlNode inNode, DMBase *inParent, PSObjListD &objList);
 
 				DMBase		*	GetObject (long inObject) const;
 				DMBase		*	GetObjectByID (CText &inName) const;

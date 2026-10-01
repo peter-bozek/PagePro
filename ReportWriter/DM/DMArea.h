@@ -154,7 +154,7 @@ protected:
 
 	RWNativePageComposer	*mScreen;
 #if	MACVER
-	Rect					mPortRect;			// window port rect - for CG mapping
+	SRect					mPortRect;			// window port rect - for CG mapping
 	bool					mComposite;			// are we in a composited window?
 #else
 #if	kUSE_FAKE_AREA
@@ -162,7 +162,7 @@ protected:
 #endif
 #endif
 	SRect					mNoHitTest;			// if 4D is showing edit field, ignore this area...
-    string					mAreaName;
+    RWString				mAreaName;
 	PA_PluginProperties		mAreaProperties;
 	SRect					mAreaFullRect;		// 4D's area rect
 	SRect					mToolbarRect;

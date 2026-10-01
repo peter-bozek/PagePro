@@ -111,7 +111,7 @@ protected:
 	protected:
 		// Object is the created object, NIL after Undo, re-created after Redo
 		SInt32					fParentObjectID;
-		char	*				fData;
+		RWString				fData;
 	};
 	
 	class	DMDeleteAction	: public DMUndoAction
@@ -130,7 +130,7 @@ protected:
 	protected:
 		// Object is NIL, re-created after Undo, NIL again after Redo
 		SInt32					fParentObjectID;
-		char	*				fData;
+		RWString				fData;
 	};
 	
 	class	DMChangeParentAction	: public DMUndoAction
@@ -187,7 +187,7 @@ protected:
 	protected:
 		// Object is NIL, re-created after Undo, NIL again after Redo
 		bool					fOnUndo;
-		char	*				fData;
+		RWString				fData;
 	};
 	
 	class	DMUndoElement

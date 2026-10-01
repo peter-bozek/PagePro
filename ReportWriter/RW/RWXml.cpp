@@ -111,6 +111,12 @@ RWXmlNode::NameIs (std::string_view inASCIIName) const
 	return name[i] == 0;
 }
 
+bool
+RWXmlNode::SetName (RWStringView inName)
+{
+	return mNode.set_name (W (inName).c_str());
+}
+
 RWString
 RWXmlNode::Value (void) const
 {

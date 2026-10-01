@@ -354,6 +354,13 @@ static	void	TestXmlWrite (void)
 	CHECK (typed.Attr (u"s") == u"ž");
 	root.Remove (typed);
 
+	// rename (DM WriteXML overrides rename the element written by the base class)
+	RWXmlNode	renamed = root.Append (u"Section");
+	CHECK (renamed.SetName (u"BreakHeader"));
+	CHECK (renamed.NameIs ("BreakHeader"));
+	CHECK (!root.Child (u"Section"));
+	root.Remove (renamed);
+
 	// UTF-16 round trip
 	RWString		saved = doc.SaveString();
 	RWXmlDocument	copy;

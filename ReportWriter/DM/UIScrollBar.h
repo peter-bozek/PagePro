@@ -26,7 +26,7 @@ public:
 #if	WINVER
 					UIScrollBar (UIScrollClient *inClient, HWND inWindow, const SRect& inRect);
 #else
-					UIScrollBar (UIScrollClient *inClient, WindowRef inWindow, const SRect& inRect);
+					UIScrollBar (UIScrollClient *inClient, void *inWindow, const SRect& inRect);	// no Carbon control in 64 bit
 #endif
 					~UIScrollBar (void);
 
@@ -46,9 +46,6 @@ public:
 	void			Update (const SRect *inRect, HDC inDC);
 	void			ParentPosChanged (void);
 	void			ScrollProc (long param);
-#else
-protected:
-	static	DEFINE_API (void)	ActionProc (ControlRef theControl, ControlPartCode partCode);
 #endif
 
 protected:
@@ -71,12 +68,9 @@ protected:
 	QDPoint			_parentPos;
 	FARPROC			_oldProc;
 #else
-	WindowRef 		_window;
-	ControlHandle	_control;
-//	Boolean			_supportsLiveFeedback;
-	bool			_composite;			// are we in a composited window?
-
-static	ControlActionUPP	sActionProc;
+	void		*	_window;
+	void		*	_control;			// always NULL: the Carbon control does not exist in 64 bit
+	bool			_composite;
 #endif
 	
 };

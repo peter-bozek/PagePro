@@ -166,7 +166,7 @@ class	DMGroup
 	:	public	DMObject
 {
 public:
-    static		DMGroup		*	Create (DMBase *inParent, XMLElement *inNode);
+    static		DMGroup		*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -207,7 +207,7 @@ class	DMLine
 	:	public	DMObject
 {
 public:
-    static		DMLine		*	Create (DMBase *inParent, XMLElement *inNode);
+    static		DMLine		*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -245,7 +245,7 @@ class	DMOval
 	:	public	DMLine
 {
 public:
-    static		DMOval		*	Create (DMBase *inParent, XMLElement *inNode);
+    static		DMOval		*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -281,7 +281,7 @@ class	DMRect
 	:	public	DMOval
 {
 public:
-	static		DMRect		*	Create (DMBase *inParent, XMLElement *inNode);
+	static		DMRect		*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -318,7 +318,7 @@ class	DMPict
 	:	public	DMOval
 {
 public:
-	static		DMPict		*	Create (DMBase *inParent, XMLElement *inNode);
+	static		DMPict		*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -369,7 +369,7 @@ class	DMText
 	:	public	DMOval
 {
 public:
-	static		DMText		*	Create (DMBase *inParent, XMLElement *inNode);
+	static		DMText		*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -429,7 +429,7 @@ public:
 		SR4DVariable_ArrayAuto = -1
 	};
 
-	static		DMVariable	*	Create (DMBase *inParent, XMLElement *inNode);
+	static		DMVariable	*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -487,7 +487,7 @@ class	DMField
 	:	public	DMVariable
 {
 public:
-	static		DMField		*	Create (DMBase *inParent, XMLElement *inNode);
+	static		DMField		*	Create (DMBase *inParent, RWXmlNode inNode);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
 	virtual	const PSObjProps *	GetProperties (void) const;
@@ -637,7 +637,7 @@ class	DMTable
 	:	public	DMOval
 {
 public:
-	static		DMTable		*	Create (DMBase *inParent, XMLElement *inNode);
+	static		DMTable		*	Create (DMBase *inParent, RWXmlNode inNode);
 	virtual						~DMTable (void);
 
 	virtual		long			GetUserProperties (const UserProps* &outProps) const;
@@ -709,7 +709,6 @@ protected:
 
 template <class T>
 struct DMlessOrder
-	: std::binary_function<T, T, bool>
 {
 	bool operator()(const T& x, const T& y) const { return static_cast <DMBase*> (x)->CompareOrder (static_cast <DMBase*> (y)) < 0; }
 };
