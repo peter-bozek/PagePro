@@ -736,6 +736,9 @@ RWTFPrintText::BuildLines (RWPageComposer &inComposer, bool inWrap)
 	}
 }
 
+// room above a text box for accents of the first line, fraction of its ascent
+static	const double	kAccentAllowance = 0.35;
+
 int
 RWTFPrintText::Draw (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool inDoDraw)
 {
@@ -744,7 +747,17 @@ RWTFPrintText::Draw (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool
 
 	if (inDoDraw) 
 	{
-		StClipToRect	clip (&inComposer, ioRect);
+		// The first baseline is at top + ascent, but accents on capitals (Ž, Š, Č, Á)
+		// rise above the ascent line (Helvetica: ascent 0.77 em, Ž 0.94 em). The clip
+		// leaves room for them above the box; the layout does not change.
+		SRect	clipRect (ioRect);
+		if (mPrintedLines < (int) mLines.size())
+		{
+			const double	firstAscent = mLines [mPrintedLines]->mBaselinePosition - mPrintedHeight;
+			if (firstAscent > 0)
+				clipRect.top -= firstAscent * kAccentAllowance;
+		}
+		StClipToRect	clip (&inComposer, clipRect);
 		if (mStyle->GetRotation() != 0) 
 		{
 			CGAffineTransform	t = RWTools::MakeMatrixFromUserRect (inComposer.GetPrintContext(), ioRect, inComposer.GetNativeRotation (mStyle->GetRotation()), mWidth, mHeight);	//mbs 29062011

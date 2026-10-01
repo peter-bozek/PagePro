@@ -18,9 +18,9 @@ and compile with `PODOFO_STATIC` defined.
 
 ## Licences
 
-- PoDoFo: LGPL 2.0 or later. Static linking means a recipient must be able to relink the
-  plugin with a modified PoDoFo (provide the plugin's object files on request), or PoDoFo
-  has to be shipped as a shared library instead.
+- PoDoFo: LGPL 2.0 or later. It is linked statically (decision 2026-10-01); the plugin's
+  distribution provides what the LGPL requires for that (recipients can relink the plugin
+  with a modified PoDoFo, e.g. object files on request).
 - FreeType: FreeType License (BSD style, credit in the documentation).
 - OpenSSL 3: Apache 2.0. libpng: libpng licence. libjpeg-turbo: IJG + BSD.
 - AFDKO (bundled in PoDoFo, CFF subsetting): Apache 2.0.

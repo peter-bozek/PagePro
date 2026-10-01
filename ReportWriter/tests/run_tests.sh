@@ -40,8 +40,7 @@ mkdir -p "$OUT/export"
 # PDF output (PoDoFo 1.0): needs podofo/build_mac.sh to have run
 PODOFO="$ROOT/podofo/mac"
 if [ -f "$PODOFO/lib/libpodofo.a" ]; then
-	VERSION_H="${RW_VERSION_HEADER_DIR:-$ROOT/../../new SRP current_16/Resources}"	# theVersion.h (not in the repository yet)
-	clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$PODOFO/include" -I "$VERSION_H" -DPODOFO_STATIC \
+	clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$PODOFO/include" -I "$ROOT" -DPODOFO_STATIC \
 		-w -fpascal-strings -fsanitize=address,undefined \
 		"$ROOT/tests/PdfComposerTests.cpp" "$ROOT/RW/RWPoDoFoPageComposer.cpp" "$ROOT/RW/RWPageComposer.cpp" \
 		"$ROOT/RW/RWPdfFonts.cpp" "$ROOT/RW/RWFontsMac.cpp" "$ROOT/RW/RWTextFormatter.cpp" "$ROOT/RW/RWStyle.cpp" \
