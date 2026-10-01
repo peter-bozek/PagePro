@@ -83,6 +83,8 @@ namespace	RWStr
 
 	// writes inBytes to the file inPath (created or replaced); false on failure
 	bool						WriteFile (const RWString &inPath, std::string_view inBytes);
+	// reads the whole file inPath into outBytes; false if it cannot be read
+	bool						ReadFile (const RWString &inPath, std::string &outBytes);
 
 	// printf style formatting in the "C" locale; the result is expected to be ASCII / UTF-8
 	RWString					Format (const char *inPrintfFormat, ...)

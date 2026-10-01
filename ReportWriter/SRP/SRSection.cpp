@@ -862,7 +862,7 @@ SRPageSection::GetPageOrientation (void)
 const
 {
 //	return mPageOrientation;
-	return NULL;
+	return RWString();
 }
 
 
@@ -875,7 +875,7 @@ SRPageSection::GetPageSize (void)
 const
 {
 //	return mPageSize;
-	return NULL;
+	return RWString();
 }
 
 

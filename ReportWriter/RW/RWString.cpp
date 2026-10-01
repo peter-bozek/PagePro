@@ -17,6 +17,7 @@
 # include	<cstdarg>
 # include	<filesystem>
 # include	<fstream>
+# include	<iterator>
 
 #if	defined(_WIN32)
 # include	<locale.h>
@@ -704,6 +705,17 @@ RWStr::Base64Decode (RWStringView inText)
 // ---------------------------------------------------------------------------
 // WriteFile
 // ---------------------------------------------------------------------------
+
+bool
+RWStr::ReadFile (const RWString &inPath, std::string &outBytes)
+{
+	outBytes.clear();
+	std::ifstream	file (std::filesystem::path (inPath), std::ios::binary);
+	if (!file)
+		return false;
+	outBytes.assign (std::istreambuf_iterator<char> (file), std::istreambuf_iterator<char>());
+	return !file.bad();
+}
 
 bool
 RWStr::WriteFile (const RWString &inPath, std::string_view inBytes)

@@ -765,7 +765,6 @@ DMStyle::SetProperty (OSType id, RWValue &inValue)
 DMSection::DMSection (DMBase *inParent, ESection_Kind inKind, RWStringView inType)
 	:	DMBase (inParent, eObject_Section),
 		mSectionKind (inKind),
-		mType (0),
 		mHeight (0),
 		mMinSpace (0),
 		mDraw (true),

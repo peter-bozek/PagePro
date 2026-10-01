@@ -14,7 +14,7 @@ FLAGS=(-std=c++17 -mmacosx-version-min=11.0 -g
 clang++ "${FLAGS[@]}" -c "$ROOT/pugixml/pugixml.cpp" -o "$OUT/pugixml.o"
 
 clang++ "${FLAGS[@]}" -Wall -Wextra -Werror -fsanitize=address,undefined \
-	"$ROOT/RW/RWString.cpp" "$ROOT/RW/RWXml.cpp" "$ROOT/tests/RWFoundationTests.cpp" \
+	"$ROOT/RW/RWString.cpp" "$ROOT/RW/RWXml.cpp" "$ROOT/RW/RWXmlJson.cpp" "$ROOT/tests/RWFoundationTests.cpp" \
 	"$OUT/pugixml.o" -o "$OUT/RWFoundationTests"
 
 "$OUT/RWFoundationTests" "$OUT"

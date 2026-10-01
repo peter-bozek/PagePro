@@ -951,9 +951,9 @@ DMArea::HandleEvent (void)
 			{
 //				bool	isHorizontal = (mLastEventModifiers & shiftKey) != 0;
 //				short	delta = PA_GetMouseWheelIncrement (mCurParams);
-				bool	isHorizontal;
 				short	delta = PA_GetMouseWheelIncrement (mCurParams);
 				mLastEventModifiers = GetModifiers();	//mbs 02082010	get modifiers (mLastEventModifiers is empty), adjust by sScrollUI
+				const bool	isHorizontal = (mLastEventModifiers & shiftKey) != 0;	// was never set (read uninitialized)
 				if ((mLastEventModifiers & (controlKey | cmdKey)) == 0)
 					delta *= sScrollUI;
 				if ((mLastEventModifiers & optionKey) != 0)
@@ -3890,6 +3890,23 @@ const
 	HIPoint	hPt = CGPointMake (inX, inY);
 	HIPointConvert (&hPt, kHICoordSpace72DPIGlobal, NULL, kHICoordSpaceView, contentView);
 	return SPoint (hPt.x, hPt.y);
+#else
+	// 64 bit: 4D passes the NSWindow. Global (Carbon) coordinates have their origin at the top
+	// left of the main screen, Cocoa screen coordinates at its bottom left; the result is
+	// relative to the top left of the window's content view, like the HIView code above.
+	id	window = (id) mAreaProperties.fMacWindow;
+	if (window == nil || ![window isKindOfClass: [NSWindow class]] || [[NSScreen screens] count] == 0)
+		return SPoint (inX, inY);
+	const CGFloat	mainHeight = NSMaxY ([[[NSScreen screens] objectAtIndex: 0] frame]);
+	NSPoint			p = [(NSWindow*) window convertPointFromScreen: NSMakePoint (inX, mainHeight - inY)];
+	NSView			*content = [(NSWindow*) window contentView];
+	if (content != nil)
+	{
+		p = [content convertPoint: p fromView: nil];
+		if (![content isFlipped])
+			p.y = NSHeight ([content bounds]) - p.y;
+	}
+	return SPoint (p.x, p.y);
 #endif
 #else
 	POINT	pt;

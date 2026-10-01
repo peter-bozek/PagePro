@@ -10,6 +10,7 @@
 # include	"RWString4D.h"
 # include	"RWXml.h"
 # include	"RWJson.h"
+# include	"RWXmlJson.h"
 
 # include	<clocale>
 # include	<cmath>
@@ -434,6 +435,15 @@ static	void	TestXmlFile (const std::string &inTempDir)
 
 	RWXmlDocument	none;
 	CHECK (!none.LoadFile (RWStr::FromUTF8 (inTempDir) + u"/does-not-exist.xml").ok);
+
+	// RWStr::ReadFile / WriteFile: bytes unchanged, Unicode path
+	const RWString	bin = RWStr::FromUTF8 (inTempDir) + u"/čítanie 😀.json";
+	const std::string	bytes ("\xEF\xBB\xBF{\"a\":\"\xC5\xBD\"}\0end", 18);
+	CHECK (RWStr::WriteFile (bin, bytes));
+	std::string	read;
+	CHECK (RWStr::ReadFile (bin, read) && read == bytes);
+	std::remove (RWStr::ToUTF8 (bin).c_str());
+	CHECK (!RWStr::ReadFile (bin, read) && read.empty());
 }
 
 
@@ -472,6 +482,62 @@ static	void	TestJson (void)
 }
 
 
+static	void	TestXmlJson (void)
+{
+	// round trip: attributes, nesting, mixed content (attributed text), Unicode, entities
+	const RWString	report =
+		u"<Report Version=\"1.0\" name=\"Faktúra &amp; dodací list\" Dynamic=\"1\">"
+		u"<StyleSet><Style id=\"1\" font=\"Lucida Grande\" size=\"12\"/></StyleSet>"
+		u"<Page><Body height=\"100\">"
+		u"<Text left=\"10\" top=\"20\">Žltý <SPAN STYLE=\"font-weight:bold\">kôň</SPAN><NL/>a &lt;b&gt; \U0001F600</Text>"
+		u"</Body></Page></Report>";
+	RWXmlDocument	xml;
+	CHECK (xml.LoadString (report).ok);
+
+	const RWString	json = RWXmlJson::ToJson (xml.Root());
+	CHECK (RWStr::StartsWith (json, u"{\"tag\":\"Report\",\"attributes\":{\"Version\":\"1.0\",\"name\":\"Faktúra & dodací list\",\"Dynamic\":\"1\"},\"children\":[{\"tag\":\"StyleSet\""));
+	CHECK (RWStr::Contains (json, u"\"children\":[\"Žltý \",{\"tag\":\"SPAN\",\"attributes\":{\"STYLE\":\"font-weight:bold\"},\"children\":[\"kôň\"]},{\"tag\":\"NL\"},\"a <b> \U0001F600\"]"));
+	CHECK (!RWStr::Contains (json, u"\"children\":[]"));		// empty parts are left out
+
+	RWXmlDocument	back;
+	CHECK (RWXmlJson::FromJson (json, back).ok);
+	CHECK (back.SaveString() == xml.SaveString());
+
+	// UTF-8 (files), pretty printed, with a BOM
+	const std::string	utf8 = "\xEF\xBB\xBF" + RWXmlJson::ToJsonUTF8 (xml.Root(), true);
+	CHECK (utf8.find ("\n\t\"tag\": \"Report\"") != std::string::npos);
+	RWXmlDocument	backUTF8;
+	CHECK (RWXmlJson::FromJsonUTF8 (utf8, backUTF8).ok);
+	CHECK (backUTF8.SaveString() == xml.SaveString());
+
+	// written by hand / by 4D: numbers and booleans as attribute values, null = not set
+	RWXmlDocument	typed;
+	CHECK (RWXmlJson::FromJson (u"{\"tag\":\"Style\",\"attributes\":{\"id\":3,\"size\":10.5,\"bold\":true,\"underline\":false,\"font\":null,\"big\":12345678901}}", typed).ok);
+	CHECK (typed.Root().Attr (u"id") == u"3" && typed.Root().Attr (u"size") == u"10.5");
+	CHECK (typed.Root().Attr (u"bold") == u"1" && typed.Root().Attr (u"underline") == u"0");
+	CHECK (!typed.Root().HasAttr (u"font") && typed.Root().Attr (u"big") == u"12345678901");
+	CHECK (typed.Root().AttrBool (u"bold") && typed.Root().AttrDouble (u"size") == 10.5);
+
+	// errors: syntax (with offset) and structure (with the path of the value)
+	RWXmlDocument	bad;
+	RWXmlResult		r = RWXmlJson::FromJson (u"{\"tag\":\"Report\",}", bad);
+	CHECK (!r.ok && r.offset == 16 && RWStr::Contains (r.description, u"offset 16"));
+	CHECK (!bad.Root());
+	r = RWXmlJson::FromJson (u"{\"tag\":\"Report\",\"children\":[{\"tag\":\"Page\",\"children\":[{\"tag\":\"Body\",\"attributes\":{\"height\":[1]}}]}]}", bad);
+	CHECK (!r.ok && RWStr::StartsWith (r.description, u"report.children[0].children[0].attributes.height: "));
+	CHECK (!bad.Root());		// nothing half converted
+	r = RWXmlJson::FromJson (u"{\"attributes\":{}}", bad);
+	CHECK (!r.ok && RWStr::Contains (r.description, u"\"tag\""));
+	r = RWXmlJson::FromJson (u"{\"tag\":\"Report\",\"child\":[]}", bad);
+	CHECK (!r.ok && RWStr::Contains (r.description, u"report.child: unknown key"));
+	r = RWXmlJson::FromJson (u"{\"tag\":\"1x\"}", bad);
+	CHECK (!r.ok && RWStr::Contains (r.description, u"not a valid element name"));
+	r = RWXmlJson::FromJson (u"{\"tag\":\"R\",\"children\":[1]}", bad);
+	CHECK (!r.ok && RWStr::Contains (r.description, u"report.children[0]: a child must be"));
+	r = RWXmlJson::FromJson (u"[1,2]", bad);
+	CHECK (!r.ok && RWStr::Contains (r.description, u"not an array"));
+}
+
 int		main (int argc, char **argv)
 {
 	std::string	tempDir = argc > 1 ? argv[1] : ".";
@@ -489,6 +555,7 @@ int		main (int argc, char **argv)
 	TestXmlWrite();
 	TestXmlFile (tempDir);
 	TestJson();
+	TestXmlJson();
 
 	std::printf ("%d checks, %d failed (wchar_t is %zu bytes)\n", sChecks, sFailures, sizeof (wchar_t));
 	return sFailures == 0 ? 0 : 1;

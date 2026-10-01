@@ -312,7 +312,7 @@ bool
 RWPageComposer::GetPageMetrics (float &outPageWidth, float &outPageHeight, SRect &outMargins)
 {
 	SRect	r;
-	GetPageBounds (NULL, NULL, r);
+	GetPageBounds (RWString(), RWString(), r);
 	outPageWidth = r.Width();
 	outPageHeight = r.Height();
 	outMargins = mReportPageMargins;
@@ -328,7 +328,7 @@ RWPageComposer::GetPageMetrics (float &outPageWidth, float &outPageHeight, SRect
 bool
 RWPageComposer::GetPageMetrics (SRect &outPageRect, SRect &outPaperRect, SRect &outMargins)
 {
-	GetPageBounds (NULL, NULL, outPageRect);
+	GetPageBounds (RWString(), RWString(), outPageRect);
 	outPaperRect.SetRect (float (outPageRect.top - mReportPageMargins.top), outPageRect.left - mReportPageMargins.left,
 						  outPageRect.bottom + mReportPageMargins.bottom, outPageRect.right + mReportPageMargins.right);
 	outMargins = mReportPageMargins;
@@ -345,7 +345,7 @@ bool
 RWPageComposer::GetPaperMetrics (float &outPaperWidth, float &outPaperHeight, SRect &outMargins)
 {
 	SRect	r;
-	GetPageBounds (NULL, NULL, r);
+	GetPageBounds (RWString(), RWString(), r);
 	outPaperWidth = r.Width() + mReportPageMargins.left + mReportPageMargins.right;
 	outPaperHeight = r.Height() + mReportPageMargins.top + mReportPageMargins.bottom;
 	outMargins = mReportPageMargins;

@@ -56,14 +56,20 @@ enum
 	eTextStyleRemove,		// RW_RemoveStyle(&T;&T;&L;&L;&L;&T;&8;&L;&L;&8;&L):L
 	eTextStyleAddStyle,		// RW_ApplyStyle(&T;&T;&L;&L;&L;&L;&8;&L):L
 	eTokenize,				// RW_Tokenize(&T;&O):L
-	eDetokenize,			// RW_Detokenize(&T;&L):T
+	eDetokenize,			// RW_Detokenize(&O):T
 	eRunScript,				// RW_RunScript(&T)
-	eVersionString,			// RW_GetVersion ():T
+	eVersionString,			// RW_GetVersion:T
 	
-	eGetEditorRect,			// RW_GetEditorRect(&L;&L;&L;&L;&L):L
+	eGetEditorRect,			// RW_GetEditorRect(&L;&8;&8;&8;&8):L
 	eSetScriptExecution,	// RW_ExecuteScript(&L):L
 	
-	eGetFonts,	// RW_GetFonts(&Y):L
+	eGetFonts,				// RW_GetFonts(&Y):L
+
+	// report definition as JSON (RWXmlJson.h) - the same document as the XML of RW_ParseReport / RW_SaveReport
+	eParseReportJSON,		// RW_ParseReportJSON(&L;&T;&L):L	ref, JSON text or file path (options bit 0), options
+	eSaveReportJSON,		// RW_SaveReportJSON(&L;&T;&L):L	ref, JSON text or file path (options bit 0), options (bit 1: indented text)
+	eParseReportObject,		// RW_ParseReportObject(&L;&J):L	ref, 4D object
+	eSaveReportObject,		// RW_SaveReportObject(&L):J		ref; returns the report as a 4D object (empty object on error)
 
 	eLast
 };
@@ -80,6 +86,9 @@ enum
 	errInvalidArrayType,
 	errInvalidPointerType,
 	errInvalidSessionRef,
+	errCantLoadJSON,		// 10: JSON syntax error, not a report document, file not readable
+	errCantSaveJSON,		// 11: file not writable
+	errInvalidObject,		// 12: Null object passed
 	errUserCanceled = -128
 };
 
@@ -104,6 +113,8 @@ long RW_CreateReport (long &outRepRef, RWString &src, long inOptions);
 long RW_ParseReport (long inRepRef, RWString &src, long inOptions);
 long RW_SaveReport (long inRepRef, RWString &dst, long inOptions);
 long RW_DeleteReport (long &ioRepRef);
+long RW_ParseReportJSON (long inRepRef, RWString &src, long inOptions);
+long RW_SaveReportJSON (long inRepRef, RWString &dst, long inOptions);
 
 long RW_GetProperties (PA_PluginParameters params);	// inRepRef, inRef, PA_Variable &ioProps, PA_Variable &ioValues);
 long RW_SetProperties (PA_PluginParameters params);	// inRepRef, inRef, PA_Variable &inProps, PA_Variable &inValues);

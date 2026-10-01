@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		18B684FF06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B684FE06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp */; };
 		8D01CCCA0486CAD60068D4B7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
 		D13116A91A03ACB700DE1322 /* 4DPluginAPI.c in Sources */ = {isa = PBXBuildFile; fileRef = D13116A81A03ACB700DE1322 /* 4DPluginAPI.c */; settings = {COMPILER_FLAGS = "-Wno-multichar"; }; };
 		D134D4AC1A030BA0008D14EF /* manifest.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = D134D4A91A030B06008D14EF /* manifest.json */; };
@@ -60,6 +59,7 @@
 		D26EC0432AF44891001E7074 /* PSObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0362AF44891001E7074 /* PSObject.cpp */; };
 		B8729E566CCB10A18D7B86E3 /* RWString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 302672E938BCD3A1839D17ED /* RWString.cpp */; };
 		E1170334DFE80D2DFC7D2B13 /* RWXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0475D027BAF4D58FCE82BB9E /* RWXml.cpp */; };
+		501BEE37760712DDF51AB1B2 /* RWXmlJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D397B184BD1FD879BBD2555 /* RWXmlJson.cpp */; };
 		777136D274BAE8AE2E65FE47 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 453AE3927F2325A3947271B9 /* pugixml.cpp */; };
 		55269F99D433E9CFBE139C37 /* RWMacCGPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DC14767A06C3A88E9B07032F /* RWMacCGPageComposer.cpp */; };
 /* End PBXBuildFile section */
@@ -84,9 +84,7 @@
 		18B684F206944F2000CC6A1E /* Flags.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Flags.h; sourceTree = "<group>"; };
 		18B684F306944F2000CC6A1E /* PrivateTypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PrivateTypes.h; sourceTree = "<group>"; };
 		18B684F406944F2000CC6A1E /* PublicTypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PublicTypes.h; sourceTree = "<group>"; };
-		18B684FE06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; path = "4DPlugin-ReportWriter.cpp"; sourceTree = "<group>"; };
 		8D01CCD10486CAD60068D4B7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		D120937E13534DCC00A72CAA /* 4DPlugin-ReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "4DPlugin-ReportWriter.h"; sourceTree = "<group>"; };
 		D130064E12F02D9700702C0E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		D13116A81A03ACB700DE1322 /* 4DPluginAPI.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = 4DPluginAPI.c; sourceTree = "<group>"; };
 		D134D4A91A030B06008D14EF /* manifest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
@@ -197,6 +195,8 @@
 		1C2E84224FA1010FF69D3E5F /* RWString4D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWString4D.h; sourceTree = "<group>"; };
 		D37570E890BF05931EE866A1 /* RWXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWXml.h; sourceTree = "<group>"; };
 		0475D027BAF4D58FCE82BB9E /* RWXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWXml.cpp; sourceTree = "<group>"; };
+		801651092CB3344CB1D85B71 /* RWXmlJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWXmlJson.h; sourceTree = "<group>"; };
+		7D397B184BD1FD879BBD2555 /* RWXmlJson.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWXmlJson.cpp; sourceTree = "<group>"; };
 		F05CFDAD07009E5034B965DD /* RWJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWJson.h; sourceTree = "<group>"; };
 		487BA6D04F90754620F3392E /* pugixml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugixml.hpp; sourceTree = "<group>"; };
 		FE574AA54321327F404FABA4 /* pugiconfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugiconfig.hpp; sourceTree = "<group>"; };
@@ -261,8 +261,6 @@
 				D26EC0292AF44891001E7074 /* DM */,
 				D26EBFAC2AF274EE001E7074 /* RW */,
 				6595A6724B552C1A513D381E /* pugixml */,
-				18B684FE06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp */,
-				D120937E13534DCC00A72CAA /* 4DPlugin-ReportWriter.h */,
 				18B684ED06944F2000CC6A1E /* 4D Plugin API */,
 			);
 			name = Source;
@@ -380,6 +378,8 @@
 				1C2E84224FA1010FF69D3E5F /* RWString4D.h */,
 				D37570E890BF05931EE866A1 /* RWXml.h */,
 				0475D027BAF4D58FCE82BB9E /* RWXml.cpp */,
+				801651092CB3344CB1D85B71 /* RWXmlJson.h */,
+				7D397B184BD1FD879BBD2555 /* RWXmlJson.cpp */,
 				F05CFDAD07009E5034B965DD /* RWJson.h */,
 				D26EBFD72AF274EE001E7074 /* MacCarbonPrefix.h */,
 				D26EBFC82AF274EE001E7074 /* RWBaseTypes.h */,
@@ -574,6 +574,7 @@
 				55269F99D433E9CFBE139C37 /* RWMacCGPageComposer.cpp in Sources */,
 				B8729E566CCB10A18D7B86E3 /* RWString.cpp in Sources */,
 				E1170334DFE80D2DFC7D2B13 /* RWXml.cpp in Sources */,
+				501BEE37760712DDF51AB1B2 /* RWXmlJson.cpp in Sources */,
 				777136D274BAE8AE2E65FE47 /* pugixml.cpp in Sources */,
 				D26EC0212AF274EF001E7074 /* RWReportData.cpp in Sources */,
 				D22610702B3DB5A400CFC83D /* ExtendedExecute.cpp in Sources */,
@@ -612,7 +613,6 @@
 				D26EC01B2AF274EF001E7074 /* RWTextFormatter.cpp in Sources */,
 				D26EC0062AF274EF001E7074 /* RWSection.cpp in Sources */,
 				D26EBFFF2AF274EF001E7074 /* RWDataSourceProvider.cpp in Sources */,
-				18B684FF06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp in Sources */,
 				D26EBFFA2AF274EE001E7074 /* RWDataProvider.cpp in Sources */,
 				D226106D2B3DB5A400CFC83D /* SRSection.cpp in Sources */,
 				D26EC03B2AF44891001E7074 /* DMArea.cpp in Sources */,
@@ -691,6 +691,9 @@
 					"-lcrypto",
 					"-lz",
 					"-lxml2",
+					"-framework",
+					IOKit,
+					"-Wl,-exported_symbol,_FourDPackex",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
@@ -702,6 +705,9 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
+					"-Werror=nonnull",
+					"-Werror=return-type",
+					"-Werror=uninitialized",
 				);
 				WRAPPER_EXTENSION = bundle;
 				ZERO_LINK = YES;
@@ -760,6 +766,9 @@
 					"-lcrypto",
 					"-lz",
 					"-lxml2",
+					"-framework",
+					IOKit,
+					"-Wl,-exported_symbol,_FourDPackex",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
@@ -771,6 +780,9 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
+					"-Werror=nonnull",
+					"-Werror=return-type",
+					"-Werror=uninitialized",
 				);
 				WRAPPER_EXTENSION = bundle;
 				ZERO_LINK = NO;
@@ -828,6 +840,9 @@
 					"-lcrypto",
 					"-lz",
 					"-lxml2",
+					"-framework",
+					IOKit,
+					"-Wl,-exported_symbol,_FourDPackex",
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
@@ -839,6 +854,9 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
+					"-Werror=nonnull",
+					"-Werror=return-type",
+					"-Werror=uninitialized",
 				);
 				WRAPPER_EXTENSION = bundle;
 			};

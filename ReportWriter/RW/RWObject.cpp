@@ -2099,7 +2099,7 @@ RWText::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 				inComposer.DrawRect (inRect, mFrameThickness, true, mFrameColor, false, mFrameColor);
 				r *= mFrameOffset;
 			}
-			inComposer.DrawTextBox (mPrintText? mPrintText->GetText(): NULL, mStyle, r, mStyle->ShouldWrap(), mIsAttributed, GetGrow(), &mPrintText);
+			inComposer.DrawTextBox (mPrintText? mPrintText->GetText(): RWString(), mStyle, r, mStyle->ShouldWrap(), mIsAttributed, GetGrow(), &mPrintText);
 			if (mPrintText)
 			{
 				if (GetGrow())	// ignore multiline text not fitting into the text box... pB 2010-12 in case of one line not fully printed line

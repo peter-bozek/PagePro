@@ -94,6 +94,7 @@ BOOL __stdcall DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID lpvReserved)
 # include	"SRPlugin.h"
 # include	"SRLicense.h"
 # include	"RW4DText.h"
+# include	"RWXmlJson.h"
 # include	<sstream>
 
 # include	"ETReportData.h"
@@ -495,6 +496,57 @@ try
 			break;
 		}
 		
+		case eParseReportJSON:		//	ref, JSON text or path, options (bit 0 means path vs. JSON)
+		{
+			sBuf = PA_GetStringParameter (params, 2);
+			RWString	s2 = RWStr::FromPA (sBuf);
+			PA_ReturnLong (params, RW_ParseReportJSON (PA_GetLongParameter (params, 1), s2, PA_GetLongParameter (params, 3)));
+			break;
+		}
+
+		case eSaveReportJSON:		//	ref, JSON text or path, options (bit 0 means path vs. JSON, bit 1 indented text)
+		{
+			sBuf = PA_GetStringParameter (params, 2);
+			RWString	s2 = RWStr::FromPA (sBuf);
+			PA_ReturnLong (params, obj = RW_SaveReportJSON (PA_GetLongParameter (params, 1), s2, PA_GetLongParameter (params, 3)));
+			if (obj == 0 && (PA_GetLongParameter (params, 3) & 0x1) == 0)
+				RWStr::SetPA (sBuf, s2);
+			break;
+		}
+
+		case eParseReportObject:	//	ref, object
+		{
+			PA_ObjectRef	object = PA_GetObjectParameter (params, 2);
+			if (object == NULL)
+			{
+				PA_ReturnLong (params, errInvalidObject);
+				break;
+			}
+			// 4D serializes its object; the variable only refers to the caller's object, not cleared
+			PA_Variable		var;
+			PA_SetObjectVariable (&var, object);
+			PA_Unistring	json = PA_JsonStringify (var, 0);
+			RWString		text = RWStr::FromPA (&json);
+			PA_DisposeUnistring (&json);
+			PA_ReturnLong (params, RW_ParseReportJSON (PA_GetLongParameter (params, 1), text, 0));
+			break;
+		}
+
+		case eSaveReportObject:		//	ref, returns object
+		{
+			RWString		text;
+			PA_ObjectRef	object = NULL;
+			if (RW_SaveReportJSON (PA_GetLongParameter (params, 1), text, 0) == noErr)
+			{
+				PA_Unistring	json = RWStr::CreatePA (text);
+				PA_Variable		parsed = PA_JsonParse (&json, eVK_Object);
+				PA_DisposeUnistring (&json);
+				object = PA_GetObjectVariable (parsed);		// now owned by 4D (the result)
+			}
+			PA_ReturnObject (params, object != NULL ? object : PA_CreateObject());
+			break;
+		}
+
 		case eGetFonts:		//	array
 		{
 			PA_Variable	var = PA_GetVariableParameter (params, 1);
@@ -574,7 +626,7 @@ try
 }
 catch (...)
 {
-	printf ("\nUncaught exception in PluginMain!!! selector = %ld\n", selector);
+	printf ("\nUncaught exception in PluginMain!!! selector = %ld\n", (long) selector);
 	fflush (stdout);
 }
 }
@@ -1087,6 +1139,100 @@ long RW_SaveReport (long inRepRef, RWString &src, long inOptions)
 
 	return result;
 }
+
+
+// ---------------------------------------------------------------------------
+// RW_ParseReportJSON / RW_SaveReportJSON
+// ---------------------------------------------------------------------------
+// The report definition as JSON (RWXmlJson.h); src is JSON text or a file path
+// (inOptions bit 0, UTF-8 with or without BOM). Bit 1 of RW_SaveReportJSON's
+// options indents the returned text (files are always indented).
+
+long RW_ParseReportJSON (long inRepRef, RWString &src, long inOptions)
+{
+	long		result = 0;
+
+	try
+	{
+		DMReport	*rep = DMReport::GetReportObject (inRepRef);
+		if (rep == NULL)
+			result = errInvalidReportRef;
+		else if (src.empty())
+			rep->SetReport (NULL);
+		else
+		{
+			RWXmlDocument	xml;
+			RWXmlResult		parsed;
+			if (IsFileName)
+			{
+				std::string	bytes;
+				const RWString	path = RWStr::NativePath (src);
+				if (!RWStr::ReadFile (path, bytes))
+					parsed.description = u"cannot read " + path;
+				else
+					parsed = RWXmlJson::FromJsonUTF8 (bytes, xml);
+			}
+			else
+				parsed = RWXmlJson::FromJson (src, xml);
+
+			if (!parsed)
+			{
+				printf ("Could not load report JSON. Error='%s'.\n", RWStr::ToUTF8 (parsed.description).c_str());
+				fflush (stdout);
+				result = errCantLoadJSON;
+			}
+			else
+				rep->SetReport (&xml);
+		}
+	}
+	catch (...)
+	{
+		printf ("\nUncaught exception in RW_ParseReportJSON!\n");
+		fflush (stdout);
+		result = errGenericError;
+	}
+
+	return result;
+}
+
+
+long RW_SaveReportJSON (long inRepRef, RWString &src, long inOptions)
+{
+	long		result = 0;
+
+	try
+	{
+		DMReport	*rep = DMReport::GetReportObject (inRepRef);
+		if (rep == NULL)
+			result = errInvalidReportRef;
+		else
+		{
+			RWXmlDocument	xml;
+			rep->GetReport (xml);
+			if (IsFileName)
+			{
+				const RWString	path = RWStr::NativePath (src);
+				if (!RWStr::WriteFile (path, RWXmlJson::ToJsonUTF8 (xml.Root(), true)))
+				{
+					printf ("Could not save file '%s'. Error='%s'.\n", RWStr::ToUTF8 (path).c_str(), strerror (errno));
+					fflush (stdout);
+					result = errCantSaveJSON;
+				}
+			}
+			else
+				src = RWXmlJson::ToJson (xml.Root(), (inOptions & 0x2) != 0);
+		}
+	}
+	catch (...)
+	{
+		printf ("\nUncaught exception in RW_SaveReportJSON!\n");
+		fflush (stdout);
+		result = errGenericError;
+	}
+
+	return result;
+}
+
 # undef	IsFileName
 
 
