@@ -73,10 +73,17 @@ Rules for new and ported code:
   - **Not functional on the Mac, decision postponed (2026-10-01)**: `RW_ColorPicker` used Carbon's `NPickColor`, which does not exist in 64 bit; it now returns "no color chosen". Replace with `NSColorPanel` (Objective-C++) or 4D's `Select RGB color`. Windows is unchanged.
   - Observation: license validation is commented out in `SRLicense.cpp`; any non-empty license string is accepted.
 
-- [ ] **6. ET module + JSON.**
-  - `ETReportData` takes the SR document directly (no print + re-parse).
-  - Output layer: XML into an `RWXmlDocument`, HTML / text / CSV into an `RWString`, new `eo_json = 0x8000` into an `RWJsonDocument` (or streaming `RWJsonUTF8Writer` if exports get very large). Write once as UTF-8.
-  - 4D command / flag to request JSON.
+- [x] **6. ET module + JSON.** ET compiles and is covered by `tests/ETExportTests.cpp` (a processed report exported to all formats).
+  - `ETReportData` reads the SR document directly (`RWXmlDocument*`); no print and re-parse.
+  - Output is built in memory and written once as UTF-8 by `bool ETReport::ReportToFile (path)`: text and HTML in an `RWString`, XML in an `RWXmlDocument` (same elements and attributes as before, `<?xml … encoding="utf-8" standalone="yes"?>`), JSON in an `RWJsonDocument`. Files are written with `RWStr::WriteFile` (`std::filesystem`, Unicode paths on both platforms).
+  - New flag `eo_json = 0x8000`; format precedence text, HTML, XML, JSON (as before, JSON added last). JSON layout: `{ "version", "name", "sections": [ { "type", "id", "items": [ { "type": "text" | "variable", "name", "id", "class", "value", "styled" } ] } ] }`; `value` is plain text, `styled` holds the 4D markup when the text is attributed.
+  - HTML escaping via `RWStr::EscapeXML` (the old `ToXMLEscaped` duplicated text).
+  - **Fixes**:
+    - `RW_VarNamesRWCount` was `RW_VarName + 1`, but `HORPAGE` / `HORPAGES` were added after it: `RWInitReportVariable` wrote two strings past `mVarNames` in `RWReportWriter` and `ETReport` (memory corruption on every print and export), and SRP counted the two as SR-only variables. Now counted, with a `static_assert`.
+    - Exports never contained the report name (`ETReport::mName` was never set).
+    - Attributed text in variables was entity-*decoded* instead of encoded (tinyxml2 `StrPair` misuse); same fix as RW / SRP.
+    - `basic_string (str, pos)` misuse in `ETObject` text substitution.
+
 - [ ] **7. DM module.** `DMReport`, `DMObject`, `PSObject`, `DMUndo`. Property tables (`PSObjProps`) keep ASCII names. Add `std::string_view` name overloads to `RWXmlNode` if the per-call conversion shows up in profiles.
 - [ ] **7b. PDF output (decision 2026-10-01).**
   - PDF files are produced by one PoDoFo 1.0 composer on macOS **and** Windows, in 4D desktop and 4D Server. The output is identical on both platforms and does not depend on installed printers. Printing and on-screen preview stay native (CoreText / GDI+).

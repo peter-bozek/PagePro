@@ -15,6 +15,8 @@
 # include	<cstdlib>
 # include	<clocale>
 # include	<cstdarg>
+# include	<filesystem>
+# include	<fstream>
 
 #if	defined(_WIN32)
 # include	<locale.h>
@@ -678,4 +680,20 @@ RWStr::Base64Decode (RWStringView inText)
 		}
 	}
 	return result;
+}
+
+
+// ---------------------------------------------------------------------------
+// WriteFile
+// ---------------------------------------------------------------------------
+
+bool
+RWStr::WriteFile (const RWString &inPath, std::string_view inBytes)
+{
+	std::ofstream	file (std::filesystem::path (inPath), std::ios::binary | std::ios::trunc);
+	if (!file)
+		return false;
+	file.write (inBytes.data(), std::streamsize (inBytes.size()));
+	file.close();
+	return !file.fail();
 }

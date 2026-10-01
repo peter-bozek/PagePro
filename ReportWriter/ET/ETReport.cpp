@@ -33,8 +33,8 @@ ETReport::ETReport (RWDataSource &inDataSource, ETReportData &inData, long inFla
 mData (inData),
 mOutputOptions (e_OutputOptions (inFlags)),
 mPrintTime (0),
-fd (0),
 mStage (e_OutputStage (0)),
+mJsonSectionOpen (false),
 mPageSection (0),
 mCurrentBody (0),
 mFetchRecord (true),
@@ -227,10 +227,14 @@ const
 // ---------------------------------------------------------------------------
 // Draw the report
 
-void
-ETReport::ReportToFile (FILE *inFile)
+bool
+ETReport::ReportToFile (const RWString &inPath)
 {
-	fd = inFile;
+	mTextOut.clear();
+	mXmlOut.Clear();
+	mXmlCurrent = RWXmlNode();
+	mJsonOut.SetObject();
+	mJsonSectionOpen = false;
 
 	// give the DataSource a chance to get data...
 	mSource.ParseReport (mData.GetReport());
@@ -242,6 +246,7 @@ ETReport::ReportToFile (FILE *inFile)
 # if	_4D_Package_
 	Yield4D();
 # endif
+	mName = mData.GetName();		// was never set, so exports had no report name
 
 	mPrintTime = time (NULL);
 	WriteText ("ReportStart", NULL);
@@ -253,6 +258,16 @@ ETReport::ReportToFile (FILE *inFile)
 	else
 		DrawStaticReport();
 	WriteText ("ReportEnd", NULL);
+
+	// write the whole export at once, as UTF-8
+	switch (GetFormat())
+	{
+		case eFormat_Text:
+		case eFormat_HTML:	return RWStr::WriteFile (inPath, RWStr::ToUTF8 (mTextOut));
+		case eFormat_XML:	return mXmlOut.SaveFile (inPath);
+		case eFormat_JSON:	return RWStr::WriteFile (inPath, RWJson::ToUTF8 (mJsonOut, true));
+		default:			return RWStr::WriteFile (inPath, std::string_view());	// no format: empty file, as before
+	}
 }
 
 
@@ -760,286 +775,240 @@ ETReport::PositionGroup (ETGroup* inGroup)
 
 
 // ---------------------------------------------------------------------------
+// GetFormat														 [private]
+// ---------------------------------------------------------------------------
+// one format per export; the order is the precedence of the old code (JSON added last)
+
+ETReport::EFormat
+ETReport::GetFormat (void)
+const
+{
+	if (mOutputOptions & eo_text)
+		return eFormat_Text;
+	if (mOutputOptions & eo_html)
+		return eFormat_HTML;
+	if (mOutputOptions & eo_xml)
+		return eFormat_XML;
+	if (mOutputOptions & eo_json)
+		return eFormat_JSON;
+	return eFormat_None;
+}
+
+
+// ---------------------------------------------------------------------------
+// JSON output														 [private]
+// ---------------------------------------------------------------------------
+// { "version": "1.0", "name": ..., "sections": [ { "type", "id", "items": [ ... ] } ] }
+
+void
+ETReport::JsonCloseSection (void)
+{
+	if (mJsonSectionOpen)
+	{
+		mJsonOut[u"sections"].PushBack (mJsonSection, mJsonOut.GetAllocator());
+		mJsonSectionOpen = false;
+	}
+}
+
+void
+ETReport::JsonAddItem (const char *inType, ETObject *inObject, const RWString &inText, bool inAttributed)
+{
+	RWJsonAllocator	&alloc = mJsonOut.GetAllocator();
+
+	if (!mJsonSectionOpen)		// items outside of a section
+	{
+		mJsonSection.SetObject();
+		mJsonSection.AddMember (u"items", RWJsonValue (rapidjson::kArrayType), alloc);
+		mJsonSectionOpen = true;
+	}
+
+	RWJsonValue	item (rapidjson::kObjectType);
+	item.AddMember (u"type", RWJson::String (RWStr::FromASCII (inType), alloc), alloc);
+	if (not inObject->mName.IsEmpty())
+		item.AddMember (u"name", RWJson::String (inObject->mName, alloc), alloc);
+	if (not inObject->mID.IsEmpty())
+		item.AddMember (u"id", RWJson::String (inObject->mID, alloc), alloc);
+	RWString	itemClass = static_cast <ETText*> (inObject)->GetClass();
+	if (!itemClass.empty())
+		item.AddMember (u"class", RWJson::String (itemClass, alloc), alloc);
+	if (inAttributed)
+	{
+		item.AddMember (u"value", RWJson::String (RWTools::SplitAttributedString (inText, NULL), alloc), alloc);
+		item.AddMember (u"styled", RWJson::String (inText, alloc), alloc);
+	}
+	else
+		item.AddMember (u"value", RWJson::String (inText, alloc), alloc);
+
+	mJsonSection[u"items"].PushBack (item, alloc);
+}
+
+
+// ---------------------------------------------------------------------------
 // WriteText														 [private]
 // ---------------------------------------------------------------------------
-// writes to output
+// report structure events: ReportStart, ReportEnd, SectionStart, SectionEnd, Delimiter
 
-void			
+void
 ETReport::WriteText (const char *inType, void * inObject)
 {
+	const EFormat	format = GetFormat();
+
 	if (strcasecmp (inType, "ReportStart") == 0)
 	{
+		if (format == eFormat_HTML)
 		{
-			if (mOutputOptions & eo_text) 
-			{
-				// nothing to output 
-			} else if (mOutputOptions & eo_html) 
-			{
-				fprintf (fd, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n");
-				fprintf (fd, "<html>\r\n");
-				fprintf (fd, "<head>\r\n");
-				fprintf (fd, "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n");
-				fprintf (fd, "<title>");
-				//	const char *s = GetReport()->Attribute ("Name");
-				if (not mName.IsEmpty())
-				{
-					CXMLText	name = mName.ToXML();
-					fprintf (fd, "%s", name.c_str());
-					mName.FreeXML (name);
-				}			
-				fprintf (fd, "</title>\r\n");
-				fprintf (fd, "</head>\r\n");
-				fprintf (fd, "<body>\r\n");
-			} 
-			else if (mOutputOptions & eo_xml) 
-			{
-				fprintf (fd, "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>\r\n");
-				fprintf (fd, "<Report Version=\"1.0\"");
-				//	const char *s = GetReport()->Attribute ("Name");
-                if (not mName.IsEmpty())
-                {
-                    CXMLText	name = mName.ToXMLEscaped();
-                    fprintf (fd, " Name=\"%s\"", name.c_str());
-                    mName.FreeXML (name);
-                }
-				fprintf (fd, ">\r\n");
-			}
-			mStage = es_reportstart;
+			mTextOut.append (u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n");
+			mTextOut.append (u"<html>\r\n");
+			mTextOut.append (u"<head>\r\n");
+			mTextOut.append (u"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n");
+			mTextOut.append (u"<title>");
+			mTextOut.append (RWStr::EscapeXML (mName));
+			mTextOut.append (u"</title>\r\n");
+			mTextOut.append (u"</head>\r\n");
+			mTextOut.append (u"<body>\r\n");
 		}
+		else if (format == eFormat_XML)
+		{
+			mXmlOut.AddDeclaration (u"utf-8", true);
+			mXmlCurrent = mXmlOut.Node().Append (u"Report");
+			mXmlCurrent.SetAttr (u"Version", u"1.0");
+			if (not mName.IsEmpty())
+				mXmlCurrent.SetAttr (u"Name", mName);
+		}
+		else if (format == eFormat_JSON)
+		{
+			RWJsonAllocator	&alloc = mJsonOut.GetAllocator();
+			mJsonOut.AddMember (u"version", RWJson::String (u"1.0", alloc), alloc);
+			if (not mName.IsEmpty())
+				mJsonOut.AddMember (u"name", RWJson::String (mName, alloc), alloc);
+			mJsonOut.AddMember (u"sections", RWJsonValue (rapidjson::kArrayType), alloc);
+		}
+		mStage = es_reportstart;
 	}
 	else if (strcasecmp (inType, "ReportEnd") == 0)
 	{
+		if (format == eFormat_HTML)
 		{
-			if (mOutputOptions & eo_text) 
-			{
-				// nothing to output 
-			} 
-			else if (mOutputOptions & eo_html) 
-			{
-				fprintf (fd, "</body>\r\n");
-				fprintf (fd, "</html>\r\n");
-			} 
-			else if (mOutputOptions & eo_xml) 
-			{
-				fprintf (fd, "</Report>\r\n");
-			}
+			mTextOut.append (u"</body>\r\n");
+			mTextOut.append (u"</html>\r\n");
 		}
+		else if (format == eFormat_JSON)
+			JsonCloseSection();
 	}
 	else if (strcasecmp (inType, "SectionStart") == 0)
 	{
+		ETSection	*section = static_cast <ETSection*> (inObject);
+		if (format == eFormat_HTML)
+			mTextOut.append (u"<DIV>\r\n");
+		else if (format == eFormat_XML)
 		{
-			if (mOutputOptions & eo_text) 
-			{
-				// nothing to output 
-			} 
-			else if (mOutputOptions & eo_html) 
-			{
-				fprintf (fd, "<DIV>\r\n");
-			} 
-			else if (mOutputOptions & eo_xml) 
-			{
-                ETSection* section = (ETSection*) (inObject) ;
-				fprintf (fd, "<Section");
-                if (not section->GetType().IsEmpty())
-                {
-                    fprintf (fd, " type=\"");
-                    RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8(section->GetType()) );
-                    fprintf (fd, "\"");
-                }
-//                if (not section->GetName().IsEmpty())
-//                {
-//                    fprintf (fd, " name=\"");
-//                    RWTools::WriteText (fd, section->GetName());
-//                    fprintf (fd, "\"");
-//                }
-                if (not section->GetID().IsEmpty())
-                {
-                    fprintf (fd, " id=\"");
-                    RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8(section->GetID()));
-                    fprintf (fd, "\"");
-                }
-               fprintf (fd, ">\r\n");
-
-			}
-		}		
+			mXmlCurrent = mXmlCurrent.Append (u"Section");
+			if (not section->GetType().IsEmpty())
+				mXmlCurrent.SetAttr (u"type", section->GetType());
+			if (not section->GetID().IsEmpty())
+				mXmlCurrent.SetAttr (u"id", section->GetID());
+		}
+		else if (format == eFormat_JSON)
+		{
+			RWJsonAllocator	&alloc = mJsonOut.GetAllocator();
+			JsonCloseSection();
+			mJsonSection.SetObject();
+			if (not section->GetType().IsEmpty())
+				mJsonSection.AddMember (u"type", RWJson::String (section->GetType(), alloc), alloc);
+			if (not section->GetID().IsEmpty())
+				mJsonSection.AddMember (u"id", RWJson::String (section->GetID(), alloc), alloc);
+			mJsonSection.AddMember (u"items", RWJsonValue (rapidjson::kArrayType), alloc);
+			mJsonSectionOpen = true;
+		}
 	}
-	else if (strcasecmp(inType, "SectionEnd") == 0)
+	else if (strcasecmp (inType, "SectionEnd") == 0)
 	{
+		if (format == eFormat_Text)
+			mTextOut.append (u"\r\n");
+		else if (format == eFormat_HTML)
+			mTextOut.append (u"</DIV>\r\n");
+		else if (format == eFormat_XML)
 		{
-			if (mOutputOptions & eo_text) 
-			{
-				fprintf (fd, "\r\n");
-			} 
-			else if (mOutputOptions & eo_html) 
-			{
-				fprintf (fd, "</DIV>\r\n");
-			} 
-			else if (mOutputOptions & eo_xml) 
-			{
-				fprintf (fd, "</Section>\r\n");
-			}
-		}		
+			if (mXmlCurrent.NameIs ("Section"))
+				mXmlCurrent = mXmlCurrent.Parent();
+		}
+		else if (format == eFormat_JSON)
+			JsonCloseSection();
 	}
 	else if (strcasecmp (inType, "Delimiter") == 0)
 	{
-		{
-			if (mOutputOptions & eo_text) 
-			{
-				fprintf (fd, "\t");
-			} 
-		}		
-	}	
+		if (format == eFormat_Text)
+			mTextOut.append (u"\t");
+	}
 #if	TARGET_DEBUG
 	else
 		printf ("ETReport::WriteText: unhandled case \"%s\"!\n", inType);
 #endif
 }
 
-void			
+
+// ---------------------------------------------------------------------------
+// WriteText														 [private]
+// ---------------------------------------------------------------------------
+// report items: "Text" (static text, only with eo_static) and "Variable"
+
+void
 ETReport::WriteText (const char *inType, ETObject * inObject, RWTextValue &inText)
 {
-	CXMLText	text;
-	ETText *	toText = static_cast<ETText*> (inObject);
-	bool		isAttributed = toText->IsAttributed ();
-	if (strcasecmp (inType, "Text") == 0)
-	{
-		{
-			if (mOutputOptions & eo_static)
-			{
-				if (mOutputOptions & eo_text) 
-				{
-					RWTextValue		plainText;
-					if (isAttributed)
-						plainText.Attach(RWTools::SplitAttributedString(inText, NULL));	
-					else 
-						plainText = inText;
-					
-					text = plainText.ToXML();	// UTF8
+	const EFormat	format = GetFormat();
+	ETText			*toText = static_cast<ETText*> (inObject);
+	const bool		isAttributed = toText->IsAttributed ();
+	const bool		isText = strcasecmp (inType, "Text") == 0;
+	const bool		isVariable = strcasecmp (inType, "Variable") == 0;
 
-					fprintf (fd, "%s", text.c_str());
-					plainText.FreeXML (text);
-					plainText.Free();
-
-				} 
-				else if (mOutputOptions & eo_html)
-				{
-					fprintf (fd, "<DIV");
-					if (not inObject->mName.IsEmpty())
-					{
-						fprintf (fd, " name=\"");
-						RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (inObject->mName));
-						fprintf (fd, "\"");
-					}
-					if (not inObject->mID.IsEmpty())
-					{
-						fprintf (fd, " id=\"");
-						RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (inObject->mID));
-						fprintf (fd, "\"");
-					}
-					fprintf (fd, ">");				
-					text = inText.ToXMLEscaped();	// UTF8
-					fprintf (fd, "%s", text.c_str());
-					inText.FreeXML (text);
-					fprintf (fd, "</DIV>\r\n");
-				}
-				else if (mOutputOptions & eo_xml)
-				{
-					fprintf (fd, "<%s", inType);
-					if (not inObject->mName.IsEmpty())
-					{
-						fprintf (fd, " name=\"");
-						RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 ( inObject->mName));
-						fprintf (fd, "\"");
-					}
-					if (not inObject->mID.IsEmpty())
-					{
-						fprintf (fd, " id=\"");
-						RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (inObject->mID));
-						fprintf (fd, "\"");
-					}
-                    fprintf (fd, " class=\"");
-                    RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (toText->GetClass()));
-                    fprintf (fd, "\"");
-                    fprintf (fd, " type=\"text\"");
-					fprintf (fd, ">");
-					text = inText.ToXMLEscaped();	// UTF8
-					fprintf (fd, "%s", text.c_str());
-					inText.FreeXML (text);
-					fprintf (fd, "</%s>\r\n", inType);
-				}
-			}
-		}
-	}
-	else if (strcasecmp (inType, "Variable") == 0)
+	if (!(isText && (mOutputOptions & eo_static)) && !isVariable)
 	{
-		{
-			{
-				if (mOutputOptions & eo_text)
-				{
-					RWTextValue		plainText;
-                    if (isAttributed)
-                        plainText.Attach(RWTools::SplitAttributedString(inText, NULL));
-                    else
-                        plainText = inText;
-					text = plainText.ToXML();	// UTF8
-                    if(text.length() > 0)
-                         fprintf (fd, "%s", text.c_str());
-					plainText.FreeXML (text);
-					plainText.Free();
-				} 
-				else if (mOutputOptions & eo_html) 
-				{
-					fprintf (fd, "<span");
-					if (not inObject->mName.IsEmpty())
-					{
-						fprintf (fd, " name=\"");
-						RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (inObject->mName));
-						fprintf (fd, "\"");
-					}
-					if (not inObject->mID.IsEmpty())
-					{
-						fprintf (fd, " id=\"");
-						RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (inObject->mID));
-						fprintf (fd, "\"");
-					}
-					fprintf (fd, ">");					
-					text = inText.ToXMLEscaped();	// UTF8
-                    if(text.length() > 0)
-                        fprintf (fd, "%s", text.c_str());
-					inText.FreeXML (text);
-					fprintf (fd, "</span>\r\n");
-				} 
-				else if (mOutputOptions & eo_xml) 
-				{
-					fprintf (fd, "<variable");
-					if (not inObject->mName.IsEmpty())
-					{
-						fprintf (fd, " name=\"");
-						RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (inObject->mName));
-						fprintf (fd, "\"");
-					}
-					if (not inObject->mID.IsEmpty())
-					{
-						fprintf (fd, " id=\"");
-						RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (inObject->mID));
-						fprintf (fd, "\"");
-					}
-                    fprintf (fd, " class=\"");
-                    RWTools::WriteText (fd, RWTextValue::UTF_16_to_UTF8 (toText->GetClass()));
-                    fprintf (fd, "\"");
-                    fprintf (fd, " type=\"variable\"");
-					fprintf (fd, ">");
-					text = inText.ToXMLEscaped();	// UTF8
-                    if(text.length() > 0)
-                        fprintf (fd, "%s", text.c_str());
-					inText.FreeXML (text);
-					fprintf (fd, "</variable>\r\n");
-				}
-			}
-		}		
-	}
 #if	TARGET_DEBUG
-	else
-		printf ("ETReport::WriteText2: unhandled case \"%s\"!\n", inType);
+		if (!isText)
+			printf ("ETReport::WriteText2: unhandled case \"%s\"!\n", inType);
 #endif
+		return;
+	}
+
+	switch (format)
+	{
+		case eFormat_Text:
+			mTextOut.append (isAttributed ? RWTools::SplitAttributedString (inText, NULL) : RWString (inText));
+			break;
+
+		case eFormat_HTML:
+		{
+			const char16_t	*tag = isText ? u"DIV" : u"span";
+			mTextOut.append (u"<").append (tag);
+			if (not inObject->mName.IsEmpty())
+				mTextOut.append (u" name=\"").append (RWStr::EscapeXML (inObject->mName)).append (u"\"");
+			if (not inObject->mID.IsEmpty())
+				mTextOut.append (u" id=\"").append (RWStr::EscapeXML (inObject->mID)).append (u"\"");
+			mTextOut.append (u">");
+			mTextOut.append (RWStr::EscapeXML (inText));
+			mTextOut.append (u"</").append (tag).append (u">\r\n");
+			break;
+		}
+
+		case eFormat_XML:
+		{
+			RWXmlNode	elem = mXmlCurrent.Append (isText ? u"text" : u"variable");	// element names as the old writer produced them
+			if (not inObject->mName.IsEmpty())
+				elem.SetAttr (u"name", inObject->mName);
+			if (not inObject->mID.IsEmpty())
+				elem.SetAttr (u"id", inObject->mID);
+			elem.SetAttr (u"class", toText->GetClass());
+			elem.SetAttr (u"type", isText ? u"text" : u"variable");
+			if (not inText.IsEmpty())
+				elem.AppendText (inText);
+			break;
+		}
+
+		case eFormat_JSON:
+			JsonAddItem (isText ? "text" : "variable", inObject, inText, isAttributed);
+			break;
+
+		default:
+			break;
+	}
 }

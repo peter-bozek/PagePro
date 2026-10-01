@@ -13,6 +13,7 @@
 # include	"ETReportData.h"
 # include	"RWCalculator.h"
 # include	"RWBaseTypes.h"
+# include	"RWJson.h"
 
 // forward declarations
 class	RWDataSource;
@@ -28,6 +29,7 @@ enum e_OutputOptions {
 	eo_headers		=	0x4000,
 	eo_static		=	0x0020,
 	eo_sortbyitem	=	0x0040,
+	eo_json			=	0x8000,		// JSON export (used when none of text, HTML, XML is set)
 	
 	eo_last
 };
@@ -72,6 +74,14 @@ public:
 	void			WriteText (const char *inType, ETObject * object, RWTextValue &inText);
 
 private:
+	enum EFormat	{ eFormat_None, eFormat_Text, eFormat_HTML, eFormat_XML, eFormat_JSON };
+	EFormat			GetFormat (void) const;
+	void			JsonAddItem (const char *inType, ETObject *inObject, const RWString &inText, bool inAttributed);
+	void			JsonCloseSection (void);
+
+public:
+
+private:
 	void			DrawStaticReport (void);
 	void			DrawStaticPage (ETPageSection *inBody);
 	void			PrepareDynamicReport (void);
@@ -95,8 +105,15 @@ private:
 	RWTextValue			mVarNames [RW_VarNamesRWCount];
 	time_t				mPrintTime;
 	
-	FILE	*			fd;
 	e_OutputStage		mStage;
+
+	// output, built in memory by WriteText and written once by ReportToFile
+	RWString			mTextOut;			// text / HTML
+	RWXmlDocument		mXmlOut;			// XML
+	RWXmlNode			mXmlCurrent;		// element receiving XML output
+	RWJsonDocument		mJsonOut;			// JSON
+	RWJsonValue			mJsonSection;		// section being filled
+	bool				mJsonSectionOpen;
 	
 	RWTextValue			mName;
 	

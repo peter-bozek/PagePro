@@ -56,7 +56,7 @@ public:
 	virtual						~ETObject (void);
 protected:
 								ETObject (int inOrder);
-	virtual		void			Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode);
 	RWTextValue                 GetVariableText (const CText inVariableName, const CText inFormat) const;
 	
 private:
@@ -103,7 +103,7 @@ class	ETGroup
 :	public	ETObject
 {
 public:
-	static		ETGroup		*	Create (ETReportData *inReport, XMLElement *inNode, int inOrder);
+	static		ETGroup		*	Create (ETReportData *inReport, RWXmlNode inNode, int inOrder);
 	
 	virtual		EObject_Kind	GetKind (void) const;
 	virtual		void			FetchCalcValue (ETReport *inWriter);
@@ -114,7 +114,7 @@ public:
 protected:
 								ETGroup (int inOrder);
 	virtual						~ETGroup (void);
-	virtual		void			Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode) override;
 	
 private:
 	// defensive programming - not implemented
@@ -133,7 +133,7 @@ class	ETText
 :	public	ETObject
 {
 public:
-	static		ETText		*	Create (ETReportData *inReport, XMLElement *inNode, int inOrder);
+	static		ETText		*	Create (ETReportData *inReport, RWXmlNode inNode, int inOrder);
 	
 	virtual		EObject_Kind	GetKind (void) const;
 	virtual		void			FetchCalcValue (ETReport *inWriter);
@@ -144,7 +144,7 @@ public:
 protected:
 	ETText (int inOrder);
 	virtual						~ETText (void);
-	virtual		void			Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode) override;
 	RWTextValue					ParseText (void);
 	
 private:
@@ -173,7 +173,7 @@ class	ETVariable
 	friend class	ETReportData;
 	
 public:
-	static		ETVariable	*	Create (ETReportData *inReport, XMLElement *inNode, int inOrder);
+	static		ETVariable	*	Create (ETReportData *inReport, RWXmlNode inNode, int inOrder);
 	
 	virtual		EObject_Kind	GetKind (void) const;
 	virtual		void			Export ();
@@ -181,7 +181,7 @@ public:
 protected:
 								ETVariable (int inOrder);
 	virtual						~ETVariable (void);
-	virtual		void			Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode) override;
 	
 	void			GetVariableData (void);
 	void			SetVariableText (const CText inConstValue);
@@ -216,7 +216,7 @@ public:
 protected:
 									ETHeader (void);
 									ETHeader (const CText inText, int inColSpan, int inRowSpan, RWStyle *inStyle);
-	void			Parse (ETReportData *inReport, XMLElement *inNode, long inStyleID);
+	void			Parse (ETReportData *inReport, RWXmlNode inNode, long inStyleID);
 	inline			void			AdjustStartCol (int inCol);
 	
 private:
@@ -253,7 +253,7 @@ protected:
 									ETColumn (void);
 									ETColumn (float inWidth, RWStyle *inStyle);
 									ETColumn (const ETColumn &inOriginal);
-	void							Parse (ETReportData *inReport, XMLElement *inNode, long inStyleID);
+	void							Parse (ETReportData *inReport, RWXmlNode inNode, long inStyleID);
 	inline			void			SetStyle (RWStyle *inStyle);
 	
 private:
@@ -277,7 +277,7 @@ class	ETTable
 :	public	ETObject
 {
 public:
-	static		ETTable		*	Create (ETReportData *inReport, XMLElement *inNode, int inOrder);
+	static		ETTable		*	Create (ETReportData *inReport, RWXmlNode inNode, int inOrder);
 	
 	virtual		void			Reset (bool inAll);
 	virtual		EObject_Kind	GetKind (void) const;
@@ -287,8 +287,8 @@ public:
 protected:
 								ETTable (int inOrder);
 	virtual						~ETTable (void);
-	virtual		void			Parse (ETReportData *inReport, XMLElement *inNode);
-	void			ParseHeading (XMLElement *inNode);
+	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode) override;
+	void			ParseHeading (RWXmlNode inNode);
 	void			AdjustHeaders (void);
 	void			AdjustColumns (void);
 	ETHeader	*	GetHeader (int inRow, int inCol) const;

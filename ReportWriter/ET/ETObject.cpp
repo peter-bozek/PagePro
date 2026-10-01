@@ -114,17 +114,14 @@ const
 // ---------------------------------------------------------------------------
 
 void
-ETObject::Parse (ETReportData *inReport, XMLElement *inNode)
+ETObject::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	mReportData = inReport;
 	
-	XMLAttribute const	*attrib;
 	long		    lVal;
 	
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
 		
 		if (STR_EQUALS (name, "r"))
 		{
@@ -133,38 +130,38 @@ ETObject::Parse (ETReportData *inReport, XMLElement *inNode)
 		else if (STR_EQUALS (name, "t"))
 		{
 			mPosition.top = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.top);
+			RWStr::ReadNumber (value, mPosition.top);
 		}
 		else if (STR_EQUALS (name, "l"))
 		{
 			mPosition.left = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.left);
+			RWStr::ReadNumber (value, mPosition.left);
 		}
 		else if (STR_EQUALS (name, "b"))
 		{
 			mPosition.bottom = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.bottom);
+			RWStr::ReadNumber (value, mPosition.bottom);
 		}
 		else if (STR_EQUALS (name, "ri"))
 		{
 			mPosition.right = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.right);
+			RWStr::ReadNumber (value, mPosition.right);
 		}
 		else if (STR_EQUALS (name, "h") || STR_EQUALS (name, "height"))
 		{
 			mPosition.bottom = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.bottom);
+			RWStr::ReadNumber (value, mPosition.bottom);
 			mPosition.bottom += mPosition.top;
 		}
 		else if (STR_EQUALS (name, "w") || STR_EQUALS (name, "width"))
 		{
 			mPosition.right = 0;
-			sscanf (value.c_str(), "%lg", &mPosition.right);
+			RWStr::ReadNumber (value, mPosition.right);
 			mPosition.right += mPosition.left;
 		}
 		else if (STR_EQUALS (name, "draw"))
 		{
-			if (sscanf (value.c_str(), "%li", &lVal) == 1)
+			if (RWStr::ReadNumber (value, lVal))
 			{
 				if (lVal >= eDraw_No && lVal <= eDraw_Always)
 					mDraw = EDraw (lVal);
@@ -253,7 +250,7 @@ const
 // ---------------------------------------------------------------------------
 
 ETGroup*
-ETGroup::Create (ETReportData *inReport, XMLElement *inNode, int inOrder)
+ETGroup::Create (ETReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	ETGroup	*group = new ETGroup (inOrder);
 	group->Parse (inReport, inNode);
@@ -287,7 +284,7 @@ ETGroup::~ETGroup (void)
 // ---------------------------------------------------------------------------
 
 void
-ETGroup::Parse (ETReportData *inReport, XMLElement *inNode)
+ETGroup::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	ETObject::Parse (inReport, inNode);
 		
@@ -364,7 +361,7 @@ ETGroup::GetObjects (void)
 // ---------------------------------------------------------------------------
 
 ETText*
-ETText::Create (ETReportData *inReport, XMLElement *inNode, int inOrder)
+ETText::Create (ETReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	ETText	*text = new ETText (inOrder);
 	text->Parse (inReport, inNode);
@@ -400,45 +397,42 @@ ETText::~ETText (void)
 // ---------------------------------------------------------------------------
 
 void
-ETText::Parse (ETReportData *inReport, XMLElement *inNode)
+ETText::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	ETObject::Parse (inReport, inNode);
 	long	mStyleID = 0;
 	
-    XMLElement	*elem = inNode->FirstChildElement (GetKind() == eObject_Text ? "TextProps" : "VariableProps");
-	if (elem == NULL)
+	RWXmlNode	elem = inNode.Child (GetKind() == eObject_Text ? u"TextProps" : u"VariableProps");
+	if (!elem)
 		elem = inNode;
 	
 	if (elem)
 	{
-		XMLAttribute const	*attrib;
 		long			    lVal;
 		
-		for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
+		for (const auto &[name, value] : elem.Attributes())
 		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
 			
 			if (STR_EQUALS (name, "style"))
 			{
 				mStyleID = 0;
-				sscanf (value.c_str(), "%li", &mStyleID);
+				RWStr::ReadNumber (value, mStyleID);
 			}
 			else if (STR_EQUALS (name, "dynamic"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mIsDynamic = (lVal != 0);
 			}
 			else if (STR_EQUALS (name, "attributed"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				mIsAttributed = (lVal != 0);
 			}
 			else if (STR_EQUALS (name, "empty"))
 			{
-				if (sscanf (value.c_str(), "%li", &lVal) == 1)
+				if (RWStr::ReadNumber (value, lVal))
 				{
 					if (lVal >= eEmpty_Draw && lVal <= eEmpty_RemoveRow)
 						mDrawIfEmpty = EEmpty (lVal);
@@ -452,11 +446,11 @@ ETText::Parse (ETReportData *inReport, XMLElement *inNode)
 			}
 			else if (STR_EQUALS (name, "var"))
 			{
-				mVarName.Copy (value.c_str());
+				mVarName = value;
 			}
 			else if (STR_EQUALS (name, "val"))
 			{
-				mVarValue.SetReal (atof (value.c_str()));
+				mVarValue.SetReal (RWStr::ToDouble (value).value_or (0));
 			}
 		}
 		
@@ -541,47 +535,32 @@ ETText::ParseText (void)
 		long	textLen = mText.StrLength();
 		long	curPos = 0, delta = 0, endPos;
 		
-		CText	result (mText);
-		CText   varName;
-		CText   format;
+		RWString	result (mText);
+		RWString	varName;
+		RWString	format;
 		while (curPos < textLen && RWTools::ParseTextForVar (mIsAttributed, mText, textLen, curPos, endPos, varName, format))
 		{
-			const UniChar *	varname = varName.c_str();
-			bool		    encode = mIsAttributed;
-			if (varname && *varname == '+')
+			RWStringView	varname = varName;
+			bool			encode = mIsAttributed;
+			if (!varname.empty() && varname[0] == u'+')
 			{
-				varname++;
+				varname.remove_prefix (1);
 				encode = false;
 			}
-			RWTextValue	varText;
-			if (varname && *varname)
-				varText = GetVariableText (varname, format);
-			varName.erase();
-			format.erase();
-			size_t	varLen;
-			if (!varText.IsEmpty())
-				varLen = varText.StrLength();
-			else
-				varLen = 0;
+			RWString	varText;
+			if (!varname.empty())
+				varText = GetVariableText (RWString (varname), format);
+			varName.clear();
+			format.clear();
+
 			result.erase (curPos - delta, endPos - curPos);
-			if (varLen > 0)
-			{
-				if (encode)
-				{
-                    StrPair     	encoded;
-					CText	        us (varText, varLen);
-                    encoded.SetStr(RWTextValue::UTF_16_to_UTF8(us).c_str(), StrPair::NEEDS_ENTITY_PROCESSING);
-                    us = RWTextValue::UTF_8_to_UTF16(encoded.GetStr());
-					result.insert (curPos - delta, us);
-					varLen = us.length();
-				}
-				else
-					result.insert (curPos - delta, varText, varLen);
-			}
-			delta += endPos - curPos - varLen;
+			if (encode)		// was tinyxml2 StrPair entity processing, which decodes instead of encoding
+				varText = RWTools::EscapeAttributedString (varText);
+			result.insert (curPos - delta, varText);
+			delta += endPos - curPos - (long) varText.size();
 			curPos = endPos;
 		}
-		text.Attach (result);
+		text = result;
 	}
 	
 	return text;
@@ -595,7 +574,7 @@ ETText::ParseText (void)
 // ---------------------------------------------------------------------------
 
 ETVariable*
-ETVariable::Create (ETReportData *inReport, XMLElement *inNode, int inOrder)
+ETVariable::Create (ETReportData *inReport, RWXmlNode inNode, int inOrder)
 {
 	ETVariable	*var = new ETVariable (inOrder);
 	var->Parse (inReport, inNode);
@@ -630,28 +609,25 @@ ETVariable::~ETVariable (void)
 // ---------------------------------------------------------------------------
 
 void
-ETVariable::Parse (ETReportData *inReport, XMLElement *inNode)
+ETVariable::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	ETText::Parse (inReport, inNode);
 	
-    XMLElement	*elem = inNode->FirstChildElement ("VariableProps");
-	if (elem == NULL)
+	RWXmlNode	elem = inNode.Child (u"VariableProps");
+	if (!elem)
 		elem = inNode;
 	//	if (elem)
 	//	{
-	//		mSource.FromXML (elem->Attribute ("source"));
-	//		mFormat.FromXML (elem->Attribute ("format"));
-	//		elem = elem->FirstChildElement ("Calc");
+	//		mSource.FromXML (elem.Attr (u"source"));
+	//		mFormat.FromXML (elem.Attr (u"format"));
+	//		elem = elem.Child (u"Calc");
 	//	}
 	if (elem)
 	{
-		const XMLAttribute	*attrib;
 		long			lVal;
 		
-		for ( attrib = elem->FirstAttribute(); attrib; attrib = attrib->Next() )
+		for (const auto &[name, value] : elem.Attributes())
 		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
 			
 			if (STR_EQUALS (name, "source") || STR_EQUALS (name, "src"))
 			{
@@ -664,7 +640,7 @@ ETVariable::Parse (ETReportData *inReport, XMLElement *inNode)
 			else if (STR_EQUALS (name, "calc"))
 			{
 				lVal = 0;
-				sscanf (value.c_str(), "%li", &lVal);
+				RWStr::ReadNumber (value, lVal);
 				if (lVal >= ECalcType_None && lVal < ECalcType_Last)
 					mCalcType = ECalcType (lVal);
 			}

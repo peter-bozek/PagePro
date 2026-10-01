@@ -26,3 +26,13 @@ clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -Wall -Wex
 	"$OUT/pugixml.o" "$OUT/4DPluginAPI.o" -framework CoreFoundation -framework CoreGraphics -o "$OUT/RWBaseTypesTests"
 
 "$OUT/RWBaseTypesTests"
+
+# export (ET): processed report to text, HTML, XML and JSON
+clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$ROOT/ET" -w -fsanitize=address,undefined \
+	"$ROOT"/ET/*.cpp "$ROOT/RW/RWBaseTypes.cpp" "$ROOT/RW/RWString.cpp" "$ROOT/RW/RWXml.cpp" "$ROOT/RW/RWDataProvider.cpp" \
+	"$ROOT/RW/RWDataSource.cpp" "$ROOT/RW/RWDataSourceProvider.cpp" "$ROOT/RW/RWCalculator.cpp" "$ROOT/RW/RWStyle.cpp" \
+	"$ROOT/DM/PSObject.cpp" "$ROOT/SRP/ExtendedExecute.cpp" "$ROOT/tests/ETExportTests.cpp" \
+	"$OUT/pugixml.o" "$OUT/4DPluginAPI.o" -framework CoreFoundation -framework CoreGraphics -o "$OUT/ETExportTests"
+
+mkdir -p "$OUT/export"
+"$OUT/ETExportTests" "$OUT/export"

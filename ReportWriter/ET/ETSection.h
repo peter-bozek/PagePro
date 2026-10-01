@@ -37,11 +37,11 @@ public:
 		ePageThrow_After
 	};
 	
-								ETSection (const CXMLText inKind);
+								ETSection (RWStringView inKind);
 								ETSection (ESection_Kind inKind);
 	virtual						~ETSection (void);
 	
-	virtual		void			Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode);
 	virtual		bool			WillingToPrint (ETReport *inWriter) const;
 	virtual		void			PositionObjects (ETReport *inWriter);
 	
@@ -75,10 +75,10 @@ class	ETHeaderFooterSection
 :	public	ETSection
 {
 public:
-									ETHeaderFooterSection (const CXMLText inKind);
+									ETHeaderFooterSection (RWStringView inKind);
 	virtual							~ETHeaderFooterSection (void);
 	
-	virtual		void				Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void				Parse (ETReportData *inReport, RWXmlNode inNode) override;
 //	virtual		bool				WillingToPrint (ETReport *inWriter) const;
 	
 //	virtual		void				PositionObjects (ETReport *inWriter);
@@ -97,10 +97,10 @@ class	ETBreakSection
 :	public	ETSection
 {
 public:
-									ETBreakSection(const CXMLText inKind);
+									ETBreakSection(RWStringView inKind);
 	virtual							~ETBreakSection (void);
 	
-	virtual		void				Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void				Parse (ETReportData *inReport, RWXmlNode inNode) override;
 	virtual		bool				WillingToPrint (ETReport *inWriter) const;
 	
 	int								GetLevel (void) const;
@@ -125,7 +125,7 @@ public:
 									ETPageSection(void);
 	virtual							~ETPageSection (void);
 	
-	virtual		void				Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void				Parse (ETReportData *inReport, RWXmlNode inNode) override;
 	
 private:
 	// defensive programming - not implemented
@@ -141,10 +141,10 @@ class	ETWatermarkSection
 :	public	ETHeaderFooterSection
 {
 public:
-									ETWatermarkSection(const CXMLText inKind);
+									ETWatermarkSection(RWStringView inKind);
 	virtual							~ETWatermarkSection (void);
 	
-	virtual		void				Parse (ETReportData *inReport, XMLElement *inNode);
+	virtual		void				Parse (ETReportData *inReport, RWXmlNode inNode) override;
 	bool							IsOnTop (void) const;
 	
 private:

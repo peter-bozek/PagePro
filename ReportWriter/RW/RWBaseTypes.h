@@ -924,8 +924,9 @@ enum	RW_VarNames
 	RW_VarRWRecord,
 
 	RW_VarNamesSRCount,
-	RW_VarNamesRWCount = RW_VarName + 1
+	RW_VarNamesRWCount = RW_VarHorPages + 1		// was RW_VarName + 1: HORPAGE / HORPAGES were written past the arrays
 };
+static_assert (RW_VarNamesRWCount == RW_VarRWDate, "RW variables must come before the SR variables");
 
 
 

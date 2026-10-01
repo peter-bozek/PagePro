@@ -20,7 +20,7 @@ extern	"C"		void Yield4D (void);
 // ETReportData								Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-ETReportData::ETReportData (XMLDocument *inXML)
+ETReportData::ETReportData (RWXmlDocument *inXML)
 :	mReportWriter (0),
 mXML (inXML),
 mWatermark (0),
@@ -45,11 +45,11 @@ ETReportData::~ETReportData (void)
 // GetReport														  [public]
 // ---------------------------------------------------------------------------
 
-const XMLElement*
+RWXmlNode
 ETReportData::GetReport (void)
 const
 {
-	return mXML->RootElement();
+	return mXML->Root();
 }
 
 
@@ -72,56 +72,31 @@ const
 void
 ETReportData::ParseReport (void)
 {
-	XMLNode		*report = mXML->RootElement();	// should be same as mXML->FirstChild ("Report");
-	XMLNode		*node = NULL, *next;
-    XMLElement	*elem;
-	const char *	value;
-	
-	if (report)
+	RWXmlNode	report = mXML->Root();	// "Report"
+
+	if (!report || !RWStr::Equals (report.Attr (u"Version"), "1.0"))
+		return;
+
+	if (report.AttrInt (u"Dynamic", 0) != 0)
+		mIsDynamic = true;
+	if (report.HasAttr (u"name"))
+		mName = report.Attr (u"name");
+	if (report.HasAttr (u"id"))
+		mID = report.Attr (u"id");
+
+	for (RWXmlNode elem : report.Children())
 	{
-		elem = report->ToElement();
-		if (elem && (value = elem->Attribute ("Version")) != NULL && TEXT_EQUALS (value, "1.0"))
-		{
-			node = report->FirstChildElement();
-			if ((value = elem->Attribute ("Dynamic")) != NULL && atol (value) != 0)
-				mIsDynamic = true;
-			if ((value = elem->Attribute ("name")) != NULL)
-				mName.FromXML (value);
-			if ((value = elem->Attribute ("id")) != NULL)
-				mID.FromXML (value);
-		}
-	}
-	
-	for ( ; node; node = next )
-	{
-		next = node->NextSibling();
-		elem = node->ToElement();
-		if (elem == NULL)
-		{
-			//			report->RemoveChild (node);
-			continue;
-		}
-		
-		value = elem->Value();
-		if (strcasecmp (value, "StyleSet") == 0)
-		{
+		const RWString	value = elem.Name();
+		if (STR_EQUALS (value, "StyleSet"))
 			ParseStyleSet (elem);
-		}
-		else if (strcasecmp (value, "Header") == 0 || strcasecmp (value, "Page") == 0 || strcasecmp (value, "Footer") == 0)
+		else if (STR_EQUALS (value, "Header") || STR_EQUALS (value, "Page") || STR_EQUALS (value, "Footer"))
 			ParseSection (elem);
-		else if (strcasecmp (value, "Watermark") == 0)
+		else if (STR_EQUALS (value, "Watermark"))
 			ParseSection (elem);
-		else if (strcasecmp (value, "BreakHeader") == 0 || strcasecmp (value, "BreakFooter") == 0)
-		{
+		else if (STR_EQUALS (value, "BreakHeader") || STR_EQUALS (value, "BreakFooter"))
 			ParseSection (elem);
-		}
-		else
-		{
-			//			report->RemoveChild (node);
-			continue;
-		}
 	}
-	
+
 	return;
 }
 
@@ -131,30 +106,26 @@ ETReportData::ParseReport (void)
 // ---------------------------------------------------------------------------
 
 void
-ETReportData::ParseStyleSet (XMLElement *inStyleSet)
+ETReportData::ParseStyleSet (RWXmlNode inStyleSet)
 {
-	XMLNode	*node;
 	RWStyle		*style;
-	
-	for ( node = inStyleSet->FirstChildElement(); node; node = node->NextSibling() )
+
+	for (RWXmlNode elem : inStyleSet.Children())
 	{
-        XMLElement	*elem = node->ToElement();
-		if (elem == NULL)
+		if (!STR_EQUALS (elem.Name(), "Style"))
 			continue;
-		if (!strcasecmp (elem->Value(), "Style") == 0)
-			continue;
-		
+
 		style = new RWStyle (&mStyles, elem);
 		mStyles.insert (pair<long,RWStyle*> (style->GetID (), style));
 	}
-	
+
 	//mbs 23122009	create default only if not present
 	if (mStyles.FindStyle (0) == NULL || mStyles.FindStyle (0)->GetID() != 0)
 	{
-		style = new RWStyle (&mStyles, NULL);
+		style = new RWStyle (&mStyles, RWXmlNode());
 		mStyles.insert (pair<long,RWStyle*> (0, style));	// add default style
 	}
-	
+
 	return;
 }
 
@@ -164,29 +135,22 @@ ETReportData::ParseStyleSet (XMLElement *inStyleSet)
 // ---------------------------------------------------------------------------
 
 void
-ETReportData::ParseSection (XMLElement *inSection)
+ETReportData::ParseSection (RWXmlNode inSection)
 {
+	const RWString	sectionName = inSection.Name();
+
 	if (mIsDynamic)
 	{
-		if (strcasecmp (inSection->Value(), "Page") == 0)
+		if (STR_EQUALS (sectionName, "Page"))
 		{
 			ETPageSection	*pageSection = new ETPageSection;
 			pageSection->Parse (this, inSection);
 			mBody.push_back (pageSection);
-			
-			XMLNode	*node, *next;
-			
-			for ( node = inSection->FirstChildElement(); node; node = next )
+
+			for (RWXmlNode elem : inSection.Children())
 			{
-				next = node->NextSibling();
-                XMLElement	*elem = node->ToElement();
-				if (elem == NULL)
-				{
-					continue;
-				}
-				
-				const CXMLText	value = elem->Value();
-				
+				const RWString	value = elem.Name();
+
 				if (STR_EQUALS (value, "Body"))
 				{
 					ETSection	*body = new ETSection (ETSection::eSectionKind_Body);
@@ -222,31 +186,31 @@ ETReportData::ParseSection (XMLElement *inSection)
 	}
 	else
 	{
-		if (strcasecmp (inSection->Value(), "Page") == 0)
+		if (STR_EQUALS (sectionName, "Page"))
 		{
 			ETPageSection	*pageSection = new ETPageSection;
 			pageSection->Parse (this, inSection);
 			mBody.push_back (pageSection);
 			ParseObjects (pageSection->GetObjects(), inSection);
 		}
-		else if (strcasecmp (inSection->Value(), "Header") == 0 || strcasecmp (inSection->Value(), "Footer") == 0)
+		else if (STR_EQUALS (sectionName, "Header") || STR_EQUALS (sectionName, "Footer"))
 		{
-			ETHeaderFooterSection	*headerFooter = new ETHeaderFooterSection (inSection->Value());
+			ETHeaderFooterSection	*headerFooter = new ETHeaderFooterSection (sectionName);
 			headerFooter->Parse (this, inSection);
 			mPageSections.push_back (headerFooter);
 			ParseObjects (headerFooter->GetObjects(), inSection);
 		}
-		else if (strcasecmp (inSection->Value(), "Watermark") == 0)
+		else if (STR_EQUALS (sectionName, "Watermark"))
 		{
 			if (mWatermark == NULL)
 			{
-				mWatermark = new ETWatermarkSection (inSection->Value());
+				mWatermark = new ETWatermarkSection (sectionName);
 				mWatermark->Parse (this, inSection);
 				ParseObjects (mWatermark->GetObjects(), inSection);
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -256,25 +220,16 @@ ETReportData::ParseSection (XMLElement *inSection)
 // ---------------------------------------------------------------------------
 
 void
-ETReportData::ParseObjects (ETObjList *inParent, XMLElement *inObject)
+ETReportData::ParseObjects (ETObjList *inParent, RWXmlNode inObject)
 {
-	XMLNode	*node, *next;
 	ETObject	*obj;
 	int			seqID = 0;
-	
-	for ( node = inObject->FirstChildElement(); node; node = next )
+
+	for (RWXmlNode elem : inObject.Children())
 	{
-		next = node->NextSibling();
-        XMLElement	*elem = node->ToElement();
-		if (elem == NULL)
-		{
-			//			inObject->RemoveChild (node);
-			continue;
-		}
-		
 		obj = NULL;
-		const CXMLText	value = elem->Value();
-		
+		const RWString	value = elem.Name();
+
 		if (STR_EQUALS (value, "Group"))
 		{
 			ETGroup	*group = ETGroup::Create (this, elem, ++seqID);
@@ -285,25 +240,19 @@ ETReportData::ParseObjects (ETObjList *inParent, XMLElement *inObject)
 			}
 		}
 		else if (STR_EQUALS (value, "Text"))
-		{
 			obj = ETText::Create (this, elem, ++seqID);
-		}
 		else if (STR_EQUALS (value, "Table"))
 		{
 //mbs 05112010	TODO: implement...
 //			obj = ETTable::Create (this, elem, ++seqID);
 		}
-		
 		else if (STR_EQUALS (value, "Var") || STR_EQUALS (value, "Variable"))
-		{
 			obj = ETVariable::Create (this, elem, ++seqID);
-		}
+
 		if (obj != NULL)
-		{
 			inParent->push_back (obj);
-		}
 	}
-	
+
 	// order by top/left coordinates
 	std::sort<ETObjList::iterator, ETObjectComparePosition> (inParent->begin(), inParent->end(), ETObjectComparePosition());
 	

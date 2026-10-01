@@ -324,6 +324,21 @@ RWXmlDocument::LoadFile (const RWString &inPath, unsigned inOptions)
 
 
 // ---------------------------------------------------------------------------
+// RWXmlDocument - declaration
+// ---------------------------------------------------------------------------
+
+void
+RWXmlDocument::AddDeclaration (RWStringView inEncoding, bool inStandalone)
+{
+	pugi::xml_node	decl = mDoc.prepend_child (pugi::node_declaration);
+	decl.append_attribute (L"version") = L"1.0";
+	decl.append_attribute (L"encoding") = W (inEncoding).c_str();
+	if (inStandalone)
+		decl.append_attribute (L"standalone") = L"yes";
+}
+
+
+// ---------------------------------------------------------------------------
 // RWXmlDocument - saving
 // ---------------------------------------------------------------------------
 

@@ -40,9 +40,9 @@ protected:
 					void				ParseReport (void);
 	
 private:
-	void				ParseStyleSet (XMLElement *inStyleSet);
-	void				ParseSection (XMLElement *inSection);
-	void				ParseObjects (ETObjList *inParent, XMLElement *inObject);
+	void				ParseStyleSet (RWXmlNode inStyleSet);
+	void				ParseSection (RWXmlNode inSection);
+	void				ParseObjects (ETObjList *inParent, RWXmlNode inObject);
 	
 	// defensive programming - not implemented
 						ETReportData (void);

@@ -78,6 +78,9 @@ namespace	RWStr
 	RWString					FromInteger (long long inValue);
 	RWString					FromDouble (double inValue, const char *inPrintfFormat = "%g");
 
+	// writes inBytes to the file inPath (created or replaced); false on failure
+	bool						WriteFile (const RWString &inPath, std::string_view inBytes);
+
 	// printf style formatting in the "C" locale; the result is expected to be ASCII / UTF-8
 	RWString					Format (const char *inPrintfFormat, ...)
 #if	defined(__GNUC__) || defined(__clang__)

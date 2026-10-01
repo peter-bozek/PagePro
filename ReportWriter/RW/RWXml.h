@@ -178,6 +178,9 @@ public:
 	RWXmlResult			LoadFile (const RWString &inPath, unsigned inOptions = kDefaultParseOptions);
 	void				Clear (void)				{ mDoc.reset(); }
 
+	// explicit <?xml version="1.0" encoding="..." standalone="yes"?> (saving adds a plain one otherwise)
+	void				AddDeclaration (RWStringView inEncoding = u"utf-8", bool inStandalone = false);
+
 	// saving - files and UTF-8 output carry an XML declaration; pretty printing indents with tabs
 	RWString			SaveString (bool inPretty = true, bool inDeclaration = false) const;
 	std::string			SaveUTF8 (bool inPretty = true, bool inDeclaration = true) const;

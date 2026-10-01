@@ -15,35 +15,35 @@
 // ETSection								Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-ETSection::ETSection (const CXMLText inKind)
-:	mKind (eSectionKind_Body), mType("Body"),
+ETSection::ETSection (RWStringView inKind)
+:	mKind (eSectionKind_Body), mType (u"Body"),
 mDraw (true)
 {
     if (STR_EQUALS (inKind, "Header")) {
 		mKind = eSectionKind_Header;
-        mType = "Header";
+        mType = u"Header";
     }
     else if (STR_EQUALS (inKind, "BreakHeader")) {
 		mKind = eSectionKind_BreakHeader;
-        mType = "BreakHeader";
+        mType = u"BreakHeader";
     }
 //    else if (STR_EQUALS (inKind, "Body")) 
 //			mKind = eSectionKind_Body;
     else if (STR_EQUALS (inKind, "BreakFooter")) {
 		mKind = eSectionKind_BreakFooter;
-        mType = "BreakFooter";
+        mType = u"BreakFooter";
     }
 	//	else if (STR_EQUALS (inKind, "FillFooter"))
 	//		mKind = eSectionKind_FillFooter;
     else if (STR_EQUALS (inKind, "Footer")) {
 		mKind = eSectionKind_Footer;
-        mType = "Footer";
+        mType = u"Footer";
     }
 	//	else if (STR_EQUALS (inKind, "Page"))
 	//		mKind = eSectionKind_Page;
     else if (STR_EQUALS (inKind, "Watermark")) {
 		mKind = eSectionKind_Watermark;
-        mType = "Watermark";
+        mType = u"Watermark";
     }
 }
 
@@ -110,20 +110,17 @@ ETSection::FetchCalcValues (ETReport *inWriter)
 // ---------------------------------------------------------------------------
 
 void
-ETSection::Parse (ETReportData * /*inReport*/, XMLElement *inNode)
+ETSection::Parse (ETReportData * /*inReport*/, RWXmlNode inNode)
 {
-	const XMLAttribute	*attrib;
 	long			lVal;
 	
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
 		
 		if (STR_EQUALS (name, "draw"))
 		{
 			lVal = 0;
-			sscanf (value.c_str(), "%li", &lVal);
+			RWStr::ReadNumber (value, lVal);
 			mDraw = (lVal != 0);
 		}
 		//mbs 15112010
@@ -197,7 +194,7 @@ ETSection::Export (ETReport * inWriter)
 // ETHeaderFooterSection					Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-ETHeaderFooterSection::ETHeaderFooterSection (const CXMLText inKind)
+ETHeaderFooterSection::ETHeaderFooterSection (RWStringView inKind)
 :	ETSection (inKind)
 {
 }
@@ -216,7 +213,7 @@ ETHeaderFooterSection::~ETHeaderFooterSection (void)
 // ---------------------------------------------------------------------------
 
 void
-ETHeaderFooterSection::Parse (ETReportData *inReport, XMLElement *inNode)
+ETHeaderFooterSection::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	ETSection::Parse (inReport, inNode);
 	
@@ -228,7 +225,7 @@ ETHeaderFooterSection::Parse (ETReportData *inReport, XMLElement *inNode)
 // ---------------------------------------------------------------------------
 // ETBreakSection							Constructor				  [public]
 // ---------------------------------------------------------------------------
-ETBreakSection::ETBreakSection (const CXMLText inKind)
+ETBreakSection::ETBreakSection (RWStringView inKind)
 :	ETSection (inKind),
 mLevel (0),
 mIsBreak (true)
@@ -252,21 +249,18 @@ ETBreakSection::~ETBreakSection (void)
 // ---------------------------------------------------------------------------
 
 void
-ETBreakSection::Parse (ETReportData *inReport, XMLElement *inNode)
+ETBreakSection::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	ETSection::Parse (inReport, inNode);
 	
-	const XMLAttribute	*attrib;
 	
-	for ( attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next() )
+	for (const auto &[name, value] : inNode.Attributes())
 	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
 		
 		if (STR_EQUALS (name, "level"))
 		{
 			mLevel = 0;
-			sscanf (value.c_str(), "%d", &mLevel);
+			RWStr::ReadNumber (value, mLevel);
 		}
 	}
 	
@@ -340,7 +334,7 @@ ETPageSection::~ETPageSection (void)
 // ---------------------------------------------------------------------------
 
 void
-ETPageSection::Parse (ETReportData *inReport, XMLElement *inNode)
+ETPageSection::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	ETSection::Parse (inReport, inNode);
 		
@@ -354,7 +348,7 @@ ETPageSection::Parse (ETReportData *inReport, XMLElement *inNode)
 // ETWatermarkSection						Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-ETWatermarkSection::ETWatermarkSection (const CXMLText inKind)
+ETWatermarkSection::ETWatermarkSection (RWStringView inKind)
 :	ETHeaderFooterSection (inKind),
 mOnTop (false)
 {
@@ -375,17 +369,17 @@ ETWatermarkSection::~ETWatermarkSection (void)
 // ---------------------------------------------------------------------------
 
 void
-ETWatermarkSection::Parse (ETReportData *inReport, XMLElement *inNode)
+ETWatermarkSection::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	ETHeaderFooterSection::Parse (inReport, inNode);
 	
-	const CXMLText	value = inNode->Attribute ("onTop");
+	const CXMLText	value = inNode.Attr (u"onTop");
 	
 	if (!value.empty())
 	{
 		long			lVal = 0;
 		
-		sscanf (value.c_str(), "%li", &lVal);
+		RWStr::ReadNumber (value, lVal);
 		mOnTop = (lVal != 0);
 	}
 		
