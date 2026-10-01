@@ -59,7 +59,7 @@ RWHeader::RWHeader (void)
 // RWHeader									Constructor			   [protected]
 // ---------------------------------------------------------------------------
 
-RWHeader::RWHeader (const CText inText, int inColSpan, int inRowSpan, RWStyle *inStyle)
+RWHeader::RWHeader (const RWString inText, int inColSpan, int inRowSpan, RWStyle *inStyle)
 	:	mWidth (0),
 		mHeight (0),
 //		mText (0),
@@ -69,7 +69,7 @@ RWHeader::RWHeader (const CText inText, int inColSpan, int inRowSpan, RWStyle *i
 		mStartCol (0),
 		mIsAttributed (false)
 {
-	mText.Copy (inText);
+	mText = inText;
 
 	return;
 }
@@ -159,7 +159,7 @@ RWHeader::SetHeight (float inHeight)
 // ---------------------------------------------------------------------------
 
 inline
-const CText
+const RWString
 RWHeader::GetText (void)
 const
 {
@@ -336,7 +336,7 @@ RWColumn::RWColumn (const RWColumn &inOriginal)
 		mWidth (inOriginal.mWidth),
 		mGrid (inOriginal.mGrid),
 		mStyle (inOriginal.mStyle),
-		mFormat ((const CXMLText) inOriginal.mFormat),	// make a copy
+		mFormat ((const RWString) inOriginal.mFormat),	// make a copy
 		mPrintRowNum (inOriginal.mPrintRowNum),
 		mPrintRepeatingValues (inOriginal.mPrintRepeatingValues),
 		mIsAttributed (inOriginal.mIsAttributed)
@@ -425,7 +425,7 @@ const
 // ---------------------------------------------------------------------------
 
 inline
-const CXMLText
+const RWString
 RWColumn::GetFormat (void)
 const
 {
@@ -499,45 +499,45 @@ RWColumn::Parse (RWReportData *inReport, RWXmlNode inNode, long inStyleID)
 	for (const auto &[name, value] : inNode.Attributes())
 	{
 
-		if (STR_EQUALS (name, "id"))
+		if (RWStr::EqualsNoCase (name, "id"))
 		{
 			mId = 0;
 			RWStr::ReadNumber (value, mId);
 		}
-		else if (STR_EQUALS (name, "style"))
+		else if (RWStr::EqualsNoCase (name, "style"))
 		{
 			styleID = 0;
 			if (!RWStr::ReadNumber (value, styleID))
 				styleID = inStyleID;
 		}
-		else if (STR_EQUALS (name, "width"))
+		else if (RWStr::EqualsNoCase (name, "width"))
 		{
 			mWidth = 0;
 			RWStr::ReadNumber (value, mWidth);
 		}
-		else if (STR_EQUALS (name, "grid"))
+		else if (RWStr::EqualsNoCase (name, "grid"))
 		{
 			lVal = 1;
 			RWStr::ReadNumber (value, lVal);
 			mGrid = (lVal != 0);
 		}
-		else if (STR_EQUALS (name, "format"))
+		else if (RWStr::EqualsNoCase (name, "format"))
 		{
-			mFormat.FromXML (value);
+			mFormat.assign (value);
 		}
-		else if (STR_EQUALS (name, "rownum"))
+		else if (RWStr::EqualsNoCase (name, "rownum"))
 		{
 			lVal = 1;
 			RWStr::ReadNumber (value, lVal);
 			mPrintRowNum = (lVal != 0);
 		}
-		else if (STR_EQUALS (name, "duplicates"))
+		else if (RWStr::EqualsNoCase (name, "duplicates"))
 		{
 			lVal = 1;
 			RWStr::ReadNumber (value, lVal);
 			mPrintRepeatingValues = (lVal != 0);
 		}
-		else if (STR_EQUALS (name, "attr"))
+		else if (RWStr::EqualsNoCase (name, "attr"))
 		{
 			lVal = 1;
 			RWStr::ReadNumber (value, lVal);
@@ -683,7 +683,7 @@ RWTable::ParseHeading (RWXmlNode inNode)
 			int		thisLineNumCols = 0;
 			for (RWXmlNode cell : row.Children())
 			{
-				if (!STR_EQUALS (cell.Name(), "td"))
+				if (!RWStr::EqualsNoCase (cell.Name(), "td"))
 					continue;
 
 				RWHeader	*hdr = new RWHeader;
@@ -725,23 +725,23 @@ RWTable::Parse (RWReportData *inReport, RWXmlNode inNode)
 	for (const auto &[name, value] : inNode.Attributes())
 	{
 
-		if (STR_EQUALS (name, "dataID"))
+		if (RWStr::EqualsNoCase (name, "dataID"))
 		{
 			mDataID = 0;
 			RWStr::ReadNumber (value, mDataID);
 		}
-		else if (STR_EQUALS (name, "style"))
+		else if (RWStr::EqualsNoCase (name, "style"))
 		{
 			mStyleID = 0;
 			RWStr::ReadNumber (value, mStyleID);
 		}
-		else if (STR_EQUALS (name, "frame"))
+		else if (RWStr::EqualsNoCase (name, "frame"))
 		{
 			RWStr::ReadNumber (value, mFrame);
 			if (mFrame < 0 || mFrame > 2)
 				mFrame = 1;
 		}
-		else if (STR_EQUALS (name, "frameOffset"))
+		else if (RWStr::EqualsNoCase (name, "frameOffset"))
 		{
 			mFrameOffset = 2;
 			RWStr::ReadNumber (value, mFrameOffset);
@@ -750,30 +750,30 @@ RWTable::Parse (RWReportData *inReport, RWXmlNode inNode)
 			else if (mFrameOffset > 64)
 				mFrameOffset = 64;
 		}
-		else if (STR_EQUALS (name, "frameThickness"))
+		else if (RWStr::EqualsNoCase (name, "frameThickness"))
 		{
 			mFrameThickness = 0;
 			RWStr::ReadNumber (value, mFrameThickness);
 			if (mFrameThickness < 0 || mFrameThickness > 10)
 				mFrameThickness = 1;
 		}
-		else if (STR_EQUALS (name, "frameColor") || STR_EQUALS (name, "lineColor"))
+		else if (RWStr::EqualsNoCase (name, "frameColor") || RWStr::EqualsNoCase (name, "lineColor"))
 		{
 			mFrameColor = value;
 		}
-		else if (STR_EQUALS (name, "hGridThickness"))
+		else if (RWStr::EqualsNoCase (name, "hGridThickness"))
 		{
 			mHGridThickness = 0;
 			RWStr::ReadNumber (value, mHGridThickness);
 			if (mHGridThickness < 0 || mHGridThickness > 10)
 				mHGridThickness = 0.5;
 		}
-		else if (STR_EQUALS (name, "rowHeight"))
+		else if (RWStr::EqualsNoCase (name, "rowHeight"))
 		{
 			mRowHeight = 0;
 			RWStr::ReadNumber (value, mRowHeight);
 		}
-		else if (STR_EQUALS (name, "cols"))
+		else if (RWStr::EqualsNoCase (name, "cols"))
 		{
 			mNumColumns = 0;
 			RWStr::ReadNumber (value, mNumColumns);
@@ -809,7 +809,7 @@ RWTable::Parse (RWReportData *inReport, RWXmlNode inNode)
 			for (const auto &[name, value] : elem.Attributes())
 			{
 
-				if (STR_EQUALS (name, "rowHeight"))
+				if (RWStr::EqualsNoCase (name, "rowHeight"))
 				{
 					mRowHeight = 0;
 					RWStr::ReadNumber (value, mRowHeight);
@@ -822,7 +822,7 @@ RWTable::Parse (RWReportData *inReport, RWXmlNode inNode)
 	{
 		for (RWXmlNode col : elem.Children())
 		{
-			if (!STR_EQUALS (col.Name(), "Col"))
+			if (!RWStr::EqualsNoCase (col.Name(), "Col"))
 				continue;
 
 			RWColumn	*column = new RWColumn;
@@ -863,7 +863,7 @@ RWTable::Parse (RWReportData *inReport, RWXmlNode inNode)
 			{
 				mHeaders = new RWHdrList [mNumTopHeadings];
 				RWHeader	*header;
-				RWTextValue	text;
+				RWString	text;
 				if (mNumLeftHeadings > 0)
 				{
 					text = src.GetTableTitle (mDataID);
@@ -1224,7 +1224,7 @@ RWTable::CalculateAll (RWPageComposer &inComposer)
 				RWDataSource	&src = GetDataSource();
 				RWStyle			*st = column->GetStyle();
 				RWValue			var;
-				RWTextValue		text;
+				RWString		text;
 
 				lineWidth = 0;
 				if (col <= mNumLeftHeadings - 1)	// leftHeadings
@@ -1236,7 +1236,7 @@ RWTable::CalculateAll (RWPageComposer &inComposer)
 					{
 						int	span, level;
 						text = src.GetTableHeadingData (mDataID, headingsCol, hdr, span, level);
-						if (not text.IsEmpty())
+						if (not text.empty())
 						{
 							SRect	r (0, 0, 800, 0);
 							st = GetReportData()->GetStyle (st->GetID() + level);
@@ -1244,7 +1244,7 @@ RWTable::CalculateAll (RWPageComposer &inComposer)
 							if (width > lineWidth)
 								lineWidth = width;
 						}
-						text.Free();
+						text.clear();
 						hdr += span;
 					}
 				}
@@ -1252,14 +1252,14 @@ RWTable::CalculateAll (RWPageComposer &inComposer)
 				{
 					var.SetInteger (mNumRows);
 					text = src.FormatVariable (var, column->GetFormat());
-					if (not text.IsEmpty())
+					if (not text.empty())
 					{
 						SRect	r (0, 0, 800, 0);
 						width = inComposer.MeasureText (text, st, r, false, column->IsAttributed(), true, NULL);
 						if (width > lineWidth)
 							lineWidth = width;
 					}
-					text.Free();
+					text.clear();
 				}
 				else	// data column
 				{
@@ -1267,7 +1267,7 @@ RWTable::CalculateAll (RWPageComposer &inComposer)
 						hdr = col - mNumLeftHeadings;
 					else
 						hdr = col;
-					const CText	format = column->GetFormat();
+					const RWString	format = column->GetFormat();
 					for (line = 0; line < mNumRows; line++)
 					{
 						if (src.GetTableCellData (mDataID, line + 1, hdr + 1, var))
@@ -1286,14 +1286,14 @@ RWTable::CalculateAll (RWPageComposer &inComposer)
 							else
 							{
 								text = src.FormatVariable (var, format);
-								if (not text.IsEmpty())
+								if (not text.empty())
 								{
 									SRect	r (0, 0, 800, 0);
 									width = inComposer.MeasureText (text, st, r, false, column->IsAttributed(), true, NULL);
 									if (width > lineWidth)
 										lineWidth = width;
 								}
-								text.Free();
+								text.clear();
 							}
 						}
 					}
@@ -1512,7 +1512,7 @@ RWTable::GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool 
 						for (line = 0; line < mRowsToPrint; )
 						{
 							int	span, level;
-							RWTextValue	text = GetTableHeadingData (src, headings[col], line + mLinesPrinted, col, span, level);
+							RWString	text = GetTableHeadingData (src, headings[col], line + mLinesPrinted, col, span, level);
 							if (mLinesPrinted > mLeftHeadingsStartPos [col])
 								span -= mLinesPrinted - mLeftHeadingsStartPos [col];
 //							span -= (mLinesPrinted + line - mLeftHeadingsStartPos [col]);
@@ -1691,7 +1691,7 @@ RWTable::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 					r.right -= mFrameThickness;
 				}
 
-				const CText	ctext = header->GetText();
+				const RWString	ctext = header->GetText();
 				if (!ctext.empty())
 					inComposer.DrawTextBox (ctext, style, r, style->ShouldWrap(), header->IsAttributed(), true, NULL);
 
@@ -1765,7 +1765,7 @@ RWTable::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 				for (col = 0; col < mNumLeftHeadings; col++)
 				{
 					int	span, level;
-					RWTextValue	text = GetTableHeadingData (src, headings[col], line + mLinesPrinted, col, span, level);
+					RWString	text = GetTableHeadingData (src, headings[col], line + mLinesPrinted, col, span, level);
 					column = GetColumn (col);
 					r.right = r.left + column->GetWidth();
 					if (	span == 1
@@ -1805,7 +1805,7 @@ RWTable::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 						}
 						if (line == 0 || span == 1 || mLinesPrinted + line != mLeftHeadingsStartPos [col] + span - 1)
 						{
-							if (not text.IsEmpty())
+							if (not text.empty())
 								inComposer.DrawTextBox (text, style, r, style->ShouldWrap(), column->IsAttributed(), true, NULL);
 						}
 
@@ -1844,18 +1844,18 @@ RWTable::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 				{
 					column = GetColumn (col);
 					style = column->GetStyle();
-					const CText	format = column->GetFormat();
+					const RWString	format = column->GetFormat();
 					r.right = r.left + column->GetWidth();
 					r.bottom = r.top + mRowHeight;
 					if (mFrame)		// space for frame
 						r *= mFrameThickness + mFrameOffset;
-					RWTextValue	text;
+					RWString	text;
 
 					if (column->IsRowNum())	// %ROWNUM% column
 					{
 						RWValue	row (long (1 + line + mLinesPrinted));
 						text = src.FormatVariable (row, format);
-						if (not text.IsEmpty())
+						if (not text.empty())
 							inComposer.DrawTextBox (text, style, r, style->ShouldWrap(), column->IsAttributed(), true, NULL);
 					}
 					else
@@ -1877,13 +1877,13 @@ RWTable::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 								else
 								{
 									text = src.FormatVariable (var, format);
-									if (not text.IsEmpty())
+									if (not text.empty())
 										inComposer.DrawTextBox (text, style, r, style->ShouldWrap(), column->IsAttributed(), true, NULL);
 								}
                             }
 						}
 					}
-					text.Free();
+					text.clear();
 					if (mFrame)		// space for frame
 						r.top -= mFrameThickness + mFrameOffset;
 					r.left = r.right;	// + mFrameThickness + mFrameOffset;
@@ -1944,14 +1944,14 @@ RWTable::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 // GetTableHeadingData											   [protected]
 // ---------------------------------------------------------------------------
 
-RWTextValue
+RWString
 RWTable::GetTableHeadingData (RWDataSource &inSrc, const void* inHeading, int inLine, int inCol, int &outSpan, int &outLevel)
 const
 {
 assert (inCol >= 0 && inCol < mNumLeftHeadings);
 assert (inLine >= 0 && inLine < mNumRows);
 
-	RWTextValue	text;
+	RWString	text;
 	int			item = mLeftHeadingsCurItem [inCol];
 	int			line = inLine - mLeftHeadingsStartPos [inCol];
 	int			span = 1, level;

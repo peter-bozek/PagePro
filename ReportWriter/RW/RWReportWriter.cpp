@@ -69,13 +69,13 @@ RWReportWriter::~RWReportWriter (void)
 // ---------------------------------------------------------------------------
 
 int
-RWReportWriter::GetReportVariable (const CText inName)
+RWReportWriter::GetReportVariable (const RWString inName)
 const
 {
 	int	index;
-	RWTextValue	name (inName);
+	RWString	name (inName);
 	for (index = 0; index < RW_VarNamesRWCount; index++)
-		if (name.equal( RWTextValue (mVarNames [index])))
+		if (name == mVarNames [index])
 			return index;
 
 	return -1;
@@ -87,7 +87,7 @@ const
 // ---------------------------------------------------------------------------
 
 void
-RWReportWriter::CreateVariable (const CText inName, ECalcType inCalc)
+RWReportWriter::CreateVariable (const RWString inName, ECalcType inCalc)
 {
 	if (GetReportVariable (inName) == RW_VarNotFound)
 	{
@@ -108,7 +108,7 @@ RWReportWriter::CreateVariable (const CText inName, ECalcType inCalc)
 // ---------------------------------------------------------------------------
 
 bool
-RWReportWriter::GetCalculatedValue (const CText inName, RWValue &outVar)
+RWReportWriter::GetCalculatedValue (const RWString inName, RWValue &outVar)
 const
 {
 	return GetVariable (inName, outVar, ECalcType_CurrentValue);
@@ -121,7 +121,7 @@ const
 // Get report variable
 
 bool
-RWReportWriter::GetVariable (const CText inName, RWValue &outVar, ECalcType inCalc)
+RWReportWriter::GetVariable (const RWString inName, RWValue &outVar, ECalcType inCalc)
 const
 {
 	bool	found = true;
@@ -205,7 +205,7 @@ const
 // ---------------------------------------------------------------------------
 
 void
-RWReportWriter::SetVariable (const CText inName, RWValue *inVar)
+RWReportWriter::SetVariable (const RWString inName, RWValue *inVar)
 {
 	if (GetReportVariable (inName) == RW_VarNotFound)
 	{
@@ -221,8 +221,8 @@ RWReportWriter::SetVariable (const CText inName, RWValue *inVar)
 // ---------------------------------------------------------------------------
 // Format variable depending on DataSource
 
-RWTextValue
-RWReportWriter::FormatVariable (RWValue &inVar, const CText inFormat)
+RWString
+RWReportWriter::FormatVariable (RWValue &inVar, const RWString inFormat)
 const
 {
 	return mSource.FormatVariable (inVar, inFormat);

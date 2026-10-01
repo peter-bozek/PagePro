@@ -133,7 +133,7 @@ PSPropsMap::RemoveProperty (OSType id)
 	if (it != end())
 	{
 #if	0 && TARGET_DEBUG
-		it->second.SetXMLText ("<no intersection>");
+		it->second.SetText ("<no intersection>");
 #else
 		found = true;
 		erase (it);

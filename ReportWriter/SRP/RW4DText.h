@@ -34,7 +34,7 @@ public:
 	int				mLength;
 	int				mStyle;
 	float			mSize;
-	CText			mFont;
+	RWString			mFont;
 	unsigned long	mColor;
 	bool			mHasColor;
 	bool			mIsSubscript;
@@ -42,7 +42,7 @@ public:
 	
 	RWSpan (int inOffset, int inLength ) : 
 		mOffset (inOffset), mLength (inLength), mStyle (0), mSize (0), mColor (0), mHasColor (false) {};
-	RWSpan (int inOffset, int inLength, int inStyle, float inSize, CText inFont, unsigned long inColor, bool inHasColor ) : 
+	RWSpan (int inOffset, int inLength, int inStyle, float inSize, RWString inFont, unsigned long inColor, bool inHasColor ) : 
 			mOffset (inOffset), mLength (inLength), mStyle (inStyle), mSize (inSize), mFont (inFont), mColor (inColor), mHasColor (inHasColor) {};
 	RWSpan (const RWSpan& inSpan) :
 			mOffset (inSpan.mOffset), mLength (inSpan.mLength), mStyle (inSpan.mStyle), mSize (inSpan.mSize), mFont (inSpan.mFont), mColor (inSpan.mColor), mHasColor (inSpan.mHasColor) {};
@@ -51,7 +51,7 @@ public:
 	void		Remove (const RWSpan& inSpan);
 
 	bool		IsOverlapping (const RWSpan& inSpan) const;
-	CText		toXML(const CText& inString) const;
+	RWString		toXML(const RWString& inString) const;
 	bool		operator == (const RWSpan& inSpan) const;
 	bool		IsEmpty (void) const;
 };
@@ -63,13 +63,13 @@ class RW4DStyledText
 
 	public:
 
-	CText		mText;
-	CText		mPlainText;
+	RWString		mText;
+	RWString		mPlainText;
 	RWSpanList	mSpanList;
 	
-	RW4DStyledText (const CText& inString);
+	RW4DStyledText (const RWString& inString);
 	void		Initialize (void);
-	CText		toXMLString(void) const;
+	RWString		toXMLString(void) const;
 	void		AddSpan (const RWSpan& inSpan, int mode);
 	void		RemoveSpan (const RWSpan& inSpan);
 	void		Scale (float inScale, int inMode);

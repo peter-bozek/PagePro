@@ -291,7 +291,7 @@ DMUndo::DMPropertyAction::DebugShow (long inEntry)
 	XStringTools::LongToFourChar (fID, cID);
 	printf ("\t\tAction %ld: objectid=%ld, Property: id=%s\n", 
 			inEntry, fObjectID, cID);
-	RWTextValue	tv;
+	RWString	tv;
 	fOldValue.GetTextValue (tv, NULL);
 	printf ("\t\t\told: %d, %s\n", fOldValue.GetKind(), RWStr::ToUTF8 (tv).c_str());
 	fNewValue.GetTextValue (tv, NULL);

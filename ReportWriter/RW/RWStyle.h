@@ -66,7 +66,6 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const override;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue) override;
 	virtual		bool			SetProperty (OSType id, RWValue &inValue) override;
-//	virtual		XMLElement*	WriteXML (XMLNode *inParent);
 
 protected:
 //	virtual		DMBase		*	Clone (DMBase *inParent);
@@ -77,8 +76,8 @@ public:
 	inline		long			GetID (void) const;
 	inline		long			GetBaseID (void) const;
 	inline		UInt32			GetFeatures (void) const;
-	inline		CText		    GetName (void) const;
-				CText		    GetFName (void) const;
+	inline		RWString		    GetName (void) const;
+				RWString		    GetFName (void) const;
 //				const char	*	GetPSName (void) const;
 				float			GetSize (void) const;
 				int				GetStyle (void) const;
@@ -126,8 +125,8 @@ protected:
 	long					mId;
 	long					mBaseId;
 	UInt32				mFeatures;
-	RWTextValue			mName;
-	RWTextValue			mFontName;
+	RWString			mName;
+	RWString			mFontName;
 	float				mFontSize;
 	int					mFontStyle;		// bold, italic, underline, strikethrough
 	SRGBColor			mTextColor;
@@ -148,11 +147,11 @@ inline	long			RWStyle::GetID (void) const						{ return mId; }
 inline	long			RWStyle::GetBaseID (void) const					{ return mBaseId; }
 inline	UInt32			RWStyle::GetFeatures (void) const				{ return mFeatures; }
 inline	void			RWStyle::Clear (long newID)						{ mFeatures = stf_Based; mId = mContainer->GetNewID (); mBaseId = newID;}
-inline	CText		    RWStyle::GetName (void) const					{ return mName; }
+inline	RWString		    RWStyle::GetName (void) const					{ return mName; }
 inline	bool			RWStyle::HasFeature (UInt32 inFeature) const	{ return (mFeatures & stf_Based)? (mFeatures & inFeature) != 0: true; }
 	 
 /*
-inline	const CText		RWStyle::GetFName (void) const					{ return mFontName; }
+inline	const RWString		RWStyle::GetFName (void) const					{ return mFontName; }
 //inline	const char	*	RWStyle::GetPSName (void) const					{ return mFontPSName; }
 inline	float			RWStyle::GetSize (void) const					{ return mFontSize; }
 inline	int				RWStyle::GetStyle (void) const					{ return mFontStyle; }

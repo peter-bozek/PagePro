@@ -56,22 +56,22 @@ public:
 	
 	inline			int				GetLastError(void) const;
 	
-	virtual		bool			GetCalculatedValue (const CText inName, RWValue &outVar) const;
+	virtual		bool			GetCalculatedValue (const RWString inName, RWValue &outVar) const;
 	
-	int				GetReportVariable (const CText inName) const;
-	void			CreateVariable (const CText inName, ECalcType inCalc = ECalcType_None);
-	bool			GetVariable (const CText inName, RWValue &outVar, ECalcType inCalc = ECalcType_None) const;
-	void			SetVariable (const CText inName, RWValue *inVar);
+	int				GetReportVariable (const RWString inName) const;
+	void			CreateVariable (const RWString inName, ECalcType inCalc = ECalcType_None);
+	bool			GetVariable (const RWString inName, RWValue &outVar, ECalcType inCalc = ECalcType_None) const;
+	void			SetVariable (const RWString inName, RWValue *inVar);
 	void			PositionObjects (ETObjList *inObjects);
 	void			PositionGroup (ETGroup* inGroup);
 
-	RWTextValue		FormatVariable (RWValue &inVar, const CText inFormat) const;
+	RWString		FormatVariable (RWValue &inVar, const RWString inFormat) const;
 	
 	// builds the export (XML, HTML, text, CSV, JSON) and writes it as UTF-8; false if the file could not be written
 	bool			ReportToFile (const RWString &inPath);
 	e_OutputOptions	GetOutputOptions (void);
 	void			WriteText (const char *inType, void * object);
-	void			WriteText (const char *inType, ETObject * object, RWTextValue &inText);
+	void			WriteText (const char *inType, ETObject * object, RWString &inText);
 
 private:
 	enum EFormat	{ eFormat_None, eFormat_Text, eFormat_HTML, eFormat_XML, eFormat_JSON };
@@ -102,7 +102,7 @@ private:
 	RWDataSource 		&mSource;
 	ETReportData 		&mData;
 	e_OutputOptions		mOutputOptions;
-	RWTextValue			mVarNames [RW_VarNamesRWCount];
+	RWString			mVarNames [RW_VarNamesRWCount];
 	time_t				mPrintTime;
 	
 	e_OutputStage		mStage;
@@ -115,7 +115,7 @@ private:
 	RWJsonValue			mJsonSection;		// section being filled
 	bool				mJsonSectionOpen;
 	
-	RWTextValue			mName;
+	RWString			mName;
 	
 	// for dynamic (iterated) reports
 	ETPageSection	*	mPageSection;

@@ -947,7 +947,7 @@ DMBase::Init (void)
 	mLocked = 0;
 	if (mSelected)
 		SetSelected (false);
-	mID.Free();
+	mID.clear();
 }
 
 
@@ -1421,7 +1421,7 @@ DMObject::Init (void)
 	mDraw = eDraw_Yes;
 //	mExpandH = false;
 	mExpandV = false;
-	mName.Free();
+	mName.clear();
 }
 
 
@@ -2263,7 +2263,7 @@ DMText::Init (void)
 	mDrawIfEmptyI = eEmpty_Draw;
 	mFrame = false;
 	mFrameOffset = 2;
-	mText.Free();
+	mText.clear();
 }
 
 
@@ -2363,14 +2363,14 @@ DMText::SetProperty (OSType id, RWValue &inValue)
 				{
 					if (mIsAttributed)  // attributed was canceled pB 2010-12
 					{
-						RWTextValue inText;
-						inText.Attach (RWTools::EscapeAttributedString (mText));
+						RWString inText;
+						inText = RWTools::EscapeAttributedString (mText);
 						mText = inText;
 					}
 					else 
 					{
-						RWTextValue inText;
-						inText.Attach (RWTools::SplitAttributedString (mText, NULL));
+						RWString inText;
+						inText = RWTools::SplitAttributedString (mText, NULL);
 						mText = inText;
 					}
 				}
@@ -2383,7 +2383,7 @@ DMText::SetProperty (OSType id, RWValue &inValue)
 		case PSObjPropDrawEmpty:		return SetListProperty (inValue, sEmpty, mDrawIfEmptyI);
 		case PSObjPropFrame:			return SetBooleanProperty (inValue, mFrame);
 		case PSObjPropFrameOffset:		return SetRealProperty (inValue, mFrameOffset, 0, 256);
-		case PSObjPropData:				mParsedText.Free(); return SetStringProperty (inValue, mText);
+		case PSObjPropData:				mParsedText.clear(); return SetStringProperty (inValue, mText);
 
 		case PSObjPropID:				return SetStringProperty (inValue, mID);
 	
@@ -2488,8 +2488,8 @@ DMVariable::Init (void)
 	mCalcTypeI = ECalcType_None;
 	mIsDynamic = false;
 	mKeepTogether = false;
-	mAlias.Free();
-	mFormat.Free();
+	mAlias.clear();
+	mFormat.clear();
 	mRepeatI = eRepeat_None;
 	mRepeatOffset = 0;
 	mScript.Free();
@@ -2557,7 +2557,7 @@ DMVariable::SetProperty (OSType id, RWValue &inValue)
 		case PSObjPropData:			break;
 
 		case PSObjPropSource:
-			mParsedText.Free();
+			mParsedText.clear();
 			if (mComposerPictureData)	//mbs 29072011	pict support
 			{
 				delete mComposerPictureData;
@@ -2572,7 +2572,7 @@ DMVariable::SetProperty (OSType id, RWValue &inValue)
 		case PSObjPropRepeat:		return SetListProperty (inValue, sRepeat, mRepeatI)? true: SetListProperty (inValue, sRepeat2, mRepeatI);
 		case PSObjPropRepeatOffset:	return SetRealProperty (inValue, mRepeatOffset, 0, 256);
 		case PSObjPropScript:
-			mParsedText.Free();
+			mParsedText.clear();
 			if (mComposerPictureData)	//mbs 29072011	pict support
 			{
 				delete mComposerPictureData;
@@ -2997,7 +2997,7 @@ DMColumn::SetProperty (OSType id, RWValue &inValue)
 		case PSObjPropSource:
 			if (SetStringProperty (inValue, mSource))
 			{
-				mPrintRowNum = TEXT_EQUALS (mSource, "%ROWNUM%");
+				mPrintRowNum = RWStr::Equals (mSource, "%ROWNUM%");
 				return true;
 			}
 			break;
@@ -4466,7 +4466,7 @@ DMText::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode)
 		switch (inMode)
 		{
 			case eDraw_Resource:
-				if (mParsedText.IsEmpty())	//mbs 29072011	reuse code in ParseData()
+				if (mParsedText.empty())	//mbs 29072011	reuse code in ParseData()
 					ParseData (inComposer);
 
 				if (mFrame)
@@ -4496,13 +4496,13 @@ DMText::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode)
 void
 DMText::ParseData (RWPageComposer *inComposer)
 {
-	mParsedText.Free();
+	mParsedText.clear();
 	if (mIsDynamic)
 	{
 		SRDataSource	*ds;
-		if (not mText.IsEmpty() && (ds = GetReport()->GetDataSource()) != NULL)
+		if (not mText.empty() && (ds = GetReport()->GetDataSource()) != NULL)
 		{
-			long	textLen = mText.StrLength();
+			long	textLen = (long) mText.size();
 			long	curPos = 0, delta = 0, endPos;
 			
 			RWString	result (mText);		// was "(mText, textLen)": the substring *from* textLen, i.e. empty
@@ -4538,7 +4538,7 @@ DMText::ParseData (RWPageComposer *inComposer)
 	}
 	else 
 	{
-		long	textLen = mText.StrLength();
+		long	textLen = (long) mText.size();
 		RWString	localized;
 		if (RWTools::ParseTextForXLIFF (mText, textLen, localized) )
 			mParsedText = localized;
@@ -4560,7 +4560,7 @@ DMVariable::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inM
 			case eDraw_Alias:
 				if (mFrame)
 					inComposer->DrawRect (mDrawRect, mThickness, true, mLineColor, false, cBlackColor);
-				GetReport()->DrawFrame (this, inMode, mStyleID, mAlias.IsEmpty()? mText: mAlias, mDrawRect, false, &mStyle);
+				GetReport()->DrawFrame (this, inMode, mStyleID, mAlias.empty()? mText: mAlias, mDrawRect, false, &mStyle);
 				if (mSelected)
 					GetReport()->DrawSelection (this, mDrawRect);
 				break;
@@ -4574,10 +4574,10 @@ DMVariable::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inM
 			case eDraw_Resource:
 			{
 				SRDataSource	*ds;
-				if (not mText.IsEmpty() && (ds = GetReport()->GetDataSource()) != NULL)
+				if (not mText.empty() && (ds = GetReport()->GetDataSource()) != NULL)
 				{
 					//mbs 29072011	pict support
-					if (mParsedText.IsEmpty() && mPicture4D.GetKind() != RWValue::eValue_PictRefScreen)
+					if (mParsedText.empty() && mPicture4D.GetKind() != RWValue::eValue_PictRefScreen)
 						ParseData (inComposer);
 
 					GetReport()->DrawFrame (this, inMode, mStyleID, mParsedText, mDrawRect, mIsAttributed, &mStyle);
@@ -4589,7 +4589,7 @@ DMVariable::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inM
 						if (mFrame)
 							r *= mFrameOffset;
 						EPictFormat	fmt = ePictFormat_Normal;
-						if (not mFormat.IsEmpty())
+						if (not mFormat.empty())
 							if (mFormat [0] >= '0' && mFormat [0] <= '4' && mFormat[1] == 0)
 								fmt = EPictFormat (mFormat [0] - '0');
 						inComposer->DrawPict (r, mPicture4D, fmt, &mComposerPictureData, 0, 0);
@@ -4611,7 +4611,7 @@ DMVariable::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inM
 void
 DMVariable::ParseData (RWPageComposer *inComposer)
 {
-	mParsedText.Free();
+	mParsedText.clear();
 	if (mComposerPictureData)	//mbs 29072011	pict support
 	{
 		delete mComposerPictureData;
@@ -4620,7 +4620,7 @@ DMVariable::ParseData (RWPageComposer *inComposer)
 	mPicture4D.Free();	//mbs 29072011	pict support
 
 	SRDataSource	*ds;
-	if (not mText.IsEmpty() && (ds = GetReport()->GetDataSource()) != NULL)
+	if (not mText.empty() && (ds = GetReport()->GetDataSource()) != NULL)
 	{
 		RWValue		var;
 		if (!mScript.IsEmpty())
@@ -4669,7 +4669,7 @@ DMField::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode
 void
 DMField::ParseData (RWPageComposer *inComposer)
 {
-	mParsedText.Free();
+	mParsedText.clear();
 	if (mComposerPictureData)	//mbs 29072011	pict support
 	{
 		delete mComposerPictureData;
@@ -4678,7 +4678,7 @@ DMField::ParseData (RWPageComposer *inComposer)
 	mPicture4D.Free();	//mbs 29072011	pict support
 
 	SRDataSource	*ds;
-	if (not mText.IsEmpty() && (ds = GetReport()->GetDataSource()) != NULL)
+	if (not mText.empty() && (ds = GetReport()->GetDataSource()) != NULL)
 	{
 		RWValue		var;
 		if (!mScript.IsEmpty())
@@ -4774,7 +4774,7 @@ DMColumn::Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMod
 		switch (inMode)
 		{
 			case eDraw_Alias:
-				GetReport()->DrawFrame (this, inMode, mStyleID, mAlias.IsEmpty()? mSource: mAlias, mDrawRect, false, &mStyle);
+				GetReport()->DrawFrame (this, inMode, mStyleID, mAlias.empty()? mSource: mAlias, mDrawRect, false, &mStyle);
 				if (mSelected)
 					GetReport()->DrawSelection (this, mDrawRect);
 				break;

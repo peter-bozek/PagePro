@@ -16,7 +16,6 @@
 #endif
 # include	"RWString.h"
 # include	"RWXml.h"
-# include	"tinyxml2.h"		// transitional - modules not yet ported to RWXml still use it
 # include	<math.h>
 # include   <string>
 # include   <vector>
@@ -109,62 +108,6 @@ enum	EPictFormat
 // Text
 // ---------------------------------------------------------------------------
 // All text is RWString (std::u16string, UTF-16), see RWString.h.
-// Everything in this section is transitional, kept so that modules can be
-// ported one by one - new code uses RWString and RWStr:: directly.
-// To be removed with TinyXML (MIGRATION_PLAN.md, phase 8).
-
-typedef	RWString			CText;
-typedef	RWString			CXMLText;		// XML text is no longer UTF-8
-typedef	char16_t			CChar;
-#define	CChar_Size			2
-
-#define	STR_NOTFOUND		(-1L)
-
-// case sensitive
-inline	bool	TEXT_EQUALS (RWStringView inText, std::string_view inASCII)			{ return RWStr::Equals (inText, inASCII); }
-inline	bool	TEXT_STARTS_WITH (RWStringView inText, std::string_view inASCII)	{ return RWStr::StartsWith (inText, RWStr::FromASCII (inASCII)); }
-inline	long	TEXT_STR (RWStringView inText, std::string_view inASCII)
-{
-	size_t	pos = inText.find (RWStr::FromASCII (inASCII));
-	return pos == RWStringView::npos ? STR_NOTFOUND : long (pos);
-}
-
-// ASCII case insensitive
-inline	int		STR_COMPARE (RWStringView inText, std::string_view inASCII)			{ return RWStr::CompareNoCase (inText, RWStr::FromASCII (inASCII)); }
-inline	bool	STR_EQUALS (RWStringView inText, std::string_view inASCII)			{ return RWStr::EqualsNoCase (inText, inASCII); }
-inline	bool	STR_STARTS_WITH (RWStringView inText, std::string_view inASCII)		{ return RWStr::StartsWithNoCase (inText, RWStr::FromASCII (inASCII)); }
-
-
-// RWTextValue - former text holder class, now an RWString with the old method names
-class	RWTextValue	:	public	RWString
-{
-public:
-						RWTextValue (void) {}
-						RWTextValue (const RWString &inValue)	:	RWString (inValue) {}
-						RWTextValue (RWString &&inValue)		:	RWString (std::move (inValue)) {}
-						RWTextValue (RWStringView inValue)		:	RWString (inValue) {}
-						RWTextValue (const char16_t *inValue)	:	RWString (inValue ? inValue : u"") {}
-	explicit			RWTextValue (const char *inUTF8)		:	RWString (RWStr::FromUTF8 (inUTF8 ? inUTF8 : "")) {}
-
-	using	RWString::operator =;
-
-	bool				IsEmpty (void) const						{ return empty(); }
-	void				Free (void)									{ clear(); }
-	void				Allocate (size_t inLength)					{ assign (inLength, u'\0'); }
-	size_t				StrLength (void) const						{ return size(); }
-	bool				equal (RWStringView inText) const			{ return RWStringView (*this) == inText; }
-
-	RWTextValue&		Copy (RWStringView inValue)					{ assign (inValue); return *this; }
-	RWTextValue&		Copy (const char *inUTF8)					{ assign (RWStr::FromUTF8 (inUTF8 ? inUTF8 : "")); return *this; }
-	RWTextValue&		Attach (RWString inValue)					{ RWString::operator = (std::move (inValue)); return *this; }
-	RWString			Detach (void)								{ RWString result (std::move (*this)); clear(); return result; }
-
-	RWTextValue&		FromXML (RWStringView inValue)				{ assign (inValue); return *this; }
-	const RWString&		ToXML (void) const							{ return *this; }
-	RWString			ToXMLEscaped (void) const					{ return RWStr::EscapeXML (*this); }
-	static	void		FreeXML (RWString &ioValue)					{ ioValue.clear(); }
-};
-
 
 # define	RW_EPSILON			1e-5
 
@@ -721,10 +664,6 @@ public:
 			inline	void			SetReal (double value);
 			inline	const RWString&	GetText (void) const;
 			inline	void			SetText (RWString value);
-			inline	void			SetText (RWString value, bool takeOwnership);	// transitional - text is always owned
-			inline	const RWString&	GetXMLText (void) const;							// transitional - same as GetText
-			inline	void			SetXMLText (RWString value);						// transitional - same as SetText
-			inline	void			SetXMLText (RWString value, bool takeOwnership);	// transitional - same as SetText
 			inline	size_t			GetBlobSize (void) const;
 			inline	void*			GetBlobData (void) const;
 			inline	const SBlob&	GetBlob (void) const;
@@ -853,10 +792,6 @@ inline	double					RWValue::GetReal (void) const		{ return fReal; }
 inline	void					RWValue::SetReal (double value)		{ Free(); fKind = eValue_Real; fReal = value; }
 inline	const RWString&			RWValue::GetText (void) const		{ return fText; }
 inline	void					RWValue::SetText (RWString value)	{ Free(); fKind = eValue_Text; fText = std::move (value); }
-inline	void					RWValue::SetText (RWString value, bool)			{ SetText (std::move (value)); }
-inline	const RWString&			RWValue::GetXMLText (void) const				{ return fText; }
-inline	void					RWValue::SetXMLText (RWString value)			{ SetText (std::move (value)); }
-inline	void					RWValue::SetXMLText (RWString value, bool)		{ SetText (std::move (value)); }
 inline	size_t					RWValue::GetBlobSize (void) const	{ return fKind >= eValue_BLOB? fBlob.fSize: 0; }
 inline	void*					RWValue::GetBlobData (void) const	{ return fKind >= eValue_BLOB? fBlob.fData: NULL; }
 inline	const SBlob	&			RWValue::GetBlob (void) const		{ return fBlob; }
@@ -876,7 +811,7 @@ inline	void					RWValue::SetPicture (EValue_Kind inKind, const SBlob& value, boo
 inline	const char**			RWValue::GetPictFormats (void)			{ return sPictFormats; }
 
 
-typedef	RWMap<CText, RWValue*>	RWVarMap;
+typedef	RWMap<RWString, RWValue*>	RWVarMap;
 
 
 
@@ -1040,7 +975,6 @@ using namespace std;
 
 typedef	struct	RWPrintContext*	RWPrintContextRef;	// for coordinate transform - bottom + CG on Mac / bottom for PDF / nothing otherwise
 
-using namespace tinyxml2;		// transitional - removed with TinyXML
 
 class	RWTools
 {
@@ -1066,6 +1000,9 @@ public:
 	static		int					ParseAttributedStringAttribute (RWStringView inAttributedString, double &outSize, int &outSizeSign, int &outStyle, SRGBColor &outColor, RWString &outFont);
 	static		bool				ParseTextForVar (bool inAttributed, RWStringView inString, long inTextLen, long &ioStart, long &outEnd, RWString &outVarName, RWString &outFormat);
 	static		bool				ParseTextForXLIFF (RWStringView inString, long inTextLen, RWString &outText);
+	// page and paper rectangles (PMAdjustedPageRect / PMAdjustedPaperRect) from a Mac page
+	// format (XML property list), for reports made on the Mac and opened on Windows
+	static		bool				ParseMacPageFormat (const void *inData, size_t inSize, SRect &outPaperRect, SRect &outPageRect);
 };
 
 

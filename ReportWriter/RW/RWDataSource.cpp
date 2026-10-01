@@ -133,7 +133,7 @@ RWDataSource::FetchNextRecord (void)
 // ---------------------------------------------------------------------------
 
 void
-RWDataSource::CreateVariable (const CText inName, RWValue *inVar)
+RWDataSource::CreateVariable (const RWString inName, RWValue *inVar)
 {
 	SetVariable (inName, inVar);
 
@@ -146,7 +146,7 @@ RWDataSource::CreateVariable (const CText inName, RWValue *inVar)
 // ---------------------------------------------------------------------------
 
 void
-RWDataSource::SetVariable (const CText inName, RWValue *inVar)
+RWDataSource::SetVariable (const RWString inName, RWValue *inVar)
 {
 	RWVarMap::key_type		key (inName);
 	RWVarMap::value_type	value (key, inVar);
@@ -204,7 +204,7 @@ const
 // ---------------------------------------------------------------------------
 
 bool
-RWDataSource::GetVariable (const CText inName, RWValue &outVar)
+RWDataSource::GetVariable (const RWString inName, RWValue &outVar)
 const
 {
 	bool	found = false;
@@ -280,7 +280,7 @@ const
 // ---------------------------------------------------------------------------
 // Return text for specified cell in a table
 
-const CText
+const RWString
 RWDataSource::GetTableCellData (RWDataID inDataID, int inRow, int inColumn)
 const
 {
@@ -329,11 +329,11 @@ const
 // ---------------------------------------------------------------------------
 // Return text of heading in a table
 
-RWTextValue
+RWString
 RWDataSource::GetTableHeadingData (RWDataID inDataID, SOpaqueCategoryItem inHeading, int inItem, int &outSpan, int &outLevel)
 const
 {
-	RWTextValue	v;
+	RWString	v;
 	return v;
 }
 
@@ -343,10 +343,10 @@ const
 // ---------------------------------------------------------------------------
 // Return title (topleft cell in a table with both top & left headings)
 
-RWTextValue
+RWString
 RWDataSource::GetTableTitle (RWDataID inDataID)
 const
 {
-	RWTextValue	v;
+	RWString	v;
 	return v;
 }

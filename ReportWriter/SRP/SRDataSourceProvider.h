@@ -12,7 +12,7 @@ public:
 						SRDataSourceProvider (void);
 						~SRDataSourceProvider (void);
 
-virtual	RWTextValue		FormatVariable (const RWValue &inVar, const CText inFormat) const;
+virtual	RWString		FormatVariable (const RWValue &inVar, const RWString inFormat) const;
 
 private:
 			// defensive programming - not implemented

@@ -117,8 +117,8 @@ private:
 protected:
 	static const PSObjProps	sProperties[];
 	ESection_Kind			mSectionKind;
-	CXMLText				mType;
-	RWTextValue				mName;
+	RWString				mType;
+	RWString				mName;
 	PSObjListD				mObjects;
 	float					mHeight;
 	float					mMinSpace;
@@ -213,13 +213,13 @@ protected:
 	static const UserProps	sUserProperties[];
 	int						mLevel;
 	bool					mPrintAlways;
-	RWTextValue				mBreakOn;
+	RWString				mBreakOn;
 //	union
 //	{
 //		EBreakOn			mBreakType;
 		int					mBreakTypeI;
 //	};
-	RWTextValue				mAlias;
+	RWString				mAlias;
 };
 
 inline		int					DMBreakSection::GetBreakLevel (void) const	{ return mLevel; }
@@ -277,8 +277,8 @@ private:
 protected:
 	static const PSObjProps	sProperties[];
 	static const UserProps	sUserProperties[];
-//	RWTextValue				mPageOrientation;
-//	RWTextValue				mPageSize;
+//	RWString				mPageOrientation;
+//	RWString				mPageSize;
 };
 
 
@@ -428,7 +428,7 @@ protected:
 //		EDataSource		mSource;	// table, array size, variable, fixed
 		int				mSourceI;
 //	};
-	RWTextValue			mName;		// [4], arrayName, variableName
+	RWString			mName;		// [4], arrayName, variableName
 	long				mNumIterations;
 	int					mMainTable;
 //	union
@@ -441,7 +441,7 @@ protected:
 //		ERelate			mRelateMany;
 		int				mRelateManyI;
 //	};
-	RWTextValue			mCallBackName;
+	RWString			mCallBackName;
 	bool				mSRPCompatibility;
 };
 
@@ -507,11 +507,11 @@ public:
 				void			ParseObjects (const PSObjProps* pes, RWXmlNode inNode, DMBase *inParent, PSObjListD &objList);
 
 				DMBase		*	GetObject (long inObject) const;
-				DMBase		*	GetObjectByID (CText &inName) const;
+				DMBase		*	GetObjectByID (RWString &inName) const;
 	static		DMReport	*	GetReportObject (long inObject);
 	static		DMReport	*	GetReportOfObject (long inObject);
 	static		DMBase		*	FindObject (long inObject);
-	static		DMBase		*	FindObjectByID (CText &inName);
+	static		DMBase		*	FindObjectByID (RWString &inName);
 				DMBase		*	CreateObject (OSType inKind, long inParent, RWXmlNode inNode);
 				DMBase		*	CreateObject (OSType inKind, DMBase *inParent, RWXmlNode inNode);
 				DMBase		*	CreateObject (RWXmlNode inNode, long inParent);
@@ -527,7 +527,7 @@ public:
 	virtual		EHitTest		HitTest (SPoint &inWhere, DMBase* &outObjectHit);
 	virtual		void			HandleTrackSelect (SRect &inWhere, UInt32 inFlags);
 				DMBase		*	GetParentAt (SPoint &inWhere);
-				void			DrawFrame (const DMBase *inObject, EDrawDM inMode, long inStyleID, const CText inText, const SRect &inRect, bool inAttributed, RWStyle* inStyle = NULL);
+				void			DrawFrame (const DMBase *inObject, EDrawDM inMode, long inStyleID, const RWString inText, const SRect &inRect, bool inAttributed, RWStyle* inStyle = NULL);
 				void			DrawSelection (const DMBase *inObject, const SRect &inRect);
 
 				void			SetPageComposer (RWPageComposer *inComposer);
@@ -571,7 +571,7 @@ protected:
 	static const UserProps	sUserProperties[];
 
 	long					mSeqIDs [eObject_Kind_Count];
-	RWTextValue				mName;
+	RWString				mName;
 	bool					mSimple;
 	float					mPageWidth;
 	float					mPageHeight;

@@ -403,12 +403,12 @@ SRObject::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 // GetVariableText													  [public]
 // ---------------------------------------------------------------------------
 
-RWTextValue
-SRObject::GetVariableText (const CText inVariableName, const CText inFormat)
+RWString
+SRObject::GetVariableText (const RWString inVariableName, const RWString inFormat)
 const
 {
 	RWValue		var;
-	RWTextValue	result;
+	RWString	result;
 
 //	if (GetReportWriter()->GetVariable (inVariableName, SR4DVariable::SR4DVariable_Variable, var, ECalcType_CurrentValue))
 	GetReportWriter()->GetVariable (inVariableName, var);
@@ -458,7 +458,7 @@ SRObject::FetchCalcValue (void)
 // ---------------------------------------------------------------------------
 
 const SRObject*
-SRObject::FindCalculatedObject (const CText inName)
+SRObject::FindCalculatedObject (const RWString inName)
 const
 {
 	return NULL;
@@ -470,7 +470,7 @@ const
 // ---------------------------------------------------------------------------
 
 SRObject*
-SRObject::CreateCalculatedObject (SRReportData *inReport, long inOrder, const CText inName)
+SRObject::CreateCalculatedObject (SRReportData *inReport, long inOrder, const RWString inName)
 {
 	SRVariable	*object = NULL;
 
@@ -497,9 +497,9 @@ SRObject::WriteSelf (RWXmlNode inParent, const char* inObjectType)
 //	if (mAlignment != eAlign_None)
 //		pos.right = pos.left;
 	elem.SetAttr (u"r", pos.ToString());
-	if (not mName.IsEmpty())
+	if (not mName.empty())
 		elem.SetAttr (u"name", mName);
-	if (not mID.IsEmpty())
+	if (not mID.empty())
 		elem.SetAttr (u"id", mID);
 //	if (mFixedH)
 //		elem.SetAttribute (u"fixH", 1);
@@ -861,7 +861,7 @@ const
 // ---------------------------------------------------------------------------
 
 const SRObject*
-SRGroup::FindCalculatedObject (const CText inName)
+SRGroup::FindCalculatedObject (const RWString inName)
 const
 {
 	const SRObject				*obj = NULL;
@@ -1527,9 +1527,9 @@ SRText::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 
 	//mbs 07052010	support attributed text
 	if (	mIsDynamic
-		&&	(	mText.IsEmpty()
-			 || (mIsAttributed &&  TEXT_STR (mText, "&lt;%") == STR_NOTFOUND)
-			 || (not mIsAttributed && TEXT_STR (mText, "<%") == STR_NOTFOUND)
+		&&	(	mText.empty()
+			 || (mIsAttributed &&  !RWStr::Contains (mText, u"&lt;%"))
+			 || (not mIsAttributed && !RWStr::Contains (mText, u"<%"))
 			 )
 		)
 		mIsDynamic = false;
@@ -1552,7 +1552,7 @@ SRText::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 RWXmlNode
 SRText::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 {
-	RWTextValue		text;
+	RWString		text;
 	bool			oldDynamic = mIsDynamic;
 
 	if (mIsDynamic)
@@ -1563,14 +1563,14 @@ SRText::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 
     RWXmlNode me = WriteSelf (inParent, "Text");
 
-	if (!text.IsEmpty())
+	if (!text.empty())
 		RWTools::WriteText (me, text);
 
 	mIsDynamic = oldDynamic;
 	if (mIsDynamic)
-		text.Free();
+		text.clear();
 	else
-		mText.Attach (text.Detach());	// no need to copy...
+		mText = std::exchange (text, RWString());	// no need to copy...
 
 	return me;
 }
@@ -1721,15 +1721,15 @@ SRText::SetProperty (OSType id, RWValue &inValue)
 // :xliff:resource_name		•••TODO•••	PA_LocaliseString()
 
 
-RWTextValue
+RWString
 SRText::LocalizeText (void)
 const
 {
-	RWTextValue	text;
+	RWString	text;
 	
-	if (not mText.IsEmpty())
+	if (not mText.empty())
 	{
-		long	textLen = mText.StrLength();
+		long	textLen = (long) mText.size();
 		RWString	localized (mText);		// was "(mText, textLen)": empty unless XLIFF replaced it
 
 		(void) RWTools::ParseTextForXLIFF (mText, textLen, localized);
@@ -1745,17 +1745,17 @@ const
 // <% report_variable [ ; format ] %>
 // <% variable [ ; format ] %>
 
-RWTextValue
+RWString
 SRText::ParseText (bool& outStillDynamic)
 const
 {
 	outStillDynamic = false;	//mbs 30122009
-	RWTextValue	text;
+	RWString	text;
 
 	//mbs 30042010	support attributed text
-	if (not mText.IsEmpty())
+	if (not mText.empty())
 	{
-		long	textLen = mText.StrLength();
+		long	textLen = (long) mText.size();
 		long	curPos = 0, delta = 0, endPos;
 
 		RWString	result (mText);		// was "(mText, textLen)": the substring *from* textLen, i.e. empty
@@ -1951,7 +1951,7 @@ SRVariable::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 		elem.SetAttribute (u"id", 0);
 		elem.SetAttribute (u"grid", 0);
 		elem.SetAttribute (u"width", mRepeat == eRepeat_Horizontally ? mPosition.Width() + mRepeatOffset : mPosition.Width());
-		if (not mFormat.IsEmpty())
+		if (not mFormat.empty())
 			elem.SetAttr (u"format", mFormat);
 		if (mStyleID != 0)
 			elem.SetAttribute (u"style", mStyleID);
@@ -1960,7 +1960,7 @@ SRVariable::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 	{
 		me = WriteSelf (inParent, "Var");
 		me.SetAttr (u"source", mSource);
-		if (not mFormat.IsEmpty())
+		if (not mFormat.empty())
 		{
 			me.SetAttr (u"format", mFormat);
 		}
@@ -1974,7 +1974,7 @@ SRVariable::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 				me = WriteSelf (inParent, "Var");
 				me.SetAttr (u"source", mSource);
 				me.SetAttribute (u"calc", long (mCalcType));
-				if (not mFormat.IsEmpty() && mValue.GetKind() < RWValue::eValue_PictRefScreen)
+				if (not mFormat.empty() && mValue.GetKind() < RWValue::eValue_PictRefScreen)
 				{
 					me.SetAttr (u"format", mFormat);
 				}
@@ -1989,7 +1989,7 @@ SRVariable::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 			me = SRObject::WriteSelf (inParent, "Pict");
 			if (mDataID != 0)
 				me.SetAttribute (u"dataID", mDataID);
-			if (not mFormat.IsEmpty())
+			if (not mFormat.empty())
 			{
 				me.SetAttr (u"format", mFormat);
 			}
@@ -2027,14 +2027,14 @@ SRVariable::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 
 		if (mValue.GetKind() < RWValue::eValue_PictRefScreen)
 		{
-			mText.Free();
-			if ((mValue.GetKind() == RWValue::eValue_Boolean) && mFormat.IsEmpty() && !mDraw) {
-				RWTextValue buf("True;");
+			mText.clear();
+			if ((mValue.GetKind() == RWValue::eValue_Boolean) && mFormat.empty() && !mDraw) {
+				RWString buf (u"True;");
 				mText = GetReportWriter()->FormatVariable (mValue, buf);				
 			} else {
 				mText = GetReportWriter()->FormatVariable (mValue, mFormat);
 			}
-			if (not mText.IsEmpty())
+			if (not mText.empty())
 				RWTools::WriteText (me, mText);
 		}
 	}
@@ -2114,7 +2114,7 @@ SRVariable::SetProperty (OSType id, RWValue &inValue)
 // ---------------------------------------------------------------------------
 
 const SRObject*
-SRVariable::FindCalculatedObject (const CText inName)
+SRVariable::FindCalculatedObject (const RWString inName)
 const
 {
 	if (mCalcType == ECalcType_None && inName == mSource)

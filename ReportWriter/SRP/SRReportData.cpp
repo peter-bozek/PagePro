@@ -108,7 +108,7 @@ const
 // GetName															  [public]
 // ---------------------------------------------------------------------------
 
-const CText
+const RWString
 SRReportData::GetName (void)
 const
 {
@@ -135,20 +135,20 @@ SRReportData::ParseReport (void)
 	for (RWXmlNode elem : report.Children())
 	{
 		const RWString	value = elem.Name();
-		if (STR_EQUALS (value, "StyleSet"))
+		if (RWStr::EqualsNoCase (value, "StyleSet"))
 			ParseStyleSet (elem);
-		else if (STR_EQUALS (value, "Watermark"))
+		else if (RWStr::EqualsNoCase (value, "Watermark"))
 			ParseSection (elem);
-		else if (STR_EQUALS (value, "Header") || STR_EQUALS (value, "Body") || STR_EQUALS (value, "Page") || STR_EQUALS (value, "Footer"))
+		else if (RWStr::EqualsNoCase (value, "Header") || RWStr::EqualsNoCase (value, "Body") || RWStr::EqualsNoCase (value, "Page") || RWStr::EqualsNoCase (value, "Footer"))
 			ParseSection (elem);
-		else if (STR_EQUALS (value, "BreakHeader") || STR_EQUALS (value, "BreakFooter"))
+		else if (RWStr::EqualsNoCase (value, "BreakHeader") || RWStr::EqualsNoCase (value, "BreakFooter"))
 			ParseSection (elem);
-//		else if (STR_EQUALS (value, "DataSource"))	--> parsed by SRDataSource
+//		else if (RWStr::EqualsNoCase (value, "DataSource"))	--> parsed by SRDataSource
 //			ParseDataSource (elem);
 		else if (not mReportWriter->IsExport())	//mbs 05112010
 		{
 /*
-			else if (STR_EQUALS (value, "PageSetup"))		// Classic
+			else if (RWStr::EqualsNoCase (value, "PageSetup"))		// Classic
 			{
 				SBlob	data;
 				data.Init();
@@ -156,42 +156,42 @@ SRReportData::ParseReport (void)
 				mPageSetup.SetBlob (data, true);
 			}
 */
-			if (STR_EQUALS (value, "PageFormat"))		// Carbon
+			if (RWStr::EqualsNoCase (value, "PageFormat"))		// Carbon
 			{
 				SBlob	data;
 				data.Init();
 				RWTools::ReadData (elem, data);
 				mPageFormat.SetBlob (data, true);
 			}
-			else if (STR_EQUALS (value, "PrintSettings"))	// Carbon
+			else if (RWStr::EqualsNoCase (value, "PrintSettings"))	// Carbon
 			{
 				SBlob	data;
 				data.Init();
 				RWTools::ReadData (elem, data);
 				mPrintSettings.SetBlob (data, true);
 			}
-			else if (STR_EQUALS (value, "DevMode"))			// Win32
+			else if (RWStr::EqualsNoCase (value, "DevMode"))			// Win32
 			{
 				SBlob	data;
 				data.Init();
 				RWTools::ReadData (elem, data);
 				mDevMode.SetBlob (data, true);
 			}
-			else if (STR_EQUALS (value, "DeviceNames"))		// Win32
+			else if (RWStr::EqualsNoCase (value, "DeviceNames"))		// Win32
 			{
 				SBlob	data;
 				data.Init();
 				RWTools::ReadData (elem, data);
 				mDeviceNames.SetBlob (data, true);
 			}
-			else if (STR_EQUALS (value, "PageSetupDlg"))	// Win32
+			else if (RWStr::EqualsNoCase (value, "PageSetupDlg"))	// Win32
 			{
 				SBlob	data;
 				data.Init();
 				RWTools::ReadData (elem, data);
 				mPageSetupDialog.SetBlob (data, true);
 			}
-			else if (STR_EQUALS (value, "PrintDlg"))		// Win32
+			else if (RWStr::EqualsNoCase (value, "PrintDlg"))		// Win32
 			{
 				SBlob	data;
 				data.Init();
@@ -229,7 +229,7 @@ SRReportData::ParseStyleSet (RWXmlNode inStyleSet)
 {
 	for (RWXmlNode elem : inStyleSet.Children())
 	{
-		if (!STR_EQUALS (elem.Name(), "Style"))
+		if (!RWStr::EqualsNoCase (elem.Name(), "Style"))
 			continue;
 
 		RWStyle	*style = new RWStyle (&mStyles, elem);
@@ -249,7 +249,7 @@ void
 SRReportData::ParseSection (RWXmlNode inSection)
 {
 	const RWString	value = inSection.Name();
-	if (STR_EQUALS (value, "Watermark"))
+	if (RWStr::EqualsNoCase (value, "Watermark"))
 	{
 		if (mWatermark == NULL)
 		{
@@ -263,7 +263,7 @@ SRReportData::ParseSection (RWXmlNode inSection)
 			}
 		}
 	}
-	else if (STR_EQUALS (value, "Body") || STR_EQUALS (value, "Page"))
+	else if (RWStr::EqualsNoCase (value, "Body") || RWStr::EqualsNoCase (value, "Page"))
 	{
 		if (mBody == NULL)
 		{
@@ -279,7 +279,7 @@ SRReportData::ParseSection (RWXmlNode inSection)
 */
 		}
 	}
-	else if (STR_EQUALS (value, "BreakHeader"))
+	else if (RWStr::EqualsNoCase (value, "BreakHeader"))
 	{
 		SRBreakSection	*breakHeader = new SRBreakSection (value);
 		breakHeader->Parse (this, inSection);
@@ -292,7 +292,7 @@ SRReportData::ParseSection (RWXmlNode inSection)
 			mBreakHeaders.push_back (breakHeader);
 		}
 	}
-	else if (STR_EQUALS (value, "BreakFooter"))
+	else if (RWStr::EqualsNoCase (value, "BreakFooter"))
 	{
 		SRBreakSection	*breakFooter = new SRBreakSection (value);
 		breakFooter->Parse (this, inSection);
@@ -305,7 +305,7 @@ SRReportData::ParseSection (RWXmlNode inSection)
 			mBreakFooters.push_back (breakFooter);
 		}
 	}
-	else if (STR_EQUALS (value, "Header") || STR_EQUALS (value, "Footer"))
+	else if (RWStr::EqualsNoCase (value, "Header") || RWStr::EqualsNoCase (value, "Footer"))
 	{
 		SRHeaderFooterSection	*headerFooter = new SRHeaderFooterSection (value);
 		headerFooter->Parse (this, inSection);
@@ -334,7 +334,7 @@ SRReportData::ParseObjects (SRObjListD *inParent, RWXmlNode inObject)
 		SRObject		*obj = NULL;
 		const RWString	value = elem.Name();
 
-		if (STR_EQUALS (value, "Group"))
+		if (RWStr::EqualsNoCase (value, "Group"))
 		{
 			SRGroup	*group = SRGroup::Create (this, elem, ++seqID);
 			if (group != NULL)
@@ -343,26 +343,26 @@ SRReportData::ParseObjects (SRObjListD *inParent, RWXmlNode inObject)
 				ParseObjects (group->GetObjects(), elem);
 			}
 		}
-		else if (STR_STARTS_WITH (value, "Pict"))
+		else if (RWStr::StartsWithNoCase (value, "Pict"))
 			obj = SRPict::Create (this, elem, ++seqID);	//mbs 05112010	TODO: what to do with export?!?
-		else if (STR_EQUALS (value, "Text"))
+		else if (RWStr::EqualsNoCase (value, "Text"))
 		{
 			if (not mReportWriter->IsExport() || (mReportWriter->GetFlags() & eo_static) != 0)	//mbs 05112010	eo_static
 				obj = SRText::Create (this, elem, ++seqID);
 		}
-		else if (STR_STARTS_WITH (value, "Var"))
+		else if (RWStr::StartsWithNoCase (value, "Var"))
 			obj = SRVariable::Create (this, elem, ++seqID);
-		else if (STR_EQUALS (value, "Field"))
+		else if (RWStr::EqualsNoCase (value, "Field"))
 			obj = SRField::Create (this, elem, ++seqID);
-		else if (STR_EQUALS (value, "Table"))
+		else if (RWStr::EqualsNoCase (value, "Table"))
 			obj = SRTable::Create (this, elem, ++seqID);
 		else if (not mReportWriter->IsExport())	//mbs 05112010
 		{
-			if (STR_EQUALS (value, "Line"))
+			if (RWStr::EqualsNoCase (value, "Line"))
 				obj = SRLine::Create (this, elem, ++seqID);
-			else if (STR_EQUALS (value, "Rect"))
+			else if (RWStr::EqualsNoCase (value, "Rect"))
 				obj = SRRect::Create (this, elem, ++seqID);
-			else if (STR_EQUALS (value, "Oval"))
+			else if (RWStr::EqualsNoCase (value, "Oval"))
 				obj = SROval::Create (this, elem, ++seqID);
 		}
 		
@@ -403,9 +403,9 @@ const
 {
 	RWXmlNode	report = outXML.Node().Append (u"Report");
 	report.SetAttr (u"Version", u"1.0");
-	if (not mName.IsEmpty())
+	if (not mName.empty())
 		report.SetAttr (u"name", mName);
-	if (not mID.IsEmpty())
+	if (not mID.empty())
 		report.SetAttr (u"id", mID);
 	report.SetAttribute (u"pageWidth", mPageWidth);
 	report.SetAttribute (u"pageHeight", mPageHeight);
@@ -569,7 +569,7 @@ SRReportData::SetProperty (OSType id, RWValue &inValue)
 						DMBase	*obj = static_cast <DMBase*> (*iter);
 						if (obj != NULL)
 						{
-							if (simple != (STR_EQUALS (obj->GetType(), "Page")))
+							if (simple != (RWStr::EqualsNoCase (obj->GetType(), "Page")))
 								return false;
 					}
 					mSimple = simple;

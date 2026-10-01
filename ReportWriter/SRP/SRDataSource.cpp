@@ -95,9 +95,9 @@ void
 SRDataSource::SetCallBackID (void)
 {
 	mCallBackID = 0;
-	if (not mCallBackName.IsEmpty())
+	if (not mCallBackName.empty())
 	{
-        CText name = mCallBackName;
+        RWString name = mCallBackName;
 		mCallBackID = PA_GetMethodID ((PA_Unichar *)name.c_str());
 		if (mCallBackID == -1)
 			mCallBackID = 0;
@@ -114,7 +114,7 @@ SRDataSource::ParseDataSource (RWXmlNode inNode)
 {
 	const RWString	value = inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropType, GetProperties())->name));
 	if (!value.empty())
-		assert (STR_EQUALS (value, "4D"));
+		assert (RWStr::EqualsNoCase (value, "4D"));
 
 	LoadXML (inNode);
 
@@ -226,46 +226,6 @@ SRDataSource::ParseReport (RWXmlNode inReport)
 }
 
 
-#if 0
-// ---------------------------------------------------------------------------
-// GetTableHeadings													  [public]
-// ---------------------------------------------------------------------------
-// Return array of headings in a table
-
-int
-SRDataSource::GetTableHeadings (RWDataID inDataID, EHeadings inWhich, const SOpaqueCategoryItem *&outTable)
-const
-{
-	outTable = NULL;
-	return 0;
-}
-
-
-// ---------------------------------------------------------------------------
-// GetTableHeadingData												  [public]
-// ---------------------------------------------------------------------------
-// Return text of heading in a table
-
-const CText
-SRDataSource::GetTableHeadingData (RWDataID inDataID, SOpaqueCategoryItem inHeading, int inItem, int &outSpan, int &outLevel)
-const
-{
-	return NULL;
-}
-
-
-// ---------------------------------------------------------------------------
-// GetTableTitle													  [public]
-// ---------------------------------------------------------------------------
-// Return title (topleft cell in a table with both top & left headings)
-
-const CText
-SRDataSource::GetTableTitle (RWDataID inDataID)
-const
-{
-	return NULL;
-}
-#endif
 
 
 // ---------------------------------------------------------------------------
@@ -273,8 +233,8 @@ const
 // ---------------------------------------------------------------------------
 // Convert specified variable to a text representation
 
-RWTextValue
-SRDataSource::FormatVariable (const RWValue &inVar, const CText inFormat)
+RWString
+SRDataSource::FormatVariable (const RWValue &inVar, const RWString inFormat)
 const
 {
 	return SRDataFormatter::FormatVariable (inVar, inFormat);
@@ -334,7 +294,7 @@ SRDataSource::Reset (void)
 				mNumIterations = PA_RecordsInSelection (mMainTable);
 			}
 		}
-		else if (!mName.IsEmpty() /* && (mSource == eDataSource_Variable || mSource == eDataSource_Array) */)
+		else if (!mName.empty() /* && (mSource == eDataSource_Variable || mSource == eDataSource_Array) */)
 		{
 			SR4DVariable	var (mName, SR4DVariable::SR4DVariable_Variable);
 			var.Fetch (SR4DVariable::SR4DVariable_Variable, false);	//mbs 05082010	-2 instead of -1 - no need to fetch array element
@@ -444,7 +404,7 @@ SRDataSource::Close ()
 // ---------------------------------------------------------------------------
 
 SR4DData*
-SRDataSource::CreateVariable (const CText inName, long inIndex)
+SRDataSource::CreateVariable (const RWString inName, long inIndex)
 {
 	SR4DVariable				*var = NULL;
 	SRVarNameKey				key ( inName, inIndex);
@@ -467,7 +427,7 @@ SRDataSource::CreateVariable (const CText inName, long inIndex)
 // ---------------------------------------------------------------------------
 
 bool
-SRDataSource::GetVariable (const CText inName, long inIndex, RWValue &outVar, bool inUseOld)
+SRDataSource::GetVariable (const RWString inName, long inIndex, RWValue &outVar, bool inUseOld)
 {
 	//mbs 14012010	we have to always create a variable - otherwise <%var%> will not function for non-report variables
 #if	0
@@ -511,7 +471,7 @@ SRDataSource::GetVariable (const CText inName, long inIndex, RWValue &outVar, bo
 //mbs 05082010
 
 void
-SRDataSource::GetVariable (const CText inName, RWValue &outVar)
+SRDataSource::GetVariable (const RWString inName, RWValue &outVar)
 {
 	SR4DVariable	var (inName, SR4DVariable::SR4DVariable_Variable);
 	var.Fetch (mCurIteration, false);
@@ -524,7 +484,7 @@ SRDataSource::GetVariable (const CText inName, RWValue &outVar)
 // ---------------------------------------------------------------------------
 
 SR4DData*
-SRDataSource::CreateField (const CText inName)
+SRDataSource::CreateField (const RWString inName)
 {
 	SR4DField					*fld = NULL;
 //	SRFldMap::key_type			key (SConstText (inName));
@@ -535,7 +495,7 @@ SRDataSource::CreateField (const CText inName)
 		int		scanned;
 		scanned = 0;		// "[table]field" as numbers, like sscanf ("[%ld]%ld")
 		size_t	close = inName.find (u']');
-		if (!inName.empty() && inName[0] == u'[' && close != CText::npos
+		if (!inName.empty() && inName[0] == u'[' && close != RWString::npos
 		 &&	RWStr::ReadNumber (RWStringView (inName).substr (1, close - 1), table))
 		{
 			scanned = 1;
@@ -574,7 +534,7 @@ SRDataSource::CreateField (const CText inName)
 // ---------------------------------------------------------------------------
 
 bool
-SRDataSource::GetField (const CText inName, RWValue &outVar, bool inUseOld)
+SRDataSource::GetField (const RWString inName, RWValue &outVar, bool inUseOld)
 {
 #if 0
 	bool						found = true;

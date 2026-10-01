@@ -46,8 +46,11 @@ namespace	RWStr
 	bool					EqualsNoCase (RWStringView inText1, RWStringView inText2);
 	bool					EqualsNoCase (RWStringView inText, std::string_view inASCII);
 	int						CompareNoCase (RWStringView inText1, RWStringView inText2);
+	int						CompareNoCase (RWStringView inText, std::string_view inASCII);
 	bool					StartsWith (RWStringView inText, RWStringView inPrefix);
+	bool					StartsWith (RWStringView inText, std::string_view inASCIIPrefix);
 	bool					StartsWithNoCase (RWStringView inText, RWStringView inPrefix);
+	bool					StartsWithNoCase (RWStringView inText, std::string_view inASCIIPrefix);
 	bool					EndsWith (RWStringView inText, RWStringView inSuffix);
 	bool					Contains (RWStringView inText, RWStringView inPart);
 

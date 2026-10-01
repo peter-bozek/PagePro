@@ -119,7 +119,7 @@ protected:
 	float					mOffsetX;
 	float					mOffsetY;
 
-//	RWTextValue				mPrinterName;
+//	RWString				mPrinterName;
 	HGLOBAL					mDevMode;	// DEVMODEW
 	HGLOBAL					mDevNames;	// DEVNAMES
 	PAGESETUPDLGW		*	mPageSetupDlg;

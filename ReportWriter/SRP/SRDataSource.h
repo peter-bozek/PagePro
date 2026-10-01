@@ -7,9 +7,9 @@
 # include	"PSObject.h"
 # include	"ExtendedExecute.h"
 
-typedef	std::pair <CText, long>			SRVarNameKey;
+typedef	std::pair <RWString, long>			SRVarNameKey;
 typedef	RWMap<SRVarNameKey, SR4DVariable*>		SRVarMap;
-typedef	RWMap<CText, SR4DField*>			SRFldMap;
+typedef	RWMap<RWString, SR4DField*>			SRFldMap;
 
 
 // forward declarations
@@ -48,19 +48,19 @@ inline		void		SetReportWriter (SRReportWriter *inReportWriter);
 //virtual		void		SetVariable (SConstText inName, RWValue *inVar);
 //virtual		bool		GetVariable (SConstText inName, RWValue &outVar) const;
 
-			SR4DData*	CreateVariable (const CText inName, long inIndex);
-			bool		GetVariable (const CText inName, long inIndex, RWValue &outVar, bool inUseOld);
-			void		GetVariable (const CText inName, RWValue &outVar);
-			SR4DData*	CreateField (const CText inName);
-			bool		GetField (const CText inName, RWValue &outVar, bool inUseOld);
+			SR4DData*	CreateVariable (const RWString inName, long inIndex);
+			bool		GetVariable (const RWString inName, long inIndex, RWValue &outVar, bool inUseOld);
+			void		GetVariable (const RWString inName, RWValue &outVar);
+			SR4DData*	CreateField (const RWString inName);
+			bool		GetField (const RWString inName, RWValue &outVar, bool inUseOld);
 			RWDataID	EmitPicture (const RWValue &inVar);
 			RWDataID	EmitRepeating (SR4DData *inVar, bool inIsHorizontal);
 
 //virtual			int		GetTableHeadings (RWDataID inDataID, EHeadings inWhich, const SOpaqueCategoryItem *&outTable) const;
-//virtual	const CText		GetTableHeadingData (RWDataID inDataID, SOpaqueCategoryItem inHeading, int inItem, int &outSpan, int &outLevel) const;
-//virtual	const CText		GetTableTitle (RWDataID inDataID) const;
+//virtual	const RWString		GetTableHeadingData (RWDataID inDataID, SOpaqueCategoryItem inHeading, int inItem, int &outSpan, int &outLevel) const;
+//virtual	const RWString		GetTableTitle (RWDataID inDataID) const;
 
-virtual	RWTextValue		FormatVariable (const RWValue &inVar, const CText inFormat) const;
+virtual	RWString		FormatVariable (const RWValue &inVar, const RWString inFormat) const;
 
 		void			Reset (void);	// reset variables, seek before first record
 		bool			FetchNextRecord (void);	// fetch next "record" - false == EOF
@@ -94,12 +94,12 @@ protected:
 		ExtendedExecute	mBodyScript;
 		ExtendedExecute	mEndScript;
 		EDataSource		mSource;	// table, array size, variable, fixed
-		RWTextValue		mName;		// [4], arrayName, variableName
+		RWString		mName;		// [4], arrayName, variableName
 		long			mNumIterations;
 		int				mMainTable;
 		short			mRelateOne;
 		short			mRelateMany;
-		RWTextValue		mCallBackName;
+		RWString		mCallBackName;
 		bool			mSRPCompatibility;
 		long			mCallBackID;
 		long			mCurIteration;

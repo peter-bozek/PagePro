@@ -28,21 +28,21 @@ public:
     virtual		void			ParseReport (RWXmlNode inReport) override;
 	virtual		void*			FinishReport (size_t &outSize);
 
-	virtual		void			GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect);
+	virtual		void			GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect);
 	virtual		bool			GetPageMetrics (float &outPageWidth, float &outPageHeight, SRect &outMargins);
 	virtual		bool			GetPageMetrics (SRect &outPageRect, SRect &outPaperRect, SRect &outMargins);
 	virtual		void			OpenNewPage (const SRect &inRect, unsigned long inCurPage, unsigned long inNumPages);
 	virtual		void			ClosePage (void);
 	virtual		SRect			GetTruePageRect (void) const;
 
-	virtual		void			DrawTextBox (const CText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
-	virtual		double			MeasureText (const CText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
+	virtual		void			DrawTextBox (const RWString inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
+	virtual		double			MeasureText (const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
 
 	virtual	const RWPrintContextRef	GetPrintContext (void) = 0;
 	virtual		CGContextRef *	GetGContext (void) = 0;
 	virtual		void			ReleaseGContext (void) = 0;
-	virtual		double			MeasureWord (const CText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading);
-	virtual		void			DrawWord (const CText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle);
+	virtual		double			MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading);
+	virtual		void			DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle);
 
 	virtual		bool			GetDPI (float &x, float &y, void* inWindow);
 
@@ -56,7 +56,7 @@ inline	const	PMPrintSettings	GetPrintSettings (void) const;
 				void			SetPrintSettings (const SBlob &inPrintSettings);
 
 protected:
-								RWMacPageComposer (unsigned long inFlags, CText &inDst, CText &printer);	//mbs 25072011	printer
+								RWMacPageComposer (unsigned long inFlags, RWString &inDst, RWString &printer);	//mbs 25072011	printer
 
 	virtual		OSStatus		OpenSessionSelf (void) = 0;
 	virtual		void			OpenNewPageSelf (void) = 0;

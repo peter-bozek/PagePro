@@ -129,7 +129,7 @@ static	CGColorSpaceRef GetGenericRGBColorSpace (void)
 // RWMacCGPageComposer						Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWMacCGPageComposer::RWMacCGPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter)	//mbs 25072011	printer
+RWMacCGPageComposer::RWMacCGPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter)	//mbs 25072011	printer
 	:	RWMacPageComposer (inFlags, inDst, inPrinter),	//mbs 25072011	printer
 		mGC (0)
 {
@@ -179,7 +179,7 @@ RWMacCGPageComposer::~RWMacCGPageComposer (void)
 // Get default page size, page orientation and encoding
 
 void
-RWMacCGPageComposer::GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect)
+RWMacCGPageComposer::GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect)
 {
 	RWMacPageComposer::GetPageBounds (inOrientation, inSize, outRect);
 

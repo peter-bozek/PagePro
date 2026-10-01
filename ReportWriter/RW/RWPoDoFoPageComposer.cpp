@@ -68,7 +68,7 @@ struct	RWPdfPictData	:	public	RWPictData
 // RWPoDoFoPageComposer						Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWPoDoFoPageComposer::RWPoDoFoPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter)
+RWPoDoFoPageComposer::RWPoDoFoPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter)
 	:	RWPageComposer (inFlags, inDst, inPrinter),
 		mPage (nullptr),
 		mDocumentSerial (0),
@@ -173,7 +173,7 @@ bool
 RWPoDoFoPageComposer::EnsureDocument (void)
 {
 	if (mPDF == nullptr)
-		OpenSession (false, false, 0, 0, TEXT_EQUALS (mPageOrientation, "Landscape"));
+		OpenSession (false, false, 0, 0, RWStr::Equals (mPageOrientation, "Landscape"));
 	return mPDF != nullptr;
 }
 
@@ -287,7 +287,7 @@ RWPoDoFoPageComposer::ParseReport (RWXmlNode inReport)
 // ---------------------------------------------------------------------------
 
 void
-RWPoDoFoPageComposer::GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect)
+RWPoDoFoPageComposer::GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect)
 {
 	if (mPageRect.Width() == 0)
 		RWPageComposer::GetPageBounds (inOrientation, inSize, mPageRect);
@@ -670,7 +670,7 @@ RWPoDoFoPageComposer::ApplyTransform (CGAffineTransform &inMatrix)
 // native composers.
 
 double
-RWPoDoFoPageComposer::MeasureWord (const CText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
+RWPoDoFoPageComposer::MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
 {
 	outAscent = outDescent = outLeading = 0;
 	if (!EnsureDocument())
@@ -707,7 +707,7 @@ RWPoDoFoPageComposer::MeasureWord (const CText inText, int inTextLength, RWStyle
 // ---------------------------------------------------------------------------
 
 void
-RWPoDoFoPageComposer::DrawWord (const CText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle)
+RWPoDoFoPageComposer::DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle)
 {
 	if (!mPageIsOpen)
 		return;

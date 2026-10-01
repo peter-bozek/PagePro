@@ -262,7 +262,7 @@ SR4DData::GetCurrentPicture (void *ph)
 
 
 
-SR4DVariable::SR4DVariable (const CText inName, long inIndex)
+SR4DVariable::SR4DVariable (const RWString inName, long inIndex)
 	:	SR4DData(),
 		mIndex (inIndex)
 {
@@ -359,12 +359,7 @@ SR4DVariable::Fetch (long inIteration, bool inSeek)
 			case eVK_Unistring:
 			{
 				PA_Unistring	u4d = PA_GetStringVariable (v);
-				#if	CChar_Size == 1
-					CText t (PA_GetUnistring (&u4d), PA_GetUnistringLength (&u4d));
-					mCurrent.SetText ((CText) t.u8_str(), true);
-				#else
 					mCurrent.SetText (RWStr::FromPA (&u4d));
-				#endif
 				PA_DisposeUnistring (&u4d);
 				break;
 			}
@@ -415,12 +410,7 @@ SR4DVariable::Fetch (long inIteration, bool inSeek)
 						case eVK_ArrayUnicode:
 						{
 							PA_Unistring	u4d = PA_GetStringInArray (v, inIteration);
-							#if	CChar_Size == 1
-								CText t (PA_GetUnistring (&u4d), PA_GetUnistringLength (&u4d));
-								mCurrent.SetText ((CText) t.CopyUTF8(), true);
-							#else
 								mCurrent.SetText (RWStr::FromPA (&u4d));
-							#endif
 							break;
 						}
 
@@ -493,12 +483,7 @@ SR4DField::Fetch (long inIteration, bool inSeek)
 				case eFK_TextField:
 				{
 					PA_Unistring	u4d = PA_GetStringField (mTable, mField);
-					#if	CChar_Size == 1
-						CText t (PA_GetUnistring (&u4d), PA_GetUnistringLength (&u4d));
-						mCurrent.SetText ((CText) t.CopyUTF8(), true);
-					#else
 						mCurrent.SetText (RWStr::FromPA (&u4d));
-					#endif
 					PA_DisposeUnistring (&u4d);
 					break;
 				}

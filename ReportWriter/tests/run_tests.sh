@@ -21,14 +21,14 @@ clang++ "${FLAGS[@]}" -Wall -Wextra -Werror -fsanitize=address,undefined \
 
 # RWBaseTypes core, linked with the 4D plugin API (never called)
 clang -std=gnu99 -mmacosx-version-min=11.0 -g -w -Wno-int-conversion -I "$ROOT/4D Plugin API" -c "$ROOT/4D Plugin API/4DPluginAPI.c" -o "$OUT/4DPluginAPI.o"
-clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -Wall -Wextra -Wno-comma -Wno-unused-value -fsanitize=address,undefined \
+clang++ "${FLAGS[@]}" -I "$ROOT/DM" -I "$ROOT/SRP" -Wall -Wextra -Wno-comma -Wno-unused-value -fsanitize=address,undefined \
 	"$ROOT/RW/RWBaseTypes.cpp" "$ROOT/RW/RWDataProvider.cpp" "$ROOT/SRP/RW4DText.cpp" "$ROOT/RW/RWString.cpp" "$ROOT/RW/RWXml.cpp" "$ROOT/tests/RWBaseTypesTests.cpp" \
 	"$OUT/pugixml.o" "$OUT/4DPluginAPI.o" -framework CoreFoundation -framework CoreGraphics -o "$OUT/RWBaseTypesTests"
 
 "$OUT/RWBaseTypesTests"
 
 # export (ET): processed report to text, HTML, XML and JSON
-clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$ROOT/ET" -w -fsanitize=address,undefined \
+clang++ "${FLAGS[@]}" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$ROOT/ET" -w -fsanitize=address,undefined \
 	"$ROOT"/ET/*.cpp "$ROOT/RW/RWBaseTypes.cpp" "$ROOT/RW/RWString.cpp" "$ROOT/RW/RWXml.cpp" "$ROOT/RW/RWDataProvider.cpp" \
 	"$ROOT/RW/RWDataSource.cpp" "$ROOT/RW/RWDataSourceProvider.cpp" "$ROOT/RW/RWCalculator.cpp" "$ROOT/RW/RWStyle.cpp" \
 	"$ROOT/DM/PSObject.cpp" "$ROOT/SRP/ExtendedExecute.cpp" "$ROOT/tests/ETExportTests.cpp" \
@@ -40,7 +40,7 @@ mkdir -p "$OUT/export"
 # PDF output (PoDoFo 1.0): needs podofo/build_mac.sh to have run
 PODOFO="$ROOT/podofo/mac"
 if [ -f "$PODOFO/lib/libpodofo.a" ]; then
-	clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$PODOFO/include" -I "$ROOT" -DPODOFO_STATIC \
+	clang++ "${FLAGS[@]}" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$PODOFO/include" -I "$ROOT" -DPODOFO_STATIC \
 		-w -fpascal-strings -fsanitize=address,undefined \
 		"$ROOT/tests/PdfComposerTests.cpp" "$ROOT/RW/RWPoDoFoPageComposer.cpp" "$ROOT/RW/RWPageComposer.cpp" \
 		"$ROOT/RW/RWPdfFonts.cpp" "$ROOT/RW/RWFontsMac.cpp" "$ROOT/RW/RWTextFormatter.cpp" "$ROOT/RW/RWStyle.cpp" \

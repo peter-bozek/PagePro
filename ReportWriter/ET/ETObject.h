@@ -47,8 +47,8 @@ public:
 	long                        GetOrder (void) const;										// print order
 	SRect                       GetPosition (void) const;									// position relative to parent
 	bool                        WillingToPrint () const;
-    inline      RWTextValue     GetName();
-    inline      RWTextValue     GetID();
+    inline      RWString     GetName();
+    inline      RWString     GetID();
 	
 	virtual		EObject_Kind	GetKind (void) const = 0;
 	virtual		void			FetchCalcValue (ETReport *inWriter);
@@ -57,7 +57,7 @@ public:
 protected:
 								ETObject (int inOrder);
 	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode);
-	RWTextValue                 GetVariableText (const CText inVariableName, const CText inFormat) const;
+	RWString                 GetVariableText (const RWString inVariableName, const RWString inFormat) const;
 	
 private:
 	// defensive programming - not implemented
@@ -65,16 +65,16 @@ private:
 	ETObject	&	operator = (const ETObject &inOriginal);
 	
 protected:
-	RWTextValue			mName;
-	RWTextValue			mID;
+	RWString			mName;
+	RWString			mID;
 	ETReportData	*	mReportData;
 	long				mSeqID;
 	SRect				mPosition;
 	EDraw		  		mDraw;
 };
 
-inline	RWTextValue		ETObject::GetName()		{return mName;}
-inline	RWTextValue		ETObject::GetID()		{return mID;}
+inline	RWString		ETObject::GetName()		{return mName;}
+inline	RWString		ETObject::GetID()		{return mID;}
 
 /*
 template <class T>
@@ -139,13 +139,13 @@ public:
 	virtual		void			FetchCalcValue (ETReport *inWriter);
 	virtual		void			Export (void);
 				bool			IsAttributed (void) const;
-    RWTextValue                 GetClass();
+    RWString                 GetClass();
 
 protected:
 	ETText (int inOrder);
 	virtual						~ETText (void);
 	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode) override;
-	RWTextValue					ParseText (void);
+	RWString					ParseText (void);
 	
 private:
 	// defensive programming - not implemented
@@ -156,10 +156,10 @@ protected:
 	bool				mIsDynamic;
 	bool				mIsAttributed;
 	EEmpty				mDrawIfEmpty;
-	RWTextValue			mVarName;		// for calculated values
+	RWString			mVarName;		// for calculated values
 	RWValue				mVarValue;		// for calculated values - RWVarMap needs permanent object, not a stack object
 	RWStyle			*	mStyle;
-	RWTextValue			mText;
+	RWString			mText;
 };
 
 inline bool				ETText::IsAttributed (void) const		{return mIsAttributed; }
@@ -184,7 +184,7 @@ protected:
 	virtual		void			Parse (ETReportData *inReport, RWXmlNode inNode) override;
 	
 	void			GetVariableData (void);
-	void			SetVariableText (const CText inConstValue);
+	void			SetVariableText (const RWString inConstValue);
 	
 private:
 	// defensive programming - not implemented
@@ -192,8 +192,8 @@ private:
 	ETVariable	&	operator = (const ETVariable &inOriginal);
 	
 protected:
-	RWTextValue			mSource;
-	RWTextValue			mFormat;
+	RWString			mSource;
+	RWString			mFormat;
 	ECalcType			mCalcType;
 };
 
@@ -206,7 +206,7 @@ class	ETHeader
 	
 public:
 	inline			RWStyle		*	GetStyle (void) const;
-	inline			const CText		GetText (void) const;
+	inline			const RWString		GetText (void) const;
 	inline			int				GetColSpan (void) const;
 	inline			int				GetStartCol (void) const;
 	inline			int				GetRowSpan (void) const;
@@ -215,7 +215,7 @@ public:
 									~ETHeader (void);
 protected:
 									ETHeader (void);
-									ETHeader (const CText inText, int inColSpan, int inRowSpan, RWStyle *inStyle);
+									ETHeader (const RWString inText, int inColSpan, int inRowSpan, RWStyle *inStyle);
 	void			Parse (ETReportData *inReport, RWXmlNode inNode, long inStyleID);
 	inline			void			AdjustStartCol (int inCol);
 	
@@ -225,7 +225,7 @@ private:
 	ETHeader	&	operator = (const ETHeader &inOriginal);
 	
 protected:
-	RWTextValue			mText;
+	RWString			mText;
 	int					mColSpan;
 	int					mRowSpan;
 	RWStyle			*	mStyle;
@@ -243,7 +243,7 @@ public:
 	inline			int				GetID (void) const;
 	inline			RWStyle		*	GetStyle (void) const;
 	inline			bool			GetGrid (void) const;
-	inline			const CText		GetFormat (void) const;
+	inline			const RWString		GetFormat (void) const;
 	inline			bool			IsRowNum (void) const;
 	inline			bool			PrintRepeatingValues (void) const;
 	inline			bool			IsAttributed (void) const;
@@ -263,7 +263,7 @@ private:
 protected:
 	int					mId;
 	RWStyle			*	mStyle;
-	RWTextValue			mFormat;
+	RWString			mFormat;
 	bool				mPrintRowNum;
 	bool				mPrintRepeatingValues;
 	bool				mIsAttributed;
@@ -294,7 +294,7 @@ protected:
 	ETHeader	*	GetHeader (int inRow, int inCol) const;
 	ETColumn	*	GetColumn (int inCol) const;
 	float			GetColsWidth (int inFrom, int inTo) const;
-	RWTextValue		GetTableHeadingData (RWDataSource &inSrc, const void* inHeading, int inLine, int inCol, int &outSpan, int &outLevel) const;
+	RWString		GetTableHeadingData (RWDataSource &inSrc, const void* inHeading, int inLine, int inCol, int &outSpan, int &outLevel) const;
 	
 private:
 	// defensive programming - not implemented

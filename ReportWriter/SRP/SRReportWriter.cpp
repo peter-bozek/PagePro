@@ -41,7 +41,7 @@ SRReportWriter::~SRReportWriter (void)
 // ---------------------------------------------------------------------------
 
 bool
-SRReportWriter::GetCalculatedValue (const CText inName, RWValue &outVar)
+SRReportWriter::GetCalculatedValue (const RWString inName, RWValue &outVar)
 const
 {
 	bool	found = false;
@@ -67,7 +67,7 @@ const
 // ---------------------------------------------------------------------------
 
 bool
-SRReportWriter::IsReportVariable (const CText inName)
+SRReportWriter::IsReportVariable (const RWString inName)
 const
 {
 	return IsReportVariable (inName, 0, RW_VarNamesSRCount) >= 0;
@@ -79,7 +79,7 @@ const
 // ---------------------------------------------------------------------------
 
 int
-SRReportWriter::IsSRReportVariable (const CText inName)
+SRReportWriter::IsSRReportVariable (const RWString inName)
 const
 {
 	return IsReportVariable (inName, RW_VarNamesRWCount, RW_VarNamesSRCount);
@@ -91,7 +91,7 @@ const
 // ---------------------------------------------------------------------------
 
 bool
-SRReportWriter::IsRWReportVariable (const CText inName)
+SRReportWriter::IsRWReportVariable (const RWString inName)
 const
 {
 	return IsReportVariable (inName, 0, RW_VarNamesRWCount) >= 0;
@@ -103,14 +103,14 @@ const
 // ---------------------------------------------------------------------------
 
 int
-SRReportWriter::IsReportVariable (const CText inName, int inFrom, int inTo)
+SRReportWriter::IsReportVariable (const RWString inName, int inFrom, int inTo)
 const
 {
 	int			index;
-    CText   	name (inName);
+    RWString   	name (inName);
 	for (index = inFrom; index < inTo; index++)
 	{
-		if (name == CText (mVarNames [index]))
+		if (name == RWString (mVarNames [index]))
 			return index;
 	}
 	
@@ -123,7 +123,7 @@ const
 // ---------------------------------------------------------------------------
 
 bool
-SRReportWriter::IsCalculatedVariable (const CText inName)
+SRReportWriter::IsCalculatedVariable (const RWString inName)
 const
 {
 	bool	found = true;
@@ -139,7 +139,7 @@ const
 // ---------------------------------------------------------------------------
 
 SR4DData*
-SRReportWriter::CreateVariable (const CText inName, long inIndex, ECalcType inCalc)
+SRReportWriter::CreateVariable (const RWString inName, long inIndex, ECalcType inCalc)
 {
 	SR4DData	*var = NULL;
 
@@ -163,7 +163,7 @@ SRReportWriter::CreateVariable (const CText inName, long inIndex, ECalcType inCa
 // Get report variable
 
 bool
-SRReportWriter::GetVariable (const CText inName, long inIndex, RWValue &outVar, ECalcType inCalc)
+SRReportWriter::GetVariable (const RWString inName, long inIndex, RWValue &outVar, ECalcType inCalc)
 const
 {
 	bool	found = true;
@@ -202,7 +202,7 @@ const
 //mbs 05082010
 
 void
-SRReportWriter::GetVariable (const CText inName, RWValue &outVar)
+SRReportWriter::GetVariable (const RWString inName, RWValue &outVar)
 const
 {
 	int		index;
@@ -228,7 +228,7 @@ const
 // ---------------------------------------------------------------------------
 
 SR4DData*
-SRReportWriter::CreateField (const CText inName, ECalcType inCalc)
+SRReportWriter::CreateField (const RWString inName, ECalcType inCalc)
 {
 	SR4DData	*fld = NULL;
 
@@ -249,7 +249,7 @@ SRReportWriter::CreateField (const CText inName, ECalcType inCalc)
 // Get report field
 
 bool
-SRReportWriter::GetField (const CText inName, RWValue &outVar, ECalcType inCalc)
+SRReportWriter::GetField (const RWString inName, RWValue &outVar, ECalcType inCalc)
 const
 {
 	bool	found = true;
@@ -276,7 +276,7 @@ const
 // ---------------------------------------------------------------------------
 
 SR4DData*
-SRReportWriter::CreateBreak (const CText inName, SRBreakSection::EBreakOn inBreak)
+SRReportWriter::CreateBreak (const RWString inName, SRBreakSection::EBreakOn inBreak)
 {
 	SR4DData	*brk = NULL;
 
@@ -310,8 +310,8 @@ SRReportWriter::CreateBreak (const CText inName, SRBreakSection::EBreakOn inBrea
 // ---------------------------------------------------------------------------
 // Format variable depending on DataSource
 
-RWTextValue
-SRReportWriter::FormatVariable (const RWValue &inVar, const CText inFormat)
+RWString
+SRReportWriter::FormatVariable (const RWValue &inVar, const RWString inFormat)
 const
 {
 	return SRDataFormatter::FormatVariable (inVar, inFormat);
@@ -577,7 +577,7 @@ SRReportWriter::FillHeadersFooters (const char *inWhich)
 	for (sit = sections->begin(); sit != sections->end(); sit++)
 	{
 		SRSection	*sec = *sit;
-		if (STR_EQUALS (sec->GetType(), inWhich))
+		if (RWStr::EqualsNoCase (sec->GetType(), inWhich))
 			FillOneSection (sec, true, false);
 	}
 

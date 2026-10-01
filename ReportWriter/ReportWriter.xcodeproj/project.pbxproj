@@ -30,8 +30,6 @@
 		D226108A2B3DB5A400CFC83D /* SRDataFormatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */; };
 		D226108B2B3DB5A400CFC83D /* SR4DData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226106A2B3DB5A400CFC83D /* SR4DData.cpp */; };
 		D226108C2B3DB5A400CFC83D /* RW4DText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226106B2B3DB5A400CFC83D /* RW4DText.cpp */; };
-		D26EBFA92AF2736E001E7074 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */; };
-		D26EBFAA2AF2736E001E7074 /* xmltest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFA72AF2736E001E7074 /* xmltest.cpp */; };
 		D26EBFEC2AF274EE001E7074 /* RWCTPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */; };
 		153A3315A65B305A8B500D94 /* RWPdfFonts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 023456056F41B96F9770D22D /* RWPdfFonts.cpp */; };
 		592F29AE4F6E397879376CDA /* RWFontsMac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2462DFF3994DD5FEE32C5432 /* RWFontsMac.cpp */; };
@@ -54,7 +52,6 @@
 		D26EC01F2AF274EF001E7074 /* RWTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFE42AF274EE001E7074 /* RWTable.cpp */; };
 		D26EC0202AF274EF001E7074 /* RWStyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFE52AF274EE001E7074 /* RWStyle.cpp */; };
 		D26EC0212AF274EF001E7074 /* RWReportData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFE62AF274EE001E7074 /* RWReportData.cpp */; };
-		D26EC0272AF3CBD4001E7074 /* 4DPlugin-JSON.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0252AF3CBD4001E7074 /* 4DPlugin-JSON.cpp */; };
 		D26EC0382AF44891001E7074 /* DMUndo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC02B2AF44891001E7074 /* DMUndo.cpp */; };
 		D26EC03B2AF44891001E7074 /* DMArea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC02E2AF44891001E7074 /* DMArea.cpp */; };
 		D26EC03C2AF44891001E7074 /* DMObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC02F2AF44891001E7074 /* DMObject.cpp */; };
@@ -136,9 +133,6 @@
 		D226106A2B3DB5A400CFC83D /* SR4DData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SR4DData.cpp; sourceTree = "<group>"; };
 		D226106B2B3DB5A400CFC83D /* RW4DText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RW4DText.cpp; sourceTree = "<group>"; };
 		D26EBFA42AF26D4A001E7074 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml2.cpp; sourceTree = "<group>"; };
-		D26EBFA72AF2736E001E7074 /* xmltest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmltest.cpp; sourceTree = "<group>"; };
-		D26EBFA82AF2736E001E7074 /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		D26EBFAD2AF274EE001E7074 /* RWTextFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWTextFormatter.h; sourceTree = "<group>"; };
 		D26EBFAF2AF274EE001E7074 /* ETObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETObject.h; sourceTree = "<group>"; };
 		D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWCTPageComposer.cpp; sourceTree = "<group>"; };
@@ -185,8 +179,6 @@
 		D26EBFE42AF274EE001E7074 /* RWTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWTable.cpp; sourceTree = "<group>"; };
 		D26EBFE52AF274EE001E7074 /* RWStyle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWStyle.cpp; sourceTree = "<group>"; };
 		D26EBFE62AF274EE001E7074 /* RWReportData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWReportData.cpp; sourceTree = "<group>"; };
-		D26EC0252AF3CBD4001E7074 /* 4DPlugin-JSON.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "4DPlugin-JSON.cpp"; sourceTree = "<group>"; };
-		D26EC0262AF3CBD4001E7074 /* 4DPlugin-JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "4DPlugin-JSON.h"; sourceTree = "<group>"; };
 		D26EC02A2AF44891001E7074 /* DMArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMArea.h; sourceTree = "<group>"; };
 		D26EC02B2AF44891001E7074 /* DMUndo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DMUndo.cpp; sourceTree = "<group>"; };
 		D26EC02C2AF44891001E7074 /* PSObjProps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSObjProps.h; sourceTree = "<group>"; };
@@ -232,7 +224,6 @@
 		089C166AFE841209C02AAC07 /* ReportWriter */ = {
 			isa = PBXGroup;
 			children = (
-				D26EC0242AF3CBD4001E7074 /* support */,
 				D108BD7A1A03D1E6001F1B90 /* Manifest */,
 				08FB77ADFE841716C02AAC07 /* Source */,
 				089C167CFE841241C02AAC07 /* Resources */,
@@ -269,7 +260,6 @@
 				D22610402B3DB01500CFC83D /* 4D Headers */,
 				D26EC0292AF44891001E7074 /* DM */,
 				D26EBFAC2AF274EE001E7074 /* RW */,
-				D26EBFA52AF2736E001E7074 /* tinyXML */,
 				6595A6724B552C1A513D381E /* pugixml */,
 				18B684FE06944F8800CC6A1E /* 4DPlugin-ReportWriter.cpp */,
 				D120937E13534DCC00A72CAA /* 4DPlugin-ReportWriter.h */,
@@ -369,16 +359,6 @@
 			path = SRP;
 			sourceTree = SOURCE_ROOT;
 		};
-		D26EBFA52AF2736E001E7074 /* tinyXML */ = {
-			isa = PBXGroup;
-			children = (
-				D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */,
-				D26EBFA72AF2736E001E7074 /* xmltest.cpp */,
-				D26EBFA82AF2736E001E7074 /* tinyxml2.h */,
-			);
-			path = tinyXML;
-			sourceTree = "<group>";
-		};
 		6595A6724B552C1A513D381E /* pugixml */ = {
 			isa = PBXGroup;
 			children = (
@@ -456,15 +436,6 @@
 				D26EBFDD2AF274EE001E7074 /* ETSection.cpp */,
 			);
 			path = ET;
-			sourceTree = "<group>";
-		};
-		D26EC0242AF3CBD4001E7074 /* support */ = {
-			isa = PBXGroup;
-			children = (
-				D26EC0252AF3CBD4001E7074 /* 4DPlugin-JSON.cpp */,
-				D26EC0262AF3CBD4001E7074 /* 4DPlugin-JSON.h */,
-			);
-			path = support;
 			sourceTree = "<group>";
 		};
 		D26EC0292AF44891001E7074 /* DM */ = {
@@ -623,7 +594,6 @@
 				D26EBFFC2AF274EF001E7074 /* ETObject.cpp in Sources */,
 				D226108C2B3DB5A400CFC83D /* RW4DText.cpp in Sources */,
 				D26EC03F2AF44891001E7074 /* UIScrollBar.cpp in Sources */,
-				D26EBFA92AF2736E001E7074 /* tinyxml2.cpp in Sources */,
 				D26EC03C2AF44891001E7074 /* DMObject.cpp in Sources */,
 				D26EC0052AF274EF001E7074 /* RWBaseTypes.cpp in Sources */,
 				D226108B2B3DB5A400CFC83D /* SR4DData.cpp in Sources */,
@@ -634,12 +604,10 @@
 				D26EC03E2AF44891001E7074 /* DMReport.cpp in Sources */,
 				D26EBFFE2AF274EF001E7074 /* RWPoDoFoPageComposer.cpp in Sources */,
 				D26EBFF32AF274EE001E7074 /* RWPageComposer.cpp in Sources */,
-				D26EBFAA2AF2736E001E7074 /* xmltest.cpp in Sources */,
 				D26EBFEE2AF274EE001E7074 /* RWObject.cpp in Sources */,
 				D226107A2B3DB5A400CFC83D /* SRObject.cpp in Sources */,
 				D26EC0072AF274EF001E7074 /* RWCalculator.cpp in Sources */,
 				D26EC0432AF44891001E7074 /* PSObject.cpp in Sources */,
-				D26EC0272AF3CBD4001E7074 /* 4DPlugin-JSON.cpp in Sources */,
 				D22610862B3DB5A400CFC83D /* SRDataSourceProvider.cpp in Sources */,
 				D26EC01B2AF274EF001E7074 /* RWTextFormatter.cpp in Sources */,
 				D26EC0062AF274EF001E7074 /* RWSection.cpp in Sources */,
@@ -703,18 +671,13 @@
 					PODOFO_STATIC,
 				);
 				HEADER_SEARCH_PATHS = (
-					"include/**",
 					pugixml,
 					rapidjson/include,
 					podofo/mac/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/lib",
-					"$(PROJECT_DIR)/podofo/mac/lib",
-					"$(PROJECT_DIR)/a",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/podofo/mac/lib";
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -777,18 +740,13 @@
 					PODOFO_STATIC,
 				);
 				HEADER_SEARCH_PATHS = (
-					"include/**",
 					pugixml,
 					rapidjson/include,
 					podofo/mac/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/lib",
-					"$(PROJECT_DIR)/podofo/mac/lib",
-					"$(PROJECT_DIR)/a",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/podofo/mac/lib";
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -850,18 +808,13 @@
 					PODOFO_STATIC,
 				);
 				HEADER_SEARCH_PATHS = (
-					"include/**",
 					pugixml,
 					rapidjson/include,
 					podofo/mac/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/lib",
-					"$(PROJECT_DIR)/podofo/mac/lib",
-					"$(PROJECT_DIR)/a",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/podofo/mac/lib";
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (

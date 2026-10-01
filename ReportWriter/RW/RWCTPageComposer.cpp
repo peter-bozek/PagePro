@@ -26,13 +26,13 @@ public:
 	virtual						~RWCTPrintText (void);
 	virtual		void			Reset (void);
 
-				void			Init (RWCTPageComposer &inComposer, const CText inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit);
+				void			Init (RWCTPageComposer &inComposer, const RWString inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit);
 				void			GetBounds (RWCTPageComposer &inComposer, SRect &ioRect, bool inFit);
 				int				Draw (RWCTPageComposer &inComposer, SRect &ioRect, bool inFit, void *inContext);
 
 protected:
 				void			Free();
-				void			ApplyAttributes (const CText inText, CTFontRef font, long *attributes, long start, long end);
+				void			ApplyAttributes (const RWString inText, CTFontRef font, long *attributes, long start, long end);
 
 private:
 	// defensive programming - not implemented
@@ -63,7 +63,7 @@ const
 // RWCTPageComposer							Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWCTPageComposer::RWCTPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter)	//mbs 25072011	printer
+RWCTPageComposer::RWCTPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter)	//mbs 25072011	printer
 	:	RWMacCGPageComposer (inFlags, inDst, inPrinter)	//mbs 25072011	printer
 {
 	return;
@@ -120,7 +120,7 @@ RWCTPageComposer::StyleChanged (RWStyle *inStyle)
 // ---------------------------------------------------------------------------
 
 CTFontRef
-RWCTPageComposer::CreateFont (const CText inName, long inNameLength, float inSize, int style)
+RWCTPageComposer::CreateFont (const RWString inName, long inNameLength, float inSize, int style)
 {
 	return RWCreateCTFont (RWStringView (inName).substr (0, size_t (std::max (inNameLength, 0L))), inSize, style);
 }
@@ -158,7 +158,7 @@ RWCTPageComposer::MapStyle (RWStyle *inStyle)
 		styleDict = CFDictionaryCreateMutable (kCFAllocatorDefault, 4, &kCFCopyStringDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 		// require (styleDict != NULL, CFDictionaryCreateMutable);
 
-		CText		fontName = inStyle->GetFName();
+		RWString		fontName = inStyle->GetFName();
 		CTFontRef	font = CreateFont (fontName, (long) fontName.size(), inStyle->GetSize(), inStyle->GetStyle());
 		CFDictionaryAddValue (styleDict, kCTFontAttributeName, font);
 		::CFRelease (font);
@@ -215,7 +215,7 @@ CFDictionaryCreateMutable:
 
 
 void
-RWCTPageComposer::DrawTextBox (CText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWCTPageComposer::DrawTextBox (RWString inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
 if (sUseTF)
 	RWPageComposer::DrawTextBox (inText, inStyle, inRect, inWrap, inAttributed, inFit, ioPrintText);
@@ -271,7 +271,7 @@ else
 
 
 double
-RWCTPageComposer::MeasureText (const CText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWCTPageComposer::MeasureText (const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
 if (sUseTF)
 	return RWPageComposer::MeasureText (inText, inStyle, ioRect, inWrap, inAttributed, inFit, ioPrintText);
@@ -343,7 +343,7 @@ RWCTPrintText::Free (void)
 
 
 void
-RWCTPrintText::ApplyAttributes (const CText inText, CTFontRef font, long *attributes, long start, long end)
+RWCTPrintText::ApplyAttributes (const RWString inText, CTFontRef font, long *attributes, long start, long end)
 {
 	long		i, j, r = 1;
 	CTFontRef	fontA;
@@ -377,7 +377,7 @@ RWCTPrintText::ApplyAttributes (const CText inText, CTFontRef font, long *attrib
 		int			sizeSign = 0;
 		int			style = 0;
 		SRGBColor	color;
-		CText		fontName;
+		RWString		fontName;
 		int	rv = RWTools::ParseAttributedStringAttribute (as, size, sizeSign, style, color, fontName);
 
 		switch (rv)
@@ -681,14 +681,14 @@ RWCTPrintText::ApplyAttributes (const CText inText, CTFontRef font, long *attrib
 
 
 void
-RWCTPrintText::Init (RWCTPageComposer &inComposer, const CText inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit)
+RWCTPrintText::Init (RWCTPageComposer &inComposer, const RWString inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit)
 {
 	Free();
 	std::vector<long>	aattributes;
 	long	*attributes = NULL;
 	if (inAttributed)
 	{
-		mText.Attach (RWTools::SplitAttributedString (inText, &aattributes));
+		mText = RWTools::SplitAttributedString (inText, &aattributes);
 		attributes = aattributes.data();
 	}
 	else
@@ -702,7 +702,7 @@ RWCTPrintText::Init (RWCTPageComposer &inComposer, const CText inText, SRect &io
 	mPrintedLines = 0;
 //	mWrap = inWrap;
 
-	if (not mText.IsEmpty())
+	if (not mText.empty())
 	{
 		mTextLength = mText.size();
 		CFDictionaryRef		styleDict = static_cast <RWCTPageComposer&> (inComposer).MapStyle (mStyle);
@@ -926,7 +926,7 @@ RWCTPrintText::Draw (RWCTPageComposer &inComposer, SRect &ioRect, bool inFit, vo
 }
 
 
-double	RWCTPageComposer::MeasureWord (const CText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
+double	RWCTPageComposer::MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
 {
 	CFDictionaryRef			styleDict = MapStyle (inStyle);
 	CFStringRef				cfText = RWStr::CreateCFString (RWStringView (inText).substr (0, size_t (std::max (inTextLength, 0))));
@@ -944,7 +944,7 @@ double	RWCTPageComposer::MeasureWord (const CText inText, int inTextLength, RWSt
 }
 
 
-void	RWCTPageComposer::DrawWord (const CText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle)
+void	RWCTPageComposer::DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle)
 {
 	if (mPageIsOpen)
 	{
@@ -975,7 +975,7 @@ void	RWCTPageComposer::DrawWord (const CText inText, int inTextLength, float inX
 
 bool	RWCTPageComposer::IsUnicodeFont (RWStyle *inStyle)
 {
-	CText font = inStyle->GetFName();
+	RWString font = inStyle->GetFName();
 	if (font == u"Zapf Dingbats")
 		return false;
 	

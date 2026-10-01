@@ -175,13 +175,13 @@ try
 		case eOpenSession:			//	outSession, RW_Flags, ".pdf", template, job name, printer
 		{
 			sBuf = PA_GetStringParameter (params, 3);
-			CText	s3 = RWStr::FromPA (sBuf);
+			RWString	s3 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 4);
-			CText	s4 = RWStr::FromPA (sBuf);
+			RWString	s4 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 5);
-			CText	s5 = RWStr::FromPA (sBuf);
+			RWString	s5 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 6);	//mbs 25072011	printer
-			CText	s6 = RWStr::FromPA (sBuf);
+			RWString	s6 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_OpenSession (obj, PA_GetLongParameter (params, 2), s3, s4, s5, s6));
 			PA_SetLongParameter (params, 1, obj);
 			break;
@@ -198,11 +198,11 @@ try
 		case ePrintSRP:				//	".srxml", SR_Flags, RW_Flags, ".pdf", session, printer
 		{
 			sBuf = PA_GetStringParameter (params, 1);
-			CText	s1 = RWStr::FromPA (sBuf);
+			RWString	s1 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 4);
-			CText	s4 = RWStr::FromPA (sBuf);
+			RWString	s4 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 6);	//mbs 25072011	printer
-			CText	s6 = RWStr::FromPA (sBuf);
+			RWString	s6 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_Print (s1, PA_GetLongParameter (params, 2), PA_GetLongParameter (params, 3), s4, PA_GetLongParameter (params, 5), s6));
 			break;
 		}
@@ -210,9 +210,9 @@ try
 		case eProcessSRP:			//	".srxml", SR_Flags, ".rwxml"
 		{
 			sBuf = PA_GetStringParameter (params, 1);
-			CText	s1 = RWStr::FromPA (sBuf);
+			RWString	s1 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 3);
-			CText	s2 = RWStr::FromPA (sBuf);
+			RWString	s2 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_Process_RW (s1, PA_GetLongParameter (params, 2), s2));
 			break;
 		}
@@ -220,11 +220,11 @@ try
 		case ePrintRW:				//	".rwxml", Ignored_Flags, RW_Flags, ".pdf", session, printer
 		{
 			sBuf = PA_GetStringParameter (params, 1);
-			CText	s1 = RWStr::FromPA (sBuf);
+			RWString	s1 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 4);
-			CText	s4 = RWStr::FromPA (sBuf);
+			RWString	s4 = RWStr::FromPA (sBuf);
 			sBuf = PA_GetStringParameter (params, 6);	//mbs 25072011	printer
-			CText	s6 = RWStr::FromPA (sBuf);
+			RWString	s6 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_Print_RW (s1, PA_GetLongParameter (params, 2), PA_GetLongParameter (params, 3), s4, PA_GetLongParameter (params, 5), s6));
 			break;
 		}
@@ -234,7 +234,7 @@ try
 		case eRegister:				//	license
 		{
 			sBuf = PA_GetStringParameter (params, 1);
-			CText	s1 = RWStr::FromPA (sBuf);
+			RWString	s1 = RWStr::FromPA (sBuf);
 			if (!s1.empty()) {
 				(void) RW_SetLicense (s1);
 				PA_ReturnLong (params, RW_GetLicense());
@@ -253,7 +253,7 @@ try
 		case eNewReport:			//	ref, "srxml", options (bit 0 means path vs. XML)
 		{
 			sBuf = PA_GetStringParameter (params, 2);
-			CText	s2 = RWStr::FromPA (sBuf);
+			RWString	s2 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_CreateReport (obj, s2, PA_GetLongParameter (params, 3)));
 			PA_SetLongParameter (params, 1, obj);
 			break;
@@ -262,7 +262,7 @@ try
 		case eParseReport:			//	ref, "srxml", options (bit 0 means path vs. XML)
 		{
 			sBuf = PA_GetStringParameter (params, 2);
-			CText	s2 = RWStr::FromPA (sBuf);
+			RWString	s2 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_ParseReport (PA_GetLongParameter (params, 1), s2, PA_GetLongParameter (params, 3)));
 			break;
 		}
@@ -270,7 +270,7 @@ try
 		case eSaveReport:			//	ref, "srxml", options (bit 0 means path vs. XML)
 		{
 			sBuf = PA_GetStringParameter (params, 2);
-			CText	s2 = RWStr::FromPA (sBuf);
+			RWString	s2 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, obj = RW_SaveReport (PA_GetLongParameter (params, 1), s2, PA_GetLongParameter (params, 3)));
 			//mbs 25042010	save the string if XML is requested...
 			if (obj == 0 && (PA_GetLongParameter (params, 3) & 0x1) == 0)
@@ -359,7 +359,7 @@ try
 			
 		case eGetObjectXML:			//	repRef, ref, XML
 		{
-			CText	xml;
+			RWString	xml;
 			PA_ReturnLong (params, RW_GetObjectXML (PA_GetLongParameter (params, 1), PA_GetLongParameter (params, 2), xml));
 			sBuf = PA_GetStringParameter (params, 3);
 			RWStr::SetPA (sBuf, xml);
@@ -369,7 +369,7 @@ try
 		case eNewObjectFromXML:		//	repRef, ref, XML, parent
 		{
 			sBuf = PA_GetStringParameter (params, 3);
-			CText	xml = RWStr::FromPA (sBuf);
+			RWString	xml = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_NewObjectFromXML (PA_GetLongParameter (params, 1), obj, xml, PA_GetLongParameter (params, 4)));
 			PA_SetLongParameter (params, 2, obj);
 			break;
@@ -378,7 +378,7 @@ try
 		case eFindObjectByID:		//	repRef, name, ref
 		{
 			sBuf = PA_GetStringParameter (params, 2);
-			CText	s1 = RWStr::FromPA (sBuf);
+			RWString	s1 = RWStr::FromPA (sBuf);
 			PA_ReturnLong (params, RW_FindObjectByID (PA_GetLongParameter (params, 1), s1, obj));
 			PA_SetLongParameter (params, 3, obj);
 			break;
@@ -470,7 +470,7 @@ try
 	
 		case eVersionString:			//	inStr
 		{
-			CText			version = RWStr::FromASCII (kVersionString);
+			RWString			version = RWStr::FromASCII (kVersionString);
 			PA_Unistring	versString = RWStr::CreatePA (version);
 			PA_ReturnString (params, PA_GetUnistring (&versString));
 			PA_DisposeUnistring(&versString);
@@ -642,7 +642,7 @@ void DeinitPlugin (void)
 
 
 
-long RW_OpenSession (long &outSession, long dstFlags, CText &dst, CText &inTemplate, CText &job, CText &inPrinter)	//mbs 25072011	printer
+long RW_OpenSession (long &outSession, long dstFlags, RWString &dst, RWString &inTemplate, RWString &job, RWString &inPrinter)	//mbs 25072011	printer
 {
 	RWPageComposer	*session = NULL;
 	//mbs 08102010	needs to parse report template BEFORE opening the session!!!
@@ -674,7 +674,7 @@ long RW_CloseSession (long &ioSession)
 // ---------------------------------------------------------------------------
 // A report comes as a 4D document path (inIsFileName) or as XML text.
 
-static	long	LoadSourceXML (RWXmlDocument &outXML, const CText &inSource, bool inIsFileName)
+static	long	LoadSourceXML (RWXmlDocument &outXML, const RWString &inSource, bool inIsFileName)
 {
 	RWXmlResult	result = inIsFileName ? outXML.LoadFile (RWStr::NativePath (inSource)) : outXML.LoadString (inSource);
 	if (!result)
@@ -690,13 +690,13 @@ static	long	LoadSourceXML (RWXmlDocument &outXML, const CText &inSource, bool in
 }
 
 // source description for error messages: the path, or just "XML text"
-static	std::string	SourceName (const CText &inSource, bool inIsFileName)
+static	std::string	SourceName (const RWString &inSource, bool inIsFileName)
 {
 	return inIsFileName ? RWStr::ToUTF8 (RWStr::NativePath (inSource)) : std::string ("XML text");
 }
 
 
-long RW_Print (CText &src, long inOptions, long dstFlags, CText &dst, long inSession, CText &inPrinter)	//mbs 25072011	printer
+long RW_Print (RWString &src, long inOptions, long dstFlags, RWString &dst, long inSession, RWString &inPrinter)	//mbs 25072011	printer
 {
 	RWPageComposer	*session = NULL;
 	if (inSession != 0)
@@ -772,7 +772,7 @@ long RW_Print (CText &src, long inOptions, long dstFlags, CText &dst, long inSes
 }
 
 
-long RW_Process_RW (CText &src, long inOptions, CText &dst)
+long RW_Process_RW (RWString &src, long inOptions, RWString &dst)
 {
 	long	result = 0;
 
@@ -835,7 +835,7 @@ long RW_Process_RW (CText &src, long inOptions, CText &dst)
 }
 
 
-long RW_Print_RW (CText &src, long inOptions, long dstFlags, CText &dst, long inSession, CText &inPrinter)	//mbs 25072011	printer
+long RW_Print_RW (RWString &src, long inOptions, long dstFlags, RWString &dst, long inSession, RWString &inPrinter)	//mbs 25072011	printer
 {
 	RWPageComposer	*session = NULL;
 	if (inSession != 0)
@@ -989,7 +989,7 @@ void RW_Area (PA_PluginParameters params)
 }
 
 
-long RW_CreateReport (long &outRepRef, CText &src, long inOptions)
+long RW_CreateReport (long &outRepRef, RWString &src, long inOptions)
 {
 	long		result = 0;
 	DMReport	*rep = NULL;
@@ -1020,7 +1020,7 @@ long RW_CreateReport (long &outRepRef, CText &src, long inOptions)
 }
 
 
-long RW_ParseReport (long inRepRef, CText &src, long inOptions)
+long RW_ParseReport (long inRepRef, RWString &src, long inOptions)
 {
 	long		result = 0;
 
@@ -1051,7 +1051,7 @@ long RW_ParseReport (long inRepRef, CText &src, long inOptions)
 
 
 // the report is written to the file src (inOptions bit 0), or returned in src as XML text
-long RW_SaveReport (long inRepRef, CText &src, long inOptions)
+long RW_SaveReport (long inRepRef, RWString &src, long inOptions)
 {
 	long		result = 0;
 
@@ -1214,7 +1214,7 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 							if (propsmap.GetPropertyRef (prs->id, rv))
 							{
 								realCount++;
-								RWTextValue	value;
+								RWString	value;
 								rv.GetTextValue (value, NULL);
 								PA_Unistring	ustr = PA_CreateUnistring (RW_FourDTypeIDToText (prs->id));
 								PA_SetStringInArray (props, realCount, &ustr);
@@ -1225,7 +1225,7 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 									const PSObject::PSObjProps *ps = PSObject::FindPropertyByID (prs->id, obj->GetProperties());
 									if (ps && ps->name && *ps->name)
 									{
-										CText	n = RWStr::FromUTF8 (ps->name);
+										RWString	n = RWStr::FromUTF8 (ps->name);
 										ustr = RWStr::CreatePA (n);
 									}
 									else
@@ -1257,7 +1257,7 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 						PA_ResizeArray (&names, count);
 					for (i = 1; prs->id; prs++, i++)
 					{
-						RWTextValue	value;
+						RWString	value;
 						if (static_cast <PSObject*> (obj)->GetProperty (prs->id, value))
 						{
 							realCount++;
@@ -1270,7 +1270,7 @@ long RW_GetProperties (PA_PluginParameters params)	// inRepRef, inRef, PA_Variab
 								const PSObject::PSObjProps *ps = PSObject::FindPropertyByID (prs->id, obj->GetProperties());
 								if (ps && ps->name && *ps->name)
 								{
-									CText	n = RWStr::FromUTF8 (ps->name);
+									RWString	n = RWStr::FromUTF8 (ps->name);
 									ustr = RWStr::CreatePA (n);
 								}
 								else
@@ -1430,7 +1430,7 @@ long RW_GetProperty (long inRepRef, long inRef, FourDTypeID id, PA_Pointer &ptr)
 					{
 						case eVK_Unistring:
 						{
-							RWTextValue	tv;
+							RWString	tv;
 							rv.GetTextValue (tv, NULL);
 							PA_Unistring	uni = RWStr::CreatePA (tv);
 							PA_SetStringVariable (&v, &uni);
@@ -1927,7 +1927,7 @@ long RW_ChangeObjectParent (long inRepRef, long inRef, long inNewRef)
 }
 
 
-long RW_GetObjectXML (long inRepRef, long inRef, CText &outXML)
+long RW_GetObjectXML (long inRepRef, long inRef, RWString &outXML)
 {
 	long		result = 0;
 	
@@ -1964,7 +1964,7 @@ long RW_GetObjectXML (long inRepRef, long inRef, CText &outXML)
 }
 
 
-long RW_NewObjectFromXML (long inRepRef, long &outRef, CText &inXML, long inParent)
+long RW_NewObjectFromXML (long inRepRef, long &outRef, RWString &inXML, long inParent)
 {
 	long		result = 0;
 	DMBase		*obj = NULL;
@@ -2011,7 +2011,7 @@ long RW_NewObjectFromXML (long inRepRef, long &outRef, CText &inXML, long inPare
 }
 
 
-long RW_FindObjectByID (long inRepRef, CText &inName, long &outRef)
+long RW_FindObjectByID (long inRepRef, RWString &inName, long &outRef)
 {
 //	DMBase		*obj = DMReport::FindObjectByID (inName);
 	DMReport	*rep = DMReport::GetReportObject (inRepRef);
@@ -2255,7 +2255,7 @@ long RW_PrintSettings (long inRepRef, long inOptions)
 			result = errInvalidReportRef;
 		else
 		{
-			CText	empty;
+			RWString	empty;
 			RWValue	prop;
 			std::unique_ptr<RWPageComposer> pc (RWPageComposer::CreatePrinterComposer (inOptions & RWPageComposer::eUserFlagsMask, empty, empty));
 			RWNativePageComposer	*opc = static_cast <RWNativePageComposer*> (pc.get());
@@ -2436,9 +2436,9 @@ long RW_AddRemoveStyle (PA_PluginParameters params, bool inAdd)
 // eTextStyleAdd:			//	outStr, inStr, from, to, style, fontName, fontSize, fontColor, setColor, scale, rounding, mode
 // eTextStyleRemove:		//	outStr, inStr, from, to, style, fontName, fontSize, fontColor, setColor, scale, rounding,
 	sBuf = PA_GetStringParameter (params, 2);
-	CText	s2 = RWStr::FromPA (sBuf);					// inStr
+	RWString	s2 = RWStr::FromPA (sBuf);					// inStr
 	sBuf = PA_GetStringParameter (params, 6);
-	CText	s6 = RWStr::FromPA (sBuf);					// fontName
+	RWString	s6 = RWStr::FromPA (sBuf);					// fontName
 	RWSpan span (	PA_GetLongParameter (params, 3) - 1,								// from - passed value is 1-based
 					PA_GetLongParameter (params, 4) - PA_GetLongParameter (params, 3),	// to
 					PA_GetLongParameter (params, 5),									// style
@@ -2477,9 +2477,9 @@ long RW_ApplyStyle (PA_PluginParameters params)
 		return errInvalidObjectRef;
 
 	sBuf = PA_GetStringParameter (params, 2);
-	CText	s2 = RWStr::FromPA (sBuf);					// inStr
+	RWString	s2 = RWStr::FromPA (sBuf);					// inStr
 	sBuf = PA_GetStringParameter (params, 6);
-	CText	s6 (style->GetFName());
+	RWString	s6 (style->GetFName());
 	SRGBColor c = style->GetTextColor();
 	RWSpan span (	PA_GetLongParameter (params, 3) - 1,								// from - passed value is 1-based
 					PA_GetLongParameter (params, 4) - PA_GetLongParameter (params, 3),	// to

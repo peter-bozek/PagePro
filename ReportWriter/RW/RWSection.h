@@ -41,7 +41,7 @@ public:
 	virtual		bool				GetBounds (RWReportWriter *inWriter, RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool inIsOverflow);
 				RWObjList		*	GetObjects (void);
 				ESection_Kind		GetKind (void) const;
-//				const CText			GetName (void) const;
+//				const RWString			GetName (void) const;
 				EPageThrow			GetPageThrow (void) const;
 				float				GetMinSpace (void) const;
 				bool				IsPrinted (void) const;
@@ -61,7 +61,7 @@ protected:
 #if	TARGET_DEBUG
 	long				mIteration;
 #endif
-//	RWTextValue			mName;
+//	RWString			mName;
 	RWObjList			mObjects;
 	float				mHeight;
 	float				mMinSpace;
@@ -117,7 +117,7 @@ public:
 	virtual		bool				IsPrintAlways () const;
 
 				int					GetLevel (void) const;
-//				const CText			GetBreakOn (void) const;
+//				const RWString			GetBreakOn (void) const;
 				void				ProcessBreak (long inBreakLevel);
 
 private:
@@ -128,7 +128,7 @@ private:
 protected:
 	int					mLevel;
 	bool				mPrintAlways;
-//	RWTextValue			mBreakOn;
+//	RWString			mBreakOn;
 	bool				mIsBreak;
 };
 
@@ -142,8 +142,8 @@ public:
 	virtual							~RWPageSection (void);
 
     virtual		void				Parse (RWReportData *inReport, RWXmlNode inNode) override;
-				const CText			GetPageOrientation (void) const;
-				const CText			GetPageSize (void) const;
+				const RWString			GetPageOrientation (void) const;
+				const RWString			GetPageSize (void) const;
 
 private:
 			// defensive programming - not implemented
@@ -151,8 +151,8 @@ private:
 				RWPageSection	&	operator = (const RWPageSection &inOriginal);
 
 protected:
-	RWTextValue				mPageOrientation;
-	RWTextValue				mPageSize;
+	RWString				mPageOrientation;
+	RWString				mPageSize;
 };
 
 

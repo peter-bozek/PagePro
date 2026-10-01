@@ -102,7 +102,7 @@ public:
 	int				mFalseLine;
 	
 private:
-	CText			mLine;
+	RWString			mLine;
 
 	char *			mCommandBlock;
 	int				mCommandSize;
@@ -139,16 +139,16 @@ public:
 	int			FindIndent (int from, int indent);
 	int			RFindIndent (int from, int indent);
 	void		SetJumps (void);
-	double		EvaluateExpression (CText &expression);
+	double		EvaluateExpression (RWString &expression);
 	bool		IsEmpty (void) const ;
 	void		Free (void);
-	inline CText	Get ();
-	ExtendedExecute &	operator = (const CText inText);
+	inline RWString	Get ();
+	ExtendedExecute &	operator = (const RWString inText);
 
-	//	operator	CText (void) const;
-	inline operator	CText (void);
+	//	operator	RWString (void) const;
+	inline operator	RWString (void);
 //	operator	RWValue (void);
-//	operator	RWTextValue (void);
+//	operator	RWString (void);
 
 	
 private:
@@ -158,15 +158,15 @@ private:
 	
 	void		LogParsing (void);
 protected:
-    CText					mMethod;
+    RWString					mMethod;
 	ExecList				mLines;
 };
 
-inline CText	ExtendedExecute::Get () {return mMethod; }
-//ExtendedExecute::operator	CText (void) const {CText str (mMethod); return str;}
-inline ExtendedExecute::operator	CText (void) { return mMethod.data();}
+inline RWString	ExtendedExecute::Get () {return mMethod; }
+//ExtendedExecute::operator	RWString (void) const {RWString str (mMethod); return str;}
+inline ExtendedExecute::operator	RWString (void) { return mMethod.data();}
 //ExtendedExecute::operator	RWValue (void) {RWValue str; str.SetText (mMethod.Get()); return str;}
-//ExtendedExecute::operator	RWTextValue (void) {RWTextValue str (mMethod.Get()); return str;}
+//ExtendedExecute::operator	RWString (void) {RWString str (mMethod.Get()); return str;}
 
 
 #endif

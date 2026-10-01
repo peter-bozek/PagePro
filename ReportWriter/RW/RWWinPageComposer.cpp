@@ -77,12 +77,8 @@ RWWinPictData::~RWWinPictData (void)
 //#include "DrawUnicodeString.h"
 // #include "TextUtilities.h"
 
-#if	CChar_Size == 1
-# define	STRING_ENCODING	kCFStringEncodingUTF8		// kTextEncodingUnicodeDefault + kUnicodeUTF8Format
-#else
 # include	"UString.h"
 # define	STRING_ENCODING	kCFStringEncodingUnicode	// kTextEncodingUnicodeDefault + kTextEncodingDefaultFormat (aka kUnicode16BitFormat)
-#endif
 
 typedef	unsigned short	UniChar;
 typedef	unsigned long	UniCharArrayOffset;
@@ -1217,7 +1213,7 @@ RWWinPageComposer::GetPageBounds (ConstCText inOrientation, ConstCText inSize, S
 
 	if (mPageRect.Width() == 0 || mTruePageRect.Width() == 0 || AskPageSetup() /* || mGraphics == NULL */)	//mbs 19012011	added mGraphics condition //mbs 25012011	not good for multipage single job
 	{
-		status = OpenSession (true, false, 1, 1, TEXT_EQUALS (mPageOrientation, "Landscape")); // pB 2012 we need paper size of destination, not default
+		status = OpenSession (true, false, 1, 1, RWStr::Equals (mPageOrientation, "Landscape")); // pB 2012 we need paper size of destination, not default
 		CloseSession (false);
 		if (status != noErr)
 		{
@@ -1373,7 +1369,7 @@ RWWinPageComposer::OpenNewPage (const SRect &inRect, unsigned long inCurPage, un
 	long	status = 0;
 	if (not mDocIsOpen)
 	{
-		status = OpenSession (false, true, inCurPage, inNumPages, TEXT_EQUALS (mPageOrientation, "Landscape"));
+		status = OpenSession (false, true, inCurPage, inNumPages, RWStr::Equals (mPageOrientation, "Landscape"));
 		if (status != noErr || mDC == 0)
 		{
 			printf ("RWWinPageComposer::OpenNewPage: OpenSession: status != noErr || mDC == nil\n");

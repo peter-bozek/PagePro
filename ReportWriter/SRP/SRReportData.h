@@ -22,7 +22,7 @@ public:
 
 inline			SRReportWriter	*	GetReportWriter (void) const;
 		RWXmlNode				GetReport (void) const;
-				const CText			GetName (void) const;
+				const RWString			GetName (void) const;
 //inline			SRSectionList	*	GetSections (void);
 inline			SRSectionList	*	GetPageSections (void);
 inline			SRSectionList	*	GetBreakHeaders (void);
@@ -30,7 +30,6 @@ inline			SRSectionList	*	GetBreakFooters (void);
 inline			SRPageSection	*	GetBodySection (void);
 inline			SRWatermarkSection*	GetWatermarkSection (void);
 inline			RWStyle			*	GetStyle (long inID) const;
-//				void				ParseScript (char * &outScript, XMLElement *inNode);
 inline			bool				IsSimple (void) const;
 	
 //inline			SBlob				GetPageSetup (void) const;
@@ -51,7 +50,6 @@ private:
 				void				ParseStyleSet (RWXmlNode inStyleSet);
 				void				ParseSection (RWXmlNode inSection);
 				void				ParseObjects (SRObjListD *inParent, RWXmlNode inObject);
-//				void				ParseDataSource (XMLElement *inNode);
 
 			// defensive programming - not implemented
 									SRReportData (void);
@@ -62,8 +60,8 @@ private:
 static	const PSObjProps	sProperties[];
 		SRReportWriter	*	mReportWriter;
 		RWXmlDocument	*		mXML;
-		RWTextValue			mName;
-		RWTextValue			mID;
+		RWString			mName;
+		RWString			mID;
 
 		RWStyleList			mStyles;
 		long				mLastStyle;	//mbs 20052011

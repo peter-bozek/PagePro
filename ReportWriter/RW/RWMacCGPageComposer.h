@@ -13,12 +13,12 @@ class	RWMacCGPageComposer
 	:	public	RWMacPageComposer
 {
 public:
-								RWMacCGPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter);	//mbs 25072011	printer
+								RWMacCGPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter);	//mbs 25072011	printer
 	virtual						~RWMacCGPageComposer (void);
 
 	virtual		bool			IsQD (void) const;
 
-	virtual		void			GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect);
+	virtual		void			GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect);
 
 	virtual		void			DrawLine (float top, float left, float bottom, float right, float inThickness, SRGBColor inLineColor, float inLineLen = 0, float inSpaceLen = 0);
 	virtual		void			DrawRect (const SRect &inRect, float inThickness, bool inFrame, SRGBColor inFrameColor,

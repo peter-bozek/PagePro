@@ -69,7 +69,7 @@ RWCalculatedValue::SCalculatedValue::Init (void)
 }
 
 
-RWCalculatedValue::RWCalculatedValue (const CText inName)
+RWCalculatedValue::RWCalculatedValue (const RWString inName)
 	:	mLevels (0),
 		mValues (0),
 		mName (inName)
@@ -100,7 +100,7 @@ RWCalculatedValue::InitLevels (int inLevels)
 }
 
 
-const CText
+const RWString
 RWCalculatedValue::GetName (void)
 const
 {
@@ -265,7 +265,7 @@ assert (inLevels >= 0);
 
 
 RWCalculatedValue*
-RWCalculator::Get (const CText inName)
+RWCalculator::Get (const RWString inName)
 const
 {
 	RWCVList::const_iterator	it;
@@ -284,7 +284,7 @@ const
 
 
 void
-RWCalculator::Add (const CText inName)
+RWCalculator::Add (const RWString inName)
 {
 	RWCalculatedValue	*var = Get (inName);
 
@@ -353,7 +353,7 @@ RWCalculator::Increment (const RWCalcDataProvider *inData)
 
 
 bool
-RWCalculator::GetValue (const CText inName, RWCalculatedValue::RWCalculatedType inWhich, double &outValue)
+RWCalculator::GetValue (const RWString inName, RWCalculatedValue::RWCalculatedType inWhich, double &outValue)
 const
 {
 	bool					found = false;

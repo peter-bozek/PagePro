@@ -50,7 +50,7 @@ public:
 		SR4DVariable_ArrayAuto = -1
 	};
 
-							SR4DVariable (const CText inName, long inIndex = SR4DVariable_Variable);
+							SR4DVariable (const RWString inName, long inIndex = SR4DVariable_Variable);
 virtual						~SR4DVariable (void);
 
 virtual	void				Fetch (long inIteration, bool inSeek);
@@ -61,7 +61,7 @@ private:
 		SR4DVariable	&	operator = (const SR4DVariable &inOriginal);
 
 protected:
-	RWTextValue				mName;
+	RWString				mName;
 	long					mIndex;
 };
 

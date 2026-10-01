@@ -84,110 +84,6 @@ RWStyle::RWStyle (RWStyleContainer *inContainer, RWXmlNode inElem)
 //	if (inElem)
 		LoadXML (inElem);
 
-#if 0
-	if (inElem)
-	{
-//		bool			thisStylePSFontNotSet = true;
-		XMLAttribute	*attrib;
-
-		for ( attrib = inElem->FirstAttribute(); attrib; attrib = attrib->Next() )
-		{
-			const CXMLText	name = attrib->Name();
-			const CXMLText	value = attrib->Value();
-			if (STR_EQUALS (name, "id"))
-				mId = atoi (value);
-			else if (STR_EQUALS (name, "name"))
-			{
-				mName.FromXML (value);
-			}
-			else if (STR_EQUALS (name, "font"))
-			{
-				mFontName.FromXML (value);
-			}
-//			else if (STR_EQUALS (name, "fontPS"))
-//			{
-//				mFontPSName = strdup ((const char*) value);
-//			}
-			else if (STR_EQUALS (name, "size"))
-			{
-				mFontSize = atof (value);
-				if (mFontSize < 4 || mFontSize > 127)
-					mFontSize = cDefFontSize;
-			}
-//			else if (STR_EQUALS (name, "hOffset"))
-//				mHorizontalOffset = atof (value);
-//			else if (STR_EQUALS (name, "vOffset"))
-//				mVerticalOffset = atof (value);
-			else if (STR_EQUALS (name, "wrap"))
-				mWrap = (atoi (value) != 0);
-//			else if (STR_EQUALS (name, "frame"))
-//				mFrameText = (atoi (value) != 0);
-			else if (STR_EQUALS (name, "bold"))
-			{
-				if (atoi (value) != 0)
-					mFontStyle |= st_bold;
-				else
-					mFontStyle &= ~st_bold;
-			}
-			else if (STR_EQUALS (name, "italic"))
-			{
-				if (atoi (value) != 0)
-					mFontStyle |= st_italic;
-				else
-					mFontStyle &= ~st_italic;
-			}
-			else if (STR_EQUALS (name, "underline"))
-			{
-				if (atoi (value) != 0)
-					mFontStyle |= st_underline;
-				else
-					mFontStyle &= ~st_underline;
-			}
-			else if (STR_EQUALS (name, "justification") || STR_EQUALS (name, "align"))
-			{
-				if (sscanf (value, "%li", &lVal) == 1)
-				{
-					if (lVal >= st_default && lVal <= st_fulljustify)
-						mJustification = lVal;
-				}
-				else if (STR_EQUALS (value, "left"))
-					mJustification = st_left;
-				else if (STR_EQUALS (value, "center") || STR_EQUALS (value, "middle"))
-					mJustification = st_center;
-				else if (STR_EQUALS (value, "right"))
-					mJustification = st_right;
-				else if (STR_EQUALS (value, "default"))
-					mJustification = cDefJustification;
-				else if (STR_EQUALS (value, "justify") || STR_EQUALS (value, "justified"))
-					mJustification = st_justify;
-				else if (STR_EQUALS (value, "fulljustify") || STR_EQUALS (value, "fullyjustified"))
-					mJustification = st_fulljustify;
-			}
-			else if (STR_EQUALS (name, "verticalJustification") || STR_EQUALS (name, "valign"))
-			{
-				if (sscanf (value, "%li", &lVal) == 1)
-				{
-					if (lVal >= st_default && lVal <= st_bottom)
-						mVertJustification = lVal;
-				}
-				else if (STR_EQUALS (value, "top"))
-					mVertJustification = st_top;
-				else if (STR_EQUALS (value, "center") || STR_EQUALS (value, "middle"))
-					mVertJustification = st_center;
-				else if (STR_EQUALS (value, "bottom"))
-					mVertJustification = st_bottom;
-				else if (STR_EQUALS (value, "default"))
-					mVertJustification = cDefVertJustification;
-			}
-			else if (STR_EQUALS (name, "textColor") || STR_EQUALS (name, "foreColor"))
-				mTextColor = value;
-			else if (STR_EQUALS (name, "backColor"))
-				mBackColor = value;
-			else if (STR_EQUALS (name, "frameColor"))
-				mFrameColor = value;
-		}
-	}
-#endif
 
 	return;
 }
@@ -413,8 +309,8 @@ RWStyle::Init (void)
 	mId = 0;
 	mBaseId = -1;
 	mFeatures = 0;
-	mName.Free();
-	mFontName.Free();
+	mName.clear();
+	mFontName.clear();
 //	if (mFontPSName != NULL)
 //	{
 //		free (mFontPSName);
@@ -472,7 +368,7 @@ const
 	return baseStyle;
 }
 
-CText
+RWString
 RWStyle::GetFName (void)
 const
 {
@@ -618,7 +514,7 @@ RWStyle::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropFlags:			outValue.SetInteger (mFeatures); break;
 		case PSObjPropName:				outValue.SetText (mName); break;
 		case PSObjPropFontName:			outValue.SetText (GetFName()); break;
-//		case PSObjPropPSName:			outValue.SetXMLText (mFontPSName); break;
+//		case PSObjPropPSName:			outValue.SetText (mFontPSName); break;
 		case PSObjPropSize:				outValue.SetReal (GetSize()); break;
 		case PSObjPropStyleF:			outValue.SetInteger (GetStyle()); break;
 		case PSObjPropStyleB:			outValue.SetBoolean (GetStyle() & st_bold); break;

@@ -170,7 +170,7 @@ ExtendedExecute::Free (void)
 
 
 ExtendedExecute&
-ExtendedExecute::operator = (const CText inText)
+ExtendedExecute::operator = (const RWString inText)
 {
 	Free();
 	mMethod = inText;
@@ -202,7 +202,7 @@ ExtendedExecute::Init (void)
 			}
 
 			if (lineEnd > pos) {
-				CText temp = mMethod.substr(pos, lineEnd - pos);
+				RWString temp = mMethod.substr(pos, lineEnd - pos);
 				// Append a comment marker to make sure tokenization succeeds consistently
 				temp += RWString (u" //");
 
@@ -244,7 +244,7 @@ ExtendedExecute::Init (void)
 }
 
 double
-ExtendedExecute::EvaluateExpression (CText &expression)
+ExtendedExecute::EvaluateExpression (RWString &expression)
 {
 	PA_Unistring	ustr = RWStr::CreatePA (expression);
 	char *			tokens = 0;
@@ -430,19 +430,19 @@ ExtendedExecute::SetJumps (void)
 int	
 ExtendedExecute::ParseStatement (const char16_t* method, char * &outTokens, int &outLen)
 {
-	CText		line (method);
+	RWString		line (method);
 
 	// Find '(' and ')', using standard string ops
 	size_t fromPos = line.find(u'(');
 	size_t toPos = line.rfind(u')');
 
-	if (toPos == CText::npos) {
+	if (toPos == RWString::npos) {
 		if (!line.empty()) toPos = line.length() - 1;
 	}
-	if (fromPos != CText::npos) {
+	if (fromPos != RWString::npos) {
 		fromPos += 1;
 		if (toPos >= fromPos) {
-			CText			cond = line.substr(fromPos, toPos - fromPos + 1);
+			RWString			cond = line.substr(fromPos, toPos - fromPos + 1);
 
 			PA_Unistring	ustr = RWStr::CreatePA (cond);
 			char *			tokens = 0;
@@ -465,37 +465,37 @@ ExtendedExecute::ParseStatement (const char16_t* method, char * &outTokens, int 
 int	
 ExtendedExecute::ParseForStatement (const char16_t* method, char * &outTokensInit, int &outLenInit, char * &outTokensAdd, int &outLenAdd, char * &outTokensCond, int &outLenCond)
 {
-	CText		line (method);
+	RWString		line (method);
 
 	size_t fromPos = line.find(u'(');
 	size_t toPos = line.rfind(u')');
-	if (toPos == CText::npos) {
+	if (toPos == RWString::npos) {
 		toPos = line.length();
 	}
-	if (fromPos != CText::npos) {
+	if (fromPos != RWString::npos) {
 		fromPos += 1;
-		CText			condition = line.substr(fromPos, toPos - fromPos);
-		CText			part1;
-		CText			part2;
-		CText			part3;
-		CText			part4;
+		RWString			condition = line.substr(fromPos, toPos - fromPos);
+		RWString			part1;
+		RWString			part2;
+		RWString			part3;
+		RWString			part4;
 		double			step;
 
 		size_t delim1 = condition.find(u';');
-		if (delim1 != CText::npos) {
+		if (delim1 != RWString::npos) {
 			part1 = condition.substr(0, delim1);
 		}
 
-		size_t delim2 = condition.find(u';', (delim1 == CText::npos ? 0 : delim1 + 1));
-		if (delim2 != CText::npos) {
+		size_t delim2 = condition.find(u';', (delim1 == RWString::npos ? 0 : delim1 + 1));
+		if (delim2 != RWString::npos) {
 			part2 = condition.substr(delim1 + 1, delim2 - delim1 - 1);
 			if (part2.length() == 0) {
 				part2 = RWString (u"0x01");
 			}
 		}
 
-		size_t delim3 = condition.find(u';', delim2 == CText::npos ? 0 : delim2 + 1);
-		if (delim3 != CText::npos) {
+		size_t delim3 = condition.find(u';', delim2 == RWString::npos ? 0 : delim2 + 1);
+		if (delim3 != RWString::npos) {
 			part3 = condition.substr(delim2 + 1, delim3 - delim2 - 1);
 			part4 = condition.substr(delim3 + 1);
 			if (part4.length() == 0) {
@@ -506,8 +506,8 @@ ExtendedExecute::ParseForStatement (const char16_t* method, char * &outTokensIni
 			part4 = RWString (u"0x01");
 		}
 
-		CText			init = part1 + RWString (u":=") + part2;
-		CText			cond;
+		RWString			init = part1 + RWString (u":=") + part2;
+		RWString			cond;
 
 		step = EvaluateExpression(part4);
 		if (fabs(step) < 1e-5) {
@@ -520,7 +520,7 @@ ExtendedExecute::ParseForStatement (const char16_t* method, char * &outTokensIni
 		else
 			cond = part1 + RWString (u">=") + part3;
 
-		CText			incr;
+		RWString			incr;
 		if (step >= 0)
 			incr = part1 + RWString (u":=") + part1 + RWString (u"+") + part4;
 		else

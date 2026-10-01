@@ -18,21 +18,21 @@ RWSection::RWSection (RWStringView inKind)
 		mPrinted (false),
 		mFixedHeight (false)
 {
-	if (STR_EQUALS (inKind, "Header"))
+	if (RWStr::EqualsNoCase (inKind, "Header"))
 		mKind = eSectionKind_Header;
-	else if (STR_EQUALS (inKind, "BreakHeader"))
+	else if (RWStr::EqualsNoCase (inKind, "BreakHeader"))
 		mKind = eSectionKind_BreakHeader;
-//	else if (STR_EQUALS (inKind, "Body"))
+//	else if (RWStr::EqualsNoCase (inKind, "Body"))
 //		mKind = eSectionKind_Body;
-	else if (STR_EQUALS (inKind, "BreakFooter"))
+	else if (RWStr::EqualsNoCase (inKind, "BreakFooter"))
 		mKind = eSectionKind_BreakFooter;
-//	else if (STR_EQUALS (inKind, "FillFooter"))
+//	else if (RWStr::EqualsNoCase (inKind, "FillFooter"))
 //		mKind = eSectionKind_FillFooter;
-	else if (STR_EQUALS (inKind, "Footer"))
+	else if (RWStr::EqualsNoCase (inKind, "Footer"))
 		mKind = eSectionKind_Footer;
-//	else if (STR_EQUALS (inKind, "Page"))
+//	else if (RWStr::EqualsNoCase (inKind, "Page"))
 //		mKind = eSectionKind_Page;
-	else if (STR_EQUALS (inKind, "Watermark"))
+	else if (RWStr::EqualsNoCase (inKind, "Watermark"))
 		mKind = eSectionKind_Watermark;
 }
 
@@ -86,18 +86,6 @@ RWSection::GetObjects (void)
 }
 
 
-#if 0
-// ---------------------------------------------------------------------------
-// GetName															  [public]
-// ---------------------------------------------------------------------------
-
-const CText
-RWSection::GetName (void)
-const
-{
-	return mName;
-}
-#endif
 
 
 // ---------------------------------------------------------------------------
@@ -218,37 +206,37 @@ RWSection::Parse (RWReportData * /*inReport*/, RWXmlNode inNode)
 {
 	for (const auto &[name, value] : inNode.Attributes())
 	{
-		if (STR_EQUALS (name, "height"))
+		if (RWStr::EqualsNoCase (name, "height"))
 		{
 			mHeight = 0;
 			RWStr::ReadNumber (value, mHeight);
 		}
-		else if (STR_EQUALS (name, "minSpace"))
+		else if (RWStr::EqualsNoCase (name, "minSpace"))
 		{
 			mMinSpace = 0;
 			RWStr::ReadNumber (value, mMinSpace);
 		}
-		else if (STR_EQUALS (name, "draw"))
+		else if (RWStr::EqualsNoCase (name, "draw"))
 		{
 			mDraw = false;
 			RWStr::ReadNumber (value, mDraw);
 		}
-		else if (STR_EQUALS (name, "keepTogether"))
+		else if (RWStr::EqualsNoCase (name, "keepTogether"))
 		{
 			mKeepTogether = false;
 			RWStr::ReadNumber (value, mKeepTogether);
 		}
-		else if (STR_EQUALS (name, "bindToBottom"))
+		else if (RWStr::EqualsNoCase (name, "bindToBottom"))
 		{
 			mFromBottom = false;
 			RWStr::ReadNumber (value, mFromBottom);
 		}
-		else if (STR_EQUALS (name, "fixedHeight"))
+		else if (RWStr::EqualsNoCase (name, "fixedHeight"))
 		{
 			mFixedHeight = false;
 			RWStr::ReadNumber (value, mFixedHeight);
 		}
-		else if (STR_EQUALS (name, "pageThrow"))
+		else if (RWStr::EqualsNoCase (name, "pageThrow"))
 		{
 			long	lVal;
 			if (RWStr::ReadNumber (value, lVal))
@@ -256,15 +244,15 @@ RWSection::Parse (RWReportData * /*inReport*/, RWXmlNode inNode)
 				if (lVal >= ePageThrow_None && lVal <= ePageThrow_After)
 					mPageThrow = EPageThrow (lVal);
 			}
-			else if (STR_EQUALS (value, "before"))
+			else if (RWStr::EqualsNoCase (value, "before"))
 				mPageThrow = ePageThrow_Before;
-			else if (STR_EQUALS (value, "after"))
+			else if (RWStr::EqualsNoCase (value, "after"))
 				mPageThrow = ePageThrow_After;
 			else
 				mPageThrow = ePageThrow_None;
 		}
 #if	TARGET_DEBUG
-		else if (STR_EQUALS (name, "iteration"))
+		else if (RWStr::EqualsNoCase (name, "iteration"))
 			RWStr::ReadNumber (value, mIteration);
 #endif
 	}
@@ -516,34 +504,34 @@ RWHeaderFooterSection::Parse (RWReportData *inReport, RWXmlNode inNode)
 
 	for (const auto &[name, value] : inNode.Attributes())
 	{
-		if (STR_EQUALS (name, "fixed"))
+		if (RWStr::EqualsNoCase (name, "fixed"))
 		{
 			mFixed = 0;
 			RWStr::ReadNumber (value, mFixed);
 		}
-		else if (STR_EQUALS (name, "firstPage"))
+		else if (RWStr::EqualsNoCase (name, "firstPage"))
 		{
 			mFirstPage = false;
 			RWStr::ReadNumber (value, mFirstPage);
 		}
-		else if (STR_EQUALS (name, "evenPage"))
+		else if (RWStr::EqualsNoCase (name, "evenPage"))
 		{
 			RWStr::ReadNumber (value, mEvenPage);
 			if (mEvenPage < 0 || mEvenPage > 2)
 				mEvenPage = 1;
 		}
-		else if (STR_EQUALS (name, "oddPage"))
+		else if (RWStr::EqualsNoCase (name, "oddPage"))
 		{
 			RWStr::ReadNumber (value, mOddPage);
 			if (mOddPage < 0 || mOddPage > 2)
 				mOddPage = 1;
 		}
-		else if (STR_EQUALS (name, "lastPage"))
+		else if (RWStr::EqualsNoCase (name, "lastPage"))
 		{
 			mLastPage = false;
 			RWStr::ReadNumber (value, mLastPage);
 		}
-		else if (STR_EQUALS (name, "fillPage"))
+		else if (RWStr::EqualsNoCase (name, "fillPage"))
 		{
 			fillPage = 0;
 			RWStr::ReadNumber (value, fillPage);
@@ -779,12 +767,12 @@ RWBreakSection::Parse (RWReportData *inReport, RWXmlNode inNode)
 
 	for (const auto &[name, value] : inNode.Attributes())
 	{
-		if (STR_EQUALS (name, "level"))
+		if (RWStr::EqualsNoCase (name, "level"))
 		{
 			mLevel = 0;
 			RWStr::ReadNumber (value, mLevel);
 		}
-		else if (STR_EQUALS (name, "always"))
+		else if (RWStr::EqualsNoCase (name, "always"))
 		{
 			mPrintAlways = false;
 			RWStr::ReadNumber (value, mPrintAlways);
@@ -836,7 +824,7 @@ const
 // GetBreakOn														  [public]
 // ---------------------------------------------------------------------------
 /*
-const CText
+const RWString
 RWBreakSection::GetBreakOn (void)
 const
 {
@@ -892,9 +880,9 @@ RWPageSection::Parse (RWReportData *inReport, RWXmlNode inNode)
 
 	for (const auto &[name, value] : inNode.Attributes())
 	{
-		if (STR_EQUALS (name, "Orientation"))
+		if (RWStr::EqualsNoCase (name, "Orientation"))
 			mPageOrientation = value;
-		else if (STR_EQUALS (name, "Size"))
+		else if (RWStr::EqualsNoCase (name, "Size"))
 			mPageSize = value;
 	}
 
@@ -906,7 +894,7 @@ RWPageSection::Parse (RWReportData *inReport, RWXmlNode inNode)
 // GetPageOrientation												  [public]
 // ---------------------------------------------------------------------------
 
-const CText
+const RWString
 RWPageSection::GetPageOrientation (void)
 const
 {
@@ -918,7 +906,7 @@ const
 // GetPageSize														  [public]
 // ---------------------------------------------------------------------------
 
-const CText
+const RWString
 RWPageSection::GetPageSize (void)
 const
 {

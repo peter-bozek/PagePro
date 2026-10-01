@@ -18,7 +18,7 @@ virtual					~RWDataSourceProvider (void);
 virtual		bool		GetData (RWDataID inDataID, RWValue &outVar) const;
 virtual		int			GetTableRowCount (RWDataID inDataID) const;
 virtual		int			GetTableColumnCount (RWDataID inDataID) const;
-//virtual	const CText	GetTableCellData (RWDataID inDataID, int inRow, int inColumn) const;
+//virtual	const RWString	GetTableCellData (RWDataID inDataID, int inRow, int inColumn) const;
 virtual		bool		GetTableCellData (RWDataID inDataID, int inRow, int inColumn, RWValue &outValue) const;
 virtual		bool		GetTableCellData (RWDataID inDataID, int inRow, int inColumn, RWValue &outValue, int &outStartRow, int &outNumRows) const;	//mbs 06102006
 

@@ -25,7 +25,7 @@ RWPrintText::RWPrintText (RWStyle *inStyle)
 }
 
 
-RWPrintText::RWPrintText (const CText inText, RWStyle *inStyle, bool inAttributed)
+RWPrintText::RWPrintText (const RWString inText, RWStyle *inStyle, bool inAttributed)
 	:	mStyle (inStyle),
 		mWidth (0),
 		mLineHeight (0),
@@ -36,7 +36,7 @@ RWPrintText::RWPrintText (const CText inText, RWStyle *inStyle, bool inAttribute
 {
     if (!inText.empty()) {
 		if (inAttributed)
-			mText.Attach (RWTools::SplitAttributedString (inText, NULL));
+			mText = RWTools::SplitAttributedString (inText, NULL);
 		else
 			mText = inText;
     }
@@ -78,7 +78,7 @@ static struct	SRWPageSizes
 // RWPageComposer							Constructor			   [protected]
 // ---------------------------------------------------------------------------
 
-RWPageComposer::RWPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter)	//mbs 25072011	printer
+RWPageComposer::RWPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter)	//mbs 25072011	printer
 	:	mFlags (inFlags),
 		mDestination (inDst),
 		mPrinterName (inPrinter),	//mbs 25072011	printer
@@ -248,7 +248,7 @@ RWPageComposer::ParseReport (RWXmlNode inReport)
 // Get page size according to orientation
 
 void
-RWPageComposer::GetPageBounds ( CText inOrientation,  CText inSize, SRect &outRect)
+RWPageComposer::GetPageBounds ( RWString inOrientation,  RWString inSize, SRect &outRect)
 {
 	if (mPageRect.Width() < 100)
 	{
@@ -259,7 +259,7 @@ RWPageComposer::GetPageBounds ( CText inOrientation,  CText inSize, SRect &outRe
 			inOrientation = mPageOrientation;
 
 		SRWPageSizes	*p;
-		for (p = RWPageSizes; p->name != NULL && !TEXT_EQUALS (inSize, p->name); p++)
+		for (p = RWPageSizes; p->name != NULL && !RWStr::Equals (inSize, p->name); p++)
 			;
 		if (p->name == NULL)
 			p = RWPageSizes;
@@ -267,7 +267,7 @@ RWPageComposer::GetPageBounds ( CText inOrientation,  CText inSize, SRect &outRe
 		mPageRect.top = 0;
 		mPageRect.left = 0;
 
-		if (TEXT_EQUALS (inOrientation, "Landscape"))
+		if (RWStr::Equals (inOrientation, "Landscape"))
 		{
 			mPageWidth = mPageRect.bottom = p->width;
 			mPageHeight = mPageRect.right = p->height;
@@ -363,7 +363,7 @@ RWPageComposer::PrintSettings (float &outPaperWidth, float &outPaperHeight, SRec
 	try
 	{
 		mFlags |= eResetMargins;
-		long	result = OpenSession (true, true, 1, ~0, TEXT_EQUALS (mPageOrientation, "Landscape"));
+		long	result = OpenSession (true, true, 1, ~0, RWStr::Equals (mPageOrientation, "Landscape"));
 		CloseSession (false);
 		if (result == 0)	//mbs 12082011
 		{
@@ -531,7 +531,7 @@ static	int	sWhichComposer = 0;
 RWNativePageComposer*
 RWPageComposer::CreateScreenComposer (void)
 {
-	CText	empty;
+	RWString	empty;
 #if	WINVER
 	return new RWWinPageComposer (eDestinationScreen, empty, empty);
 #else
@@ -551,7 +551,7 @@ RWPageComposer::CreateScreenComposer (void)
 // ---------------------------------------------------------------------------
 
 RWPageComposer*
-RWPageComposer::CreatePrinterComposer (unsigned long inFlags, CText &inDst, CText &inPrinter)	//mbs 25072011	printer
+RWPageComposer::CreatePrinterComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter)	//mbs 25072011	printer
 {
 	RWPageComposer	*obj = NULL;
 
@@ -597,9 +597,9 @@ RWPageComposer::SetJobName (const UTF8Char *inName)
 
 
 void
-RWPageComposer::SetJobName (const CText inName)
+RWPageComposer::SetJobName (const RWString inName)
 {
-	if (mBatchLevel == 0 || mJobName.IsEmpty())	//mbs 08102010
+	if (mBatchLevel == 0 || mJobName.empty())	//mbs 08102010
 	{
 	mJobName = inName;
 	}
@@ -607,7 +607,7 @@ RWPageComposer::SetJobName (const CText inName)
 
 /*
 void
-RWPageComposer::SetJobName (const CText &inName)
+RWPageComposer::SetJobName (const RWString &inName)
 {
 	if (mBatchLevel == 0 || mJobName.IsEmpty())	//mbs 08102010
 	{
@@ -661,7 +661,7 @@ RWPageComposer::GetSessionObject (long inObject)
 // ---------------------------------------------------------------------------
 
 long
-RWPageComposer::OpenSession (RWPageComposer* &outSession, unsigned long inFlags, CText &inTemplate, CText &inDst, CText &inJobName, CText &inPrinter)	//mbs 25072011	printer
+RWPageComposer::OpenSession (RWPageComposer* &outSession, unsigned long inFlags, RWString &inTemplate, RWString &inDst, RWString &inJobName, RWString &inPrinter)	//mbs 25072011	printer
 {
 	RWPageComposer	*session = RWPageComposer::CreatePrinterComposer (inFlags, inDst, inPrinter);	//mbs 25072011	printer
 	long			result = -1;
@@ -685,7 +685,7 @@ RWPageComposer::OpenSession (RWPageComposer* &outSession, unsigned long inFlags,
 		//mbs 19012011	needs to set job name BEFORE opening the session!!!
 		session->SetJobName (inJobName);
 
-		result = session->OpenSession (true, true, 0, ~0, TEXT_EQUALS (session->mPageOrientation, "Landscape"));
+		result = session->OpenSession (true, true, 0, ~0, RWStr::Equals (session->mPageOrientation, "Landscape"));
 		if (result != noErr)
 		{
 			session->CloseSession (true);
@@ -729,7 +729,7 @@ bool	RWPageComposer::GetDPI (float &x, float &y, void* inWindow)
 # include	"RWTextFormatter.h"
 
 void
-RWPageComposer::DrawTextBox (CText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWPageComposer::DrawTextBox (RWString inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
 	SRect	r (inRect);
 	if (ioPrintText != NULL && *ioPrintText != NULL)
@@ -792,7 +792,7 @@ RWPageComposer::DrawTextBox (CText inText, RWStyle *inStyle, const SRect &inRect
 
 
 double
-RWPageComposer::MeasureText (const CText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWPageComposer::MeasureText (const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
     if (!inText.empty())
 	{

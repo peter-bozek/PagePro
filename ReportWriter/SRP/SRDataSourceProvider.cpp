@@ -27,8 +27,8 @@ SRDataSourceProvider::~SRDataSourceProvider (void)
 // ---------------------------------------------------------------------------
 // Convert specified variable to a text representation
 
-RWTextValue
-SRDataSourceProvider::FormatVariable (const RWValue &inVar, const CText inFormat)
+RWString
+SRDataSourceProvider::FormatVariable (const RWValue &inVar, const RWString inFormat)
 const
 {
 	return SRDataFormatter::FormatVariable (inVar, inFormat);

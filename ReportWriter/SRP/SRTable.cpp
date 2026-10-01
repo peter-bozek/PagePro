@@ -145,7 +145,7 @@ SRHeader::SRHeader (SRTable* father)
 // SRHeader									Constructor			   [protected]
 // ---------------------------------------------------------------------------
 
-SRHeader::SRHeader (const CText inText, int inColSpan, int inRowSpan, long inStyleID, SRTable* father)
+SRHeader::SRHeader (const RWString inText, int inColSpan, int inRowSpan, long inStyleID, SRTable* father)
 	:	SRText (father->GetReportData(), father->GetOrder ()),
 		mWidth (0),
 		mHeight (0),
@@ -155,7 +155,7 @@ SRHeader::SRHeader (const CText inText, int inColSpan, int inRowSpan, long inSty
 		mStartCol (0)
 {
 	mObjectKind = eObject_TblHdr;
-    mText.Copy (inText);
+    mText = inText;
 	mStyleID = inStyleID;
 
 	return;
@@ -238,53 +238,6 @@ SRHeader::Parse (SRReportData *inReport, RWXmlNode inNode, long inStyleID)
 
 	PSObject::LoadXML (inNode);
 
-#if	0
-	XMLAttribute	*attrib;
-	for (attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next())
-	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
-
-		if (STR_EQUALS (name, "style"))
-		{
-			mStyleID = 0;
-			if (sscanf (value, "%li", &mStyleID) != 1)
-				mStyleID = inStyleID;
-		}
-//		else if (STR_EQUALS (name, "encoding"))
-//		{
-//			if (sscanf (value, "%li", &mEncoding) != 1)
-//				mEncoding = DEFAULT_ENCODING;
-//		}
-		else if (STR_EQUALS (name, "width"))
-		{
-			mWidth = 0;
-			sscanf (value, "%g", &mWidth);
-		}
-		else if (STR_EQUALS (name, "height"))
-		{
-			mHeight = 0;
-			sscanf (value, "%g", &mHeight);
-		}
-		else if (STR_EQUALS (name, "colspan"))
-		{
-			mColSpan = 1;
-			sscanf (value, "%i", &mColSpan);
-			if (mColSpan < 1)
-				mColSpan = 1;
-		}
-		else if (STR_EQUALS (name, "rowspan"))
-		{
-			mRowSpan = 1;
-			sscanf (value, "%i", &mRowSpan);
-			if (mRowSpan < 1)
-				mRowSpan = 1;
-		}
-	}
-
-
-//	mStyle = inReport->GetStyle (styleID);
-#endif
 	mText = RWTools::ParseIntoText (inNode);
 
 	return;
@@ -316,7 +269,7 @@ SRHeader::WriteSelf (RWXmlNode inParent, const char *inObjectType)
 	if (mIsAttributed)
 		elem.SetAttribute (u"attr", 1);
 
-	if (not mParsedText.IsEmpty())
+	if (not mParsedText.empty())
 		RWTools::WriteText (elem, mParsedText);
 
 	return elem;
@@ -381,7 +334,7 @@ SRHeader::SetProperty (OSType id, RWValue &inValue)
 void
 SRHeader::ResetText (void)
 {
-	mParsedText.Copy (mText);
+	mParsedText = mText;
 }
 
 
@@ -392,9 +345,9 @@ SRHeader::ResetText (void)
 void
 SRHeader::ParseText (SRTable *inParent)
 {
-	if (not mText.IsEmpty())	//mbs 12022010	don't crash ;-)
+	if (not mText.empty())	//mbs 12022010	don't crash ;-)
 	{
-		long	textLen = mText.StrLength();
+		long	textLen = (long) mText.size();
 		long	curPos = 0, delta = 0, endPos;
 		
 		RWString	result (mText);
@@ -578,7 +531,7 @@ SRColumn::GetQuery (void)
 // ---------------------------------------------------------------------------
 
 inline
-const CText
+const RWString
 SRColumn::GetTitle (void)
 const
 {
@@ -625,86 +578,13 @@ SRColumn::Parse (SRReportData *inReport, RWXmlNode inNode, long inStyleID)
 
 	PSObject::LoadXML (inNode);
 
-#if	0
-	XMLAttribute	*attrib;
-	long			lVal;
-	for (attrib = inNode->FirstAttribute(); attrib; attrib = attrib->Next())
-	{
-		const CXMLText	name = attrib->Name();
-		const CXMLText	value = attrib->Value();
 
-		if (STR_EQUALS (name, "id"))
-		{
-			mId = 0;
-			sscanf (value, "%li", &mId);
-		}
-		else if (STR_EQUALS (name, "style"))
-		{
-			mStyleID = 0;
-			if (sscanf (value, "%li", &mStyleID) != 1)
-				mStyleID = inStyleID;
-		}
-//		else if (STR_EQUALS (name, "encoding"))
-//		{
-//			if (sscanf (value, "%li", &mEncoding) != 1)
-//				mEncoding = DEFAULT_ENCODING;
-//		}
-		else if (STR_EQUALS (name, "width"))
-		{
-			mWidth = 0;
-			sscanf (value, "%g", &mWidth);
-		}
-		else if (STR_EQUALS (name, "grid"))
-		{
-			lVal = 1;
-			sscanf (value, "%li", &lVal);
-			mGrid = (lVal != 0);
-		}
-		else if (STR_EQUALS (name, "source"))
-		{
-			if (STR_EQUALS (value, "%ROWNUM%"))		// •••
-				mPrintRowNum = true;
-			else
-			{
-				mPrintRowNum = false;
-				mSource.FromXML (value);
-				if (mSource)
-					if (mSource[0] == u'[')
-						mVar = inReport->GetReportWriter()->CreateField (mSource, ECalcType_None);
-					else
-						mVar = inReport->GetReportWriter()->CreateVariable (mSource, SR4DVariable::SR4DVariable_ArrayAuto, ECalcType_None);
-			}
-		}
-		else if (STR_EQUALS (name, "format"))
-		{
-			mFormat.FromXML (value);
-		}
-		else if (STR_EQUALS (name, "title"))
-		{
-			mTitle.FromXML (value);
-		}
-		else if (STR_EQUALS (name, "duplicates"))
-		{
-			lVal = 1;
-			sscanf (value, "%li", &lVal);
-			mPrintRepeatingValues = (lVal != 0);
-		}
-		else if (STR_EQUALS (name, "level"))
-		{
-			mLevel = 0;
-			sscanf (value, "%li", &mLevel);
-			if (mLevel < 0 || mLevel > 10)
-				mLevel = 0;
-		}
-	}
-#endif
-
-	if (not mSource.IsEmpty() && TEXT_EQUALS (mSource, "%ROWNUM%"))
+	if (not mSource.empty() && RWStr::Equals (mSource, "%ROWNUM%"))
 		mPrintRowNum = true;
 	else
 	{
 		mPrintRowNum = false;
-        if (not mSource.IsEmpty()) {
+        if (not mSource.empty()) {
 			if (mSource[0] == u'[')
 				mVar = inReport->GetReportWriter()->CreateField (mSource, ECalcType_None);
 			else
@@ -734,7 +614,7 @@ SRColumn::WriteSelf (RWXmlNode inParent, const char *inObjectType)
 		elem.SetAttribute (u"width", mWidth);
 	if (not mGrid)
 		elem.SetAttribute (u"grid", 0);
-	if (not mFormat.IsEmpty())
+	if (not mFormat.empty())
 		elem.SetAttr (u"format", mFormat);
 	if (mPrintRowNum)
 		elem.SetAttribute (u"rownum", 1);
@@ -792,7 +672,7 @@ SRColumn::SetProperty (OSType id, RWValue &inValue)
 		case PSObjPropSource:
 			if (SetStringProperty (inValue, mSource))
 			{
-				mPrintRowNum = TEXT_EQUALS (mSource, "%ROWNUM%");
+				mPrintRowNum = RWStr::Equals (mSource, "%ROWNUM%");
 				return true;
 			}
 			break;
@@ -873,7 +753,7 @@ SRTable::ParseHeading (RWXmlNode inNode)
 	mFixedColumns = true;
 
 	for (RWXmlNode row : inNode.Children())
-		if (STR_EQUALS (row.Name(), "tr"))
+		if (RWStr::EqualsNoCase (row.Name(), "tr"))
 			mNumTopHeadings++;
 
 	if (mNumTopHeadings > 0)
@@ -883,7 +763,7 @@ SRTable::ParseHeading (RWXmlNode inNode)
 		int	numRows = 0, numCols = -1;
 		for (RWXmlNode row : inNode.Children())
 		{
-			if (!STR_EQUALS (row.Name(), "tr"))
+			if (!RWStr::EqualsNoCase (row.Name(), "tr"))
 				continue;
 			if (line >= mNumTopHeadings)
 				break;
@@ -899,7 +779,7 @@ SRTable::ParseHeading (RWXmlNode inNode)
 			int		thisLineNumCols = 0;
 			for (RWXmlNode cell : row.Children())
 			{
-				if (!STR_EQUALS (cell.Name(), "td"))
+				if (!RWStr::EqualsNoCase (cell.Name(), "td"))
 					continue;
 
 				SRHeader	*hdr = new SRHeader (this);
@@ -964,7 +844,7 @@ SRTable::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 	{
 		for (RWXmlNode col : elem.Children())
 		{
-			if (!STR_EQUALS (col.Name(), "Col"))
+			if (!RWStr::EqualsNoCase (col.Name(), "Col"))
 				continue;
 
 			SRColumn	*column = new SRColumn (this);

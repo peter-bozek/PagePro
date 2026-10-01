@@ -11,17 +11,17 @@
 # include	"RWPageComposer.h"
 # include	"PSObjProps.h"
 
-//wchar_t on Mac is UTF32 -> CText does NOT support conversion from/to UTF32!!!
+//wchar_t on Mac is UTF32 -> RWString does NOT support conversion from/to UTF32!!!
 
-//CText	RWTFPrintText::breakAfter (L" \t.,:;)}\n\r");
-//CText	RWTFPrintText::breakBefore (L" \t({");
-CText	RWTFPrintText::breakAfterNoWrap (u"\n\r");
-CText	RWTFPrintText::breakAfter (u" \t.,;:)>}\n\r");
-CText	RWTFPrintText::breakBefore (u" \t(<{");
+//RWString	RWTFPrintText::breakAfter (L" \t.,:;)}\n\r");
+//RWString	RWTFPrintText::breakBefore (L" \t({");
+RWString	RWTFPrintText::breakAfterNoWrap (u"\n\r");
+RWString	RWTFPrintText::breakAfter (u" \t.,;:)>}\n\r");
+RWString	RWTFPrintText::breakBefore (u" \t(<{");
 
 
 void
-TFWord::AdjustStyle (int inFlags, double inSize, int inSizeSign, int inStyle, SRGBColor &inColor, CText &inFont)
+TFWord::AdjustStyle (int inFlags, double inSize, int inSizeSign, int inStyle, SRGBColor &inColor, RWString &inFont)
 {
 	RWValue	v;
 
@@ -143,7 +143,7 @@ TFWord::AdjustStyle (int inFlags, double inSize, int inSizeSign, int inStyle, SR
 
 
 void
-TFWord::GetWordMetrix (RWPageComposer &inComposer, const CText inText)
+TFWord::GetWordMetrix (RWPageComposer &inComposer, const RWString inText)
 {
 	double	ascent, descent, leading;
 	if (mPrintableLength > 0)
@@ -201,7 +201,7 @@ RWTFPrintText::Reset (void)
 
 
 void			
-RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit)
+RWTFPrintText::Init (RWPageComposer &inComposer, const RWString inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit)
 {
 	mComposer = &inComposer;
 	/*
@@ -224,7 +224,7 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 	long	*attributes = NULL;
 	if (inAttributed)
 	{
-		mText.Attach (RWTools::SplitAttributedString (inText, &aattributes));
+		mText = RWTools::SplitAttributedString (inText, &aattributes);
 		attributes = aattributes.data();
 	}
 	else
@@ -236,9 +236,9 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 	mHeight = 0;
 	mPrintedHeight = 0;
 	mNumLines = -1;
-	const CText	cText = mText;
+	const RWString	cText = mText;
 
-	if (not mText.IsEmpty())
+	if (not mText.empty())
 	{
 		mTextLength = mText.size();
 		
@@ -255,7 +255,7 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 			for (as = begin; *as != 0; as++)
 			{
 				found = breakBefore.find (*as, 0);
-				if (found != CText::npos)
+				if (found != RWString::npos)
 				{
 					if (firstChar < (as - begin))
 					{
@@ -279,7 +279,7 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 				}
 				
 				found = breakAfter.find (*as, 0);
-				if (found != CText::npos)
+				if (found != RWString::npos)
 				{
 					if (firstChar < (as - begin + 1))
 					{
@@ -323,7 +323,7 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 				}
 				
 				found = breakAfterNoWrap.find (*as, 0);
-				if (found != CText::npos)
+				if (found != RWString::npos)
 				{
 					if (firstChar < (as - begin + 1))
 					{
@@ -515,7 +515,7 @@ RWTFPrintText::Init (RWPageComposer &inComposer, const CText inText, SRect &ioRe
 
 
 void
-RWTFPrintText::ApplyAttributes (const CText inText, long *attributes, long start, long end)
+RWTFPrintText::ApplyAttributes (const RWString inText, long *attributes, long start, long end)
 {
 	long		i, j, level = 1;
 	for (i = start, j = start; i < end; i = j + 2)	//mbs 13022011	added initialization for j - crash on invalid attributed string "i>i</i>"
@@ -548,7 +548,7 @@ RWTFPrintText::ApplyAttributes (const CText inText, long *attributes, long start
 		int			sizeSign = 0;
 		int			style = 0;
 		SRGBColor	color;
-		CText		fontName;
+		RWString		fontName;
 		int	flags = RWTools::ParseAttributedStringAttribute (as, size, sizeSign, style, color, fontName);
 		TFWordVector::iterator	iter;
 		for (iter = mWords.begin(); iter != mWords.end(); iter++)
@@ -586,7 +586,7 @@ RWTFPrintText::BuildLines (RWPageComposer &inComposer, bool inWrap)
 	 
 	 */
 	
-	const CText	cText = mText;
+	const RWString	cText = mText;
 	int			firstWord = 0, currentWord = 0;
 	double		width = 0;
 	
@@ -862,7 +862,7 @@ RWTFPrintText::Draw (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool
 void
 RWTFPrintText::DrawLine (RWPageComposer &inComposer, SRect &ioRect, int inLine)
 {
-	const CText	cText = mText;
+	const RWString	cText = mText;
 	int			wordCount = mLines[inLine]->mLengthInWords;
 	double		baseline = mLines[inLine]->mBaselinePosition + ioRect.top - mPrintedHeight;
 	int			word = mLines[inLine]->mStartWord;

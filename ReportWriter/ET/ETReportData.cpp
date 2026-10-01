@@ -35,7 +35,7 @@ mIsDynamic (false)
 
 ETReportData::~ETReportData (void)
 {
-	mName.Free();
+	mName.clear();
 	if (mWatermark)
 		delete mWatermark;
 }
@@ -57,7 +57,7 @@ const
 // GetName															  [public]
 // ---------------------------------------------------------------------------
 
-const CText
+const RWString
 ETReportData::GetName (void)
 const
 {
@@ -87,13 +87,13 @@ ETReportData::ParseReport (void)
 	for (RWXmlNode elem : report.Children())
 	{
 		const RWString	value = elem.Name();
-		if (STR_EQUALS (value, "StyleSet"))
+		if (RWStr::EqualsNoCase (value, "StyleSet"))
 			ParseStyleSet (elem);
-		else if (STR_EQUALS (value, "Header") || STR_EQUALS (value, "Page") || STR_EQUALS (value, "Footer"))
+		else if (RWStr::EqualsNoCase (value, "Header") || RWStr::EqualsNoCase (value, "Page") || RWStr::EqualsNoCase (value, "Footer"))
 			ParseSection (elem);
-		else if (STR_EQUALS (value, "Watermark"))
+		else if (RWStr::EqualsNoCase (value, "Watermark"))
 			ParseSection (elem);
-		else if (STR_EQUALS (value, "BreakHeader") || STR_EQUALS (value, "BreakFooter"))
+		else if (RWStr::EqualsNoCase (value, "BreakHeader") || RWStr::EqualsNoCase (value, "BreakFooter"))
 			ParseSection (elem);
 	}
 
@@ -112,7 +112,7 @@ ETReportData::ParseStyleSet (RWXmlNode inStyleSet)
 
 	for (RWXmlNode elem : inStyleSet.Children())
 	{
-		if (!STR_EQUALS (elem.Name(), "Style"))
+		if (!RWStr::EqualsNoCase (elem.Name(), "Style"))
 			continue;
 
 		style = new RWStyle (&mStyles, elem);
@@ -141,7 +141,7 @@ ETReportData::ParseSection (RWXmlNode inSection)
 
 	if (mIsDynamic)
 	{
-		if (STR_EQUALS (sectionName, "Page"))
+		if (RWStr::EqualsNoCase (sectionName, "Page"))
 		{
 			ETPageSection	*pageSection = new ETPageSection;
 			pageSection->Parse (this, inSection);
@@ -151,28 +151,28 @@ ETReportData::ParseSection (RWXmlNode inSection)
 			{
 				const RWString	value = elem.Name();
 
-				if (STR_EQUALS (value, "Body"))
+				if (RWStr::EqualsNoCase (value, "Body"))
 				{
 					ETSection	*body = new ETSection (ETSection::eSectionKind_Body);
 					body->Parse (this, elem);
 					mBody.push_back (body);
 					ParseObjects (body->GetObjects(), elem);
 				}
-				else if (STR_STARTS_WITH (value, "Break"))
+				else if (RWStr::StartsWithNoCase (value, "Break"))
 				{
 					ETBreakSection	*breakLevel = new ETBreakSection (value);
 					breakLevel->Parse (this, elem);
 					mBody.push_back (breakLevel);
 					ParseObjects (breakLevel->GetObjects(), elem);
 				}
-				else if (STR_EQUALS (value, "Header") || STR_EQUALS (value, "Footer"))
+				else if (RWStr::EqualsNoCase (value, "Header") || RWStr::EqualsNoCase (value, "Footer"))
 				{
 					ETHeaderFooterSection	*headerFooter = new ETHeaderFooterSection (value);
 					headerFooter->Parse (this, elem);
 					mPageSections.push_back (headerFooter);
 					ParseObjects (headerFooter->GetObjects(), elem);
 				}
-				else if (STR_EQUALS (value, "Watermark"))
+				else if (RWStr::EqualsNoCase (value, "Watermark"))
 				{
 					if (mWatermark == NULL)
 					{
@@ -186,21 +186,21 @@ ETReportData::ParseSection (RWXmlNode inSection)
 	}
 	else
 	{
-		if (STR_EQUALS (sectionName, "Page"))
+		if (RWStr::EqualsNoCase (sectionName, "Page"))
 		{
 			ETPageSection	*pageSection = new ETPageSection;
 			pageSection->Parse (this, inSection);
 			mBody.push_back (pageSection);
 			ParseObjects (pageSection->GetObjects(), inSection);
 		}
-		else if (STR_EQUALS (sectionName, "Header") || STR_EQUALS (sectionName, "Footer"))
+		else if (RWStr::EqualsNoCase (sectionName, "Header") || RWStr::EqualsNoCase (sectionName, "Footer"))
 		{
 			ETHeaderFooterSection	*headerFooter = new ETHeaderFooterSection (sectionName);
 			headerFooter->Parse (this, inSection);
 			mPageSections.push_back (headerFooter);
 			ParseObjects (headerFooter->GetObjects(), inSection);
 		}
-		else if (STR_EQUALS (sectionName, "Watermark"))
+		else if (RWStr::EqualsNoCase (sectionName, "Watermark"))
 		{
 			if (mWatermark == NULL)
 			{
@@ -230,7 +230,7 @@ ETReportData::ParseObjects (ETObjList *inParent, RWXmlNode inObject)
 		obj = NULL;
 		const RWString	value = elem.Name();
 
-		if (STR_EQUALS (value, "Group"))
+		if (RWStr::EqualsNoCase (value, "Group"))
 		{
 			ETGroup	*group = ETGroup::Create (this, elem, ++seqID);
 			if (group != NULL)
@@ -239,14 +239,14 @@ ETReportData::ParseObjects (ETObjList *inParent, RWXmlNode inObject)
 				ParseObjects (group->GetObjects(), elem);	// pB changed: Group must always fit on a single page...
 			}
 		}
-		else if (STR_EQUALS (value, "Text"))
+		else if (RWStr::EqualsNoCase (value, "Text"))
 			obj = ETText::Create (this, elem, ++seqID);
-		else if (STR_EQUALS (value, "Table"))
+		else if (RWStr::EqualsNoCase (value, "Table"))
 		{
 //mbs 05112010	TODO: implement...
 //			obj = ETTable::Create (this, elem, ++seqID);
 		}
-		else if (STR_EQUALS (value, "Var") || STR_EQUALS (value, "Variable"))
+		else if (RWStr::EqualsNoCase (value, "Var") || RWStr::EqualsNoCase (value, "Variable"))
 			obj = ETVariable::Create (this, elem, ++seqID);
 
 		if (obj != NULL)

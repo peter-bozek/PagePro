@@ -1568,7 +1568,7 @@ DMArea::DrawRulers (void)
 
 	int		valueEvery, valueInc, valueStep = 1;
 	double	ptPerMark;
-	CText	o;
+	RWString	o;
 	switch (mRulerUnits)
 	{
 		default:// [pt]

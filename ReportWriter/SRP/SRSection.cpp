@@ -106,7 +106,7 @@ SRSection::~SRSection (void)
 // GetType															  [public]
 // ---------------------------------------------------------------------------
 
-const CXMLText
+const RWString
 SRSection::GetType (void)
 const
 {
@@ -118,7 +118,7 @@ const
 // GetName															  [public]
 // ---------------------------------------------------------------------------
 
-const CText
+const RWString
 SRSection::GetName (void)
 const
 {
@@ -196,7 +196,7 @@ SRSection::Parse (SRReportData *inReport,  RWXmlNode inNode)
 	LoadXML (inNode);
 
 	// header must not be bound to bottom...
-	if (! STR_EQUALS (mType, "Footer") && ! STR_EQUALS (mType, "BreakFooter"))
+	if (! RWStr::EqualsNoCase (mType, "Footer") && ! RWStr::EqualsNoCase (mType, "BreakFooter"))
 		mFromBottom = false;
 
 	return;
@@ -223,9 +223,9 @@ const
 #if	TARGET_DEBUG
 	elem.SetAttribute (u"iteration", GetDataSource().GetCurrentIteration());
 #endif
-	if (not mName.IsEmpty())
+	if (not mName.empty())
 		elem.SetAttr (u"name", mName);
-	if (not mID.IsEmpty())
+	if (not mID.empty())
 		elem.SetAttr (u"id", mID);
 	if (mHeight != 0)
 		elem.SetAttribute (u"height", mHeight);
@@ -238,12 +238,12 @@ const
 	if (mFixedHeight)
 		elem.SetAttribute (u"fixedHeight", 1);
 
-	if (STR_EQUALS (mType, "Footer"))
+	if (RWStr::EqualsNoCase (mType, "Footer"))
 	{
 		if (not mFromBottom)
 			elem.SetAttribute (u"bindToBottom", 0);
 	}
-	else if (STR_EQUALS (mType, "BreakFooter"))
+	else if (RWStr::EqualsNoCase (mType, "BreakFooter"))
 	{
 		if (mFromBottom)
 			elem.SetAttribute (u"bindToBottom", 1);
@@ -331,7 +331,7 @@ SRSection::GetProperty (OSType id, RWValue &outValue)
 {
 	switch (id)
 	{
-		case PSObjPropType:			outValue.SetXMLText (mType); break;
+		case PSObjPropType:			outValue.SetText (mType); break;
 		case PSObjPropName:			outValue.SetText (mName); break;
 		case PSObjPropID:			outValue.SetText (mID); break;	//mbs 15112010
 		case PSObjPropHeight:		outValue.SetReal (mHeight); break;
@@ -340,7 +340,7 @@ SRSection::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropKeepTogether:	outValue.SetBoolean (mKeepTogether); break;
 		case PSObjPropExpandV:		outValue.SetBoolean (mFixedHeight); break;
 		case PSObjPropBind:
-			if (! STR_EQUALS (mType, "Footer") && ! STR_EQUALS (mType, "BreakFooter"))
+			if (! RWStr::EqualsNoCase (mType, "Footer") && ! RWStr::EqualsNoCase (mType, "BreakFooter"))
 				return false;
 			outValue.SetBoolean (mFromBottom);
 			break;
@@ -372,7 +372,7 @@ SRSection::SetProperty (OSType id, RWValue &inValue)
 		case PSObjPropKeepTogether:	return SetBooleanProperty (inValue, mKeepTogether);
 		case PSObjPropExpandV:		return SetBooleanProperty (inValue, mFixedHeight);
 		case PSObjPropBind:
-			if (! STR_EQUALS (mType, "Footer") && ! STR_EQUALS (mType, "BreakFooter"))
+			if (! RWStr::EqualsNoCase (mType, "Footer") && ! RWStr::EqualsNoCase (mType, "BreakFooter"))
 				break;
 			return SetBooleanProperty (inValue, mFromBottom);
 		case PSObjPropPageThrow:
@@ -421,7 +421,7 @@ SRHeaderFooterSection::Parse (SRReportData *inReport, RWXmlNode inNode)
 {
 	SRSection::Parse (inReport, inNode);
 
-	if (! STR_EQUALS (mType, "Footer"))
+	if (! RWStr::EqualsNoCase (mType, "Footer"))
 		mFillPage = false;
 
 	return;
@@ -483,7 +483,7 @@ SRHeaderFooterSection::GetProperty (OSType id, RWValue &outValue)
 		case PSObjPropOddPage:		outValue.SetInteger (mOddPage); break;
 		case PSObjPropLastPage:		outValue.SetBoolean (mLastPage); break;
 		case PSObjPropFill:
-			if (! STR_EQUALS (mType, "Footer"))
+			if (! RWStr::EqualsNoCase (mType, "Footer"))
 				return false;
 			outValue.SetBoolean (mFillPage);
 			break;
@@ -510,7 +510,7 @@ SRHeaderFooterSection::SetProperty (OSType id, RWValue &inValue)
 		case PSObjPropOddPage:		return SetIntegerProperty (inValue, mOddPage, 0, 2);
 		case PSObjPropLastPage:		return SetBooleanProperty (inValue, mLastPage);
 		case PSObjPropFill:
-			if (! STR_EQUALS (mType, "Footer"))
+			if (! RWStr::EqualsNoCase (mType, "Footer"))
 				break;
 			return SetBooleanProperty (inValue, mFillPage);
 			
@@ -569,7 +569,7 @@ SRBreakSection::Parse (SRReportData *inReport, RWXmlNode inNode)
 {
 	SRSection::Parse (inReport, inNode);
 
-	if (mBreakOn.IsEmpty())
+	if (mBreakOn.empty())
 		mBreakType = eBreakOn_None;
 
 /*	empty sections are deleted -> SRData expects a const which gets destroyed...
@@ -604,7 +604,7 @@ const
 	{
 		if (mPrintAlways)
 			me.SetAttribute (u"always", 1);
-		if (mBreakType != eBreakOn_None && not mBreakOn.IsEmpty())
+		if (mBreakType != eBreakOn_None && not mBreakOn.empty())
 		{
 //			static const char * breakOn[] = { "noBreak", "breakOnField", "breakOnVariable", "breakOnArray" };
 //			me->SetAttribute (breakOn [mBreakType], mBreakOn);
@@ -656,7 +656,7 @@ SRBreakSection::GetProperty (OSType id, RWValue &outValue)
 
 		case PSObjPropBreakLevel:		outValue.SetInteger (mLevel); break;
 		case PSObjPropPrintAlways:
-			if (! STR_EQUALS (mType, "BreakHeader"))
+			if (! RWStr::EqualsNoCase (mType, "BreakHeader"))
 				return false;
 			outValue.SetBoolean (mPrintAlways);
 			break;
@@ -715,7 +715,7 @@ SRBreakSection::SetProperty (OSType id, RWValue &inValue)
 		}
 
 		case PSObjPropBreakLevel:		return SetIntegerProperty (inValue, mLevel, 0);
-		case PSObjPropPrintAlways:		return 	(STR_EQUALS (mType, "BreakHeader"))? SetBooleanProperty (inValue, mPrintAlways): false;
+		case PSObjPropPrintAlways:		return 	(RWStr::EqualsNoCase (mType, "BreakHeader"))? SetBooleanProperty (inValue, mPrintAlways): false;
 
 		default:						return SRSection::SetProperty (id, inValue);
 	}
@@ -857,7 +857,7 @@ const
 // GetPageOrientation												  [public]
 // ---------------------------------------------------------------------------
 
-const CText
+const RWString
 SRPageSection::GetPageOrientation (void)
 const
 {
@@ -870,7 +870,7 @@ const
 // GetPageSize														  [public]
 // ---------------------------------------------------------------------------
 
-const CText
+const RWString
 SRPageSection::GetPageSize (void)
 const
 {
@@ -891,7 +891,7 @@ SRPageSection::CreateCalculatedObjects (const RWList<RWCalculatedValue*>& inCalc
 	
 	for (cit = inCalc.begin(); cit != inCalc.end(); cit++)
 	{
-		const CText					name = (*cit)->GetName();
+		const RWString					name = (*cit)->GetName();
 		const SRObject				*obj = NULL;
 		SRObjListD::const_iterator	it;
 		

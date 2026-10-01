@@ -19,29 +19,29 @@ ETSection::ETSection (RWStringView inKind)
 :	mKind (eSectionKind_Body), mType (u"Body"),
 mDraw (true)
 {
-    if (STR_EQUALS (inKind, "Header")) {
+    if (RWStr::EqualsNoCase (inKind, "Header")) {
 		mKind = eSectionKind_Header;
         mType = u"Header";
     }
-    else if (STR_EQUALS (inKind, "BreakHeader")) {
+    else if (RWStr::EqualsNoCase (inKind, "BreakHeader")) {
 		mKind = eSectionKind_BreakHeader;
         mType = u"BreakHeader";
     }
-//    else if (STR_EQUALS (inKind, "Body")) 
+//    else if (RWStr::EqualsNoCase (inKind, "Body")) 
 //			mKind = eSectionKind_Body;
-    else if (STR_EQUALS (inKind, "BreakFooter")) {
+    else if (RWStr::EqualsNoCase (inKind, "BreakFooter")) {
 		mKind = eSectionKind_BreakFooter;
         mType = u"BreakFooter";
     }
-	//	else if (STR_EQUALS (inKind, "FillFooter"))
+	//	else if (RWStr::EqualsNoCase (inKind, "FillFooter"))
 	//		mKind = eSectionKind_FillFooter;
-    else if (STR_EQUALS (inKind, "Footer")) {
+    else if (RWStr::EqualsNoCase (inKind, "Footer")) {
 		mKind = eSectionKind_Footer;
         mType = u"Footer";
     }
-	//	else if (STR_EQUALS (inKind, "Page"))
+	//	else if (RWStr::EqualsNoCase (inKind, "Page"))
 	//		mKind = eSectionKind_Page;
-    else if (STR_EQUALS (inKind, "Watermark")) {
+    else if (RWStr::EqualsNoCase (inKind, "Watermark")) {
 		mKind = eSectionKind_Watermark;
         mType = u"Watermark";
     }
@@ -117,17 +117,17 @@ ETSection::Parse (ETReportData * /*inReport*/, RWXmlNode inNode)
 	for (const auto &[name, value] : inNode.Attributes())
 	{
 		
-		if (STR_EQUALS (name, "draw"))
+		if (RWStr::EqualsNoCase (name, "draw"))
 		{
 			lVal = 0;
 			RWStr::ReadNumber (value, lVal);
 			mDraw = (lVal != 0);
 		}
 		//mbs 15112010
-		else if (STR_EQUALS (name, "name"))
-			mName.FromXML (value);
-		else if (STR_EQUALS (name, "id"))
-			mID.FromXML (value);
+		else if (RWStr::EqualsNoCase (name, "name"))
+			mName.assign (value);
+		else if (RWStr::EqualsNoCase (name, "id"))
+			mID.assign (value);
 	}
 	
 	return;
@@ -257,7 +257,7 @@ ETBreakSection::Parse (ETReportData *inReport, RWXmlNode inNode)
 	for (const auto &[name, value] : inNode.Attributes())
 	{
 		
-		if (STR_EQUALS (name, "level"))
+		if (RWStr::EqualsNoCase (name, "level"))
 		{
 			mLevel = 0;
 			RWStr::ReadNumber (value, mLevel);
@@ -373,7 +373,7 @@ ETWatermarkSection::Parse (ETReportData *inReport, RWXmlNode inNode)
 {
 	ETHeaderFooterSection::Parse (inReport, inNode);
 	
-	const CXMLText	value = inNode.Attr (u"onTop");
+	const RWString	value = inNode.Attr (u"onTop");
 	
 	if (!value.empty())
 	{

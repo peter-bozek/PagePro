@@ -868,6 +868,53 @@ RWTools::WriteData (RWXmlNode inParent, const SBlob &inData)
 
 
 // ---------------------------------------------------------------------------
+// ParseMacPageFormat										 [static] [public]
+// ---------------------------------------------------------------------------
+// plist / dict / "com.apple.print.subTicket.paper_info_ticket" / dict / <key> / dict /
+// "com.apple.print.ticket.itemArray" / array / dict / <key> / array of 4 reals in PMRect
+// order: top, left, bottom, right.
+
+namespace
+{
+	// the value element following <key>inKey</key> in a property list dictionary
+	RWXmlNode	PlistValue (RWXmlNode inDict, std::string_view inKey)
+	{
+		for (RWXmlNode elem = inDict.FirstElement(); elem; elem = elem.NextElement())
+			if (elem.NameIs ("key") && RWStr::Equals (RWStr::Trim (elem.Text()), inKey))
+				return elem.NextElement();
+		return RWXmlNode();
+	}
+
+	bool		PlistTicketRect (RWXmlNode inPaperInfo, std::string_view inKey, SRect &outRect)
+	{
+		RWXmlNode	items = PlistValue (PlistValue (inPaperInfo, inKey), "com.apple.print.ticket.itemArray");
+		RWXmlNode	values = PlistValue (items.Child (u"dict"), inKey);
+		double		r [4];
+		int			count = 0;
+		for (RWXmlNode real : values.Children (u"real"))
+			if (count < 4)
+				r [count++] = RWStr::ToDouble (real.Text()).value_or (0);
+		if (count < 4)
+			return false;
+		outRect.SetRect (r [0], r [1], r [2], r [3]);
+		return outRect.Width() > 0 && outRect.Height() > 0;
+	}
+}
+
+bool
+RWTools::ParseMacPageFormat (const void *inData, size_t inSize, SRect &outPaperRect, SRect &outPageRect)
+{
+	RWXmlDocument	xml;
+	if (inData == NULL || inSize == 0 || !xml.LoadBuffer (inData, inSize))
+		return false;
+
+	RWXmlNode	paperInfo = PlistValue (xml.Root().Child (u"dict"), "com.apple.print.subTicket.paper_info_ticket");
+	return PlistTicketRect (paperInfo, "com.apple.print.PageFormat.PMAdjustedPaperRect", outPaperRect)
+		&& PlistTicketRect (paperInfo, "com.apple.print.PageFormat.PMAdjustedPageRect", outPageRect);
+}
+
+
+// ---------------------------------------------------------------------------
 // FindInList														  [static][public]
 // ---------------------------------------------------------------------------
 

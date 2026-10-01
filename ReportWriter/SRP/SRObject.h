@@ -44,10 +44,10 @@ public:
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
 	virtual						~SRObject (void);
 
-				RWTextValue		GetVariableText (const CText inVariableName, const CText inFormat) const;
+				RWString		GetVariableText (const RWString inVariableName, const RWString inFormat) const;
 
-	virtual	const SRObject	*	FindCalculatedObject (const CText inName) const;
-	static		SRObject	*	CreateCalculatedObject (SRReportData *inReport, long inOrder, const CText inName);
+	virtual	const SRObject	*	FindCalculatedObject (const RWString inName) const;
+	static		SRObject	*	CreateCalculatedObject (SRReportData *inReport, long inOrder, const RWString inName);
 
 protected:
 								SRObject (SRReportData *inReport, long inOrder, EObject_Kind inKind);
@@ -62,8 +62,8 @@ private:
 protected:
 	static const PSObjProps	sProperties[];
 	SRReportData	*		mReportData;
-	RWTextValue				mName;	//mbs 15112010
-	RWTextValue				mID;	//mbs 15112010
+	RWString				mName;	//mbs 15112010
+	RWString				mID;	//mbs 15112010
 	long					mSeqID;
 	SRect					mPosition;
 //	bool					mFixedH;		// fixed position ==> no Move
@@ -111,7 +111,7 @@ public:
 
 //	virtual		PSObjList	*	GetObjects (OSType id) const;
 				SRObjListD	*	GetObjects (void);
-	virtual	const SRObject	*	FindCalculatedObject (const CText inName) const;
+	virtual	const SRObject	*	FindCalculatedObject (const RWString inName) const;
 
 protected:
 								SRGroup (SRReportData *inReport, long inOrder);
@@ -284,8 +284,8 @@ protected:
 //								SRText (void);
 	virtual						~SRText (void);
     virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
-				RWTextValue		ParseText (bool& outStillDynamic) const;
-				RWTextValue		LocalizeText (void) const;
+				RWString		ParseText (bool& outStillDynamic) const;
+				RWString		LocalizeText (void) const;
     virtual		RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType) override;
 
 private:
@@ -305,7 +305,7 @@ protected:
 	int					mDrawIfEmpty;
 	bool				mFrame;
 	float				mFrameOffset;
-	RWTextValue			mText;
+	RWString			mText;
 };
 
 
@@ -327,14 +327,13 @@ public:
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
 	
-	virtual	const SRObject	*	FindCalculatedObject (const CText inName) const;
+	virtual	const SRObject	*	FindCalculatedObject (const RWString inName) const;
 
 protected:
 								SRVariable (SRReportData *inReport, long inOrder);
 	virtual						~SRVariable (void);
     virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 //	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-//	virtual		*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
 private:
 			// defensive programming - not implemented
@@ -343,13 +342,13 @@ private:
 
 protected:
 	static	const PSObjProps	sProperties[];
-	RWTextValue			mSource;
-	RWTextValue			mFormat;
+	RWString			mSource;
+	RWString			mFormat;
 //	int					mType;		// var, array {iteration}, array {index}
 	long				mIndex;		// array {index}
 //	bool				mCalcShow;
 	ECalcType			mCalcType;
-//	RWTextValue			mRecordCalcInto;
+//	RWString			mRecordCalcInto;
 	ERepeat				mRepeat;
 	float				mRepeatOffset;	// offset for repeat
 	ExtendedExecute		mScript;
@@ -372,7 +371,6 @@ public:
 	virtual		void			FetchValue (bool inUseOld);
 	virtual		void			FetchCalcValue (void);
 //	virtual		void			Write (FILE *fd, bool inIsInBody, bool inUseCalculator);
-//	virtual		*	Write (XMLElement *inParent, bool inIsInBody, bool inUseCalculator);
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
@@ -382,7 +380,6 @@ protected:
 	virtual						~SRField (void);
 //	virtual		void			LoadXML (RWXmlNode inNode, const PSObjProps* pes = NULL) override;
 //	virtual		void			WriteSelf (FILE *fd, const char *inObjectType);
-//	virtual		*	WriteSelf (XMLElement *inParent, const char *inObjectType);
 
 private:
 			// defensive programming - not implemented
@@ -416,7 +413,7 @@ inline			int				GetRowSpan (void) const;
 								~SRHeader (void);
 protected:
 								SRHeader (SRTable* father);
-								SRHeader (const CText inText, int inColSpan, int inRowSpan, long inStyleID, SRTable* father);
+								SRHeader (const RWString inText, int inColSpan, int inRowSpan, long inStyleID, SRTable* father);
     void			Parse (SRReportData *inReport, RWXmlNode inNode, long inStyleID);
 inline			void			AdjustStartCol (int inCol);
     RWXmlNode		WriteSelf (RWXmlNode inParent, const char *inObjectType);
@@ -430,14 +427,14 @@ protected:
 	static	const PSObjProps	sProperties[];
 	float				mWidth;
 	float				mHeight;
-	RWTextValue			mText;
+	RWString			mText;
 	int					mColSpan;
 	int					mRowSpan;
 	// long				mStyleID;		// pB is in text
 	int					mStartCol;
 	// bool				mIsDynamic;		// pB is in text
 	// bool				mIsAttributed;	// pB is in text
-	RWTextValue			mParsedText;
+	RWString			mParsedText;
 };
 
 
@@ -453,7 +450,7 @@ inline			bool			IsRowNum (void) const;
 inline			SR4DData	*	GetData (void) const;
 inline			long			GetLevel (void) const;
 inline		    ExtendedExecute	&	GetQuery (void);
-inline			const CText		GetTitle (void) const;
+inline			const RWString		GetTitle (void) const;
 
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
@@ -479,15 +476,15 @@ protected:
 	float				mWidth;
 	bool				mGrid;
 	//long				mStyleID;		// pB is in text
-	RWTextValue			mFormat;
-	RWTextValue			mSource;
+	RWString			mFormat;
+	RWString			mSource;
 	bool				mPrintRowNum;
 	bool				mPrintRepeatingValues;
 	// bool				mIsAttributed;		// pB is in text
 	long				mLevel;			// level of table relations - order of columns evaluation
 	ExtendedExecute		mQuery;			// query to get this column's value
 	SR4DData		*	mVar;
-	RWTextValue			mTitle;
+	RWString			mTitle;
 };
 
 typedef	RWArray<SRHeader*>	SRHdrList;

@@ -32,4 +32,4 @@ ELicense	RW_GetLicense (void);
 void		RW_CheckLicense (RWPageComposer *inComposer, const SRect *inRect, bool inForPrinting);
 
 
-void		RW_CreateLicense (const CText &inCustomer, long in4DNumber, long inFlags, CText &outLicense);
+void		RW_CreateLicense (const RWString &inCustomer, long in4DNumber, long inFlags, RWString &outLicense);

@@ -28,7 +28,7 @@ RWReportData::RWReportData (RWXmlDocument *inXML)
 
 RWReportData::~RWReportData (void)
 {
-	mName.Free();
+	mName.clear();
 	if (mWatermark)
 		delete mWatermark;
 }
@@ -50,7 +50,7 @@ const
 // GetName															  [public]
 // ---------------------------------------------------------------------------
 
-const CText
+const RWString
 RWReportData::GetName (void)
 const
 {
@@ -81,7 +81,7 @@ RWReportData::ParseReport (void)
 			ParseStyleSet (elem);
 		else if (elem.NameIs ("Header") || elem.NameIs ("Page") || elem.NameIs ("Footer"))
 			ParseSection (elem);
-		else if (STR_EQUALS (elem.Name(), "Watermark"))
+		else if (RWStr::EqualsNoCase (elem.Name(), "Watermark"))
 			ParseSection (elem);
 		else if (elem.NameIs ("BreakHeader") || elem.NameIs ("BreakFooter"))
 			ParseSection (elem);
@@ -102,7 +102,7 @@ RWReportData::ParseStyleSet (RWXmlNode inStyleSet)
 
 	for (RWXmlNode elem : inStyleSet.Children())
 	{
-		if (!STR_EQUALS (elem.Name(), "Style"))
+		if (!RWStr::EqualsNoCase (elem.Name(), "Style"))
 			continue;
 
 		style = new RWStyle (&mStyles, elem);
@@ -131,7 +131,7 @@ RWReportData::ParseSection (RWXmlNode inSection)
 
 	if (mIsDynamic)
 	{
-		if (STR_EQUALS (sectionName, "Page"))
+		if (RWStr::EqualsNoCase (sectionName, "Page"))
 		{
 			RWPageSection	*pageSection = new RWPageSection;
 			pageSection->Parse (this, inSection);
@@ -141,28 +141,28 @@ RWReportData::ParseSection (RWXmlNode inSection)
 			{
 				const RWString	value = elem.Name();
 
-				if (STR_EQUALS (value, "Body"))
+				if (RWStr::EqualsNoCase (value, "Body"))
 				{
 					RWSection	*body = new RWSection (RWSection::eSectionKind_Body);
 					body->Parse (this, elem);
 					mBody.push_back (body);
 					ParseObjects (body->GetKeepTogether(), body->GetObjects(), elem);
 				}
-				else if (STR_STARTS_WITH (value, "Break"))
+				else if (RWStr::StartsWithNoCase (value, "Break"))
 				{
 					RWBreakSection	*breakLevel = new RWBreakSection (value);
 					breakLevel->Parse (this, elem);
 					mBody.push_back (breakLevel);
 					ParseObjects (breakLevel->GetKeepTogether(), breakLevel->GetObjects(), elem);
 				}
-				else if (STR_EQUALS (value, "Header") || STR_EQUALS (value, "Footer"))
+				else if (RWStr::EqualsNoCase (value, "Header") || RWStr::EqualsNoCase (value, "Footer"))
 				{
 					RWHeaderFooterSection	*headerFooter = new RWHeaderFooterSection (value);
 					headerFooter->Parse (this, elem);
 					mPageSections.push_back (headerFooter);
 					ParseObjects (headerFooter->GetKeepTogether(), headerFooter->GetObjects(), elem);
 				}
-				else if (STR_EQUALS (value, "Watermark"))
+				else if (RWStr::EqualsNoCase (value, "Watermark"))
 				{
 					if (mWatermark == NULL)
 					{
@@ -176,21 +176,21 @@ RWReportData::ParseSection (RWXmlNode inSection)
 	}
 	else
 	{
-		if (STR_EQUALS (sectionName, "Page"))
+		if (RWStr::EqualsNoCase (sectionName, "Page"))
 		{
 			RWPageSection	*pageSection = new RWPageSection;
 			pageSection->Parse (this, inSection);
 			mBody.push_back (pageSection);
 			ParseObjects (pageSection->GetKeepTogether(), pageSection->GetObjects(), inSection);
 		}
-		else if (STR_EQUALS (sectionName, "Header") || STR_EQUALS (sectionName, "Footer"))
+		else if (RWStr::EqualsNoCase (sectionName, "Header") || RWStr::EqualsNoCase (sectionName, "Footer"))
 		{
 			RWHeaderFooterSection	*headerFooter = new RWHeaderFooterSection (sectionName);
 			headerFooter->Parse (this, inSection);
 			mPageSections.push_back (headerFooter);
 			ParseObjects (headerFooter->GetKeepTogether(), headerFooter->GetObjects(), inSection);
 		}
-		else if (STR_EQUALS (sectionName, "Watermark"))
+		else if (RWStr::EqualsNoCase (sectionName, "Watermark"))
 		{
 			if (mWatermark == NULL)
 			{
@@ -220,7 +220,7 @@ RWReportData::ParseObjects (bool inKeepTogether, RWObjList *inParent, RWXmlNode 
 		obj = NULL;
 		const RWString	value = elem.Name();
 
-		if (STR_EQUALS (value, "Group"))
+		if (RWStr::EqualsNoCase (value, "Group"))
 		{
 			RWGroup	*group = RWGroup::Create (this, elem, ++seqID);
 			if (group != NULL)
@@ -230,7 +230,7 @@ RWReportData::ParseObjects (bool inKeepTogether, RWObjList *inParent, RWXmlNode 
 			}
 		}
 #if OLD_RW_FORMAT
-		else if (STR_EQUALS (value, "Data"))
+		else if (RWStr::EqualsNoCase (value, "Data"))
 		{
 #if 1
 			obj = RWTable::Create (this, elem, ++seqID /* , ++mCurrentDataID */);
@@ -248,63 +248,63 @@ RWReportData::ParseObjects (bool inKeepTogether, RWObjList *inParent, RWXmlNode 
 #endif
 		}
 #endif
-		else if (STR_EQUALS (value, "Text"))
+		else if (RWStr::EqualsNoCase (value, "Text"))
 		{
 			obj = RWText::Create (this, elem, ++seqID);
 		}
-		else if (STR_EQUALS (value, "Table"))
+		else if (RWStr::EqualsNoCase (value, "Table"))
 		{
 			obj = RWTable::Create (this, elem, ++seqID);
 		}
-		else if (STR_EQUALS (value, "Line"))
+		else if (RWStr::EqualsNoCase (value, "Line"))
 		{
 			obj = RWLine::Create (this, elem, ++seqID);
 		}
-		else if (STR_EQUALS (value, "Rect") || STR_EQUALS (value, "Rectangle"))
+		else if (RWStr::EqualsNoCase (value, "Rect") || RWStr::EqualsNoCase (value, "Rectangle"))
 		{
 			obj = RWRect::Create (this, elem, ++seqID);
 		}
-		else if (STR_EQUALS (value, "Oval"))
+		else if (RWStr::EqualsNoCase (value, "Oval"))
 		{
 			obj = RWOval::Create (this, elem, ++seqID);
 		}
-		else if (STR_EQUALS (value, "Var") || STR_EQUALS (value, "Variable"))
+		else if (RWStr::EqualsNoCase (value, "Var") || RWStr::EqualsNoCase (value, "Variable"))
 		{
 			obj = RWVariable::Create (this, elem, ++seqID);
 		}
-		else if (STR_EQUALS (value, "Pict") || STR_EQUALS (value, "Picture"))
+		else if (RWStr::EqualsNoCase (value, "Pict") || RWStr::EqualsNoCase (value, "Picture"))
 		{
 			obj = RWPict::Create (this, elem, ++seqID);
 		}
 		else
 		{
 #if OLD_RW_FORMAT
-			if (!STR_EQUALS (value, "Object"))
+			if (!RWStr::EqualsNoCase (value, "Object"))
 			{
 //				inObject->RemoveChild (node);
 				continue;
 			}
 
-			const CXMLText	type = elem->Attribute ("Type");
+			const RWString	type = elem->Attribute ("Type");
 			if (type == NULL)
 			{
 //				inObject->RemoveChild (node);
 				continue;
 			}
 
-			if (STR_EQUALS (type, "Line"))
+			if (RWStr::EqualsNoCase (type, "Line"))
 				obj = RWLine::Create (this, elem, ++seqID);
-			else if (STR_EQUALS (type, "Rect") || STR_EQUALS (type, "Rectangle"))
+			else if (RWStr::EqualsNoCase (type, "Rect") || RWStr::EqualsNoCase (type, "Rectangle"))
 				obj = RWRect::Create (this, elem, ++seqID);
-			else if (STR_EQUALS (type, "Oval"))
+			else if (RWStr::EqualsNoCase (type, "Oval"))
 				obj = RWOval::Create (this, elem, ++seqID);
-			else if (STR_EQUALS (type, "Pict") || STR_EQUALS (type, "Picture"))
+			else if (RWStr::EqualsNoCase (type, "Pict") || RWStr::EqualsNoCase (type, "Picture"))
 				obj = RWPict::Create (this, elem, ++seqID);
-			else if (STR_EQUALS (type, "Text"))
+			else if (RWStr::EqualsNoCase (type, "Text"))
 				obj = RWText::Create (this, elem, ++seqID);
-			else if (STR_EQUALS (type, "Var") || STR_EQUALS (type, "Variable"))
+			else if (RWStr::EqualsNoCase (type, "Var") || RWStr::EqualsNoCase (type, "Variable"))
 				obj = RWVariable::Create (this, elem, ++seqID);
-			else if (STR_EQUALS (type, "Table"))
+			else if (RWStr::EqualsNoCase (type, "Table"))
 				obj = RWTable::Create (this, elem, ++seqID /* , 0 */ );
 //			else
 #endif

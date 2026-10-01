@@ -30,19 +30,19 @@ class	RWCTPageComposer
 friend class	RWCTPrintText;
 
 public:
-								RWCTPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter);	//mbs 25072011	printer
+								RWCTPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter);	//mbs 25072011	printer
 	virtual						~RWCTPageComposer (void);
 
 	virtual		void			StyleChanged (RWStyle *inStyle);
 	virtual		RWNativePageComposer*	CreateComposerForPrinting (void) const;
 
-	virtual		void			DrawTextBox (const CText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
-	virtual		double			MeasureText (const CText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
-	virtual		double			MeasureWord (const CText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading);
-	virtual		void			DrawWord (const CText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle);
+	virtual		void			DrawTextBox (const RWString inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
+	virtual		double			MeasureText (const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
+	virtual		double			MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading);
+	virtual		void			DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle);
 	virtual		bool			IsUnicodeFont (RWStyle *inStyle);
 
-	static		CTFontRef		CreateFont (const CText inName, long inNameLength, float inSize, int style);
+	static		CTFontRef		CreateFont (const RWString inName, long inNameLength, float inSize, int style);
 
 protected:
 				CFDictionaryRef	MapStyle (RWStyle *inStyle);

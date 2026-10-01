@@ -383,6 +383,24 @@ RWStr::CompareNoCase (RWStringView inText1, RWStringView inText2)
 	return inText1.size() < inText2.size() ? -1 : 1;
 }
 
+int
+RWStr::CompareNoCase (RWStringView inText, std::string_view inASCII)
+{
+	return CompareNoCase (inText, FromASCII (inASCII));
+}
+
+bool
+RWStr::StartsWith (RWStringView inText, std::string_view inASCIIPrefix)
+{
+	return StartsWith (inText, FromASCII (inASCIIPrefix));
+}
+
+bool
+RWStr::StartsWithNoCase (RWStringView inText, std::string_view inASCIIPrefix)
+{
+	return StartsWithNoCase (inText, FromASCII (inASCIIPrefix));
+}
+
 bool
 RWStr::StartsWith (RWStringView inText, RWStringView inPrefix)
 {

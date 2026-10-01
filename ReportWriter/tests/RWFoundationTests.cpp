@@ -119,6 +119,9 @@ static	void	Test4D (void)
 static	void	TestCompare (void)
 {
 	CHECK (RWStr::Equals (u"Data", "Data"));
+	CHECK (RWStr::StartsWith (u"Header1", "Header") && !RWStr::StartsWith (u"header1", "Header"));
+	CHECK (RWStr::StartsWithNoCase (u"BreakHeader", "break") && !RWStr::StartsWithNoCase (u"Br", "break"));
+	CHECK (RWStr::CompareNoCase (u"abc", "ABD") < 0 && RWStr::CompareNoCase (u"ABC", "abc") == 0);
 	CHECK (!RWStr::Equals (u"Data", "data"));
 	CHECK (!RWStr::Equals (u"Dat", "Data"));
 	CHECK (RWStr::EqualsNoCase (u"DATA", "data"));

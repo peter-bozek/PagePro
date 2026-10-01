@@ -16,8 +16,8 @@ class TFWord
 public:
 	inline			TFWord( int start, int length, RWStyle* style);
 
-	void			GetWordMetrix (RWPageComposer &inComposer, const CText inText);
-	void			AdjustStyle (int inFlags, double inSize, int inSizeSign, int inStyle, SRGBColor &inColor, CText &inFont); 
+	void			GetWordMetrix (RWPageComposer &inComposer, const RWString inText);
+	void			AdjustStyle (int inFlags, double inSize, int inSizeSign, int inStyle, SRGBColor &inColor, RWString &inFont); 
 	
 	// Getters and Setters
 	
@@ -85,7 +85,7 @@ public :
 	virtual						~RWTFPrintText (void);
 	virtual		void			Reset (void);
 	
-				void			Init (RWPageComposer &inComposer, const CText inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit);
+				void			Init (RWPageComposer &inComposer, const RWString inText, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit);
 //				void			GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit);
 				int				Draw (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool inDoDraw);
 	
@@ -93,7 +93,7 @@ protected:
 				void			Free();
 				void			BuildLines (RWPageComposer &inComposer, bool inWrap);
 				void			DrawLine (RWPageComposer &inComposer, SRect &ioRect, int inLine);
-				void			ApplyAttributes (const CText inText, long *attributes, long start, long end);
+				void			ApplyAttributes (const RWString inText, long *attributes, long start, long end);
 	
 private:
 	// defensive programming - not implemented
@@ -102,9 +102,9 @@ private:
 	
 	
 protected :
-	static CText	breakAfterNoWrap;
-	static CText	breakAfter;
-	static CText	breakBefore;
+	static RWString	breakAfterNoWrap;
+	static RWString	breakAfter;
+	static RWString	breakBefore;
 
 	RWPageComposer	*mComposer;
 	TFWordVector	mWords;

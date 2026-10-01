@@ -8,7 +8,7 @@
  */
 
 #pragma	once
-inline	void	RWInitReportVariable (RWTextValue *mVarNames)
+inline	void	RWInitReportVariable (RWString *mVarNames)
 {
 	// RWReportWriter variables
 	mVarNames [RW_VarPage]		= u"PAGE";
@@ -25,7 +25,7 @@ inline	void	RWInitReportVariable (RWTextValue *mVarNames)
 	mVarNames [RW_VarName]		= u"NAME";
 }
 
-inline	void	SRInitReportVariable (RWTextValue *mVarNames)
+inline	void	SRInitReportVariable (RWString *mVarNames)
 {
 	RWInitReportVariable (mVarNames);
 	// SRReportWriter variables

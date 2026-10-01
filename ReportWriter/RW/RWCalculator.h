@@ -7,7 +7,7 @@
 class	RWCalcDataProvider
 {
 public:
-	virtual	bool		GetCalculatedValue (const CText inName, RWValue &outVar) const = 0;
+	virtual	bool		GetCalculatedValue (const RWString inName, RWValue &outVar) const = 0;
 inline	virtual			~RWCalcDataProvider()		{};
 };
 
@@ -27,7 +27,7 @@ public:
 		RWCalculatedType_Dev			// sqrt (_Var)
 	};
 
-    const CText					GetName (void) const;
+    const RWString					GetName (void) const;
 
 protected:
 	struct	SCalculatedValue
@@ -42,7 +42,7 @@ protected:
 		void				Init (void);
 	};
 
-	explicit					RWCalculatedValue (const CText inName);
+	explicit					RWCalculatedValue (const RWString inName);
 							~RWCalculatedValue (void);
 
 	void						InitLevels (int inLevels);
@@ -60,7 +60,7 @@ private:
 private:
 	int					mLevels;
 	SCalculatedValue		*mValues;
-	RWTextValue			mName;
+	RWString			mName;
 	SCalculatedValue		mLast;
 };
 
@@ -71,12 +71,12 @@ public:
 	explicit					RWCalculator (void);
 								~RWCalculator (void);
 
-	void						Add (const CText inName);
-	RWCalculatedValue	*		Get (const CText inName) const;
+	void						Add (const RWString inName);
+	RWCalculatedValue	*		Get (const RWString inName) const;
 	void						InitLevels (int inLevels);
 
-//	void						Increment (const CText inName, double newValue);
-	bool						GetValue (const CText inName, RWCalculatedValue::RWCalculatedType inWhich, double &outValue) const;
+//	void						Increment (const RWString inName, double newValue);
+	bool						GetValue (const RWString inName, RWCalculatedValue::RWCalculatedType inWhich, double &outValue) const;
 
 	int							GetLevel (void) const;
 	void						SetLevel (int inLevel);

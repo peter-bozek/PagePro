@@ -91,18 +91,18 @@ PA_Unichar* RW_FourDTypeIDToText (OSType l);
 void InitPlugin();
 void DeinitPlugin();
 
-long RW_OpenSession (long &outSession, long dstFlags, CText &dst, CText &inTemplate, CText &job, CText &inPrinter);	//mbs 25072011	printer
+long RW_OpenSession (long &outSession, long dstFlags, RWString &dst, RWString &inTemplate, RWString &job, RWString &inPrinter);	//mbs 25072011	printer
 long RW_CloseSession (long &ioSession);
-long RW_Print (CText &src, long inOptions, long dstFlags, CText &dst, long inSession, CText &inPrinter);	//mbs 25072011	printer
-long RW_Process_RW (CText &src, long inOptions, CText &dst);
-long RW_Print_RW (CText &src, long inOptions, long dstFlags, CText &dst, long inSession, CText &inPrinter);	//mbs 25072011	printer
+long RW_Print (RWString &src, long inOptions, long dstFlags, RWString &dst, long inSession, RWString &inPrinter);	//mbs 25072011	printer
+long RW_Process_RW (RWString &src, long inOptions, RWString &dst);
+long RW_Print_RW (RWString &src, long inOptions, long dstFlags, RWString &dst, long inSession, RWString &inPrinter);	//mbs 25072011	printer
 
 
 void RW_Area (PA_PluginParameters params);
 
-long RW_CreateReport (long &outRepRef, CText &src, long inOptions);
-long RW_ParseReport (long inRepRef, CText &src, long inOptions);
-long RW_SaveReport (long inRepRef, CText &dst, long inOptions);
+long RW_CreateReport (long &outRepRef, RWString &src, long inOptions);
+long RW_ParseReport (long inRepRef, RWString &src, long inOptions);
+long RW_SaveReport (long inRepRef, RWString &dst, long inOptions);
 long RW_DeleteReport (long &ioRepRef);
 
 long RW_GetProperties (PA_PluginParameters params);	// inRepRef, inRef, PA_Variable &ioProps, PA_Variable &ioValues);
@@ -114,10 +114,10 @@ long RW_GetObjects (long inRepRef, long inRef, FourDTypeID id, PA_Variable &ioVa
 long RW_NewObject (long inRepRef, long &outRef, FourDTypeID id, long inParent);
 long RW_DeleteObject (long inRepRef, long &ioRef);
 long RW_ChangeObjectParent (long inRepRef, long inRef, long inNewRef);
-long RW_GetObjectXML (long inRepRef, long inRef, CText &outXML);
-long RW_NewObjectFromXML (long inRepRef, long &outRef, CText &inXML, long inParent);
+long RW_GetObjectXML (long inRepRef, long inRef, RWString &outXML);
+long RW_NewObjectFromXML (long inRepRef, long &outRef, RWString &inXML, long inParent);
 
-long RW_FindObjectByID (long inRepRef, CText &inName, long &outRef);
+long RW_FindObjectByID (long inRepRef, RWString &inName, long &outRef);
 long RW_GetParent (long inRepRef, long inRef, long &outRef);
 long RW_GetObjectRect (long inRepRef, long inRef, SRect &outRect);
 

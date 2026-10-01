@@ -20,7 +20,7 @@ extern "C" void	PluginMain (PA_long32, PA_PluginParameters)	{}
 class	TestDataSource	:	public	RWDataSourceProvider
 {
 public:
-	RWTextValue		FormatVariable (const RWValue &inVar, const CText) const override
+	RWString		FormatVariable (const RWValue &inVar, const RWString) const override
 	{
 		RWString	text;
 		inVar.GetTextValue (text, NULL);

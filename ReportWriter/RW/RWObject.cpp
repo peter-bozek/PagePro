@@ -123,40 +123,40 @@ RWObject::Parse (RWReportData *inReport, RWXmlNode inNode)
 	for (const auto &[name, value] : inNode.Attributes())
 	{
 
-		if (STR_EQUALS (name, "r"))
+		if (RWStr::EqualsNoCase (name, "r"))
 		{
 			// "left;top;right;bottom" as SRObject::WriteSelf writes it (the sscanf that
 			// replaced this read "top,left,bottom,right" and so only got one number)
 			mPosition = value;
 		}
 #if 1	// OLD_RW_FORMAT
-		else if (STR_EQUALS (name, "t"))
+		else if (RWStr::EqualsNoCase (name, "t"))
 		{
 			mPosition.top = 0;
 			RWStr::ReadNumber (value, mPosition.top);
 		}
-		else if (STR_EQUALS (name, "l"))
+		else if (RWStr::EqualsNoCase (name, "l"))
 		{
 			mPosition.left = 0;
 			RWStr::ReadNumber (value, mPosition.left);
 		}
-		else if (STR_EQUALS (name, "b"))
+		else if (RWStr::EqualsNoCase (name, "b"))
 		{
 			mPosition.bottom = 0;
 			RWStr::ReadNumber (value, mPosition.bottom);
 		}
-		else if (STR_EQUALS (name, "ri"))
+		else if (RWStr::EqualsNoCase (name, "ri"))
 		{
 			mPosition.right = 0;
 			RWStr::ReadNumber (value, mPosition.right);
 		}
-		else if (STR_EQUALS (name, "h") || STR_EQUALS (name, "height"))
+		else if (RWStr::EqualsNoCase (name, "h") || RWStr::EqualsNoCase (name, "height"))
 		{
 			mPosition.bottom = 0;
 			RWStr::ReadNumber (value, mPosition.bottom);
 			mPosition.bottom += mPosition.top; // pB  causes problems with table - height contain row height - need to be renamed
 		}
-		else if (STR_EQUALS (name, "w") || STR_EQUALS (name, "width"))
+		else if (RWStr::EqualsNoCase (name, "w") || RWStr::EqualsNoCase (name, "width"))
 		{
 			mPosition.right = 0;
 			RWStr::ReadNumber (value, mPosition.right);
@@ -164,61 +164,61 @@ RWObject::Parse (RWReportData *inReport, RWXmlNode inNode)
 		}
 #endif
 /*
-		else if (STR_EQUALS (name, "fixH"))
+		else if (RWStr::EqualsNoCase (name, "fixH"))
 		{
 			lVal = 0;
 			RWStr::ReadNumber (value, lVal);
 			mFixedH = (lVal != 0);
 		}
 */
-		else if (STR_EQUALS (name, "fixV"))
+		else if (RWStr::EqualsNoCase (name, "fixV"))
 		{
 			lVal = 0;
 			RWStr::ReadNumber (value, lVal);
 			mFixedV = (lVal != 0);
 		}
 /*
-		else if (STR_EQUALS (name, "bindH"))
+		else if (RWStr::EqualsNoCase (name, "bindH"))
 		{
 			lVal = 0;
 			RWStr::ReadNumber (value, lVal);
 			mBindH = (lVal != 0);
 		}
 */
-		else if (STR_EQUALS (name, "bindV"))
+		else if (RWStr::EqualsNoCase (name, "bindV"))
 		{
 			lVal = 0;
 			RWStr::ReadNumber (value, lVal);
 			mBindV = (lVal != 0);
 		}
-		else if (STR_EQUALS (name, "align"))
+		else if (RWStr::EqualsNoCase (name, "align"))
 		{
 			if (RWStr::ReadNumber (value, lVal))
 			{
 				if (lVal >= eAlign_None && lVal <= eAlign_Right)
 					mAlignment = EAlignment (lVal);
 			}
-			else if (STR_EQUALS (value, "left"))
+			else if (RWStr::EqualsNoCase (value, "left"))
 				mAlignment = eAlign_Left;
-			else if (STR_EQUALS (value, "center"))
+			else if (RWStr::EqualsNoCase (value, "center"))
 				mAlignment = eAlign_Center;
-			else if (STR_EQUALS (value, "right"))
+			else if (RWStr::EqualsNoCase (value, "right"))
 				mAlignment = eAlign_Right;
 		}
-		else if (STR_EQUALS (name, "draw"))
+		else if (RWStr::EqualsNoCase (name, "draw"))
 		{
 			if (RWStr::ReadNumber (value, lVal))
 			{
 				if (lVal >= eDraw_No && lVal <= eDraw_Always)
 					mDraw = EDraw (lVal);
 			}
-			else if (STR_EQUALS (value, "no"))
+			else if (RWStr::EqualsNoCase (value, "no"))
 				mDraw = eDraw_No;
-			else if (STR_EQUALS (value, "yes"))
+			else if (RWStr::EqualsNoCase (value, "yes"))
 				mDraw = eDraw_Yes;
-			else if (STR_EQUALS (value, "on overflow"))
+			else if (RWStr::EqualsNoCase (value, "on overflow"))
 				mDraw = eDraw_OnOverflow;
-			else if (STR_EQUALS (value, "always"))
+			else if (RWStr::EqualsNoCase (value, "always"))
 				mDraw = eDraw_Always;
 		}
 	}
@@ -497,12 +497,12 @@ RWObject::FetchCalcValue (RWReportWriter *inWriter)
 // GetVariableText												   [protected]
 // ---------------------------------------------------------------------------
 
-RWTextValue
-RWObject::GetVariableText (const CText inVariableName, const CText inFormat)
+RWString
+RWObject::GetVariableText (const RWString inVariableName, const RWString inFormat)
 const
 {
 	RWValue		var;
-	RWTextValue	result;
+	RWString	result;
 
 	if (GetReportWriter()->GetVariable (inVariableName, var))
 		result = GetReportWriter()->FormatVariable (var, inFormat);
@@ -649,7 +649,7 @@ RWGroup::Parse (RWReportData *inReport, RWXmlNode inNode)
 	{
 
 /*
-		if (STR_EQUALS (name, "expandH"))
+		if (RWStr::EqualsNoCase (name, "expandH"))
 		{
 			lVal = 0;
 			RWStr::ReadNumber (value, lVal);
@@ -657,7 +657,7 @@ RWGroup::Parse (RWReportData *inReport, RWXmlNode inNode)
 		}
 		else
 */
-		if (STR_EQUALS (name, "expandV"))
+		if (RWStr::EqualsNoCase (name, "expandV"))
 		{
 			lVal = 0;
 			RWStr::ReadNumber (value, lVal);
@@ -994,7 +994,6 @@ RWLine::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 
-//	XMLNode	*node = inNode->FirstChild ("Definition");
 //	if (node)
 //		elem = node.Child (u"LineProps");
 
@@ -1007,18 +1006,18 @@ RWLine::Parse (RWReportData *inReport, RWXmlNode inNode)
 		for (const auto &[name, value] : elem.Attributes())
 		{
 
-			if (STR_EQUALS (name, "thickness"))
+			if (RWStr::EqualsNoCase (name, "thickness"))
 			{
 				mThickness = 1;
 				RWStr::ReadNumber (value, mThickness);
 				if (mThickness < 0 || mThickness > 10)
 					mThickness = 1;
 			}
-			else if (STR_EQUALS (name, "lineColor"))
+			else if (RWStr::EqualsNoCase (name, "lineColor"))
 			{
 				mLineColor = value.c_str();
 			}
-			else if (STR_EQUALS (name, "flags"))
+			else if (RWStr::EqualsNoCase (name, "flags"))
 			{
 				mFlags = (unsigned short) ((long) RWStr::ToInteger (value).value_or (0) & 0x07);
 			}
@@ -1131,7 +1130,6 @@ RWOval::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 
-//	XMLNode	*node = inNode->FirstChild ("Definition");
 //	if (node)
 //		node = node->FirstChild ("RectProps");
 
@@ -1144,18 +1142,18 @@ RWOval::Parse (RWReportData *inReport, RWXmlNode inNode)
 		for (const auto &[name, value] : elem.Attributes())
 		{
 
-			if (STR_EQUALS (name, "thickness"))
+			if (RWStr::EqualsNoCase (name, "thickness"))
 			{
 				mThickness = 1;
 				RWStr::ReadNumber (value, mThickness);
 				if (mThickness < 0 || mThickness > 10)
 					mThickness = 1;
 			}
-			else if (STR_EQUALS (name, "frameColor") || STR_EQUALS (name, "lineColor"))
+			else if (RWStr::EqualsNoCase (name, "frameColor") || RWStr::EqualsNoCase (name, "lineColor"))
 			{
 				mFrameColor = value.c_str();
 			}
-			else if (STR_EQUALS (name, "fillColor"))
+			else if (RWStr::EqualsNoCase (name, "fillColor"))
 			{
 				mFill = true;
 				mFillColor = value.c_str();
@@ -1253,7 +1251,6 @@ RWRect::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWOval::Parse (inReport, inNode);
 
-//	XMLNode	*node = inNode->FirstChild ("Definition");
 //	if (node)
 //		node = node->FirstChild ("RectProps");
 
@@ -1266,19 +1263,19 @@ RWRect::Parse (RWReportData *inReport, RWXmlNode inNode)
 		for (const auto &[name, value] : elem.Attributes())
 		{
 
-			if (STR_EQUALS (name, "rows"))
+			if (RWStr::EqualsNoCase (name, "rows"))
 			{
 				mRows = (long) RWStr::ToInteger (value).value_or (0);
 				if (mRows < 2)
 					mRows = 1;
 			}
-			else if (STR_EQUALS (name, "cols"))
+			else if (RWStr::EqualsNoCase (name, "cols"))
 			{
 				mCols = (long) RWStr::ToInteger (value).value_or (0);
 				if (mCols < 2)
 					mCols = 1;
 			}
-			else if (STR_EQUALS (name, "flags"))
+			else if (RWStr::EqualsNoCase (name, "flags"))
 			{
 				mFlags = (unsigned short) ((long) RWStr::ToInteger (value).value_or (0) & RWRect_Full);
 			}
@@ -1384,7 +1381,6 @@ RWPict::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 
-//	XMLNode	*node = inNode->FirstChild ("Definition");
 //	if (node)
 //		node = node->FirstChild ("PictProps");
 
@@ -1399,7 +1395,7 @@ RWPict::Parse (RWReportData *inReport, RWXmlNode inNode)
 			long			lVal;
 
 /*
-			if (STR_EQUALS (name, "expandH"))
+			if (RWStr::EqualsNoCase (name, "expandH"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
@@ -1407,17 +1403,17 @@ RWPict::Parse (RWReportData *inReport, RWXmlNode inNode)
 			}
 			else
 */
-			if (STR_EQUALS (name, "expandV"))
+			if (RWStr::EqualsNoCase (name, "expandV"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mExpandV = (lVal != 0);
 			}
-			else if (STR_EQUALS (name, "dataID"))
+			else if (RWStr::EqualsNoCase (name, "dataID"))
 			{
 				mDataID = (long) RWStr::ToInteger (value).value_or (0);
 			}
-			else if (STR_EQUALS (name, "format"))
+			else if (RWStr::EqualsNoCase (name, "format"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
@@ -1426,36 +1422,36 @@ RWPict::Parse (RWReportData *inReport, RWXmlNode inNode)
 				else
 					mFormat = EPictFormat (lVal);
 			}
-			else if (STR_EQUALS (name, "frame"))
+			else if (RWStr::EqualsNoCase (name, "frame"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mFrame = (lVal != 0);
 			}
-			else if (STR_EQUALS (name, "frameOffset"))
+			else if (RWStr::EqualsNoCase (name, "frameOffset"))
 			{
 				mFrameOffset = 2;
 				RWStr::ReadNumber (value, mFrameOffset);
 				if (mFrameOffset < 0 || mFrameOffset > 20)
 					mFrameOffset = 2;
 			}
-			else if (STR_EQUALS (name, "frameThickness"))
+			else if (RWStr::EqualsNoCase (name, "frameThickness"))
 			{
 				mFrameThickness = 1;
 				RWStr::ReadNumber (value, mFrameThickness);
 				if (mFrameThickness < 0 || mFrameThickness > 10)
 					mFrameThickness = 1;
 			}
-			else if (STR_EQUALS (name, "frameColor"))
+			else if (RWStr::EqualsNoCase (name, "frameColor"))
 			{
 				mFrameColor = value.c_str();
 			}
-            else if (STR_EQUALS (name, "rotation"))
+            else if (RWStr::EqualsNoCase (name, "rotation"))
             {
                 mObjectRotation = 0;
                 RWStr::ReadNumber (value, mObjectRotation);
             }
-            else if (STR_EQUALS (name, "fillColor"))
+            else if (RWStr::EqualsNoCase (name, "fillColor"))
             {
                 mFillColor = value.c_str();
             }
@@ -1649,7 +1645,6 @@ RWText::Parse (RWReportData *inReport, RWXmlNode inNode)
 {
 	RWObject::Parse (inReport, inNode);
 	long	mStyleID = 0;
-//	XMLNode	*node = inNode->FirstChild ("Definition");
 //	if (node)
 //		node = node->FirstChild (GetKind() == eObject_Text ? "TextProps" : "VariableProps");
 
@@ -1664,45 +1659,45 @@ RWText::Parse (RWReportData *inReport, RWXmlNode inNode)
 		for (const auto &[name, value] : elem.Attributes())
 		{
 
-			if (STR_EQUALS (name, "style"))
+			if (RWStr::EqualsNoCase (name, "style"))
 			{
 				mStyleID = 0;
 				RWStr::ReadNumber (value, mStyleID);
 			}
 /*
-			else if (STR_EQUALS (name, "expandH"))
+			else if (RWStr::EqualsNoCase (name, "expandH"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mExpandH = (lVal != 0);
 			}
 */
-			else if (STR_EQUALS (name, "expandV"))
+			else if (RWStr::EqualsNoCase (name, "expandV"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mExpandV = (lVal != 0);
 			}
-			else if (STR_EQUALS (name, "dynamic"))
+			else if (RWStr::EqualsNoCase (name, "dynamic"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mIsDynamic = (lVal != 0);
 			}
-			else if (STR_EQUALS (name, "attributed"))
+			else if (RWStr::EqualsNoCase (name, "attributed"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mIsAttributed = (lVal != 0);
 			}
-			else if (STR_EQUALS (name, "keepTogether"))
+			else if (RWStr::EqualsNoCase (name, "keepTogether"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mKeepTogether = (lVal != 0);
 			}
 			/*
-			else if (STR_EQUALS (name, "drawIfEmpty"))
+			else if (RWStr::EqualsNoCase (name, "drawIfEmpty"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
@@ -1710,71 +1705,62 @@ RWText::Parse (RWReportData *inReport, RWXmlNode inNode)
 					mDrawIfEmpty = EEmpty (lVal);
 			}
 */
-			else if (STR_EQUALS (name, "empty"))
+			else if (RWStr::EqualsNoCase (name, "empty"))
 			{
 				if (RWStr::ReadNumber (value, lVal))
 				{
 					if (lVal >= eEmpty_Draw && lVal <= eEmpty_RemoveRow)
 						mDrawIfEmpty = EEmpty (lVal);
 				}
-				else if (STR_EQUALS (value, "draw"))
+				else if (RWStr::EqualsNoCase (value, "draw"))
 					mDrawIfEmpty = eEmpty_Draw;
-				else if (STR_EQUALS (value, "remove"))
+				else if (RWStr::EqualsNoCase (value, "remove"))
 					mDrawIfEmpty = eEmpty_Remove;
-				else if (STR_EQUALS (value, "remove row"))
+				else if (RWStr::EqualsNoCase (value, "remove row"))
 					mDrawIfEmpty = eEmpty_RemoveRow;
 			}
-			else if (STR_EQUALS (name, "frame"))
+			else if (RWStr::EqualsNoCase (name, "frame"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mFrame = (lVal != 0);
 			}
-			else if (STR_EQUALS (name, "frameOffset"))
+			else if (RWStr::EqualsNoCase (name, "frameOffset"))
 			{
 				mFrameOffset = 2;
 				RWStr::ReadNumber (value, mFrameOffset);
 				if (mFrameOffset < 0 || mFrameOffset > 20)
 					mFrameOffset = 2;
 			}
-			else if (STR_EQUALS (name, "frameThickness"))
+			else if (RWStr::EqualsNoCase (name, "frameThickness"))
 			{
 				mFrameThickness = 1;
 				RWStr::ReadNumber (value, mFrameThickness);
 				if (mFrameThickness < 0 || mFrameThickness > 10)
 					mFrameThickness = 1;
 			}
-			else if (STR_EQUALS (name, "frameColor"))
+			else if (RWStr::EqualsNoCase (name, "frameColor"))
 			{
 				mFrameColor = value.c_str();
 			}
-			else if (STR_EQUALS (name, "var"))
+			else if (RWStr::EqualsNoCase (name, "var"))
 			{
-				mVarName.Copy (value.c_str());
+				mVarName = value;
 			}
-			else if (STR_EQUALS (name, "val"))
+			else if (RWStr::EqualsNoCase (name, "val"))
 			{
 				mVarValue.SetReal (RWStr::ToDouble (value).value_or (0));
 			}
 		}
 
-/*
-		XMLNode	*node = elem->FirstChild();	// #PCDATA
-		if (node)
-		{
-			TiXmlText	*text = node->ToText();
-			if (text)
-				mText = text->Value();
-		}
-*/
 		mText = RWTools::ParseIntoText (elem);
 	}
 
 	//mbs 07052010	support attributed text
 	if (	mIsDynamic
-		&&	(	mText.IsEmpty()
-			 || (mIsAttributed && TEXT_STR (mText, "&lt;%") == STR_NOTFOUND)
-			 || (not mIsAttributed && TEXT_STR (mText, "<%") == STR_NOTFOUND)
+		&&	(	mText.empty()
+			 || (mIsAttributed && !RWStr::Contains (mText, u"&lt;%"))
+			 || (not mIsAttributed && !RWStr::Contains (mText, u"<%"))
 			 )
 		)
 		mIsDynamic = false;
@@ -1788,17 +1774,17 @@ RWText::Parse (RWReportData *inReport, RWXmlNode inNode)
 	if (mIsDynamic)
 	{
 		size_t	textLen = strlen (mText);
-		RWTextValue	startPos = mText;
+		RWString	startPos = mText;
 		while ((startPos = strstr (startPos, "<%")) != NULL && size_t (startPos - mText) < textLen)
 		{
-			RWTextValue	endPos = strstr (startPos + 2, "%>");
+			RWString	endPos = strstr (startPos + 2, "%>");
 			if (endPos != NULL)
 			{
 				size_t	nameLen = endPos - startPos - 2;
 				if (nameLen > 0)
 				{
-					CChar	var [36];
-					RWTextValue	fmtPos;
+					char16_t	var [36];
+					RWString	fmtPos;
 					for (fmtPos = startPos + 2; fmtPos < endPos && *fmtPos != ';'; fmtPos++)
 						;
 					if (fmtPos < endPos)
@@ -1816,7 +1802,7 @@ RWText::Parse (RWReportData *inReport, RWXmlNode inNode)
 		}
 	}
 */
-	if (!mVarName.IsEmpty())
+	if (!mVarName.empty())
 		GetReportWriter()->CreateVariable (mVarName);
 
 //	if (not mStyle->ShouldWrap())
@@ -1893,22 +1879,22 @@ RWText::SetKeepTogether (void)
 bool
 RWText::RemoveRow (bool* outRemoveRow)
 {
-	RWTextValue	text;
+	RWString	text;
 	bool		ret = false;
 	if (mIsDynamic)
 		text = ParseText();
 	else
-		text.Attach (mText.Detach());
+		text = std::exchange (mText, RWString());
 	
-	if (text.IsEmpty() && (mDrawIfEmpty == eEmpty_RemoveRow)) {
+	if (text.empty() && (mDrawIfEmpty == eEmpty_RemoveRow)) {
 		*outRemoveRow = true;
 		ret = true;
 	}
 	
 	if (mIsDynamic)
-		text.Free();
+		text.clear();
 	else
-		mText.Attach (text.Detach());	// no need to copy...		
+		mText = std::exchange (text, RWString());	// no need to copy...		
 	
 	return ret;
 }
@@ -1925,11 +1911,11 @@ RWText::GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool i
 //	RWObject::GetBounds (inComposer, r, not mKeepTogether, inIsOverflow, outRemoveRow);
 	SRect	origRect (ioRect);
 
-	RWTextValue	text;
+	RWString	text;
 	if (mIsDynamic)
 		text = ParseText();
 	else
-		text.Attach (mText.Detach());
+		text = std::exchange (mText, RWString());
 
 	bool	fit = true;
 	bool	proceed = true;
@@ -1937,7 +1923,7 @@ RWText::GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool i
 		*outRemoveRow = false; // ?? first true stops processing, so why this?
 
 	//mbs 10012010	added - otherwise the object would have to be growable
-	if (text.IsEmpty() && mDrawIfEmpty != eEmpty_Draw)
+	if (text.empty() && mDrawIfEmpty != eEmpty_Draw)
 	{
 		ioRect.bottom = ioRect.top;
 		ioRect.right = ioRect.left;
@@ -1951,7 +1937,7 @@ RWText::GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool i
 
 	if (proceed)
 	{
-		if (inFit && mFrame && (mDrawIfEmpty == eEmpty_Draw || not text.IsEmpty()) && ioRect.Height() < 2*mFrameOffset)	// will fail if mPosition.Height() is less than 2*mFrameOffset
+		if (inFit && mFrame && (mDrawIfEmpty == eEmpty_Draw || not text.empty()) && ioRect.Height() < 2*mFrameOffset)	// will fail if mPosition.Height() is less than 2*mFrameOffset
 			fit = proceed = false;
 	}
 
@@ -2067,9 +2053,9 @@ RWText::GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool i
 		AlignOnPage (origRect, ioRect);
 
 	if (mIsDynamic)
-		text.Free();
+		text.clear();
 	else
-		mText.Attach (text.Detach());	// no need to copy...
+		mText = std::exchange (text, RWString());	// no need to copy...
 
 	return fit;
 }
@@ -2082,7 +2068,7 @@ RWText::GetBounds (RWPageComposer &inComposer, SRect &ioRect, bool inFit, bool i
 void
 RWText::FetchCalcValue (RWReportWriter *inWriter)
 {
-	if (!mVarName.IsEmpty())
+	if (!mVarName.empty())
 		inWriter->SetVariable (mVarName, &mVarValue);
 	return;
 }
@@ -2095,7 +2081,7 @@ RWText::FetchCalcValue (RWReportWriter *inWriter)
 RWObject::EDrawState
 RWText::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 {
-//	RWTextValue	text;
+//	RWString	text;
 //	if (mIsDynamic)
 //		text = ParseText();
 //	else
@@ -2156,20 +2142,20 @@ RWText::AdjustBounds (float hDelta, float vDelta)
 // ---------------------------------------------------------------------------
 // <% report_variable [ ; format ] %>
 
-RWTextValue
+RWString
 RWText::ParseText (void)
 {
-	RWTextValue	text;
+	RWString	text;
 
 	//mbs 30042010	support attributed text
-	if (not mText.IsEmpty())
+	if (not mText.empty())
 	{
-		long	textLen = mText.StrLength();
+		long	textLen = (long) mText.size();
 		long	curPos = 0, delta = 0, endPos;
 
 		RWString	result (mText);		// was "(mText, textLen)": the substring *from* textLen, i.e. empty
-		CText   varName;
-		CText   format;
+		RWString   varName;
+		RWString   format;
         
 		while (curPos < textLen && RWTools::ParseTextForVar (mIsAttributed, mText, textLen, curPos, endPos, varName, format))
 		{
@@ -2181,14 +2167,14 @@ RWText::ParseText (void)
 				varname.remove_prefix (1);
 				encode = false;
 			}
-			RWTextValue	varText;
+			RWString	varText;
 			if (!varname.empty())
 				varText = GetVariableText (RWString (varname), format);
 			
             
 			size_t	varLen;
-			if (!varText.IsEmpty())
-				varLen = varText.StrLength();
+			if (!varText.empty())
+				varLen = varText.size();
 			else
 				varLen = 0;
 			result.erase (curPos - delta, endPos - curPos);
@@ -2198,7 +2184,6 @@ RWText::ParseText (void)
 				{
 					RWString	us = RWTools::EscapeAttributedString (varText);
 
-//					TiXmlBase::PutString ((const char*) us.GetUTF8(), &encoded);
 //					us.AssignUTF8 ((const UTF8Char*) encoded.c_str(), encoded.length());
 					result.insert (curPos - delta, us);
 					varLen = us.length();
@@ -2283,15 +2268,15 @@ RWVariable::Parse (RWReportData *inReport, RWXmlNode inNode)
 		for (const auto &[name, value] : elem.Attributes())
 		{
 
-			if (STR_EQUALS (name, "source") || STR_EQUALS (name, "src"))
+			if (RWStr::EqualsNoCase (name, "source") || RWStr::EqualsNoCase (name, "src"))
 			{
-				mSource.FromXML (value);
+				mSource.assign (value);
 			}
-			else if (STR_EQUALS (name, "format"))
+			else if (RWStr::EqualsNoCase (name, "format"))
 			{
-				mFormat.FromXML (value.c_str());
+				mFormat.assign (value.c_str());
 			}
-			else if (STR_EQUALS (name, "calc"))
+			else if (RWStr::EqualsNoCase (name, "calc"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
@@ -2303,7 +2288,7 @@ RWVariable::Parse (RWReportData *inReport, RWXmlNode inNode)
 
 //	GetVariableText();
 
-	if (!mSource.IsEmpty())
+	if (!mSource.empty())
 		GetReportWriter()->CreateVariable (mSource, mCalcType);
 
 	return;
@@ -2343,22 +2328,22 @@ RWVariable::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 void
 RWVariable::GetVariableData (void)
 {
-	if (!mSource.IsEmpty())
+	if (!mSource.empty())
 	{
-		RWTextValue	v;
+		RWString	v;
 		RWValue		var;
 
 		if (GetReportWriter()->GetVariable (mSource, var, mCalcType))
 			v = GetReportWriter()->FormatVariable (var, mFormat);
 		if (mPrintText &&
 			/* mText != v  is not implemented*/
-			!mText.equal( v) && ( mText.IsEmpty() || v.IsEmpty()) //  ?? || memcmp (mText.c_str(), v.data_.c_str(), (mText.StrLength() + 1) * CChar_Size) != 0)
+			mText != v && ( mText.empty() || v.empty()) //  ?? || memcmp (mText.c_str(), v.data_.c_str(), (mText.size() + 1) * CChar_Size) != 0)
 			)
 		{
 			delete mPrintText;
 			mPrintText = NULL;
 		}
-		mText.Attach (v.Detach());
+		mText = std::exchange (v, RWString());
 	}
 
 	return;
@@ -2370,10 +2355,10 @@ RWVariable::GetVariableData (void)
 // ---------------------------------------------------------------------------
 
 void
-RWVariable::SetVariableText (const CText inConstValue)
+RWVariable::SetVariableText (const RWString inConstValue)
 {
-	mSource.Free();
-	mText.Copy (inConstValue);
+	mSource.clear();
+	mText = inConstValue;
 
 	return;
 }

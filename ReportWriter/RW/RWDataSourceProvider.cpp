@@ -81,7 +81,7 @@ const
 // ---------------------------------------------------------------------------
 // Return text for specified cell in a table
 
-const CText
+const RWString
 RWDataSourceProvider::GetTableCellData (RWDataID inDataID, int inRow, int inColumn)
 const
 {

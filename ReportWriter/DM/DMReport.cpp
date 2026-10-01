@@ -900,7 +900,7 @@ DMSection::GetProperty (OSType id, RWValue &outValue)
 {
 	switch (id)
 	{
-		case PSObjPropType:			outValue.SetXMLText (mType); break;
+		case PSObjPropType:			outValue.SetText (mType); break;
 		case PSObjPropName:			outValue.SetText (mName); break;
 		case PSObjPropHeight:		outValue.SetReal (mHeight); break;
 		case PSObjPropExpandV:		outValue.SetBoolean (mFixedHeight); break;	//mbs 09072010
@@ -1186,7 +1186,7 @@ DMBreakSection::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 	mLevel = 0;
 	mPrintAlways = false;
 	mBreakTypeI = eBreakOn_None;
-	mBreakOn.Free();
+	mBreakOn.clear();
 	
 	DMSection::LoadXML (inNode, pes);
 	return;
@@ -1627,7 +1627,7 @@ DM4DDataSource::Create (DMBase *inParent, RWXmlNode inNode)
 	DM4DDataSource	*src = NULL;
 	if (inParent && inNode)
 	{
-assert (STR_EQUALS (inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropType, sProperties)->name)), s4DKind [0]));
+assert (RWStr::EqualsNoCase (inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropType, sProperties)->name)), s4DKind [0]));
 		src = new DM4DDataSource (inParent);
 		src->LoadXML (inNode);
 	}
@@ -1670,7 +1670,7 @@ DM4DDataSource::~DM4DDataSource (void)
 void
 DM4DDataSource::LoadXML (RWXmlNode inNode, const PSObjProps* pes)
 {
-assert (STR_EQUALS (inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropType, GetProperties())->name)), s4DKind [0]));
+assert (RWStr::EqualsNoCase (inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropType, GetProperties())->name)), s4DKind [0]));
 
 	mSourceI = eDataSource_Undefined;
 	mNumIterations = -1;
@@ -1680,8 +1680,8 @@ assert (STR_EQUALS (inNode.Attr (RWStr::FromASCII (FindPropertyByID (PSObjPropTy
 	mStartScript.Free();
 	mBodyScript.Free();
 	mEndScript.Free();
-	mName.Free();
-	mCallBackName.Free();
+	mName.clear();
+	mCallBackName.clear();
 
 	DMBase::LoadXML (inNode, pes);
 	return;
@@ -2090,7 +2090,7 @@ const
 // ---------------------------------------------------------------------------
 
 DMBase *
-DMReport::GetObjectByID (CText &inName)
+DMReport::GetObjectByID (RWString &inName)
 const
 {
 	PSObjList::const_iterator	iter;
@@ -2189,7 +2189,7 @@ DMReport::FindObject (long inObject)
 // ---------------------------------------------------------------------------
 
 DMBase *
-DMReport::FindObjectByID (CText &inName)
+DMReport::FindObjectByID (RWString &inName)
 {
 	PSObjList::const_iterator	iter;
 	for (iter = sReports.begin(); iter != sReports.end(); iter++)
@@ -2221,8 +2221,8 @@ DMReport::SetReport (RWXmlDocument *inXML)
 	mSections.clear();
 
 	delete mDataSource;
-	mID.Free();
-	mName.Free();
+	mID.clear();
+	mName.clear();
 
 	mMaxBreakHeaderLevel = -1;
 	mMaxBreakFooterLevel = -1;
@@ -2825,8 +2825,7 @@ DMReport::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 
 		case PSObjPropDataSource:
 		{
-//			const CXMLText	value = inNode->Attribute (FindPropertyByID (PSObjPropType, DM4DDataSource::GetProperties())->name);
-			if (STR_EQUALS (inNode.Attr (u"type"), s4DKind [0]))
+			if (RWStr::EqualsNoCase (inNode.Attr (u"type"), s4DKind [0]))
 			{
 				delete mDataSource;
 				mDataSource = 0;
@@ -3301,112 +3300,17 @@ DMReport::SetProperty (OSType id, RWValue &inValue)
 					if (GetPageComposer()->GetPaperMetrics (mPageWidth, mPageHeight, mPageMargins))
 						CalculatePosition();
 				}
-#else	//comment out to check this code on Mac...
-				if (mPageFormat.GetBlobSize() > 0)
+#else
 				{
-					XMLDocument	xml;
+					// report made on the Mac: page size and margins from its page format
+					SRect	paperRect, pageRect;
+					if (RWTools::ParseMacPageFormat (mPageFormat.GetBlobData(), mPageFormat.GetBlobSize(), paperRect, pageRect))
 					{
-						string	str ((const char*) mPageFormat.GetBlobData(), mPageFormat.GetBlobSize());
-						xml.Parse (str.c_str());
-					}
-					if (xml.Error())
-					{
-						printf ("Could not load XML. Error='%s'.\n", xml.ErrorDesc());
-					}
-					else
-					{
-						// get page size & margins from Apple's plist
-						XMLNode	*n = xml.FirstChild ("plist");
-						if (n != NULL)
-							n = n->FirstChild ("dict");
-						if (n != NULL)
-							n = n->FirstChild ("key");
-						while (n != NULL)
-						{
-							if (n->FirstChild() && STR_EQUALS (n->FirstChild()->Value(), "com.apple.print.subTicket.paper_info_ticket"))
-								break;
-							n = n->NextSibling ("key");
-						}
-						if (n != NULL)
-							n = n->NextSibling();
-						if (n != NULL)
-							n = n->FirstChild ("key");
-						SRect	pageRect, paperRect;
-						bool	needPaper = true, needPage = true;
-						XMLNode	*n2;
-						while (n != NULL && (needPaper || needPage))
-						{
-							if (n->FirstChild() &&
-								(	(needPage && STR_EQUALS (n->FirstChild()->Value(), "com.apple.print.PageFormat.PMAdjustedPageRect"))
-								||	(needPaper && STR_EQUALS (n->FirstChild()->Value(), "com.apple.print.PageFormat.PMAdjustedPaperRect"))
-								 )
-								)
-							{
-								n2 = n->NextSibling();
-								if (n2 != NULL)
-									n2 = n2->FirstChild ("key");
-								while (n2 != NULL)
-								{
-									if (n2->FirstChild() && STR_EQUALS (n2->FirstChild()->Value(), "com.apple.print.ticket.itemArray"))
-										break;
-									n2 = n2->NextSibling ("key");
-								}
-								if (n2 != NULL)
-									n2 = n2->NextSibling();
-								if (n2 != NULL)
-									n2 = n2->FirstChild ("dict");
-								if (n2 != NULL)
-									n2 = n2->FirstChild ("key");
-								while (n2 != NULL)
-								{
-									if (n2->FirstChild() &&
-										(	(needPage && STR_EQUALS (n2->FirstChild()->Value(), "com.apple.print.PageFormat.PMAdjustedPageRect"))
-										||	(needPaper && STR_EQUALS (n2->FirstChild()->Value(), "com.apple.print.PageFormat.PMAdjustedPaperRect"))
-										 )
-										)
-									{
-										float	x = 0, y = 0, w = 0, h = 0;
-										n2 = n2->NextSibling();
-										if (n2 != NULL)
-											n2 = n2->FirstChild ("real");
-										if (n2 != NULL && n2->FirstChild())
-											x = atof (n2->FirstChild()->Value());
-										if (n2 != NULL)
-											n2 = n2->NextSibling();
-										if (n2 != NULL && n2->FirstChild())
-											y = atof (n2->FirstChild()->Value());
-										if (n2 != NULL)
-											n2 = n2->NextSibling();
-										if (n2 != NULL && n2->FirstChild())
-											w = atof (n2->FirstChild()->Value());
-										if (n2 != NULL)
-											n2 = n2->NextSibling();
-										if (n2 != NULL && n2->FirstChild())
-											h = atof (n2->FirstChild()->Value());
-										if (needPage && STR_EQUALS (n->FirstChild()->Value(), "com.apple.print.PageFormat.PMAdjustedPageRect"))
-										{
-											pageRect.SetRect (y, x, y + w, x + h);
-											needPage = false;
-										}
-										else if (needPaper && STR_EQUALS (n->FirstChild()->Value(), "com.apple.print.PageFormat.PMAdjustedPaperRect"))
-										{
-											paperRect.SetRect (y, x, y + w, x + h);
-											needPaper = false;
-										}
-										n2 = NULL;
-									}
-								}
-							}
-							n = n->NextSibling ("key");
-						}
-						if (not (needPaper || needPage))
-						{
-							mPageWidth = paperRect.Width();
-							mPageHeight = paperRect.Height();
-							mPageMargins.SetRect (pageRect.top - paperRect.top, pageRect.left - paperRect.left,
-												  paperRect.bottom - pageRect.bottom, paperRect.right - pageRect.right);
-							CalculatePosition();
-						}
+						mPageWidth = paperRect.Width();
+						mPageHeight = paperRect.Height();
+						mPageMargins.SetRect (pageRect.top - paperRect.top, pageRect.left - paperRect.left,
+											  paperRect.bottom - pageRect.bottom, paperRect.right - pageRect.right);
+						CalculatePosition();
 					}
 				}
 #endif
@@ -4117,7 +4021,7 @@ DMReport::GetParentAt (SPoint &inWhere)
 
 
 void
-DMReport::DrawFrame (const DMBase *inObject, EDrawDM inMode, long inStyleID, const CText inText, const SRect &inRect, bool inAttributed, RWStyle* inStyle)
+DMReport::DrawFrame (const DMBase *inObject, EDrawDM inMode, long inStyleID, const RWString inText, const SRect &inRect, bool inAttributed, RWStyle* inStyle)
 {
 	RWStyle	*style;
 	if (inStyle && inStyle->GetFeatures())

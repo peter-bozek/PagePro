@@ -20,7 +20,7 @@ public:
     virtual		void				Write (RWXmlNode inParent, bool inUseCalculator) const = 0;
 
 				const RWString		GetType (void) const;
-				const CText			GetName (void) const;
+				const RWString			GetName (void) const;
 				SRObjListD		*	GetObjects (void);
 				EPageThrow			GetPageThrow (void) const;
 				bool				IsEmpty (void) const;			// no objects, no script, ...
@@ -51,8 +51,8 @@ protected:
 	static const PSObjProps	sProperties[];
 	SRReportData		*	mReportData;
 	RWString				mType;
-	RWTextValue				mName;
-	RWTextValue				mID;
+	RWString				mName;
+	RWString				mID;
 	SRObjListD				mObjects;
 	float					mHeight;
 	float					mMinSpace;
@@ -129,7 +129,7 @@ protected:
 	static const PSObjProps	sProperties[];
 	int						mLevel;
 	bool					mPrintAlways;
-	RWTextValue				mBreakOn;
+	RWString				mBreakOn;
 	EBreakOn				mBreakType;
 	SR4DData			*	mBreakObject;
 };
@@ -151,8 +151,8 @@ public:
 //	virtual		bool				GetProperty (OSType id, RWValue &outValue);
 //	virtual		bool				SetProperty (OSType id, RWValue &inValue);
 				RWXmlNode			WritePage (RWXmlNode inParent, bool inSimple, bool inStart) const;
-				const CText			GetPageOrientation (void) const;
-				const CText			GetPageSize (void) const;
+				const RWString			GetPageOrientation (void) const;
+				const RWString			GetPageSize (void) const;
 
 				void				CreateCalculatedObjects (const RWList<RWCalculatedValue*>& inCalc);
 
@@ -163,8 +163,8 @@ private:
 
 protected:
 	static const PSObjProps	sProperties[];
-	RWTextValue				mPageOrientation;
-	RWTextValue				mPageSize;
+	RWString				mPageOrientation;
+	RWString				mPageSize;
 };
 
 

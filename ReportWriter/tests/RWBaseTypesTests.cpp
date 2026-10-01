@@ -433,6 +433,41 @@ static	void	TestStyledText (void)
 	CHECK (t5.toXMLString() == u"<SPAN STYLE=\"font-weight:bold\">ab</SPAN>cdef");
 }
 
+// Mac page format (XML property list, shortened), as stored in reports made on the Mac
+static	void	TestMacPageFormat (void)
+{
+	static const char	plist [] =
+		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+		"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
+		"<plist version=\"1.0\"><dict>\n"
+		" <key>com.apple.print.PageFormat.PMHorizontalRes</key><dict><key>x</key><string>y</string></dict>\n"
+		" <key>com.apple.print.subTicket.paper_info_ticket</key>\n"
+		" <dict>\n"
+		"  <key>PMPPDPaperCodeName</key><dict><key>com.apple.print.ticket.itemArray</key><array><dict><key>PMPPDPaperCodeName</key><string>A4</string></dict></array></dict>\n"
+		"  <key>com.apple.print.PageFormat.PMAdjustedPageRect</key>\n"
+		"  <dict><key>com.apple.print.ticket.creator</key><string>com.apple.jobticket</string>\n"
+		"   <key>com.apple.print.ticket.itemArray</key>\n"
+		"   <array><dict><key>com.apple.print.PageFormat.PMAdjustedPageRect</key>\n"
+		"    <array><real>0.0</real><real>0.0</real><real>806</real><real>559</real></array>\n"
+		"    <key>com.apple.print.ticket.stateFlag</key><integer>0</integer></dict></array></dict>\n"
+		"  <key>com.apple.print.PageFormat.PMAdjustedPaperRect</key>\n"
+		"  <dict><key>com.apple.print.ticket.itemArray</key>\n"
+		"   <array><dict><key>com.apple.print.PageFormat.PMAdjustedPaperRect</key>\n"
+		"    <array><real>-18</real><real>-18</real><real>824</real><real>577</real></array></dict></array></dict>\n"
+		" </dict>\n"
+		"</dict></plist>\n";
+
+	SRect	paper, page;
+	CHECK (RWTools::ParseMacPageFormat (plist, sizeof (plist) - 1, paper, page));
+	CHECK (paper.Width() == 595 && paper.Height() == 842);		// A4
+	CHECK (page.top == 0 && page.left == 0 && page.bottom == 806 && page.right == 559);
+	CHECK (page.top - paper.top == 18 && paper.right - page.right == 18);
+
+	CHECK (!RWTools::ParseMacPageFormat ("<plist><dict/></plist>", 22, paper, page));
+	CHECK (!RWTools::ParseMacPageFormat ("not xml", 7, paper, page));
+	CHECK (!RWTools::ParseMacPageFormat (NULL, 0, paper, page));
+}
+
 
 int		main (void)
 {
@@ -448,6 +483,7 @@ int		main (void)
 	TestReadNumber();
 	TestDataProvider();
 	TestStyledText();
+	TestMacPageFormat();
 
 	std::printf ("%d checks, %d failed\n", sChecks, sFailures);
 	return sFailures == 0 ? 0 : 1;

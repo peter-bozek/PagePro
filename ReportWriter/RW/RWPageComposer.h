@@ -53,10 +53,10 @@ class	RWPrintText
 public:
 	virtual						~RWPrintText (void);
 
-//	virtual		void			Init (RWPageComposer &inComposer, const CText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit) = 0;
+//	virtual		void			Init (RWPageComposer &inComposer, const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit) = 0;
 	virtual		void			Reset (void) = 0;
 
-	inline		CText   		GetText (void) const;
+	inline		RWString   		GetText (void) const;
 	inline		float			GetWidth (void) const;
 	inline		float			GetHeight (void) const;
 	inline		float			GetLineHeight (void) const;
@@ -67,7 +67,7 @@ public:
 
 protected:
 								RWPrintText (RWStyle *inStyle);
-								RWPrintText (const CText inText, RWStyle *inStyle, bool inAttributed);
+								RWPrintText (const RWString inText, RWStyle *inStyle, bool inAttributed);
 
 private:
 			// defensive programming - not implemented
@@ -76,7 +76,7 @@ private:
 
 protected:
 	RWStyle				*mStyle;
-	RWTextValue			mText;
+	RWString			mText;
 	float				mWidth;
 	float				mLineHeight;
 	float				mHeight;
@@ -147,7 +147,7 @@ public:
 inline			float			GetReportPageWidth (void) const;
 inline			float			GetReportPageHeight (void) const;
 inline			bool			GetReportMargins (SRect &outMargins) const;
-	virtual		void			GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect);
+	virtual		void			GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect);
 	virtual		bool			GetPageMetrics (float &outPageWidth, float &outPageHeight, SRect &outMargins);
 	virtual		bool			GetPageMetrics (SRect &outPageRect, SRect &outPaperRect, SRect &outMargins);
 	virtual		bool			GetPaperMetrics (float &outPaperWidth, float &outPaperHeight, SRect &outMargins);
@@ -175,8 +175,8 @@ inline			bool			GetReportMargins (SRect &outMargins) const;
 	virtual		void			DrawPict (SRect &inRect, const RWPicture &inPicture, EPictFormat inSizing, RWPictData **cd, double inRotation, float alfa) = 0;
 //	virtual		void			FreePict (RWPictData **cd) = 0;
 
-	virtual		void			DrawTextBox (const CText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
-	virtual		double			MeasureText (const CText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
+	virtual		void			DrawTextBox (const RWString inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
+	virtual		double			MeasureText (const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
 	virtual		double			GetNativeRotation (double inRotation)	{ return inRotation; }	//mbs 29062011
 
 	virtual		bool			GetDPI (float &x, float &y, void* inWindow);
@@ -191,12 +191,12 @@ inline			bool			GetReportMargins (SRect &outMargins) const;
 	virtual	RWNativePageComposer*	CreateComposerForPrinting (void) const { return NULL; }
 
 	static	RWNativePageComposer*	CreateScreenComposer (void);
-	static	RWPageComposer*         CreatePrinterComposer (unsigned long inFlags, CText &inDst, CText &inPrinter);	//mbs 25072011	printer
+	static	RWPageComposer*         CreatePrinterComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter);	//mbs 25072011	printer
 //				void				SetJobName (const UTF8Char *inName);	//mbs 08102010	unused
-				void				SetJobName (const CText inName);
+				void				SetJobName (const RWString inName);
 
 	static      RWPageComposer*     GetSessionObject (long inSession);
-	static		long				OpenSession (RWPageComposer* &outSession, unsigned long inFlags, CText &inTemplate, CText &inDst, CText &inJobName, CText &inPrinter );	//mbs 25072011	printer
+	static		long				OpenSession (RWPageComposer* &outSession, unsigned long inFlags, RWString &inTemplate, RWString &inDst, RWString &inJobName, RWString &inPrinter );	//mbs 25072011	printer
 	static		void				CloseSession (RWPageComposer *inSession);
 
 	virtual		void				SaveContext (RWContextInfoRef &outContext)		{}
@@ -205,14 +205,14 @@ inline			bool			GetReportMargins (SRect &outMargins) const;
 	virtual		void				ApplyTransform (CGAffineTransform &inMatrix)	{}
     virtual		void                InitPagePosition (void);
 
-	virtual		double              MeasureWord (const CText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading) = 0;
-	virtual		void				DrawWord (const CText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle) = 0;
+	virtual		double              MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading) = 0;
+	virtual		void				DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle) = 0;
     virtual     long                GetInternalID () {return mInternalID;}
 protected:
 	virtual		OSStatus			OpenSession (bool inDoPageSetup, bool inDoJobSetup, unsigned long inCurPage, unsigned long inNumPages, bool inOrientation) = 0;
 	virtual		void				CloseSession (bool inRelease) = 0;
 
-                                    RWPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter);	//mbs 25072011	printer
+                                    RWPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter);	//mbs 25072011	printer
                                     RWPageComposer (unsigned long inFlags);
 
 //private:
@@ -225,11 +225,11 @@ protected:
 
 	unsigned long			mFlags;
 //	const char		*		mDestination;	//mbs 11082010
-	CText					mDestination;
-	CText					mPrinterName;	//mbs 25072011
-	RWTextValue				mJobName;
-	RWTextValue				mPageSize;
-	RWTextValue				mPageOrientation;
+	RWString					mDestination;
+	RWString					mPrinterName;	//mbs 25072011
+	RWString				mJobName;
+	RWString				mPageSize;
+	RWString				mPageOrientation;
 	float					mPageWidth;
 	float					mPageHeight;
 	SRect					mReportPageMargins;
@@ -257,7 +257,7 @@ inline						RWPictData::RWPictData (void)	: 		fWidth (0), fHeight (0)	{}
 inline	float					RWPictData::GetWidth (void) const								{ return fWidth; }
 inline	float					RWPictData::GetHeight (void) const								{ return fHeight; }
 
-inline	CText			        RWPrintText::GetText (void) const								{ return mText; }
+inline	RWString			        RWPrintText::GetText (void) const								{ return mText; }
 inline	float					RWPrintText::GetWidth (void) const								{ return mWidth; }
 inline	float					RWPrintText::GetHeight (void) const								{ return mHeight; }
 inline	float					RWPrintText::GetLineHeight (void) const							{ return mLineHeight; }

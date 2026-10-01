@@ -123,63 +123,63 @@ ETObject::Parse (ETReportData *inReport, RWXmlNode inNode)
 	for (const auto &[name, value] : inNode.Attributes())
 	{
 		
-		if (STR_EQUALS (name, "r"))
+		if (RWStr::EqualsNoCase (name, "r"))
 		{
 			mPosition = value.c_str();
 		}
-		else if (STR_EQUALS (name, "t"))
+		else if (RWStr::EqualsNoCase (name, "t"))
 		{
 			mPosition.top = 0;
 			RWStr::ReadNumber (value, mPosition.top);
 		}
-		else if (STR_EQUALS (name, "l"))
+		else if (RWStr::EqualsNoCase (name, "l"))
 		{
 			mPosition.left = 0;
 			RWStr::ReadNumber (value, mPosition.left);
 		}
-		else if (STR_EQUALS (name, "b"))
+		else if (RWStr::EqualsNoCase (name, "b"))
 		{
 			mPosition.bottom = 0;
 			RWStr::ReadNumber (value, mPosition.bottom);
 		}
-		else if (STR_EQUALS (name, "ri"))
+		else if (RWStr::EqualsNoCase (name, "ri"))
 		{
 			mPosition.right = 0;
 			RWStr::ReadNumber (value, mPosition.right);
 		}
-		else if (STR_EQUALS (name, "h") || STR_EQUALS (name, "height"))
+		else if (RWStr::EqualsNoCase (name, "h") || RWStr::EqualsNoCase (name, "height"))
 		{
 			mPosition.bottom = 0;
 			RWStr::ReadNumber (value, mPosition.bottom);
 			mPosition.bottom += mPosition.top;
 		}
-		else if (STR_EQUALS (name, "w") || STR_EQUALS (name, "width"))
+		else if (RWStr::EqualsNoCase (name, "w") || RWStr::EqualsNoCase (name, "width"))
 		{
 			mPosition.right = 0;
 			RWStr::ReadNumber (value, mPosition.right);
 			mPosition.right += mPosition.left;
 		}
-		else if (STR_EQUALS (name, "draw"))
+		else if (RWStr::EqualsNoCase (name, "draw"))
 		{
 			if (RWStr::ReadNumber (value, lVal))
 			{
 				if (lVal >= eDraw_No && lVal <= eDraw_Always)
 					mDraw = EDraw (lVal);
 			}
-			else if (STR_EQUALS (value, "no"))
+			else if (RWStr::EqualsNoCase (value, "no"))
 				mDraw = eDraw_No;
-			else if (STR_EQUALS (value, "yes"))
+			else if (RWStr::EqualsNoCase (value, "yes"))
 				mDraw = eDraw_Yes;
-			else if (STR_EQUALS (value, "on overflow"))
+			else if (RWStr::EqualsNoCase (value, "on overflow"))
 				mDraw = eDraw_OnOverflow;
-			else if (STR_EQUALS (value, "always"))
+			else if (RWStr::EqualsNoCase (value, "always"))
 				mDraw = eDraw_Always;
 		}
 		//mbs 15112010
-		else if (STR_EQUALS (name, "name"))
-			mName.FromXML (value.c_str());
-		else if (STR_EQUALS (name, "id"))
-			mID.FromXML (value.c_str());
+		else if (RWStr::EqualsNoCase (name, "name"))
+			mName.assign (value.c_str());
+		else if (RWStr::EqualsNoCase (name, "id"))
+			mID.assign (value.c_str());
 	}
 		
 	return;
@@ -229,12 +229,12 @@ ETObject::FetchCalcValue (ETReport *inWriter)
 // GetVariableText												   [protected]
 // ---------------------------------------------------------------------------
 
-RWTextValue
-ETObject::GetVariableText (const CText inVariableName, const CText inFormat)
+RWString
+ETObject::GetVariableText (const RWString inVariableName, const RWString inFormat)
 const
 {
 	RWValue		var;
-	RWTextValue	result;
+	RWString	result;
 	
 	if (GetReportWriter()->GetVariable (inVariableName, var))
 		result = GetReportWriter()->FormatVariable (var, inFormat);
@@ -413,42 +413,42 @@ ETText::Parse (ETReportData *inReport, RWXmlNode inNode)
 		for (const auto &[name, value] : elem.Attributes())
 		{
 			
-			if (STR_EQUALS (name, "style"))
+			if (RWStr::EqualsNoCase (name, "style"))
 			{
 				mStyleID = 0;
 				RWStr::ReadNumber (value, mStyleID);
 			}
-			else if (STR_EQUALS (name, "dynamic"))
+			else if (RWStr::EqualsNoCase (name, "dynamic"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mIsDynamic = (lVal != 0);
 			}
-			else if (STR_EQUALS (name, "attributed"))
+			else if (RWStr::EqualsNoCase (name, "attributed"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
 				mIsAttributed = (lVal != 0);
 			}
-			else if (STR_EQUALS (name, "empty"))
+			else if (RWStr::EqualsNoCase (name, "empty"))
 			{
 				if (RWStr::ReadNumber (value, lVal))
 				{
 					if (lVal >= eEmpty_Draw && lVal <= eEmpty_RemoveRow)
 						mDrawIfEmpty = EEmpty (lVal);
 				}
-				else if (STR_EQUALS (value, "draw"))
+				else if (RWStr::EqualsNoCase (value, "draw"))
 					mDrawIfEmpty = eEmpty_Draw;
-				else if (STR_EQUALS (value, "remove"))
+				else if (RWStr::EqualsNoCase (value, "remove"))
 					mDrawIfEmpty = eEmpty_Remove;
-				else if (STR_EQUALS (value, "remove row"))
+				else if (RWStr::EqualsNoCase (value, "remove row"))
 					mDrawIfEmpty = eEmpty_RemoveRow;
 			}
-			else if (STR_EQUALS (name, "var"))
+			else if (RWStr::EqualsNoCase (name, "var"))
 			{
 				mVarName = value;
 			}
-			else if (STR_EQUALS (name, "val"))
+			else if (RWStr::EqualsNoCase (name, "val"))
 			{
 				mVarValue.SetReal (RWStr::ToDouble (value).value_or (0));
 			}
@@ -459,9 +459,9 @@ ETText::Parse (ETReportData *inReport, RWXmlNode inNode)
 	
 	//mbs 07052010	support attributed text
 	if (	mIsDynamic
-		&&	(	mText.IsEmpty()
-			 || (mIsAttributed &&  (TEXT_STR (mText, "&lt;%") == STR_NOTFOUND))
-			 || (not mIsAttributed && TEXT_STR (mText, "<%") == STR_NOTFOUND)
+		&&	(	mText.empty()
+			 || (mIsAttributed &&  (!RWStr::Contains (mText, u"&lt;%")))
+			 || (not mIsAttributed && !RWStr::Contains (mText, u"<%"))
 			 )
 		)
 		mIsDynamic = false;
@@ -469,7 +469,7 @@ ETText::Parse (ETReportData *inReport, RWXmlNode inNode)
 	
 	mStyle = inReport->GetStyle (mStyleID);
 	
-	if (!mVarName.IsEmpty())
+	if (!mVarName.empty())
 		GetReportWriter()->CreateVariable (mVarName);
 	
 	return;
@@ -484,7 +484,7 @@ ETText::Parse (ETReportData *inReport, RWXmlNode inNode)
 void
 ETText::FetchCalcValue (ETReport *inWriter)
 {
-    if (!mVarName.IsEmpty())
+    if (!mVarName.empty())
 		inWriter->SetVariable (mVarName, &mVarValue);
 	return;
 }
@@ -507,7 +507,7 @@ ETText::Export (void)
 // GetClass												   [protected]
 // ---------------------------------------------------------------------------
 
-RWTextValue
+RWString
 ETText::GetClass()
 {
     if (mStyle->GetBaseID() == -1) {
@@ -524,15 +524,15 @@ ETText::GetClass()
 // ---------------------------------------------------------------------------
 // <% report_variable [ ; format ] %>
 
-RWTextValue
+RWString
 ETText::ParseText (void)
 {
-	RWTextValue	text;
+	RWString	text;
 	
 	//mbs 30042010	support attributed text
-	if (not mText.IsEmpty())
+	if (not mText.empty())
 	{
-		long	textLen = mText.StrLength();
+		long	textLen = (long) mText.size();
 		long	curPos = 0, delta = 0, endPos;
 		
 		RWString	result (mText);
@@ -629,15 +629,15 @@ ETVariable::Parse (ETReportData *inReport, RWXmlNode inNode)
 		for (const auto &[name, value] : elem.Attributes())
 		{
 			
-			if (STR_EQUALS (name, "source") || STR_EQUALS (name, "src"))
+			if (RWStr::EqualsNoCase (name, "source") || RWStr::EqualsNoCase (name, "src"))
 			{
-				mSource.FromXML (value);
+				mSource.assign (value);
 			}
-			else if (STR_EQUALS (name, "format"))
+			else if (RWStr::EqualsNoCase (name, "format"))
 			{
-				mFormat.FromXML (value);
+				mFormat.assign (value);
 			}
-			else if (STR_EQUALS (name, "calc"))
+			else if (RWStr::EqualsNoCase (name, "calc"))
 			{
 				lVal = 0;
 				RWStr::ReadNumber (value, lVal);
@@ -649,7 +649,7 @@ ETVariable::Parse (ETReportData *inReport, RWXmlNode inNode)
 	
 	//	GetVariableText();
 	
-	if (!mSource.IsEmpty())
+	if (!mSource.empty())
 		GetReportWriter()->CreateVariable (mSource, mCalcType);
 	
 	return;
@@ -678,14 +678,14 @@ ETVariable::Export ()
 void
 ETVariable::GetVariableData (void)
 {
-	if (!mSource.IsEmpty())
+	if (!mSource.empty())
 	{
-		RWTextValue	v;
+		RWString	v;
 		RWValue		var;
 		
 		if (GetReportWriter()->GetVariable (mSource, var, mCalcType))
 			v = GetReportWriter()->FormatVariable (var, mFormat);
-		mText.Attach (v.Detach());
+		mText = std::exchange (v, RWString());
 	}
 	
 	return;
@@ -697,10 +697,10 @@ ETVariable::GetVariableData (void)
 // ---------------------------------------------------------------------------
 
 void
-ETVariable::SetVariableText (const CText inConstValue)
+ETVariable::SetVariableText (const RWString inConstValue)
 {
-	mSource.Free();
-	mText.Copy (inConstValue);
+	mSource.clear();
+	mText = inConstValue;
 	
 	return;
 }

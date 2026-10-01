@@ -58,7 +58,7 @@ public:
 protected:
 								RWObject (int inOrder);
     virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode);
-				RWTextValue		GetVariableText (const CText inVariableName, const CText inFormat) const;
+				RWString		GetVariableText (const RWString inVariableName, const RWString inFormat) const;
 				void			AlignOnPage (const SRect &origRect, SRect &ioRect) const;	//mbs 04082010	left/center/right
 
 private:
@@ -289,7 +289,7 @@ protected:
 								RWText (int inOrder);
 	virtual						~RWText (void);
     virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
-				RWTextValue		ParseText (void);
+				RWString		ParseText (void);
 
 private:
 			// defensive programming - not implemented
@@ -308,11 +308,11 @@ protected:
 	float				mFrameOffset;
 	float				mFrameThickness;
 	SRGBColor			mFrameColor;
-	RWTextValue			mVarName;		// for calculated values
+	RWString			mVarName;		// for calculated values
 //	double				mVarValue;		// for calculated values
 	RWValue				mVarValue;		// for calculated values - RWVarMap needs permanent object, not a stack object
 	RWStyle			*	mStyle;
-	RWTextValue			mText;
+	RWString			mText;
 //	int					mLinesPrinted;
 	RWPrintText		*	mPrintText;
 };
@@ -338,7 +338,7 @@ protected:
     virtual		void			Parse (RWReportData *inReport, RWXmlNode inNode) override;
 
 				void			GetVariableData (void);
-				void			SetVariableText (const CText inConstValue);
+				void			SetVariableText (const RWString inConstValue);
 
 private:
 			// defensive programming - not implemented
@@ -346,8 +346,8 @@ private:
 				RWVariable	&	operator = (const RWVariable &inOriginal);
 
 protected:
-	RWTextValue			mSource;
-	RWTextValue			mFormat;
+	RWString			mSource;
+	RWString			mFormat;
 //	bool				mCalcShow;
 	ECalcType			mCalcType;
 };
@@ -363,7 +363,7 @@ public:
 inline			RWStyle		*	GetStyle (void) const;
 inline			float			GetWidth (void) const;
 inline			float			GetHeight (void) const;
-inline			const CText	       	GetText (void) const;
+inline			const RWString	       	GetText (void) const;
 inline			int				GetColSpan (void) const;
 inline			int				GetStartCol (void) const;
 inline			int				GetRowSpan (void) const;
@@ -372,7 +372,7 @@ inline			bool			IsAttributed (void) const;
 								~RWHeader (void);
 protected:
 								RWHeader (void);
-								RWHeader (const CText inText, int inColSpan, int inRowSpan, RWStyle *inStyle);
+								RWHeader (const RWString inText, int inColSpan, int inRowSpan, RWStyle *inStyle);
                 void			Parse (RWReportData *inReport, RWXmlNode inNode, long inStyleID);
 inline			void			SetWidth (float inWidth);
 inline			void			SetHeight (float inHeight);
@@ -386,7 +386,7 @@ private:
 protected:
 	float				mWidth;
 	float				mHeight;
-	RWTextValue			mText;
+	RWString			mText;
 	int					mColSpan;
 	int					mRowSpan;
 	RWStyle			*	mStyle;
@@ -406,7 +406,7 @@ inline			RWStyle		*	GetStyle (void) const;
 inline			float			GetWidth (void) const;
 inline			void			SetWidth (float inWidth);
 inline			bool			GetGrid (void) const;
-inline			const CXMLText		GetFormat (void) const;
+inline			const RWString		GetFormat (void) const;
 inline			bool			IsRowNum (void) const;
 inline			bool			PrintRepeatingValues (void) const;
 inline			bool			IsAttributed (void) const;
@@ -428,7 +428,7 @@ protected:
 	float				mWidth;
 	bool				mGrid;
 	RWStyle			*	mStyle;
-	RWTextValue			mFormat;
+	RWString			mFormat;
 	bool				mPrintRowNum;
 	bool				mPrintRepeatingValues;
 	bool				mIsAttributed;
@@ -462,7 +462,7 @@ protected:
 				RWHeader	*	GetHeader (int inRow, int inCol) const;
 				RWColumn	*	GetColumn (int inCol) const;
 				float			GetColsWidth (int inFrom, int inTo) const;
-				RWTextValue		GetTableHeadingData (RWDataSource &inSrc, const void* inHeading, int inLine, int inCol, int &outSpan, int &outLevel) const;
+				RWString		GetTableHeadingData (RWDataSource &inSrc, const void* inHeading, int inLine, int inCol, int &outSpan, int &outLevel) const;
 
 private:
 			// defensive programming - not implemented

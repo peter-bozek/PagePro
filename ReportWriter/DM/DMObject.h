@@ -72,7 +72,6 @@ public:
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
 	virtual		PSObjList	*	GetObjects (OSType id);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			AdjustDrawingPosition (RWPageComposer *inComposer, const SPoint inParent);
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
@@ -102,7 +101,7 @@ private:
 protected:
 	static const PSObjProps	sProperties[];
 	DMBase				*	mParent;
-	RWTextValue				mID;
+	RWString				mID;
 	long					mSeqID;		// for editor
 	SRect					mPosition;
 	bool					mVisible;	// for editor
@@ -122,7 +121,6 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
 
@@ -141,7 +139,7 @@ private:
 
 protected:
 	static const PSObjProps	sProperties[];
-	RWTextValue				mName;
+	RWString				mName;
 //	bool					mFixedH;		// fixed position ==> no Move
 	bool					mFixedV;
 //	bool					mBindH;			// stretch as needed ==> Grow
@@ -173,7 +171,6 @@ public:
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
 //	virtual		PSObjList	*	GetObjects (OSType id);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			AdjustDrawingPosition (RWPageComposer *inComposer, const SPoint inParent);
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
@@ -213,7 +210,6 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
 	virtual		EHitTest		HitTest (SPoint &inWhere, DMBase* &outObjectHit);
@@ -251,7 +247,6 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
 //	virtual		EHitTest		HitTest (SPoint &inWhere, DMBase* &outObjectHit);
@@ -287,7 +282,6 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
 //	virtual		EHitTest		HitTest (SPoint &inWhere, DMBase* &outObjectHit);
@@ -324,7 +318,6 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
 //	virtual		EHitTest		HitTest (SPoint &inWhere, DMBase* &outObjectHit);
@@ -347,7 +340,7 @@ private:
 protected:
 	static const PSObjProps	sProperties[];
 	static const UserProps	sUserProperties[];
-//	RWTextValue				mSource;		// URI?
+//	RWString				mSource;		// URI?
 //	union
 //	{
 //		EPictFormat			mFormat;		// static (pasted) picture
@@ -375,7 +368,6 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
 	virtual		void			ParseData (RWPageComposer *inComposer);
@@ -410,8 +402,8 @@ protected:
 //	}
 	bool						mFrame;
 	float						mFrameOffset;
-	RWTextValue				mText;
-	RWTextValue				mParsedText;	//mbs 31052010	for "preview" in editor
+	RWString				mText;
+	RWString				mParsedText;	//mbs 31052010	for "preview" in editor
 	
 	RWStyle					mStyle;
 };
@@ -435,7 +427,6 @@ public:
 	virtual	const PSObjProps *	GetProperties (void) const;
 	virtual		bool			GetProperty (OSType id, RWValue &outValue);
 	virtual		bool			SetProperty (OSType id, RWValue &inValue);
-//	virtual		Ti*	WriteXML (XMLNode *inParent, const PSObjProps* pes = NULL);
 
 	virtual		void			Draw (RWPageComposer *inComposer, const SRect &inParent, EDrawDM inMode);
 	virtual		void			ParseData (RWPageComposer *inComposer);
@@ -456,8 +447,8 @@ private:
 protected:
 	static const PSObjProps	sProperties[];
 	static const UserProps	sUserProperties[];
-	RWTextValue				mAlias;
-	RWTextValue				mFormat;
+	RWString				mAlias;
+	RWString				mFormat;
 //	int						mType;		// var, array {iteration}, array {index}
 	long					mIndex;		// array {index}
 //	bool					mCalcShow;
@@ -466,7 +457,7 @@ protected:
 //		ECalcType			mCalcType;
 		int					mCalcTypeI;
 //	};
-//	RWTextValue				mRecordCalcInto;
+//	RWString				mRecordCalcInto;
 //	union
 //	{
 //		ERepeat				mRepeat;
@@ -538,7 +529,7 @@ public:
 	inline		long			GetStyleID (void) const;
 	inline		float			GetWidth (void) const;
 	inline		float			GetHeight (void) const;
-	inline		const CText		GetText (void) const;
+	inline		const RWString		GetText (void) const;
 	inline		int				GetColSpan (void) const;
 	inline		int				GetRowSpan (void) const;
 	inline		bool			IsAttributed (void) const;
@@ -564,7 +555,7 @@ private:
 protected:
 	static const PSObjProps	sProperties[];
 	static const UserProps	sUserProperties[];
-//	RWTextValue				mText;
+//	RWString				mText;
 	float					mWidth;
 	float					mHeight;
 	int						mColSpan;
@@ -595,8 +586,8 @@ public:
 	inline		float			GetWidth (void) const;
 //	inline		void			SetWidth (float inWidth);
 	inline		bool			GetGrid (void) const;
-//	inline		const CText		GetFormat (void) const;
-	inline		const CText		GetSource (void) const;
+//	inline		const RWString		GetFormat (void) const;
+	inline		const RWString		GetSource (void) const;
 //	inline		bool			IsRowNum (void) const;
 	inline		bool			IsAttributed (void) const;
 
@@ -623,12 +614,12 @@ protected:
 	bool					mGrid;
 	bool					mPrintRowNum;
 	bool					mPrintRepeatingValues;
-	RWTextValue				mSource;
-	RWTextValue				mAlias;
-	RWTextValue				mFormat;
+	RWString				mSource;
+	RWString				mAlias;
+	RWString				mFormat;
 	long					mLevel;		// level of table relations - order of columns evaluation
 	ExtendedExecute			mScript;	// query to get this column's value
-//	RWTextValue				mTitle;		// implicit header
+//	RWString				mTitle;		// implicit header
 };
 
 
@@ -750,7 +741,7 @@ inline	long							DMText::GetStyleID (void) const				{ return mStyleID; }
 inline	long							DMHeader::GetStyleID (void) const			{ return mStyleID; }
 inline	float							DMHeader::GetWidth (void) const				{ return mWidth; }
 inline	float							DMHeader::GetHeight (void) const			{ return mHeight; }
-inline	const CText						DMHeader::GetText (void) const				{ return mText; }
+inline	const RWString						DMHeader::GetText (void) const				{ return mText; }
 inline	int								DMHeader::GetColSpan (void) const			{ return mColSpan; }
 inline	int								DMHeader::GetRowSpan (void) const			{ return mRowSpan; }
 inline	bool							DMHeader::IsAttributed (void) const			{ return mIsAttributed; }
@@ -767,7 +758,7 @@ inline	long							DMColumn::GetStyleID (void) const			{ return mStyleID; }
 inline	float							DMColumn::GetWidth (void) const				{ return mWidth; }
 //inline	void							DMColumn::SetWidth (float inWidth)			{ mWidth = inWidth; }
 inline	bool							DMColumn::GetGrid (void) const				{ return mGrid; }
-inline	const CText						DMColumn::GetSource (void) const			{ return mSource; }
+inline	const RWString						DMColumn::GetSource (void) const			{ return mSource; }
 inline	bool							DMColumn::IsAttributed (void) const			{ return mIsAttributed; }
 inline	void							DMColumn::SetDMWidth (float inWidth)		{ mPosition.right = mPosition.left + inWidth; }
 inline	void							DMColumn::SetDMHeight (float inHeight)		{ mPosition.bottom = mPosition.top + inHeight; }

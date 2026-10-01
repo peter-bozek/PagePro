@@ -21,7 +21,7 @@ public:
 inline			bool					IsDynamic (void) const;
 inline			RWReportWriter	*       GetReportWriter (void) const;
 				RWXmlNode				GetReport (void) const;
-        const   CText                   GetName (void) const;
+        const   RWString                   GetName (void) const;
 inline			RWWatermarkSection*     GetWatermarkSection (void);
 inline			RWSectionList	*		GetPageSections (void);
 inline			RWSectionList	*		GetBodySections (void);
@@ -44,7 +44,7 @@ private:
 private:
 		RWReportWriter	*       mReportWriter;
 		RWXmlDocument	*       mXML;
-		RWTextValue             mName;
+		RWString             mName;
 
 		RWStyleList             mStyles;
 		RWWatermarkSection*     mWatermark;			// watermark

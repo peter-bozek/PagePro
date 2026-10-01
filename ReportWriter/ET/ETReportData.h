@@ -29,7 +29,7 @@ public:
 	inline			bool				IsDynamic (void) const;
 	inline			ETReport		*	GetReportWriter (void) const;
 					RWXmlNode			GetReport (void) const;
-	const           CText				GetName (void) const;
+	const           RWString				GetName (void) const;
 	inline			ETWatermarkSection*	GetWatermarkSection (void);
 	inline			ETSectionList	*	GetPageSections (void);
 	inline			ETSectionList	*	GetBodySections (void);
@@ -52,8 +52,8 @@ private:
 private:
 	ETReport	*		mReportWriter;
 	RWXmlDocument	*	mXML;
-	RWTextValue			mName;
-	RWTextValue			mID;
+	RWString			mName;
+	RWString			mID;
 	
 	RWStyleList			mStyles;
 	ETWatermarkSection*	mWatermark;			// watermark

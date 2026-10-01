@@ -29,13 +29,13 @@ class	RWPoDoFoPageComposer
 	:	public	RWPageComposer
 {
 public:
-								RWPoDoFoPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter);
+								RWPoDoFoPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter);
 	virtual						~RWPoDoFoPageComposer (void);
 
 	virtual		void			ParseReport (RWXmlNode inReport) override;
 	virtual		void*			FinishReport (size_t &outSize) override;
 
-	virtual		void			GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect) override;
+	virtual		void			GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect) override;
 	virtual		void			OpenNewPage (const SRect &inRect, unsigned long inCurPage, unsigned long inNumPages) override;
 	virtual		void			ClosePage (void) override;
 	virtual		SRect			GetTruePageRect (void) const override;
@@ -55,8 +55,8 @@ public:
 
 	virtual	const RWPrintContextRef	GetPrintContext (void) override				{ return reinterpret_cast <const RWPrintContextRef> (&mPageRect.bottom); }
 	virtual		void			ApplyTransform (CGAffineTransform &inMatrix) override;
-	virtual		double			MeasureWord (const CText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading) override;
-	virtual		void			DrawWord (const CText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle) override;
+	virtual		double			MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading) override;
+	virtual		void			DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle) override;
 
 				// the finished PDF of the last session (empty while a session is open)
 				const std::string&	GetPDFData (void) const						{ return mPDFData; }

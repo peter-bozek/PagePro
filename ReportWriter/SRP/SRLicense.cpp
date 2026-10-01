@@ -109,7 +109,7 @@ enum	ELicenceBits
 //# define	TARGET_BOMB	1325375999UL	// using date -ur gives us "Sat Dec 31 23:59:59 UTC 2011"
 # define	kDemoExpiry	1200UL			// seconds
 # define	kBaseXOR	0xA55ABAAB
-static const CText  	kPPVersion = u"A010";
+static const RWString  	kPPVersion = u"A010";
 //static const std::string_view kPPVersion = "A011";
 
 static	ELicense		sLicense = eLicense_Demo;
@@ -144,7 +144,7 @@ ELicense	RW_GetLicense (void)
 
 
 #if	0
-void		RW_CreateLicense (const CText &inCustomer, long in4DNumber, long inFlags, CText &outLicense)
+void		RW_CreateLicense (const RWString &inCustomer, long in4DNumber, long inFlags, RWString &outLicense)
 {
 	// 20-bitovy bitfield (zoberme rovno 32bitovy long)
 	//	inFlags
@@ -155,7 +155,7 @@ void		RW_CreateLicense (const CText &inCustomer, long in4DNumber, long inFlags, 
 	snprintf (stringA, sizeof (stringA), "%lu", inFlags & kBaseXOR);
 
 	// string A skombinovany s menom zakaznika a cislom 4D (ak ma byt pouzite)
-	CText	tempB (inCustomer);
+	RWString	tempB (inCustomer);
 	tempB.AppendAscii (stringA);
 	char	tempC [16];
 	if (inFlags & eLB_4DNumber)
@@ -167,7 +167,7 @@ void		RW_CreateLicense (const CText &inCustomer, long in4DNumber, long inFlags, 
 	// z hashu vyrobeny string B
 	char	stringB [16];
 	unsigned char*	data = tempB.GetUTF8();
-	snprintf (stringB, sizeof (stringB), "%u", crcsum (data, CText::StrLength (data), CRC_INIT));
+	snprintf (stringB, sizeof (stringB), "%u", crcsum (data, RWString::StrLength (data), CRC_INIT));
 
 	// licencne cislo je kombinaciou mena zakaznika, stringu A a stringu B, ak sa pouzije 16-bitovy hash, kludne sa mozu cisla skonvertovat do dekadickej formy - A bude mat 9 znakov a B 5.
 	outLicense = inCustomer;
@@ -377,7 +377,7 @@ void	RW_CheckLicense (RWPageComposer *inComposer, const SRect *inRect, bool inFo
 	}
 	if (msg != 0)
 	{
-		CText	demo;
+		RWString	demo;
 		demo.assign (msg);
 		inComposer->DrawTextBox (demo, &sLicenseStyle, *inRect, false, false, false, NULL);
 	}

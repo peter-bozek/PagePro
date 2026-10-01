@@ -35,14 +35,14 @@ inline			int				GetNumberOfFrames (void) const;
 inline			bool				IsLastPage (bool inCollision) const;
 inline			int				GetLastError(void) const;
 	
-	virtual		bool			GetCalculatedValue (const CText inName, RWValue &outVar) const;
+	virtual		bool			GetCalculatedValue (const RWString inName, RWValue &outVar) const;
 
-				int				GetReportVariable (const CText inName) const;
-				void			CreateVariable (const CText inName, ECalcType inCalc = ECalcType_None);
-				bool			GetVariable (const CText inName, RWValue &outVar, ECalcType inCalc = ECalcType_None) const;
-				void			SetVariable (const CText inName, RWValue *inVar);
-//				const CText		GetVariable (long inDataID) const;
-				RWTextValue		FormatVariable (RWValue &inVar, const CText inFormat) const;
+				int				GetReportVariable (const RWString inName) const;
+				void			CreateVariable (const RWString inName, ECalcType inCalc = ECalcType_None);
+				bool			GetVariable (const RWString inName, RWValue &outVar, ECalcType inCalc = ECalcType_None) const;
+				void			SetVariable (const RWString inName, RWValue *inVar);
+//				const RWString		GetVariable (long inDataID) const;
+				RWString		FormatVariable (RWValue &inVar, const RWString inFormat) const;
 				void			PositionGroup (RWGroup* inGroup, const SRect &inRect, bool inFit, bool inIsOverflow);
 
 private:
@@ -69,7 +69,7 @@ private:
 	RWDataSource 		&mSource;
 	RWReportData 		&mData;
 	RWPageComposer		&mComposer;
-	RWTextValue			mVarNames [RW_VarNamesRWCount];
+	RWString			mVarNames [RW_VarNamesRWCount];
 	SRect				mPageBounds;
 	time_t				mPrintTime;
 	bool				mCountingPages;

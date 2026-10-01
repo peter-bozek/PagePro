@@ -49,9 +49,9 @@ public:
 	ESection_Kind		GetKind (void) const;
 	void				FetchCalcValues (ETReport *inWriter);
 	void				Export (ETReport *inWriter);
-    inline	RWTextValue		GetType();
-    inline	RWTextValue		GetName();
-    inline	RWTextValue		GetID();
+    inline	RWString		GetType();
+    inline	RWString		GetName();
+    inline	RWString		GetID();
 
 private:
 	// defensive programming - not implemented
@@ -61,14 +61,14 @@ private:
 protected:
 	ESection_Kind		mKind;
 	ETObjList			mObjects;
-	RWTextValue			mName;
-	RWTextValue			mID;
-    RWTextValue         mType;
+	RWString			mName;
+	RWString			mID;
+    RWString         mType;
 	bool				mDraw;
 };
-inline	RWTextValue		ETSection::GetType()		{return mType;}
-inline	RWTextValue		ETSection::GetName()		{return mName;}
-inline	RWTextValue		ETSection::GetID()          {return mID;}
+inline	RWString		ETSection::GetType()		{return mType;}
+inline	RWString		ETSection::GetName()		{return mName;}
+inline	RWString		ETSection::GetID()          {return mID;}
 
 
 class	ETHeaderFooterSection

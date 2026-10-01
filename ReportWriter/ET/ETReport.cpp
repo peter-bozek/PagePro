@@ -68,11 +68,11 @@ ETReport::~ETReport (void)
 // ---------------------------------------------------------------------------
 
 int
-ETReport::GetReportVariable (const CText inName)
+ETReport::GetReportVariable (const RWString inName)
 const
 {
 	int	index;
-	CText	name (inName);
+	RWString	name (inName);
 	for (index = 0; index < RW_VarNamesRWCount; index++)
 		if (name.compare(mVarNames [index]) == 0)
 			return index;
@@ -86,7 +86,7 @@ const
 // ---------------------------------------------------------------------------
 
 void
-ETReport::CreateVariable (const CText inName, ECalcType inCalc)
+ETReport::CreateVariable (const RWString inName, ECalcType inCalc)
 {
 	if (GetReportVariable (inName) == RW_VarNotFound)
 	{
@@ -107,7 +107,7 @@ ETReport::CreateVariable (const CText inName, ECalcType inCalc)
 // ---------------------------------------------------------------------------
 
 bool
-ETReport::GetCalculatedValue (const CText inName, RWValue &outVar)
+ETReport::GetCalculatedValue (const RWString inName, RWValue &outVar)
 const
 {
 	return GetVariable (inName, outVar, ECalcType_CurrentValue);
@@ -120,7 +120,7 @@ const
 // Get report variable
 
 bool
-ETReport::GetVariable (const CText inName, RWValue &outVar, ECalcType inCalc)
+ETReport::GetVariable (const RWString inName, RWValue &outVar, ECalcType inCalc)
 const
 {
 	bool	found = true;
@@ -197,7 +197,7 @@ const
 // ---------------------------------------------------------------------------
 
 void
-ETReport::SetVariable (const CText inName, RWValue *inVar)
+ETReport::SetVariable (const RWString inName, RWValue *inVar)
 {
 	if (GetReportVariable (inName) == RW_VarNotFound)
 	{
@@ -213,8 +213,8 @@ ETReport::SetVariable (const CText inName, RWValue *inVar)
 // ---------------------------------------------------------------------------
 // Format variable depending on DataSource
 
-RWTextValue
-ETReport::FormatVariable (RWValue &inVar, const CText inFormat)
+RWString
+ETReport::FormatVariable (RWValue &inVar, const RWString inFormat)
 const
 {
 	return mSource.FormatVariable (inVar, inFormat);
@@ -824,9 +824,9 @@ ETReport::JsonAddItem (const char *inType, ETObject *inObject, const RWString &i
 
 	RWJsonValue	item (rapidjson::kObjectType);
 	item.AddMember (u"type", RWJson::String (RWStr::FromASCII (inType), alloc), alloc);
-	if (not inObject->mName.IsEmpty())
+	if (not inObject->mName.empty())
 		item.AddMember (u"name", RWJson::String (inObject->mName, alloc), alloc);
-	if (not inObject->mID.IsEmpty())
+	if (not inObject->mID.empty())
 		item.AddMember (u"id", RWJson::String (inObject->mID, alloc), alloc);
 	RWString	itemClass = static_cast <ETText*> (inObject)->GetClass();
 	if (!itemClass.empty())
@@ -872,14 +872,14 @@ ETReport::WriteText (const char *inType, void * inObject)
 			mXmlOut.AddDeclaration (u"utf-8", true);
 			mXmlCurrent = mXmlOut.Node().Append (u"Report");
 			mXmlCurrent.SetAttr (u"Version", u"1.0");
-			if (not mName.IsEmpty())
+			if (not mName.empty())
 				mXmlCurrent.SetAttr (u"Name", mName);
 		}
 		else if (format == eFormat_JSON)
 		{
 			RWJsonAllocator	&alloc = mJsonOut.GetAllocator();
 			mJsonOut.AddMember (u"version", RWJson::String (u"1.0", alloc), alloc);
-			if (not mName.IsEmpty())
+			if (not mName.empty())
 				mJsonOut.AddMember (u"name", RWJson::String (mName, alloc), alloc);
 			mJsonOut.AddMember (u"sections", RWJsonValue (rapidjson::kArrayType), alloc);
 		}
@@ -903,9 +903,9 @@ ETReport::WriteText (const char *inType, void * inObject)
 		else if (format == eFormat_XML)
 		{
 			mXmlCurrent = mXmlCurrent.Append (u"Section");
-			if (not section->GetType().IsEmpty())
+			if (not section->GetType().empty())
 				mXmlCurrent.SetAttr (u"type", section->GetType());
-			if (not section->GetID().IsEmpty())
+			if (not section->GetID().empty())
 				mXmlCurrent.SetAttr (u"id", section->GetID());
 		}
 		else if (format == eFormat_JSON)
@@ -913,9 +913,9 @@ ETReport::WriteText (const char *inType, void * inObject)
 			RWJsonAllocator	&alloc = mJsonOut.GetAllocator();
 			JsonCloseSection();
 			mJsonSection.SetObject();
-			if (not section->GetType().IsEmpty())
+			if (not section->GetType().empty())
 				mJsonSection.AddMember (u"type", RWJson::String (section->GetType(), alloc), alloc);
-			if (not section->GetID().IsEmpty())
+			if (not section->GetID().empty())
 				mJsonSection.AddMember (u"id", RWJson::String (section->GetID(), alloc), alloc);
 			mJsonSection.AddMember (u"items", RWJsonValue (rapidjson::kArrayType), alloc);
 			mJsonSectionOpen = true;
@@ -953,7 +953,7 @@ ETReport::WriteText (const char *inType, void * inObject)
 // report items: "Text" (static text, only with eo_static) and "Variable"
 
 void
-ETReport::WriteText (const char *inType, ETObject * inObject, RWTextValue &inText)
+ETReport::WriteText (const char *inType, ETObject * inObject, RWString &inText)
 {
 	const EFormat	format = GetFormat();
 	ETText			*toText = static_cast<ETText*> (inObject);
@@ -980,9 +980,9 @@ ETReport::WriteText (const char *inType, ETObject * inObject, RWTextValue &inTex
 		{
 			const char16_t	*tag = isText ? u"DIV" : u"span";
 			mTextOut.append (u"<").append (tag);
-			if (not inObject->mName.IsEmpty())
+			if (not inObject->mName.empty())
 				mTextOut.append (u" name=\"").append (RWStr::EscapeXML (inObject->mName)).append (u"\"");
-			if (not inObject->mID.IsEmpty())
+			if (not inObject->mID.empty())
 				mTextOut.append (u" id=\"").append (RWStr::EscapeXML (inObject->mID)).append (u"\"");
 			mTextOut.append (u">");
 			mTextOut.append (RWStr::EscapeXML (inText));
@@ -993,13 +993,13 @@ ETReport::WriteText (const char *inType, ETObject * inObject, RWTextValue &inTex
 		case eFormat_XML:
 		{
 			RWXmlNode	elem = mXmlCurrent.Append (isText ? u"text" : u"variable");	// element names as the old writer produced them
-			if (not inObject->mName.IsEmpty())
+			if (not inObject->mName.empty())
 				elem.SetAttr (u"name", inObject->mName);
-			if (not inObject->mID.IsEmpty())
+			if (not inObject->mID.empty())
 				elem.SetAttr (u"id", inObject->mID);
 			elem.SetAttr (u"class", toText->GetClass());
 			elem.SetAttr (u"type", isText ? u"text" : u"variable");
-			if (not inText.IsEmpty())
+			if (not inText.empty())
 				elem.AppendText (inText);
 			break;
 		}

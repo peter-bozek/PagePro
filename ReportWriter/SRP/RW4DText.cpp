@@ -112,8 +112,8 @@ const
 			);
 }
 
-CText
-RWSpan::toXML (const CText& inString)
+RWString
+RWSpan::toXML (const RWString& inString)
 const
 {
 
@@ -186,7 +186,7 @@ const
 	return styledString;
 }
 
-RW4DStyledText::RW4DStyledText (const CText& inString)
+RW4DStyledText::RW4DStyledText (const RWString& inString)
 	:	mText (inString)
 {
 	Initialize();
@@ -289,7 +289,7 @@ RW4DStyledText::Initialize (void)
 	return;
 }
 
-CText
+RWString
 RW4DStyledText::toXMLString (void)
 const
 {

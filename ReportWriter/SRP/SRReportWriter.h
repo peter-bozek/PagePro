@@ -26,23 +26,23 @@ inline	const	SRReportData&	GetReportData (void) const;
 inline			long			GetFlags (void) const;
 inline			bool			IsExport (void) const;
 
-	virtual		bool			GetCalculatedValue (const CText inName, RWValue &outVar) const;
-				bool			IsReportVariable (const CText inName) const;
-				int				IsSRReportVariable (const CText inName) const;
-				bool			IsRWReportVariable (const CText inName) const;
-				bool			IsCalculatedVariable (const CText inName) const;
-				SR4DData	*	CreateVariable (const CText inName, long inIndex, ECalcType inCalc);
-				bool			GetVariable (const CText inName, long inIndex, RWValue &outVar, ECalcType inCalc = ECalcType_CurrentValue) const;
-				void			GetVariable (const CText inName, RWValue &outVar) const;
-//				const CText		GetVariable (long inDataID) const;
-				RWTextValue		FormatVariable (const RWValue &inVar, const CText inFormat) const;
-				SR4DData	*	CreateField (const CText inName, ECalcType inCalc);
-				bool			GetField (const CText inName, RWValue &outVar, ECalcType inCalc = ECalcType_CurrentValue) const;
-				SR4DData*		CreateBreak (const CText inName, SRBreakSection::EBreakOn inBreak);
+	virtual		bool			GetCalculatedValue (const RWString inName, RWValue &outVar) const;
+				bool			IsReportVariable (const RWString inName) const;
+				int				IsSRReportVariable (const RWString inName) const;
+				bool			IsRWReportVariable (const RWString inName) const;
+				bool			IsCalculatedVariable (const RWString inName) const;
+				SR4DData	*	CreateVariable (const RWString inName, long inIndex, ECalcType inCalc);
+				bool			GetVariable (const RWString inName, long inIndex, RWValue &outVar, ECalcType inCalc = ECalcType_CurrentValue) const;
+				void			GetVariable (const RWString inName, RWValue &outVar) const;
+//				const RWString		GetVariable (long inDataID) const;
+				RWString		FormatVariable (const RWValue &inVar, const RWString inFormat) const;
+				SR4DData	*	CreateField (const RWString inName, ECalcType inCalc);
+				bool			GetField (const RWString inName, RWValue &outVar, ECalcType inCalc = ECalcType_CurrentValue) const;
+				SR4DData*		CreateBreak (const RWString inName, SRBreakSection::EBreakOn inBreak);
 const RWList<RWCalculatedValue*>&	GetCalculatedVariables (void) const	{ return mCalculator.GetVariables(); }
 
 protected:
-				int				IsReportVariable (const CText inName, int inFrom, int inTo) const;
+				int				IsReportVariable (const RWString inName, int inFrom, int inTo) const;
 				void			Report (void);
 				void			InitBreakTable (void);
 				int				CheckBreak (void);
@@ -66,7 +66,7 @@ private:
 	long						mCurrentIteration;
 	bool						mEmitCalculator;
 
-	RWTextValue					mVarNames [RW_VarNamesSRCount];
+	RWString					mVarNames [RW_VarNamesSRCount];
 	RWXmlDocument*				mOutXML;		// set while ReportToXML runs
 	RWXmlNode					mOutXMLRoot;
 };

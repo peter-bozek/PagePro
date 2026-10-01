@@ -39,7 +39,7 @@
 // RWMacPageComposer						Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWMacPageComposer::RWMacPageComposer (unsigned long inFlags, CText &inDst, CText &inPrinter)	//mbs 25072011	printer
+RWMacPageComposer::RWMacPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter)	//mbs 25072011	printer
 	:	RWPageComposer (inFlags, inDst, inPrinter),	//mbs 25072011	printer
 		mDocIsOpen (false),
 		mTruePageRect (0, 0, 0, 0),
@@ -218,82 +218,6 @@ const
 // MapStyle														   [protected]
 // ---------------------------------------------------------------------------
 
-#if 0
-ATSUStyle
-RWMacPageComposer::MapStyle (RWStyle *inStyle)
-{
-	ATSUStyle	style = NULL;
-
-	{
-		RWStyleToATSUStyleMap::const_iterator	it;
-
-		for (it = mStyleMap.begin(); it != mStyleMap.end(); it++)
-		{
-			if (inStyle == (*it).first)
-			{
-				style = (*it).second;
-				break;
-			}
-		}
-	}
-
-	if (style == NULL)
-	{
-		ATSUFontID	fontID = 0;
-		ATSURGBAlphaColor	argb = inStyle->GetTextColor();
-/*
-		short		qdStyle = normal;
-		if (GetNamedFontID ((const char*) inStyle->GetPSName(), &fontID) != noErr)
-		{
-			qdStyle = inStyle->GetStyle();
-			if (GetNamedFontID ((const char*) inStyle->GetName(), &fontID) != noErr)
-				if (GetNamedFontID (RWStyle::cDefFontName, &fontID) != noErr)
-					GetNamedFontID ("Lucida Grande", &fontID);
-		}
-		if (MakeSimpleATSUIStyle (fontID, inStyle->GetSize(), qdStyle, argb, &style) == noErr)
-*/
-		#if	CChar_Size != 1
-		std::auto_ptr<char>	styleName;
-		{
-			// ••• TODO •••	should use probably some "normal" encoding, not UTF8
-			CText	s (reinterpret_cast <const UTF16Char*> (inStyle->GetFName()));
-			styleName.reset (reinterpret_cast <char*> (s.CopyUTF8()));
-			#define	NAME	styleName.get()
-		}
-		#else
-			#define	NAME	inStyle->GetFName()
-		#endif
-
-		if (GetNamedFontID (NAME, &fontID) != noErr)
-		{
-			printf ("RWMacPageComposer::MapStyle: GetNamedFontID: font '%s' not found!\n", NAME);
-			if (GetNamedFontID (RWStyle::cDefFontName, &fontID) != noErr)
-				GetNamedFontID ("Lucida Grande", &fontID);
-		}
-		if (MakeSimpleATSUIStyle (fontID, inStyle->GetSize(), inStyle->GetStyle(), &argb, &style) == noErr)
-		{
-/*
-			Fract	justification;
-			switch (inStyle->GetJustification())
-			{
-				case RWStyle::st_right:			justification = kATSUEndAlignment; break;
-				case RWStyle::st_center:		justification = kATSUCenterAlignment; break;
-				case RWStyle::st_justify:		justification = kATSUFullJustification; break;
-				case RWStyle::st_fulljustify:	justification = kATSUFullJustification; break;
-				default:						justification = kATSUStartAlignment; break;
-			}
-			ATSUAttributeTag		justTag = kATSULineFlushFactorTag;
-			ByteCount				justSize = sizeof (Fract);
-			ATSUAttributeValuePtr	justValue = &justification;
-			OSStatus	err = ATSUSetAttributes( style, 1, &justTag, &justSize, &justValue );
-*/
-			mStyleMap.insert (RWStyleToATSUStyleMap::value_type (inStyle, style));
-		}
-	}
-
-	return style;
-}
-#endif
 
 
 // ---------------------------------------------------------------------------
@@ -439,7 +363,7 @@ RWMacPageComposer::OpenSessionSafe (bool inDoPageSetup, bool inDoJobSetup, unsig
         status = PMCopyPrintSettings(mPrintSettings, printSettings);
         [_printInfo updateFromPMPrintSettings];
 
-		if (status == noErr && mPrintSettings != NULL && not mJobName.IsEmpty())
+		if (status == noErr && mPrintSettings != NULL && not mJobName.empty())
 		{
 			CFStringRef	n = RWStr::CreateCFString (mJobName);
 			if (n)
@@ -816,7 +740,7 @@ RWMacPageComposer::ParseReport (RWXmlNode inReport)
 // Get default page size, page orientation and encoding
 
 void
-RWMacPageComposer::GetPageBounds (const CText inOrientation, const CText inSize, SRect &outRect)
+RWMacPageComposer::GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect)
 {
 	bool		changed = false;
 	OSStatus	status;
@@ -835,7 +759,7 @@ RWMacPageComposer::GetPageBounds (const CText inOrientation, const CText inSize,
 
 	if (mPageRect.Width() == 0 || mTruePageRect.Width() == 0 || AskPageSetup())
 	{
-		status = OpenSession (true, false, 1, 1, TEXT_EQUALS (mPageOrientation, "Landscape"));
+		status = OpenSession (true, false, 1, 1, RWStr::Equals (mPageOrientation, "Landscape"));
 		CloseSession (false);
 		if (status != noErr)
 		{
@@ -987,7 +911,7 @@ RWMacPageComposer::OpenNewPageSafe (const SRect &inRect, unsigned long inCurPage
 	OSStatus	status = noErr;
 	if (not mDocIsOpen)
 	{
-		status = OpenSession (false, true, inCurPage, inNumPages, TEXT_EQUALS (mPageOrientation, "Landscape"));
+		status = OpenSession (false, true, inCurPage, inNumPages, RWStr::Equals (mPageOrientation, "Landscape"));
 		if (status != noErr)
 		{
 			printf ("RWMacPageComposer::OpenNewPage: OpenSession: status != noErr || mGC == nil\n");
@@ -1033,7 +957,7 @@ RWMacPageComposer::OpenNewPageSafe (const SRect &inRect, unsigned long inCurPage
 	status = PMSessionValidatePageFormat (mPrintSession, mPageFormat, &bOK);
 	status = PMGetUnadjustedPaperRect (mPageFormat, &orig);
 
- status = PMSetOrientation (mPageFormat, STR_EQUALS (mPageOrientation, "Landscape") ? kPMLandscape : kPMPortrait, false);
+ status = PMSetOrientation (mPageFormat, RWStr::EqualsNoCase (mPageOrientation, "Landscape") ? kPMLandscape : kPMPortrait, false);
 */
 
 #if i386
@@ -1111,7 +1035,7 @@ RWMacPageComposer::ClosePageCB (void *inData)
 }
 
 void
-RWMacPageComposer::DrawTextBox (const CText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWMacPageComposer::DrawTextBox (const RWString inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
 if (true)	// (sUseTF) - we don't have MeasureWord()/DrawWord()
 	RWPageComposer::DrawTextBox (inText, inStyle, inRect, inWrap, inAttributed, inFit, ioPrintText);
@@ -1168,7 +1092,7 @@ else
 }
 
 double
-RWMacPageComposer::MeasureText (const CText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWMacPageComposer::MeasureText (const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
 if (true)	// (sUseTF) - we don't have MeasureWord()/DrawWord()
 	return RWPageComposer::MeasureText (inText, inStyle, ioRect, inWrap, inAttributed, inFit, ioPrintText);
@@ -1220,169 +1144,6 @@ else
 // Controls the method used to determine line height
 #define USE_GETGLYPHBOUNDS 0
 
-#if 0
-RWMacPrintText::RWMacPrintText (const CText inText, RWStyle *inStyle, bool inAttributed)
-	:	RWPrintText (inText, inStyle, inAttributed),
-#if	CChar_Size == 1
-		mUniText (0),
-#endif
-		mTextLength (0),
-		mLayouts (0),
-		mWrap (false)
-{
-}
-
-
-RWMacPrintText::~RWMacPrintText (void)
-{
-	Free();
-}
-
-void
-RWMacPrintText::Free (void)
-{
-#if	CChar_Size == 1
-	if (mUniText)
-	{
-		free (mUniText);
-		mUniText = NULL;
-	}
-#endif
-	mTextLength = 0;
-
-	if (mLayouts)
-	{
-		for (int i = CFArrayGetCount (mLayouts) - 1; i >= 0 ; i--)
-		{
-			ATSUTextLayout	layout = (ATSUTextLayout) CFArrayGetValueAtIndex (mLayouts, i);
-			ATSUDisposeTextLayout (layout);
-		}
-		CFRelease (mLayouts);
-		mLayouts = NULL;
-	}
-
-	return;
-}
-
-void
-RWMacPrintText::Init (RWMacPageComposer &inComposer, SRect &ioRect, bool inWrap, bool inFit)
-{
-/*
-	Free();
-
-	mStyle = inStyle;
-	if (inAttributed)
-		mText.Attach (RWTools::SplitAttributedString (inText, NULL));
-	else
-		mText = inText;
-*/
-	mWidth = ioRect.Width();
-	mLineHeight = 0;
-	mHeight = 0;
-	mPrintedHeight = 0;
-	mNumLines = -1;
-	mPrintedLines = 0;
-	mWrap = inWrap;
-
-
-	int	chars;
-
-	if (mText.IsEmpty())
-		chars = 0;
-	else
-		#if	CChar_Size == 1
-			chars = strlen (reinterpret_cast <const char*> (mText));
-		#else
-			chars = CText::StrLength (mText);
-		#endif
-
-	if (chars > 0)
-	{
-		#if	CChar_Size == 2
-			mTextLength = chars;
-		#else
-			CFStringRef		text = CFStringCreateWithBytes (NULL, (UTF8Char*) mText, chars, STRING_ENCODING, false);
-			mTextLength = CFStringGetLength (text);
-			mUniText = (UniChar*) malloc (sizeof (UniChar) * (mTextLength + 1));
-			CFStringGetCharacters (text, CFRangeMake (0, mTextLength), mUniText);
-			CFRelease (text);
-		#endif
-
-		ATSUStyle			ustyle = static_cast <RWMacPageComposer&> (inComposer).MapStyle (mStyle);
-		ATSUTextLayout		tempLayout;
-		UniCharArrayOffset	currentParagraphStart;
-		UniCharArrayOffset	currentParagraphEnd = 0;
-		bool				endOfDocument = false;
-
-	    ATSUAttributeTag		tags[2];
-	    ByteCount				sizes[2];
-	    ATSUAttributeValuePtr	values[2];
-		Fract					alignment = kATSUStartAlignment;
-		Fract					justification = kATSUNoJustification;
-		switch (mStyle->GetJustification())
-		{
-			case RWStyle::st_right:			alignment = kATSUEndAlignment; break;
-			case RWStyle::st_center:		alignment = kATSUCenterAlignment; break;
-			case RWStyle::st_justify:		justification = kATSUFullJustification; break;
-			case RWStyle::st_fulljustify:	justification = kATSUFullJustification; break;
-		}
-//		Fixed					rotation = X2Fix (mStyle->GetRotation());
-		tags[0] = kATSULineFlushFactorTag;
-		sizes[0] = sizeof(alignment);
-		values[0] = &alignment;
-		tags[1] = kATSULineJustificationFactorTag;
-		sizes[1] = sizeof(justification);
-		values[1] = &justification;
-//		tags[2] = kATSULineRotationTag;
-//		sizes[2] = sizeof(justification);
-//		values[2] = &rotation;
-
-		// **** Create all of the layouts
-		// Loop over all the text, using a helper function that finds the edges of
-		// paragraphs, and assign each paragraph to a layout object.
-		mLayouts = CFArrayCreateMutable (kCFAllocatorDefault, 0, NULL);
-		do
-		{
-			UniCharCount runLength;
-
-			currentParagraphStart = currentParagraphEnd;
-			endOfDocument = FindParagraph (currentParagraphStart, &currentParagraphEnd);
-
-			runLength = currentParagraphEnd - currentParagraphStart;
-			if ( runLength > 0 )
-			{
-				// NOTE: Systems prior to 10.4 exhibit problems with non-local pointers. It is recommended
-				// that only pointers local to each layout be used on 10.3 and earlier systems.
-				#if USE_LOCAL_POINTERS
-					ATSUCreateTextLayoutWithTextPtr (&(mUniText[currentParagraphStart]), 0, runLength, runLength, 1, &runLength, &ustyle, &tempLayout);
-				#else
-					ATSUCreateTextLayoutWithTextPtr (mUniText, currentParagraphStart, runLength, mTextLength, 1, &runLength, &ustyle, &tempLayout);
-				#endif
-				ATSUSetLayoutControls (tempLayout, 2, tags, sizes, values);
-				CFArrayAppendValue (mLayouts, (void *)tempLayout);
-			}
-		} while (not endOfDocument);
-
-		DrawLines (inComposer, ioRect, inFit, false, NULL);
-	}
-	else
-	{
-		mNumLines = 0;
-		ioRect.bottom = ioRect.top;
-		ioRect.right = ioRect.left;
-	}
-
-	return;
-}
-
-
-void
-RWMacPrintText::Reset (void)
-{
-	mPrintedHeight = 0;
-	mPrintedLines = 0;
-}
-#endif
 
 
 /*
@@ -2055,13 +1816,13 @@ static CGDisplayErr GetDisplayDPI(
 
 
 double
-RWMacPageComposer::MeasureWord (const CText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
+RWMacPageComposer::MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
 {
 	return 0;
 }
 
 void
-RWMacPageComposer::DrawWord (const CText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle)
+RWMacPageComposer::DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle)
 {
 	if (mPageIsOpen)
 	{
