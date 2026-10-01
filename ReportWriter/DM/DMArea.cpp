@@ -3926,21 +3926,12 @@ const
 
 #if	WINVER
 #if	kUSE_FAKE_AREA
-// Our child window ("fake area") passes mouse and key messages on to 4D. The old 32 bit
-// build linked 4D's ASI_ functions from ASINTPPC.lib, which has no 64 bit version; they
-// are looked up in the 4D executable at run time instead. When 4D does not export them,
-// the messages go to 4D's window (the parent), mouse coordinates converted.
+// Our child window ("fake area") hands mouse and key messages on to 4D's window (the
+// parent), mouse coordinates converted, so 4D generates the plugin area events. The old
+// 32 bit build used the ASI_ functions of 4D's former Mac emulation layer for this; that
+// library is no longer part of 4D.
 namespace
 {
-	typedef	LONG	(__stdcall *ASIMessageProc) (HWND, UINT, WPARAM, LPARAM);
-	typedef	void	(__stdcall *ASIKeyProc) (HWND, UINT, WPARAM, LPARAM);
-
-	template <class Proc>
-	Proc	HostProc (const char *inName)
-	{
-		return reinterpret_cast <Proc> (::GetProcAddress (::GetModuleHandleW (NULL), inName));
-	}
-
 	LRESULT	ForwardToParent (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, bool inClientCoordinates)
 	{
 		HWND	parent = ::GetParent (hWnd);
@@ -3953,31 +3944,6 @@ namespace
 			lParam = MAKELPARAM (pt.x, pt.y);
 		}
 		return ::SendMessageW (parent, message, wParam, lParam);
-	}
-
-	LONG	ASI_EventMouse (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-	{
-		static const ASIMessageProc	proc = HostProc<ASIMessageProc> ("ASI_EventMouse");
-		if (proc)
-			return proc (hWnd, message, wParam, lParam);
-		return (LONG) ForwardToParent (hWnd, message, wParam, lParam, message != WM_SETCURSOR);	// WM_SETCURSOR: no coordinates
-	}
-
-	LONG	ASI_NCMessage (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-	{
-		static const ASIMessageProc	proc = HostProc<ASIMessageProc> ("ASI_NCMessage");
-		if (proc)
-			return proc (hWnd, message, wParam, lParam);
-		return (LONG) ForwardToParent (hWnd, message, wParam, lParam, false);	// screen coordinates
-	}
-
-	void	ASI_EventKey (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-	{
-		static const ASIKeyProc	proc = HostProc<ASIKeyProc> ("ASI_EventKey");
-		if (proc)
-			proc (hWnd, message, wParam, lParam);
-		else
-			ForwardToParent (hWnd, message, wParam, lParam, false);
 	}
 }
 #endif
@@ -4006,7 +3972,10 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		}
 */
 
-		case WM_SETCURSOR:
+		case WM_SETCURSOR:		// DefWindowProc asks the parent first
+			lResult = ::DefWindowProc (hWnd, iMessage, wParam, lParam);
+			break;
+
 		case WM_MOUSEMOVE:
 		case WM_LBUTTONUP:
 		case WM_LBUTTONDOWN:
@@ -4020,8 +3989,7 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case WM_XBUTTONDOWN: // ++
 		case WM_XBUTTONUP: // ++
 		case WM_XBUTTONDBLCLK: // ++
-			ASI_EventMouse(hWnd, iMessage, wParam, lParam);
-			lResult = ::DefWindowProc(hWnd, iMessage, wParam, lParam);
+			ForwardToParent (hWnd, iMessage, wParam, lParam, true);
 			lResult = 0;
 			break;
 
@@ -4039,7 +4007,6 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 				::ScreenToClient (win, &pt);
 				if (SPoint (float (pt.x), float (pt.y)).IsContained (a->mNoHitTest))
 				{
-//?!?				ASI_NCMessage (hWnd, iMessage, wParam, lParam);
 					return HTTRANSPARENT;
 				}
 			}
@@ -4061,76 +4028,33 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case WM_NCMBUTTONDOWN: // ++
 		case WM_NCMBUTTONUP: // ++
 		case WM_NCMBUTTONDBLCLK: // ++
-			ASI_NCMessage(hWnd, iMessage, wParam, lParam);
-			lResult = ::DefWindowProc (hWnd, iMessage, wParam, lParam);
+			lResult = ::DefWindowProc (hWnd, iMessage, wParam, lParam);	// this window's own frame, nothing for 4D
 			break;
 
-		case WM_NCCREATE: // moved to call asi
+		case WM_NCCREATE:
 			return TRUE;
 			break;
 
 		case WM_KEYDOWN:
 		case WM_KEYUP:
 		case WM_CHAR:
-			ASI_EventKey (hWnd, iMessage, wParam, lParam );
-			lResult = ::DefWindowProc (hWnd, iMessage, wParam, lParam);
+			ForwardToParent (hWnd, iMessage, wParam, lParam, false);
+			lResult = 0;
 			break;
 
 		case WM_PAINT:
 		{
-#if	1
 			DMArea	*a = reinterpret_cast <DMArea*> (::GetWindowLongPtrW (hWnd, GWLP_USERDATA));
 			if (a != NULL)
 				a->HandleUpdate (true);
 			lResult = ::DefWindowProc (hWnd, iMessage, wParam, lParam);
-#else
-			if (ASI_EventUpdate (hWnd))
-				lResult = 0;
-			else
-				lResult = ::DefWindowProc (hWnd, iMessage, wParam, lParam);
-#endif
 			break;
 		}
 
-	/*	case WM_ENTERIDLE:
-			ASI_EnterIdle(hWnd, iMessage, wParam, lParam );
-			lResult = DefWindowProc(hWnd, iMessage, wParam, lParam);
-			break;*/
 
-	/*	case WM_ACTIVATE:
-		case WM_CHILDACTIVATE:
-		case WM_MDIACTIVATE:
-		case WM_MOUSEACTIVATE:
-			ASI_EventActivate(hWnd, iMessage, wParam, lParam);
-			lResult = DefWindowProc(hWnd, iMessage, wParam, lParam);
-			break;*/
 
-	/*	case WM_COMMAND:
-			ASI_EventCommand(hWnd, iMessage, wParam, lParam);
-			lResult = DefWindowProc(hWnd, iMessage, wParam, lParam);
-				{
-				AreaPrivateData* pdata = (AreaPrivateData*)::GetWindowLongPtrW (hWnd, GWLP_USERDATA);
 
-				if (pdata && pdata->proc)
-					pdata->proc(pdata->aref, (void*)lParam);
-				}
-			break;*/
 
-	/*	case WM_MENUSELECT:
-			if (!ASI_MenuSelect( hWnd, iMessage, wParam, lParam))
-				lResult = 0;
-			else
-				lResult = DefWindowProc(hWnd, iMessage, wParam, lParam);
-			break;*/
-
-	/*	case WM_ERASEBKGND:
-		case WM_SIZE:
-		case WM_MOVE:
-		case WM_HSCROLL:
-		case WM_VSCROLL:
-			ASI_WindChange(hWnd, iMessage, wParam, lParam);
-			lResult = DefWindowProc(hWnd, iMessage, wParam, lParam); // never!!
-			break;*/
 
 		case WM_HSCROLL:
 		case WM_VSCROLL:
