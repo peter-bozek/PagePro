@@ -81,7 +81,11 @@ Rules for new and ported code:
 - [ ] **7b. PDF output (decision 2026-10-01).**
   - PDF files are produced by one PoDoFo 1.0 composer on macOS **and** Windows, in 4D desktop and 4D Server. The output is identical on both platforms and does not depend on installed printers. Printing and on-screen preview stay native (CoreText / GDI+).
   - Windows preview uses "Microsoft Print to PDF" instead of "Microsoft XPS Document Writer" (`RWPageComposer::CreatePrinterComposer`).
-  - Reports use standard paper sizes and PDF file size is not a concern (full font embedding is acceptable).
+  - Reports use standard paper sizes. PDF size matters (files are sent by mail / over the internet):
+    - embed font **subsets** (only the glyphs used); full embedding only as a fallback for fonts that cannot be subset. Verify PoDoFo 1.0 subsetting coverage (TrueType vs OpenType/CFF, common on macOS) at integration and list the fallbacks;
+    - pass JPEG data through unchanged, compress other images losslessly (Flate);
+    - compress page content streams (Flate);
+    - possible later report option: downsample high resolution pictures (quality vs size, not the default).
   - Rewrite `RWPoDoFoPageComposer` (written for PoDoFo 0.9) against the 1.0 API; font lookup and embedding per platform (CoreText on the Mac, GDI font data on Windows), so text measurement and output use the same metrics.
   - Build PoDoFo and its dependencies (FreeType, zlib, OpenSSL, image libraries; confirm against the 1.0 release) for macOS arm64 + x86_64 and Windows x64. Check the licence (LGPL) against the distribution model (dynamic linking or relinkable objects).
   - Remove the PDFlib composer (`RWPDFPageComposer`, `RWll`); nothing creates it.
