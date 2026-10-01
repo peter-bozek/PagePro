@@ -367,6 +367,7 @@ std::unique_ptr<RWXmlDocument>
 SRReportWriter::ReportToXML (void)
 {
 	std::unique_ptr<RWXmlDocument>	doc (new RWXmlDocument);
+	doc->AddDeclaration (u"utf-8", true);		// as the TinyXML version wrote it
 
 	mOutXML = doc.get();
 	try

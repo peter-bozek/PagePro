@@ -1966,6 +1966,8 @@ long RW_NewObject (long inRepRef, long &outRef, FourDTypeID id, long inParent)
 		{
 			obj = rep->CreateObject (id, inParent, RWXmlNode());
 			outRef = obj ? obj->GetInternalID() : 0;
+			if (obj == NULL)
+				result = errInvalidObjectRef;	// unknown kind, or no valid parent for it
 			if (obj)
 			{
 				if (rep->GetPageComposer() != NULL)
@@ -2258,7 +2260,11 @@ long RW_ExecuteScript (long inRepRef)
 			result = errInvalidReportRef;
 		else
 		{
-			static_cast <DMArea*> (rep)->CallScript(); 
+			// only an editor area has a script to run (was an unchecked cast)
+			if (DMArea *area = dynamic_cast <DMArea*> (rep))
+				area->CallScript();
+			else
+				result = errInvalidReportRef;
 		}
 	}
 	catch (...)

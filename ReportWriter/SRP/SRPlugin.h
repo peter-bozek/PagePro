@@ -86,9 +86,9 @@ enum
 	errInvalidArrayType,
 	errInvalidPointerType,
 	errInvalidSessionRef,
-	errCantLoadJSON,		// 10: JSON syntax error, not a report document, file not readable
-	errCantSaveJSON,		// 11: file not writable
-	errInvalidObject,		// 12: Null object passed
+	errCantLoadJSON,		// 9: JSON syntax error, not a report document, file not readable
+	errCantSaveJSON,		// 10: file not writable
+	errInvalidObject,		// 11: Null object passed
 	errUserCanceled = -128
 };
 

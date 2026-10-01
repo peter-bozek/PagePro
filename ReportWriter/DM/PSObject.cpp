@@ -716,7 +716,9 @@ PSObject::WriteXML (RWXmlNode inParent, const PSObjProps* ppes)
 
 			case PSProps_XMLString:
 			case PSProps_String:
-				if (value.GetKind() == RWValue::eValue_Text)	// ••• TODO ••• should we write empty string properties?!?
+				// empty strings are not written, as before: the old text class held an empty
+				// string as a NULL pointer, which the writer skipped
+				if (value.GetKind() == RWValue::eValue_Text && !value.GetText().empty())
 				{
 					if (pes->handling >= PSProps_OneChild)
 						RWTools::WriteText (me.Append (name), value.GetText());

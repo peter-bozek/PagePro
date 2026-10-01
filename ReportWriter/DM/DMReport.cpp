@@ -2346,6 +2346,20 @@ DMReport::CreateObject (OSType inKind, DMBase *inParent, RWXmlNode inNode)
 	if (inParent)
 		inParent->GetObjects (PSObjPropObjects, objList);
 
+	// drawing objects live in a section or group: without one their constructors
+	// dereferenced the missing parent (RW_NewObject with a wrong parent reference crashed 4D)
+	switch (inKind)
+	{
+		case PSObjPropOGroup:	case PSObjPropOLine:	case PSObjPropORect:
+		case PSObjPropOOval:	case PSObjPropOPict:	case PSObjPropOText:
+		case PSObjPropOVar:		case PSObjPropOFld:		case PSObjPropOTable:
+			if (inParent == NULL || objList == NULL)
+				return NULL;
+			break;
+		default:
+			break;
+	}
+
 	switch (inKind)
 	{
 		case PSObjPropOGuideH:
@@ -2582,7 +2596,7 @@ DMReport::RemoveObject (DMBase *inObject)
 			inObject->SetSelected (false);
         if (a != NULL)
             a->CheckCurrentObject(inObject);
-		if (a->IsRecordingUndo())	//mbs 22122009	need to record all deleted objects...
+		if (a != NULL && a->IsRecordingUndo())	//mbs 22122009	need to record all deleted objects... (a is NULL without an editor area)
 		{
 			PSObjListD	*subobjects = NULL;
 			if (inObject->GetObjects (PSObjPropObjects, subobjects))
@@ -2947,14 +2961,14 @@ DMReport::LoadXMLObjects (const PSObjProps* pes, RWXmlNode inNode)
 			break;
 		}
 
-		case PSObjPropHeaderSection:	if (not mSimple)	sec = DMHeaderFooterSection::Create (this, inNode, DMSection::eSectionKind_Header, NULL); break;
-		case PSObjPropBrkHdrSection:	if (not mSimple)	sec = DMBreakSection::Create (this, inNode, DMSection::eSectionKind_BreakHeader, NULL); break;
-		case PSObjPropScrapSection:							sec = DMScrapSection::Create (this, inNode, NULL); break;
-		case PSObjPropPageSection:		if (mSimple)		sec = DMPageSection::Create (this, inNode, NULL); break;
-		case PSObjPropBodySection:		if (not mSimple)	sec = DMBodySection::Create (this, inNode, NULL); break;
-		case PSObjPropBrkFtrSection:	if (not mSimple)	sec = DMBreakSection::Create (this, inNode, DMSection::eSectionKind_BreakFooter, NULL); break;
-		case PSObjPropFooterSection:	if (not mSimple)	sec = DMHeaderFooterSection::Create (this, inNode, DMSection::eSectionKind_Footer, NULL); break;
-		case PSObjPropWatermarkSection:						sec = DMWatermarkSection::Create (this, inNode, NULL); break;
+		case PSObjPropHeaderSection:	if (not mSimple)	sec = DMHeaderFooterSection::Create (this, inNode, DMSection::eSectionKind_Header, RWStringView()); break;
+		case PSObjPropBrkHdrSection:	if (not mSimple)	sec = DMBreakSection::Create (this, inNode, DMSection::eSectionKind_BreakHeader, RWStringView()); break;
+		case PSObjPropScrapSection:							sec = DMScrapSection::Create (this, inNode, RWStringView()); break;
+		case PSObjPropPageSection:		if (mSimple)		sec = DMPageSection::Create (this, inNode, RWStringView()); break;
+		case PSObjPropBodySection:		if (not mSimple)	sec = DMBodySection::Create (this, inNode, RWStringView()); break;
+		case PSObjPropBrkFtrSection:	if (not mSimple)	sec = DMBreakSection::Create (this, inNode, DMSection::eSectionKind_BreakFooter, RWStringView()); break;
+		case PSObjPropFooterSection:	if (not mSimple)	sec = DMHeaderFooterSection::Create (this, inNode, DMSection::eSectionKind_Footer, RWStringView()); break;
+		case PSObjPropWatermarkSection:						sec = DMWatermarkSection::Create (this, inNode, RWStringView()); break;
 	}
 
 	if (sec)
