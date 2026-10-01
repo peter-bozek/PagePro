@@ -8,15 +8,56 @@
 # include	<io.h>
 # include	<Shlobj.h>		//mbs 10052011	default name for preview
 # include	<fcntl.h>
-# include	<unistd.h>
+# include	<algorithm>
+# include	<climits>
 
 # include	<gdiplus.h>
 using namespace Gdiplus;
 
-#if	_4D_Package_
-# include "4DPluginAPIEx.h"
-using namespace	FourDAPIEx;
-#endif
+
+// GDI+ colour from a 16 bit per channel RGBA colour
+static	Color	ToColor (SRGBColor inColor)
+{
+	return Color (BYTE (inColor.alpha >> 8), BYTE (inColor.red >> 8), BYTE (inColor.green >> 8), BYTE (inColor.blue >> 8));
+}
+
+
+// DEVNAMES (wide) for a driver, device and output port
+static	HGLOBAL	CreateDevNames (RWStringView inDriver, RWStringView inDevice, RWStringView inOutput, WORD inDefault = 0)
+{
+	const size_t	chars = inDriver.size() + inDevice.size() + inOutput.size() + 3;
+	HGLOBAL			handle = GlobalAlloc (GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof (DEVNAMES) + chars * sizeof (WCHAR));
+	if (handle == NULL)
+		return NULL;
+	DEVNAMES		*names = (DEVNAMES*) GlobalLock (handle);
+	WCHAR			*base = (WCHAR*) names;
+	WORD			offset = WORD (sizeof (DEVNAMES) / sizeof (WCHAR));
+	names->wDefault = inDefault;
+	for (int i = 0; i < 3; i++)
+	{
+		RWStringView	text = i == 0 ? inDriver : i == 1 ? inDevice : inOutput;
+		(i == 0 ? names->wDriverOffset : i == 1 ? names->wDeviceOffset : names->wOutputOffset) = offset;
+		std::copy (text.begin(), text.end(), base + offset);
+		base [offset + text.size()] = 0;
+		offset = WORD (offset + text.size() + 1);
+	}
+	GlobalUnlock (handle);
+	return handle;
+}
+
+
+// a string of a DEVNAMES structure, which 4D may hand over in ANSI or UTF-16
+static	RWString	DevNamesString (const DEVNAMES *inNames, WORD inOffset, bool inWide)
+{
+	if (inWide)
+		return RWStr::FromWide (((const WCHAR*) inNames) + inOffset);
+	const char	*text = ((const char*) inNames) + inOffset;
+	const int	length = MultiByteToWideChar (CP_ACP, 0, text, -1, NULL, 0);
+	std::wstring	wide (length > 0 ? length - 1 : 0, L'\0');
+	if (length > 1)
+		MultiByteToWideChar (CP_ACP, 0, text, -1, &wide [0], length);
+	return RWStr::FromWide (wide);
+}
 
 
 // Scaling factors for various unit conversions
@@ -90,7 +131,7 @@ typedef	unsigned long	UniCharCount;
 class	RWWinPrintText	: public	RWPrintText
 {
 public:
-								RWWinPrintText (RWWinPageComposer &inComposer, ConstCText inText, RWStyle *inStyle, bool inWrap, bool inAttributed, bool inFit);
+								RWWinPrintText (RWWinPageComposer &inComposer, const RWString inText, RWStyle *inStyle, bool inWrap, bool inAttributed, bool inFit);
 	virtual						~RWWinPrintText (void);
 	virtual		void			Reset (void);
 
@@ -99,7 +140,7 @@ public:
 
 protected:
 				void			Free();
-//				void			ApplyAttributes (ConstCText inText, CFMutableAttributedStringRef text, CTFontRef font, long *attributes, long start, long end);
+//				void			ApplyAttributes (const RWString inText, CFMutableAttributedStringRef text, CTFontRef font, long *attributes, long start, long end);
 
 protected:
 	long				mTextLength;
@@ -189,7 +230,7 @@ const
 // RWWinPageComposer						Constructor				  [public]
 // ---------------------------------------------------------------------------
 
-RWWinPageComposer::RWWinPageComposer (unsigned long inFlags, UString &inDst, UString &inPrinter)	//mbs 25072011	printer
+RWWinPageComposer::RWWinPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter)	//mbs 25072011	printer
 	:	RWPageComposer (inFlags, inDst, inPrinter),	//mbs 25072011	printer
 		mDocIsOpen (false),
 		mTruePageRect (0, 0, 0, 0),
@@ -388,31 +429,27 @@ RWWinPageComposer::SetDeviceNames (HGLOBAL inDeviceNames, bool inTakeOwnership)
 			GlobalUnlock (inDeviceNames);
 		}
 		//mbs 11082010
-		if (mDevNames != NULL && mDestination.StrLength() > 4)
+		if (mDevNames != NULL && mDestination.size() > 4)
 		{
-			DEVNAMES	*lpDevNames = (DEVNAMES*) GlobalLock (mDevNames);
-			UString		devn (((WCHAR*) lpDevNames) + lpDevNames->wDeviceOffset, UString::_nullTerminated_);
+			DEVNAMES		*lpDevNames = (DEVNAMES*) GlobalLock (mDevNames);
+			const RWString	devn = RWStr::ToUpperASCII (RWStr::FromWide (((WCHAR*) lpDevNames) + lpDevNames->wDeviceOffset));
 			GlobalUnlock (mDevNames);
-			
-			const char	*suffix = NULL;
-			if (devn.Find ("XPS", UString::eCF_CaseLess))
-				suffix = ".XPS";
-			else if (devn.Find ("PDF", UString::eCF_CaseLess))
-				suffix = ".PDF";
+
+			const char16_t	*suffix = NULL;
+			if (RWStr::Contains (devn, u"XPS"))
+				suffix = u".XPS";
+			else if (RWStr::Contains (devn, u"PDF"))
+				suffix = u".PDF";
 			if (suffix != NULL)
 			{
-				if (mDestination.StrLength() > 4)
+				// replace an extension of 3 characters, as before
+				const RWString	sub = mDestination.substr (mDestination.size() - 4);
+				if (!RWStr::EqualsNoCase (sub, RWStringView (suffix)))
 				{
-					UString	sub = mDestination.Substring (mDestination.StrLength() - 4);
-					if (not sub.IsEqualTo (suffix))
-					{
-						if (sub[0] == '.')
-							mDestination.Delete (mDestination.StrLength() - 4);
-						mDestination.AppendAscii (suffix);
-					}
+					if (sub [0] == u'.')
+						mDestination.erase (mDestination.size() - 4);
+					mDestination += suffix;
 				}
-				else
-					mDestination.AppendAscii (suffix);
 			}
 		}
 	}
@@ -456,7 +493,7 @@ RWWinPageComposer::SetPageSetupDialog (const PAGESETUPDLGW *inPageSetupDlg)
 	if (mPageSetupDlg != NULL && inPageSetupDlg == NULL)
 	{
 		delete mPageSetupDlg;
-		mPrintDlg = NULL;
+		mPageSetupDlg = NULL;		// was "mPrintDlg = NULL", leaving a dangling pointer
 	}
 	if (inPageSetupDlg != NULL)
 	{
@@ -553,70 +590,67 @@ RWWinPageComposer::SetPrintDialog (const SBlob &inPrintDlg)
 
 
 # if	_4D_Package_
+// 4D's own print settings (eUse4DPageSetup / eUse4DJobSetup). The structures may be
+// ANSI or UTF-16 (4D is a Unicode application): DEVMODE is told apart by dmSize,
+// DEVNAMES by the driver name ("winspool" in UTF-16 has a zero second byte).
 void
 RWWinPageComposer::Adopt4DSetting (void)
 {
-	if (mFlags & (eUse4DPageSetup | eUse4DJobSetup))
+	if ((mFlags & (eUse4DPageSetup | eUse4DJobSetup)) == 0)
+		return;
+	mFlags &= ~(eUse4DPageSetup | eUse4DJobSetup);
+
+	HGLOBAL	dlg4d = (HGLOBAL) PA_GetWindowsPRINTDLG();
+	PRINTDLGW	*dlg = dlg4d ? (PRINTDLGW*) GlobalLock (dlg4d) : NULL;	// handle members are the same in PRINTDLGA
+	if (dlg == NULL)
+		return;
+
+	if (dlg->hDevNames)
 	{
-		HGLOBAL	dlg4d = PA_GetWindowsPRINTDLG();
-		mFlags &= ~(eUse4DPageSetup | eUse4DJobSetup);
-		if (dlg4d)
+		const DEVNAMES	*names = (const DEVNAMES*) GlobalLock (dlg->hDevNames);
+		if (names)
 		{
-			PRINTDLGA	*dlg = (PRINTDLGA*) GlobalLock (dlg4d);
-			if (dlg)
-			{
-				SIZE_T	size;
-				if (dlg->hDevNames)
-				{
-					DEVNAMES	*lpDevNames = (DEVNAMES*) GlobalLock (dlg->hDevNames);
-					UString		drvn (true, ((char*) lpDevNames) + lpDevNames->wDriverOffset, UString::_nullTerminated_, SYSTEM_ENCODING);
-					UString		devn (true, ((char*) lpDevNames) + lpDevNames->wDeviceOffset, UString::_nullTerminated_, SYSTEM_ENCODING);
-					UString		outn (true, ((char*) lpDevNames) + lpDevNames->wOutputOffset, UString::_nullTerminated_, SYSTEM_ENCODING);
-					size = (drvn.StrLength() + devn.StrLength() + outn.StrLength() + 3) * sizeof (UTF16Char) + sizeof (DEVNAMES);
-					HGLOBAL		hDevNames = GlobalAlloc (GMEM_MOVEABLE, size);
-					DEVNAMES	*dstDevNames = (DEVNAMES*) GlobalLock (hDevNames);
-					dstDevNames->wDefault = lpDevNames->wDefault;
-					GlobalUnlock (dlg->hDevNames);
-					dstDevNames->wDriverOffset = sizeof (DEVNAMES) / sizeof (UTF16Char);
-					size = (drvn.StrLength() + 1) * sizeof (UTF16Char);
-					memcpy (((char*) dstDevNames) + dstDevNames->wDriverOffset, drvn.Get(), size);
-					dstDevNames->wDeviceOffset = dstDevNames->wDriverOffset + size / sizeof (UTF16Char);
-					size = (devn.StrLength() + 1) * sizeof (UTF16Char);
-					memcpy (((char*) dstDevNames) + dstDevNames->wDeviceOffset, devn.Get(), size);
-					dstDevNames->wOutputOffset = dstDevNames->wDeviceOffset + size / sizeof (UTF16Char);
-					size = (outn.StrLength() + 1) * sizeof (UTF16Char);
-					memcpy (((char*) dstDevNames) + dstDevNames->wOutputOffset, outn.Get(), size);
-					GlobalUnlock (hDevNames);
-					SetDeviceNames (hDevNames, true);
-				}
-				if (dlg->hDevMode)
-				{
-					DEVMODEA	*lpDevMode = (DEVMODEA*) GlobalLock (dlg->hDevMode);
-					size = GlobalSize (dlg->hDevMode);
-					if (size >= sizeof (DEVMODEA) && lpDevMode->dmSize == sizeof (DEVMODEA))
-					{
-						SIZE_T		wsize = size - sizeof (DEVMODEA) + sizeof (DEVMODEW);
-						HGLOBAL		hDevMode = GlobalAlloc (GMEM_MOVEABLE, wsize);
-						DEVMODEW	*dstDevMode = (DEVMODEW*) GlobalLock (hDevMode);
-						memset (dstDevMode, 0, sizeof (DEVMODEW));
-						UString		devn (true, ((char*) lpDevMode->dmDeviceName), UString::_nullTerminated_, SYSTEM_ENCODING);
-						UString		formn (true, ((char*) lpDevMode->dmFormName), UString::_nullTerminated_, SYSTEM_ENCODING);
-						memcpy (dstDevMode->dmDeviceName, devn.GetWStr(),
-							sizeof (WCHAR) * (devn.StrLength() >= CCHDEVICENAME? CCHDEVICENAME - 1: devn.StrLength()));
-						memcpy (&dstDevMode->dmSpecVersion, &lpDevMode->dmSpecVersion,
-							offsetof (DEVMODEW, dmFormName) - offsetof (DEVMODEW, dmSpecVersion));
-						lpDevMode->dmSize = sizeof (DEVMODEW);
-						memcpy (dstDevMode->dmFormName, formn.GetWStr(),
-							sizeof (WCHAR) * (formn.StrLength() >= CCHFORMNAME? CCHFORMNAME - 1: formn.StrLength()));
-						memcpy (&dstDevMode->dmLogPixels, &lpDevMode->dmLogPixels,
-							wsize - offsetof (DEVMODEW, dmLogPixels));
-					}
-					GlobalUnlock (dlg->hDevMode);
-				}
-				GlobalUnlock (dlg);
-			}
+			const bool	wide = ((const char*) names) [names->wDriverOffset + 1] == 0;
+			HGLOBAL		hDevNames = CreateDevNames (DevNamesString (names, names->wDriverOffset, wide),
+													DevNamesString (names, names->wDeviceOffset, wide),
+													DevNamesString (names, names->wOutputOffset, wide), names->wDefault);
+			GlobalUnlock (dlg->hDevNames);
+			if (hDevNames)
+				SetDeviceNames (hDevNames, true);
 		}
 	}
+
+	if (dlg->hDevMode)
+	{
+		const SIZE_T	size = GlobalSize (dlg->hDevMode);
+		const void		*mode = GlobalLock (dlg->hDevMode);
+		if (mode && size >= sizeof (DEVMODEW) && ((const DEVMODEW*) mode)->dmSize == sizeof (DEVMODEW))
+			SetDevMode (dlg->hDevMode, false);		// already UTF-16: copied
+		else if (mode && size >= sizeof (DEVMODEA) && ((const DEVMODEA*) mode)->dmSize == sizeof (DEVMODEA))
+		{
+			const DEVMODEA	*src = (const DEVMODEA*) mode;
+			const SIZE_T	extra = src->dmDriverExtra;
+			HGLOBAL			hDevMode = GlobalAlloc (GMEM_MOVEABLE | GMEM_ZEROINIT, sizeof (DEVMODEW) + extra);
+			DEVMODEW		*dst = hDevMode ? (DEVMODEW*) GlobalLock (hDevMode) : NULL;
+			if (dst)
+			{
+				MultiByteToWideChar (CP_ACP, 0, (const char*) src->dmDeviceName, CCHDEVICENAME, dst->dmDeviceName, CCHDEVICENAME);
+				dst->dmDeviceName [CCHDEVICENAME - 1] = 0;
+				memcpy (&dst->dmSpecVersion, &src->dmSpecVersion, offsetof (DEVMODEA, dmFormName) - offsetof (DEVMODEA, dmSpecVersion));
+				dst->dmSize = sizeof (DEVMODEW);	// was written into 4D's ANSI structure
+				MultiByteToWideChar (CP_ACP, 0, (const char*) src->dmFormName, CCHFORMNAME, dst->dmFormName, CCHFORMNAME);
+				dst->dmFormName [CCHFORMNAME - 1] = 0;
+				memcpy (&dst->dmLogPixels, &src->dmLogPixels, sizeof (DEVMODEA) - offsetof (DEVMODEA, dmLogPixels) + extra);
+				GlobalUnlock (hDevMode);
+				SetDevMode (hDevMode, true);		// the converted DEVMODE was never used before
+			}
+			else if (hDevMode)
+				GlobalFree (hDevMode);
+		}
+		GlobalUnlock (dlg->hDevMode);
+	}
+
+	GlobalUnlock (dlg4d);
 }
 # endif
 
@@ -677,74 +711,41 @@ RWWinPageComposer::AdoptDefSetting (bool inOrientation)
 	if (status == noErr && ((mFlags & eDestinationMask) == eDestinationPreview))
 	{
 		//mbs 10052011	default name for preview
-		if (mDestination.StrLength() == 0)
+		if (mDestination.empty())
 		{
-			// My Documents
-			mDestination.Allocate (MAX_PATH);
-			if (NOERROR == SHGetFolderPathW (NULL, CSIDL_MYDOCUMENTS | CSIDL_FLAG_CREATE, NULL, 0 /* SHGFP_TYPE_CURRENT */, mDestination.GetWStr()))
+			// "RW_Preview.pdf" in My Documents, numbered if it exists
+			wchar_t	folder [MAX_PATH];
+			if (SHGetFolderPathW (NULL, CSIDL_MYDOCUMENTS | CSIDL_FLAG_CREATE, NULL, 0 /* SHGFP_TYPE_CURRENT */, folder) == S_OK)
 			{
-				mDestination.UpdateLength();
-				mDestination.AppendAscii ("\\RW_Preview");
-				wchar_t	*p = mDestination.GetWStr() + mDestination.StrLength();
-				int					i;
-				for (i = 0; i < 65536; i++)
+				for (int i = 0; i < 65536; i++)
 				{
+					wchar_t	name [MAX_PATH + 32];
 					if (i == 0)
-						swprintf (p, 20, L".pdf");
+						swprintf (name, MAX_PATH + 32, L"%ls\\RW_Preview.pdf", folder);
 					else
-						swprintf (p, 20, L" %d.pdf", i);
-					int	fh = _wopen (mDestination.GetWStr(), O_WRONLY | O_BINARY | O_CREAT | O_EXCL);
+						swprintf (name, MAX_PATH + 32, L"%ls\\RW_Preview %d.pdf", folder, i);
+					int	fh = _wopen (name, O_WRONLY | O_BINARY | O_CREAT | O_EXCL, _S_IREAD | _S_IWRITE);
 					if (fh != -1)
 					{
-						close (fh);
+						_close (fh);
+						mDestination = RWStr::FromWide (name);
 						break;
 					}
 				}
-				if (i == 65536)
-					mDestination.Free();
-				else
-					mDestination.UpdateLength();
 			}
 		}
 
-		UString	drvn (L"winspool");
-		UString	devn (L"Microsoft Print to PDF");	// was "Microsoft XPS Document Writer"
-		UString	outn (L"PORTPROMPT:");			// the file name comes from DOCINFO::lpszOutput
-		SIZE_T	size = (drvn.StrLength() + devn.StrLength() + outn.StrLength() + 3) * sizeof (UTF16Char) + sizeof (DEVNAMES);
-		HGLOBAL		hDevNames = GlobalAlloc (GMEM_MOVEABLE, size);
-		DEVNAMES	*dstDevNames = (DEVNAMES*) GlobalLock (hDevNames);
-		dstDevNames->wDefault = 0;
-		dstDevNames->wDriverOffset = sizeof (DEVNAMES) / sizeof (UTF16Char);
-		size = (drvn.StrLength() + 1) * sizeof (UTF16Char);
-		memcpy (((WCHAR*) dstDevNames) + dstDevNames->wDriverOffset, drvn.Get(), size);
-		dstDevNames->wDeviceOffset = dstDevNames->wDriverOffset + size / sizeof (UTF16Char);
-		size = (devn.StrLength() + 1) * sizeof (UTF16Char);
-		memcpy (((WCHAR*) dstDevNames) + dstDevNames->wDeviceOffset, devn.Get(), size);
-		dstDevNames->wOutputOffset = dstDevNames->wDeviceOffset + size / sizeof (UTF16Char);
-		size = (outn.StrLength() + 1) * sizeof (UTF16Char);
-		memcpy (((WCHAR*) dstDevNames) + dstDevNames->wOutputOffset, outn.Get(), size);
-		GlobalUnlock (hDevNames);
-		SetDeviceNames (hDevNames, true);
+		// the file name comes from DOCINFO::lpszOutput (was "Microsoft XPS Document Writer" on "XPSPort:")
+		HGLOBAL	hDevNames = CreateDevNames (u"winspool", u"Microsoft Print to PDF", u"PORTPROMPT:");
+		if (hDevNames)
+			SetDeviceNames (hDevNames, true);
 	}
 
-	else if (status == noErr && ((mFlags & eDestinationMask) == eDestinationPrinter) && mPrinterName.StrLength() > 0)	//mbs 25072011	printer
+	else if (status == noErr && ((mFlags & eDestinationMask) == eDestinationPrinter) && !mPrinterName.empty())	//mbs 25072011	printer
 	{
-		UString	drvn (L"winspool");
-		SIZE_T	size = (drvn.StrLength() + mPrinterName.StrLength() + 3) * sizeof (UTF16Char) + sizeof (DEVNAMES);
-		HGLOBAL		hDevNames = GlobalAlloc (GMEM_MOVEABLE, size);
-		DEVNAMES	*dstDevNames = (DEVNAMES*) GlobalLock (hDevNames);
-		dstDevNames->wDefault = 0;
-		dstDevNames->wDriverOffset = sizeof (DEVNAMES) / sizeof (UTF16Char);
-		size = (drvn.StrLength() + 1) * sizeof (UTF16Char);
-		memcpy (((WCHAR*) dstDevNames) + dstDevNames->wDriverOffset, drvn.Get(), size);
-		dstDevNames->wDeviceOffset = dstDevNames->wDriverOffset + size / sizeof (UTF16Char);
-		size = (mPrinterName.StrLength() + 1) * sizeof (UTF16Char);
-		memcpy (((WCHAR*) dstDevNames) + dstDevNames->wDeviceOffset, mPrinterName.Get(), size);
-		dstDevNames->wOutputOffset = dstDevNames->wDeviceOffset + size / sizeof (UTF16Char);
-		size = (1) * sizeof (UTF16Char);
-		memcpy (((WCHAR*) dstDevNames) + dstDevNames->wOutputOffset, L"", size);
-		GlobalUnlock (hDevNames);
-		SetDeviceNames (hDevNames, true);
+		HGLOBAL	hDevNames = CreateDevNames (u"winspool", mPrinterName, u"");
+		if (hDevNames)
+			SetDeviceNames (hDevNames, true);
 	}
 
 	if (status == noErr && (mDevMode == NULL || mDevNames == NULL))
@@ -817,7 +818,7 @@ RWWinPageComposer::MapStyle (RWStyle *inStyle)
 //		FontFamily	fontFamily ((const wchar_t*) inStyle->GetFName());
 //		font = new Font (&fontFamily, inStyle->GetSize(), FontStyle (inStyle->GetStyle() & 0x0F), UnitPoint, NULL);
 		Unit	unit = GetDestination() == RWPageComposer::eDestinationScreen? UnitPixel: UnitPoint;
-		font = new Font ((const wchar_t*) inStyle->GetFName(), inStyle->GetSize(), FontStyle (inStyle->GetStyle() & 0x0F), unit, NULL);
+		font = new Font (RWStr::ToWide (inStyle->GetFName()).c_str(), inStyle->GetSize(), FontStyle (inStyle->GetStyle() & 0x0F), unit, NULL);
 		if (not font->IsAvailable())
 		{
 			delete font;
@@ -1139,9 +1140,7 @@ RWWinPageComposer::ParseReport (RWXmlNode inReport)
 		blob.Init();
 		try
 		{
-			TiXmlNode		*node = inReport->FirstChild ("DevMode");
-			TiXmlElement	*elem = node->ToElement();
-			if (elem != NULL)
+			if (RWXmlNode elem = inReport.Child (u"DevMode"))
 			{
 				RWTools::ReadData (elem, blob);
 				SetDevMode (blob);
@@ -1149,29 +1148,21 @@ RWWinPageComposer::ParseReport (RWXmlNode inReport)
 			}
 
 			if ((mFlags & eNoDefPrinter) != 0)	//mbs 29062011	don't use default printer on Windows
-			{
-				node = inReport->FirstChild ("DeviceNames");
-				elem = node->ToElement();
-				if (elem != NULL)
+				if (RWXmlNode elem = inReport.Child (u"DeviceNames"))
 				{
 					RWTools::ReadData (elem, blob);
 					SetDeviceNames (blob);
 					blob.Free();
 				}
-			}
 
-			node = inReport->FirstChild ("PageSetupDlg");
-			elem = node->ToElement();
-			if (elem != NULL)
+			if (RWXmlNode elem = inReport.Child (u"PageSetupDlg"))
 			{
 				RWTools::ReadData (elem, blob);
 				SetPageSetupDialog (blob);
 				blob.Free();
 			}
 
-			node = inReport->FirstChild ("PrintDlg");
-			elem = node->ToElement();
-			if (elem != NULL)
+			if (RWXmlNode elem = inReport.Child (u"PrintDlg"))
 			{
 				RWTools::ReadData (elem, blob);
 				SetPrintDialog (blob);
@@ -1195,7 +1186,7 @@ RWWinPageComposer::ParseReport (RWXmlNode inReport)
 // Get default page size, page orientation and encoding
 
 void
-RWWinPageComposer::GetPageBounds (ConstCText inOrientation, ConstCText inSize, SRect &outRect)
+RWWinPageComposer::GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect)
 {
 	bool		changed = false;
 	OSStatus	status;
@@ -1335,8 +1326,8 @@ RWWinPageComposer::GetPageMetrics (SRect &outPageRect, SRect &outPaperRect, SRec
 		float	iWidth  = nPhysicalWidth -  (nLeftMargin + nRightMargin) ;		// / nLogPixelsX;
 		float	iHeight = nPhysicalHeight -  (nTopMargin + nBottomMargin) ;	// / nLogPixelsY;
 
-		outPaperRect.SetRect (0f, 0f, inches2pt * nPhysicalHeight / nLogPixelsY, inches2pt * nPhysicalWidth / nLogPixelsX);
-		outPageRect.SetRect (0f, 0f, inches2pt * iHeight / nLogPixelsY, inches2pt * iWidth / nLogPixelsX);
+		outPaperRect.SetRect (0.0, 0.0, inches2pt * nPhysicalHeight / nLogPixelsY, inches2pt * nPhysicalWidth / nLogPixelsX);
+		outPageRect.SetRect (0.0, 0.0, inches2pt * iHeight / nLogPixelsY, inches2pt * iWidth / nLogPixelsX);
 		outMargins.SetRect (inches2pt * nTopMargin / nLogPixelsY, inches2pt * nLeftMargin / nLogPixelsX, inches2pt * nBottomMargin / nLogPixelsY, inches2pt * nRightMargin / nLogPixelsX);
 		SPoint	offset (-nLeftMargin * inches2pt / nLogPixelsX, -nTopMargin * inches2pt / nLogPixelsY);
 		outPaperRect += offset;
@@ -1384,9 +1375,12 @@ RWWinPageComposer::OpenNewPage (const SRect &inRect, unsigned long inCurPage, un
 				mPageRect = mTruePageRect;
 			}
 
+		// kept alive until StartDocW has run
+		const std::wstring	docName = RWStr::ToWide (mJobName);
+		const std::wstring	outName = RWStr::ToWide (mDestination);
 		DOCINFOW	docinfo;
 		docinfo.cbSize = sizeof (DOCINFOW);
-		docinfo.lpszDocName = reinterpret_cast <const wchar_t*> ((ConstCText) mJobName);
+		docinfo.lpszDocName = docName.c_str();
 
 		if ((mFlags & eDestinationMask) == eDestinationPrinter)	//mbs 11082010
 			docinfo.lpszOutput = NULL;
@@ -1396,7 +1390,7 @@ RWWinPageComposer::OpenNewPage (const SRect &inRect, unsigned long inCurPage, un
 //			if (mDestination && *mDestination)
 //				outName.AssignUTF8 (reinterpret_cast <const UTF8Char*> (mDestination));
 //			docinfo.lpszOutput = outName.GetWStr();	//••• TODO •••	needs this to persist?!?
-			docinfo.lpszOutput = mDestination.GetWStr();
+			docinfo.lpszOutput = outName.empty() ? NULL : outName.c_str();
 		}
 		docinfo.lpszDatatype = NULL;
 		docinfo.fwType = 0;
@@ -1566,7 +1560,7 @@ void	RWWinPageComposer::ApplyTransform (CGAffineTransform &inMatrix)
 	}
 }
 
-double	RWWinPageComposer::MeasureWord (ConstCText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
+double	RWWinPageComposer::MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading)
 {
 #if	TARGET_DEBUG__
 	static	bool	sAdjustDescent = false;
@@ -1580,7 +1574,8 @@ double	RWWinPageComposer::MeasureWord (ConstCText inText, int inTextLength, RWSt
 		Font	*font = MapStyle (inStyle);
 		StringFormat	format (StringFormat::GenericTypographic());
 		format.SetFormatFlags (StringFormatFlagsMeasureTrailingSpaces);
-		mGraphics->MeasureString ((const wchar_t*) inText, inTextLength, font, r, &format, &bbox);
+		const std::wstring	text = RWStr::ToWide (RWStringView (inText).substr (0, size_t (std::max (inTextLength, 0))));
+		mGraphics->MeasureString (text.c_str(), INT (text.size()), font, r, &format, &bbox);
 		width = bbox.Width;
 //		outHeight = bbox.Height;
 		FontFamily	ff;
@@ -1610,7 +1605,7 @@ double	RWWinPageComposer::MeasureWord (ConstCText inText, int inTextLength, RWSt
 	return width;
 }
 
-void	RWWinPageComposer::DrawWord (ConstCText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle)
+void	RWWinPageComposer::DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle)
 {
 #if	TARGET_DEBUG__
 	static	bool	sFrameText = false;
@@ -1628,7 +1623,7 @@ void	RWWinPageComposer::DrawWord (ConstCText inText, int inTextLength, float inX
 		//if (GetDestination() == RWPageComposer::eDestinationScreen)
 		//	ascent *= mGraphics->GetDpiY() / 72;		//pB we have same unit on screen
 
-		Color		color (inStyle->GetTextColor());
+		Color		color = ToColor (inStyle->GetTextColor());
 		SolidBrush	solidBrush (color);
 		RectF		r (inX, inBaseLine - ascent, 0, 0);
 
@@ -1641,11 +1636,12 @@ void	RWWinPageComposer::DrawWord (ConstCText inText, int inTextLength, float inX
 			mGraphics->SetTransform (&matrix);
 		}
 			
-		mGraphics->DrawString ((const wchar_t*) inText, inTextLength, font, r, StringFormat::GenericTypographic(), &solidBrush);
+		const std::wstring	text = RWStr::ToWide (RWStringView (inText).substr (0, size_t (std::max (inTextLength, 0))));
+		mGraphics->DrawString (text.c_str(), INT (text.size()), font, r, StringFormat::GenericTypographic(), &solidBrush);
 #if	TARGET_DEBUG__
 		if (sFrameText)
 		{
-			mGraphics->MeasureString ((const wchar_t*) inText, inTextLength, font, r, StringFormat::GenericTypographic(), &r);
+			mGraphics->MeasureString (text.c_str(), INT (text.size()), font, r, StringFormat::GenericTypographic(), &r);
 			Pen		pen (color, 0.25);
 			mGraphics->DrawRectangle (&pen, r);
 		}
@@ -1666,7 +1662,7 @@ RWWinPageComposer::DrawLine (float top, float left, float bottom, float right, f
 {
 	if (mPageIsOpen)
 	{
-		Color	color (inLineColor);
+		Color	color = ToColor (inLineColor);
 		Pen		pen (color, inThickness);
 		if (inLineLen > 0 && inSpaceLen > 0)
 		{
@@ -1698,13 +1694,13 @@ RWWinPageComposer::DrawRect (const SRect &inRect, float inThickness, bool inFram
 	{
 		if (inFill)
 		{
-			Color		color (inFillColor);
+			Color		color = ToColor (inFillColor);
 			SolidBrush	brush (color);
 			mGraphics->FillRectangle (&brush, (float)inRect.left, (float)inRect.top, (float)inRect.Width(), (float)inRect.Height());
 		}
 		if (inFrame)
 		{
-			Color	color (inFrameColor);
+			Color	color = ToColor (inFrameColor);
 			Pen		pen (color, inThickness);
 			if (inLineLen > 0 && inSpaceLen > 0)
 			{
@@ -1733,13 +1729,13 @@ RWWinPageComposer::DrawOval (const SRect &inRect, float inThickness, bool inFram
 	{
 		if (inFill)
 		{
-			Color		color (inFillColor);
+			Color		color = ToColor (inFillColor);
 			SolidBrush	brush (color);
 			mGraphics->FillEllipse (&brush, (float)inRect.left, (float)(float)inRect.top, inRect.Width(), (float)inRect.Height());
 		}
 		if (inFrame)
 		{
-			Color	color (inFrameColor);
+			Color	color = ToColor (inFrameColor);
 			Pen		pen (color, inThickness);
 			if (inLineLen > 0 && inSpaceLen > 0)
 			{
@@ -1952,7 +1948,7 @@ RWWinPageComposer::DrawPict (SRect &inRect, const RWPicture &inPicture, EPictFor
 				case ePictFormat_ScaledToFit:			// Scaled to fit
 					pictRect.Width = inRect.Width();
 					pictRect.Height = inRect.Height();
-					mGraphics->DrawImage (pd->fImage, pictRect,  0., 0., pd->fHeight, pd->fWidth, UnitPixel, &imageAtt);
+					mGraphics->DrawImage (pd->fImage, pictRect,  0., 0., pd->fWidth, pd->fHeight, UnitPixel, &imageAtt);
 					break;
 
 				case ePictFormat_ScaledProp:			// Scaled to fit (proportional)
@@ -1983,7 +1979,7 @@ RWWinPageComposer::DrawPict (SRect &inRect, const RWPicture &inPicture, EPictFor
 						pictRect.X += h;
 						pictRect.Y += v;
 					}
-					mGraphics->DrawImage (pd->fImage, pictRect, 0., 0., pd->fHeight, pd->fWidth,UnitPixel, &imageAtt);
+					mGraphics->DrawImage (pd->fImage, pictRect, 0., 0., pd->fWidth, pd->fHeight,UnitPixel, &imageAtt);
 					break;
 
 				case ePictFormat_Normal:				// Truncated (non-centered)
@@ -2031,7 +2027,7 @@ RWWinPageComposer::FreePict (RWPictData **cd)
 
 
 void
-RWWinPageComposer::DrawTextBox (ConstCText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWWinPageComposer::DrawTextBox (RWString inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
 if (sUseTF)
 	RWPageComposer::DrawTextBox (inText, inStyle, inRect, inWrap, inAttributed, inFit, ioPrintText);
@@ -2048,7 +2044,7 @@ else
 
 		try
 		{
-			if (inText != NULL && *inText)
+			if (!inText.empty())
 			{
 				if (ioPrintText == NULL)	// RWTable support
 				{
@@ -2076,7 +2072,7 @@ else
 	}
 	else if (ioPrintText != NULL && *ioPrintText != NULL)	// nothing to do if we don't draw and ioPrintText is empty
 	{
-		if (inText != NULL && *inText)
+		if (!inText.empty())
 			static_cast <RWWinPrintText*> (*ioPrintText)->Draw (*this, r, inFit, false, false);
 	}
 }
@@ -2084,13 +2080,13 @@ else
 
 
 double
-RWWinPageComposer::MeasureText (ConstCText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
+RWWinPageComposer::MeasureText (const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText)
 {
 if (sUseTF)
 	return RWPageComposer::MeasureText (inText, inStyle, ioRect, inWrap, inAttributed, inFit, ioPrintText);
 else
 {
-	if (inText != NULL && *inText)
+	if (!inText.empty())
 	{
 		if (ioPrintText == NULL)	// RWTable support
 		{
@@ -2121,15 +2117,15 @@ else
 
 
 
-RWWinPrintText::RWWinPrintText (RWWinPageComposer &inComposer, ConstCText inText, RWStyle *inStyle, bool inWrap, bool inAttributed, bool inFit)
+RWWinPrintText::RWWinPrintText (RWWinPageComposer &inComposer, const RWString inText, RWStyle *inStyle, bool inWrap, bool inAttributed, bool inFit)
 	:	RWPrintText (inText, inStyle, inAttributed),
 		mTextLength (0),
 		mCharsPrinted (0),
 		mWrap (inWrap)
 {
-	if (not mText.IsEmpty())
+	if (not mText.empty())
 	{
-		mTextLength = UString::StrLength (mText);
+		mTextLength = long (mText.size());
 		switch (mStyle->GetJustification())
 		{
 			case RWStyle::st_default:		break;
@@ -2172,11 +2168,8 @@ RWWinPrintText::~RWWinPrintText (void)
 void
 RWWinPrintText::Free (void)
 {
-	if (mText)
-	{
-		mText.Free();
-		mTextLength = 0;
-	}
+	mText.clear();
+	mTextLength = 0;
 
 	return;
 }
@@ -2270,12 +2263,14 @@ RWWinPrintText::Draw (RWWinPageComposer &inComposer, SRect &ioRect, bool inFit, 
 
 		if (inDoDraw)
 		{
-			Color			color (mStyle->GetTextColor());
+			Color			color = ToColor (mStyle->GetTextColor());
 			SolidBrush		solidBrush (color);
-			g->DrawString ((const wchar_t*) (ConstCText) mText + mCharsPrinted, mTextLength - mCharsPrinted, inComposer.MapStyle (mStyle), r, &mStringFormat, &solidBrush);
+			const std::wstring	text = RWStr::ToWide (RWStringView (mText).substr (size_t (mCharsPrinted)));
+			g->DrawString (text.c_str(), INT (text.size()), inComposer.MapStyle (mStyle), r, &mStringFormat, &solidBrush);
 		}
 
-		g->MeasureString ((const wchar_t*) (ConstCText) mText + mCharsPrinted, mTextLength - mCharsPrinted, inComposer.MapStyle (mStyle), r, &mStringFormat, &bbox, &chars, &lines);
+		const std::wstring	remaining = RWStr::ToWide (RWStringView (mText).substr (size_t (mCharsPrinted)));
+		g->MeasureString (remaining.c_str(), INT (remaining.size()), inComposer.MapStyle (mStyle), r, &mStringFormat, &bbox, &chars, &lines);
 		if (inMeasure)
 		{
 			ioRect.SetRect (bbox.Y, bbox.X, bbox.Y + bbox.Height, bbox.X + bbox.Width);

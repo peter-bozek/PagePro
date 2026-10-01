@@ -38,7 +38,7 @@ if (-not $Vcpkg -or -not (Test-Path (Join-Path $Vcpkg "vcpkg.exe"))) {
 }
 
 Write-Host "Installing dependencies with vcpkg ($Triplet)"
-& (Join-Path $Vcpkg "vcpkg.exe") install --triplet $Triplet freetype openssl libpng libjpeg-turbo zlib libxml2
+& (Join-Path $Vcpkg "vcpkg.exe") install --triplet $Triplet "freetype[core,zlib]" openssl libpng libjpeg-turbo zlib "libxml2[core,zlib]"
 if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed" }
 $Installed = Join-Path $Vcpkg "installed\$Triplet"
 
@@ -79,4 +79,4 @@ foreach ($lib in "freetype.lib", "libssl.lib", "libcrypto.lib", "libpng16.lib", 
 }
 
 Get-ChildItem (Join-Path $Out "lib")
-Write-Host "Done. Link with: podofo.lib podofo_private.lib podofo_3rdparty.lib freetype.lib libssl.lib libcrypto.lib libpng16.lib jpeg.lib zlib.lib libxml2.lib ws2_32.lib crypt32.lib, define PODOFO_STATIC."
+Write-Host "Done. ReportWriter.vcxproj links these libraries (plus ws2_32, crypt32, bcrypt) and defines PODOFO_STATIC."

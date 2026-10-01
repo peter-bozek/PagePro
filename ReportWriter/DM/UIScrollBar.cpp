@@ -38,12 +38,12 @@ UIScrollBar::UIScrollBar (UIScrollClient *inClient, HWND inWindow, const SRect& 
 #if	kUSE_FAKE_AREA
 		ParentPosChanged();	// if using fake area
 #endif
-		_control = ::CreateWindow (WC_SCROLLBAR, "",
+		_control = ::CreateWindowW (WC_SCROLLBARW, L"",
 			(DWORD) (WS_CHILD | (horiz ? SBS_HORZ:SBS_VERT) | WS_VISIBLE),
 			inRect.left + _parentPos.h, inRect.top + _parentPos.v, w, h,
 			inWindow, NULL, gMyInstance, NULL);
 		if (_control != 0)
-			::SetWindowLong (_control, GWL_USERDATA, (LPARAM) this);
+			::SetWindowLongPtrW (_control, GWLP_USERDATA, (LONG_PTR) this);
 }
 
 

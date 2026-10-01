@@ -32,35 +32,35 @@ friend class	RWWinPrintText;
 friend class	RWPageComposer;
 
 public:
-								RWWinPageComposer (unsigned long inFlags, UString &inDst, UString &inPrinter);	//mbs 25072011	printer
+								RWWinPageComposer (unsigned long inFlags, RWString &inDst, RWString &inPrinter);	//mbs 25072011	printer
 	virtual						~RWWinPageComposer (void);
 
 	virtual		void			ParseReport (RWXmlNode inReport) override;
-	virtual		void*			FinishReport (size_t &outSize);
+	virtual		void*			FinishReport (size_t &outSize) override;
 
-	virtual		void			GetPageBounds (ConstCText inOrientation, ConstCText inSize, SRect &outRect);
-	virtual		bool			GetPageMetrics (float &outPageWidth, float &outPageHeight, SRect &outMargins);
-	virtual		bool			GetPageMetrics (SRect &outPageRect, SRect &outPaperRect, SRect &outMargins);
-	virtual		void			OpenNewPage (const SRect &inRect, unsigned long inCurPage, unsigned long inNumPages);
-	virtual		void			ClosePage (void);
-	virtual		SRect			GetTruePageRect (void) const;
+	virtual		void			GetPageBounds (const RWString inOrientation, const RWString inSize, SRect &outRect) override;
+	virtual		bool			GetPageMetrics (float &outPageWidth, float &outPageHeight, SRect &outMargins) override;
+	virtual		bool			GetPageMetrics (SRect &outPageRect, SRect &outPaperRect, SRect &outMargins) override;
+	virtual		void			OpenNewPage (const SRect &inRect, unsigned long inCurPage, unsigned long inNumPages) override;
+	virtual		void			ClosePage (void) override;
+	virtual		SRect			GetTruePageRect (void) const override;
 
-	virtual		void			DrawLine (float top, float left, float bottom, float right, float inThickness, SRGBColor inLineColor, float inLineLen = 0, float inSpaceLen = 0);
+	virtual		void			DrawLine (float top, float left, float bottom, float right, float inThickness, SRGBColor inLineColor, float inLineLen = 0, float inSpaceLen = 0) override;
 	virtual		void			DrawRect (const SRect &inRect, float inThickness, bool inFrame, SRGBColor inFrameColor,
-											bool inFill, SRGBColor inFillColor, float inLineLen = 0, float inSpaceLen = 0);
+											bool inFill, SRGBColor inFillColor, float inLineLen = 0, float inSpaceLen = 0) override;
 	virtual		void			DrawOval (const SRect &inRect, float inThickness, bool inFrame, SRGBColor inFrameColor,
-											bool inFill, SRGBColor inFillColor, float inLineLen = 0, float inSpaceLen = 0);
+											bool inFill, SRGBColor inFillColor, float inLineLen = 0, float inSpaceLen = 0) override;
 
-	virtual		void			GetPictBounds (SRect &ioRect, const RWPicture &inPicture, EPictFormat inSizing, RWPictData **cd, bool inGrow);
-	virtual		void			DrawPict (SRect &inRect, const RWPicture &inPicture, EPictFormat inSizing, RWPictData **cd, double inRotation, float alfa);
+	virtual		void			GetPictBounds (SRect &ioRect, const RWPicture &inPicture, EPictFormat inSizing, RWPictData **cd, bool inGrow) override;
+	virtual		void			DrawPict (SRect &inRect, const RWPicture &inPicture, EPictFormat inSizing, RWPictData **cd, double inRotation, float alfa) override;
 //	virtual		void			FreePict (RWPictData **cd);
 //	static		void			GetPictureFromRef (const RWPicture &inPicture, RWPicture &outPicture);
 //	static		void			GetPictureRefFromPicture (const RWPicture &inPicture, RWPicture &outPicture);
 
-	virtual		void			DrawTextBox (ConstCText inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
-	virtual		double			MeasureText (ConstCText inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText);
+	virtual		void			DrawTextBox (const RWString inText, RWStyle *inStyle, const SRect &inRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText) override;
+	virtual		double			MeasureText (const RWString inText, RWStyle *inStyle, SRect &ioRect, bool inWrap, bool inAttributed, bool inFit, RWPrintText **ioPrintText) override;
 
-	virtual		bool			GetDPI (float &x, float &y, void* inWindow);
+	virtual		bool			GetDPI (float &x, float &y, void* inWindow) override;
 
 		const	HGLOBAL			GetDevMode (void) const;
 //				HGLOBAL			GetDevMode (bool inDetachSignature);
@@ -78,21 +78,21 @@ public:
 				void			SetPrintDialog (const SBlob &inPrintDlg);
 
 								// screen drawing
-	virtual		RWClipInfoRef	ClipToRect (const SRect &inRect);
-	virtual		RWClipInfoRef	ClipToRect (const SRect &inRect, const SRect &inExcludeRect);
-	virtual		void			RestoreClip (RWClipInfoRef &ioClipInfo);
-	virtual		void			StyleChanged (RWStyle *inStyle);
-	virtual		void	*		GetContext (void) const;
-	virtual		void			SetContext (void *inContext);
-	virtual		RWNativePageComposer*	CreateComposerForPrinting (void) const;
+	virtual		RWClipInfoRef	ClipToRect (const SRect &inRect) override;
+	virtual		RWClipInfoRef	ClipToRect (const SRect &inRect, const SRect &inExcludeRect) override;
+	virtual		void			RestoreClip (RWClipInfoRef &ioClipInfo) override;
+	virtual		void			StyleChanged (RWStyle *inStyle) override;
+	virtual		void	*		GetContext (void) const override;
+	virtual		void			SetContext (void *inContext) override;
+	virtual		RWNativePageComposer*	CreateComposerForPrinting (void) const override;
 
-	virtual		void			SaveContext (RWContextInfoRef &outContext);
-	virtual		void			RestoreContext (RWContextInfoRef &ioContext);
+	virtual		void			SaveContext (RWContextInfoRef &outContext) override;
+	virtual		void			RestoreContext (RWContextInfoRef &ioContext) override;
 //virtual	const RWPrintContextRef	GetPrintContext (void);
-	virtual		void			ApplyTransform (CGAffineTransform &inMatrix);
-	virtual		double			MeasureWord (ConstCText inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading);
-	virtual		void			DrawWord (ConstCText inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle);
-	virtual		double			GetNativeRotation (double inRotation)	{ return -inRotation; }
+	virtual		void			ApplyTransform (CGAffineTransform &inMatrix) override;
+	virtual		double			MeasureWord (const RWString inText, int inTextLength, RWStyle *inStyle, double &outAscent, double &outDescent, double &outLeading) override;
+	virtual		void			DrawWord (const RWString inText, int inTextLength, float inX, float inBaseLine, RWStyle *inStyle) override;
+	virtual		double			GetNativeRotation (double inRotation) override	{ return -inRotation; }
 
 				void			SetHWNDContext (HWND inHWND);
 			Gdiplus::Graphics*	GetGDI (void) const;
@@ -103,8 +103,8 @@ protected:
 # endif
 				long			AdoptDefSetting (bool inOrientation);
 
-	virtual		OSStatus		OpenSession (bool inDoPageSetup, bool inDoJobSetup, unsigned long inCurPage, unsigned long inNumPages, bool inOrientation);
-	virtual		void			CloseSession (bool inRelease);
+	virtual		OSStatus		OpenSession (bool inDoPageSetup, bool inDoJobSetup, unsigned long inCurPage, unsigned long inNumPages, bool inOrientation) override;
+	virtual		void			CloseSession (bool inRelease) override;
 				Gdiplus::Font*	MapStyle (RWStyle *inStyle);
 //	virtual		HDC				DrawTextBoxBegin (const RWStyle *inStyle, const SRect &inRect);
 //	virtual		void			DrawTextBoxEnd (HDC inRef);

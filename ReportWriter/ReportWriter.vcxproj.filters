@@ -1,35 +1,312 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="4D Plugin API\4DPluginAPI.c">
-      <Filter>4D Plugin API</Filter>
-    </ClCompile>
-    <ClCompile Include="4DPlugin-ReportWriter.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="4D Plugin API\4DPluginAPI.h">
-      <Filter>4D Plugin API</Filter>
-    </ClInclude>
-    <ClInclude Include="4D Plugin API\EntryPoints.h">
-      <Filter>4D Plugin API</Filter>
-    </ClInclude>
-    <ClInclude Include="4D Plugin API\Flags.h">
-      <Filter>4D Plugin API</Filter>
-    </ClInclude>
-    <ClInclude Include="4D Plugin API\PrivateTypes.h">
-      <Filter>4D Plugin API</Filter>
-    </ClInclude>
-    <ClInclude Include="4D Plugin API\PublicTypes.h">
-      <Filter>4D Plugin API</Filter>
-    </ClInclude>
-    <ClInclude Include="4DPlugin-ReportWriter.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="4D Plugin API">
-      <UniqueIdentifier>{51800f7b-66bf-4dcc-8e9f-7fed4ea6fbe9}</UniqueIdentifier>
+      <UniqueIdentifier>{31a5b05a-576c-5baa-b3c0-180b418d77f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DM">
+      <UniqueIdentifier>{8c7f8e23-bfb8-527d-bb8c-0831b82aa241}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ET">
+      <UniqueIdentifier>{4fa8e80f-31d7-525a-a8c0-e17324cf8819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugin">
+      <UniqueIdentifier>{2493b56f-0e4b-55ba-8745-c91a856e0cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RW">
+      <UniqueIdentifier>{ac99d827-fe41-53d8-a8ca-843c2bd501aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SRP">
+      <UniqueIdentifier>{92a81d61-bd3f-5db6-865e-f7a88ba0492b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party">
+      <UniqueIdentifier>{b720dc95-966f-58c5-b4bc-d8610220c45e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DM\DMArea.cpp">
+      <Filter>DM</Filter>
+    </ClCompile>
+    <ClCompile Include="DM\DMObject.cpp">
+      <Filter>DM</Filter>
+    </ClCompile>
+    <ClCompile Include="DM\DMReport.cpp">
+      <Filter>DM</Filter>
+    </ClCompile>
+    <ClCompile Include="DM\DMUndo.cpp">
+      <Filter>DM</Filter>
+    </ClCompile>
+    <ClCompile Include="DM\PSObject.cpp">
+      <Filter>DM</Filter>
+    </ClCompile>
+    <ClCompile Include="DM\UIScrollBar.cpp">
+      <Filter>DM</Filter>
+    </ClCompile>
+    <ClCompile Include="ET\ETObject.cpp">
+      <Filter>ET</Filter>
+    </ClCompile>
+    <ClCompile Include="ET\ETReport.cpp">
+      <Filter>ET</Filter>
+    </ClCompile>
+    <ClCompile Include="ET\ETReportData.cpp">
+      <Filter>ET</Filter>
+    </ClCompile>
+    <ClCompile Include="ET\ETSection.cpp">
+      <Filter>ET</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWBaseTypes.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWCalculator.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWDataProvider.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWDataSource.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWDataSourceProvider.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWFontsWin.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWObject.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWPageComposer.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWPdfFonts.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWPoDoFoPageComposer.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWReportData.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWReportWriter.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWSection.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWString.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWStyle.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWTable.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWTextFormatter.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWWinPageComposer.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWXml.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="RW\RWXmlJson.cpp">
+      <Filter>RW</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\ExtendedExecute.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\RW4DText.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SR4DData.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRDataFormatter.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRDataSource.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRDataSourceProvider.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRLicense.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRObject.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRPlugin.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRReportData.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRReportWriter.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRSection.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="SRP\SRTable.cpp">
+      <Filter>SRP</Filter>
+    </ClCompile>
+    <ClCompile Include="pugixml\pugixml.cpp">
+      <Filter>Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="4D Plugin API\4DPluginAPI.c">
+      <Filter>4D Plugin API</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DM\DMArea.h">
+      <Filter>DM</Filter>
+    </ClInclude>
+    <ClInclude Include="DM\DMObject.h">
+      <Filter>DM</Filter>
+    </ClInclude>
+    <ClInclude Include="DM\DMReport.h">
+      <Filter>DM</Filter>
+    </ClInclude>
+    <ClInclude Include="DM\DMUndo.h">
+      <Filter>DM</Filter>
+    </ClInclude>
+    <ClInclude Include="DM\PSObjProps.h">
+      <Filter>DM</Filter>
+    </ClInclude>
+    <ClInclude Include="DM\PSObject.h">
+      <Filter>DM</Filter>
+    </ClInclude>
+    <ClInclude Include="DM\UIScrollBar.h">
+      <Filter>DM</Filter>
+    </ClInclude>
+    <ClInclude Include="ET\ETObject.h">
+      <Filter>ET</Filter>
+    </ClInclude>
+    <ClInclude Include="ET\ETReport.h">
+      <Filter>ET</Filter>
+    </ClInclude>
+    <ClInclude Include="ET\ETReportData.h">
+      <Filter>ET</Filter>
+    </ClInclude>
+    <ClInclude Include="ET\ETSection.h">
+      <Filter>ET</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWBaseTypes.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWCalculator.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWDataProvider.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWDataSource.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWDataSourceProvider.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWJson.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWObject.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWPageComposer.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWPdfFonts.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWPoDoFoPageComposer.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWReportData.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWReportVariables.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWReportWriter.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWSection.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWString.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWString4D.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWStyle.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWTextFormatter.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWWinPageComposer.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWWinPrefix.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWXml.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="RW\RWXmlJson.h">
+      <Filter>RW</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\ExtendedExecute.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\RW4DText.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SR4DData.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRDataFormatter.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRDataSource.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRDataSourceProvider.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRLicense.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRObject.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRPlugin.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRReportData.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRReportWriter.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="SRP\SRSection.h">
+      <Filter>SRP</Filter>
+    </ClInclude>
+    <ClInclude Include="theVersion.h">
+      <Filter>Plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="4D Plugin API\4DPluginAPI.h">
+      <Filter>4D Plugin API</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="manifest.json">
+      <Filter>Plugin</Filter>
+    </None>
     <None Include="4D Plugin API\4DPluginAPI.def">
       <Filter>4D Plugin API</Filter>
     </None>

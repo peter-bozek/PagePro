@@ -23,7 +23,6 @@
 		D226107A2B3DB5A400CFC83D /* SRObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610592B3DB5A400CFC83D /* SRObject.cpp */; };
 		D226107B2B3DB5A400CFC83D /* SRTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226105A2B3DB5A400CFC83D /* SRTable.cpp */; };
 		D226107D2B3DB5A400CFC83D /* SRPlugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226105C2B3DB5A400CFC83D /* SRPlugin.cpp */; };
-		D226107F2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h in Headers */ = {isa = PBXBuildFile; fileRef = D226105E2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h */; };
 		D22610862B3DB5A400CFC83D /* SRDataSourceProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610652B3DB5A400CFC83D /* SRDataSourceProvider.cpp */; };
 		D22610882B3DB5A400CFC83D /* SRLicense.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610672B3DB5A400CFC83D /* SRLicense.cpp */; };
 		D226108A2B3DB5A400CFC83D /* SRDataFormatter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */; };
@@ -94,10 +93,6 @@
 		D22610382B3DADC500CFC83D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		D226103C2B3DAE3200CFC83D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		D226103E2B3DAF5A00CFC83D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		D22610412B3DB01500CFC83D /* 4DPrefixMacCarbonDbg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DPrefixMacCarbonDbg.h; sourceTree = "<group>"; };
-		D22610422B3DB01500CFC83D /* 4DHeadersCarbon.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DHeadersCarbon.pch; sourceTree = "<group>"; };
-		D22610432B3DB01500CFC83D /* 4DHeadersCarbonDbg.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DHeadersCarbonDbg.pch; sourceTree = "<group>"; };
-		D22610442B3DB01500CFC83D /* 4DPrefixMacCarbon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 4DPrefixMacCarbon.h; sourceTree = "<group>"; };
 		D226104B2B3DB5A400CFC83D /* SRDataSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRDataSource.cpp; sourceTree = "<group>"; };
 		D226104C2B3DB5A400CFC83D /* SRSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRSection.cpp; sourceTree = "<group>"; };
 		D226104D2B3DB5A400CFC83D /* SR4DData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SR4DData.h; sourceTree = "<group>"; };
@@ -105,7 +100,6 @@
 		D226104F2B3DB5A400CFC83D /* ExtendedExecute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExtendedExecute.cpp; sourceTree = "<group>"; };
 		D22610502B3DB5A400CFC83D /* SRGetFontsCG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRGetFontsCG.h; sourceTree = "<group>"; };
 		D22610512B3DB5A400CFC83D /* SRReportData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRReportData.cpp; sourceTree = "<group>"; };
-		D22610532B3DB5A400CFC83D /* WinDbgPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinDbgPrefix.h; sourceTree = "<group>"; };
 		D22610542B3DB5A400CFC83D /* SRReportWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRReportWriter.cpp; sourceTree = "<group>"; };
 		D22610552B3DB5A400CFC83D /* SRSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRSection.h; sourceTree = "<group>"; };
 		D22610562B3DB5A400CFC83D /* SRObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRObject.h; sourceTree = "<group>"; };
@@ -113,10 +107,7 @@
 		D22610582B3DB5A400CFC83D /* SRGetFontsCG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRGetFontsCG.cpp; sourceTree = "<group>"; };
 		D22610592B3DB5A400CFC83D /* SRObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRObject.cpp; sourceTree = "<group>"; };
 		D226105A2B3DB5A400CFC83D /* SRTable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRTable.cpp; sourceTree = "<group>"; };
-		D226105B2B3DB5A400CFC83D /* Mac4DCarbonDbgPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mac4DCarbonDbgPrefix.h; sourceTree = "<group>"; };
 		D226105C2B3DB5A400CFC83D /* SRPlugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRPlugin.cpp; sourceTree = "<group>"; };
-		D226105D2B3DB5A400CFC83D /* WinPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinPrefix.h; sourceTree = "<group>"; };
-		D226105E2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mac4DCarbonPrefix.h; sourceTree = "<group>"; };
 		D226105F2B3DB5A400CFC83D /* RW4DText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RW4DText.h; sourceTree = "<group>"; };
 		D22610602B3DB5A400CFC83D /* SRPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRPlugin.h; sourceTree = "<group>"; };
 		D22610612B3DB5A400CFC83D /* ExtendedExecute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtendedExecute.h; sourceTree = "<group>"; };
@@ -124,7 +115,6 @@
 		D22610632B3DB5A400CFC83D /* SRDataFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRDataFormatter.h; sourceTree = "<group>"; };
 		D22610642B3DB5A400CFC83D /* SRReportData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRReportData.h; sourceTree = "<group>"; };
 		D22610652B3DB5A400CFC83D /* SRDataSourceProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRDataSourceProvider.cpp; sourceTree = "<group>"; };
-		D22610662B3DB5A400CFC83D /* dllLoader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dllLoader.c; sourceTree = "<group>"; };
 		D22610672B3DB5A400CFC83D /* SRLicense.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRLicense.cpp; sourceTree = "<group>"; };
 		D22610682B3DB5A400CFC83D /* SRReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRReportWriter.h; sourceTree = "<group>"; };
 		D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SRDataFormatter.cpp; sourceTree = "<group>"; };
@@ -165,7 +155,6 @@
 		D26EBFD12AF274EE001E7074 /* ETSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETSection.h; sourceTree = "<group>"; };
 		D26EBFD32AF274EE001E7074 /* RWSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWSection.h; sourceTree = "<group>"; };
 		D26EBFD52AF274EE001E7074 /* RWPoDoFoPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPoDoFoPageComposer.h; sourceTree = "<group>"; };
-		D26EBFD72AF274EE001E7074 /* MacCarbonPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacCarbonPrefix.h; sourceTree = "<group>"; };
 		D26EBFD92AF274EE001E7074 /* RWCTPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWCTPageComposer.h; sourceTree = "<group>"; };
 		D26EBFDA2AF274EE001E7074 /* RWReportData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWReportData.h; sourceTree = "<group>"; };
 		D26EBFDB2AF274EE001E7074 /* RWDataSourceProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWDataSourceProvider.h; sourceTree = "<group>"; };
@@ -257,7 +246,6 @@
 			children = (
 				D26EC0232AF27801001E7074 /* ET */,
 				D226104A2B3DB5A400CFC83D /* SRP */,
-				D22610402B3DB01500CFC83D /* 4D Headers */,
 				D26EC0292AF44891001E7074 /* DM */,
 				D26EBFAC2AF274EE001E7074 /* RW */,
 				6595A6724B552C1A513D381E /* pugixml */,
@@ -307,17 +295,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		D22610402B3DB01500CFC83D /* 4D Headers */ = {
-			isa = PBXGroup;
-			children = (
-				D22610432B3DB01500CFC83D /* 4DHeadersCarbonDbg.pch */,
-				D22610442B3DB01500CFC83D /* 4DPrefixMacCarbon.h */,
-				D22610412B3DB01500CFC83D /* 4DPrefixMacCarbonDbg.h */,
-				D22610422B3DB01500CFC83D /* 4DHeadersCarbon.pch */,
-			);
-			path = "4D Headers";
-			sourceTree = "<group>";
-		};
 		D226104A2B3DB5A400CFC83D /* SRP */ = {
 			isa = PBXGroup;
 			children = (
@@ -329,17 +306,13 @@
 				D226104F2B3DB5A400CFC83D /* ExtendedExecute.cpp */,
 				D22610502B3DB5A400CFC83D /* SRGetFontsCG.h */,
 				D22610512B3DB5A400CFC83D /* SRReportData.cpp */,
-				D22610532B3DB5A400CFC83D /* WinDbgPrefix.h */,
 				D22610542B3DB5A400CFC83D /* SRReportWriter.cpp */,
 				D22610552B3DB5A400CFC83D /* SRSection.h */,
 				D22610562B3DB5A400CFC83D /* SRObject.h */,
 				D22610582B3DB5A400CFC83D /* SRGetFontsCG.cpp */,
 				D22610592B3DB5A400CFC83D /* SRObject.cpp */,
 				D226105A2B3DB5A400CFC83D /* SRTable.cpp */,
-				D226105B2B3DB5A400CFC83D /* Mac4DCarbonDbgPrefix.h */,
 				D226105C2B3DB5A400CFC83D /* SRPlugin.cpp */,
-				D226105D2B3DB5A400CFC83D /* WinPrefix.h */,
-				D226105E2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h */,
 				D226105F2B3DB5A400CFC83D /* RW4DText.h */,
 				D22610602B3DB5A400CFC83D /* SRPlugin.h */,
 				D22610612B3DB5A400CFC83D /* ExtendedExecute.h */,
@@ -347,7 +320,6 @@
 				D22610632B3DB5A400CFC83D /* SRDataFormatter.h */,
 				D22610642B3DB5A400CFC83D /* SRReportData.h */,
 				D22610652B3DB5A400CFC83D /* SRDataSourceProvider.cpp */,
-				D22610662B3DB5A400CFC83D /* dllLoader.c */,
 				D22610672B3DB5A400CFC83D /* SRLicense.cpp */,
 				D22610682B3DB5A400CFC83D /* SRReportWriter.h */,
 				D22610692B3DB5A400CFC83D /* SRDataFormatter.cpp */,
@@ -381,7 +353,6 @@
 				801651092CB3344CB1D85B71 /* RWXmlJson.h */,
 				7D397B184BD1FD879BBD2555 /* RWXmlJson.cpp */,
 				F05CFDAD07009E5034B965DD /* RWJson.h */,
-				D26EBFD72AF274EE001E7074 /* MacCarbonPrefix.h */,
 				D26EBFC82AF274EE001E7074 /* RWBaseTypes.h */,
 				D26EBFCA2AF274EE001E7074 /* RWBaseTypes.cpp */,
 				D26EBFC62AF274EE001E7074 /* RWCalculator.h */,
@@ -465,7 +436,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D226107F2B3DB5A400CFC83D /* Mac4DCarbonPrefix.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

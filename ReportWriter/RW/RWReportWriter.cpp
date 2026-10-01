@@ -13,7 +13,9 @@ extern	"C"		void Yield4D (void);
 # include	"SRLicense.h"
 
 #if	MACVER
+#if	MACVER
 # include	"RWMacPageComposer.h"
+#endif
 struct	DrawReportArgs
 {
 	OSStatus		outResult;

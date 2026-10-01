@@ -15,11 +15,13 @@
 
 // using namespace    FourDAPIEx;
 
+#if	MACVER
 #import <Foundation/NSAutoreleasePool.h>
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 // HIToolbox key modifiers (cmdKey, ...), GetCurrentKeyModifiers, HIThemeDrawFocusRect - still in the 64 bit SDK
 # include	<Carbon/Carbon.h>
+#endif
 extern	"C"		void Yield4D (void);
 
 float	DMArea::sRoundUI = 10;
@@ -41,7 +43,7 @@ inline	float DMArea::RoundUI (float f)
 
 #if	kUSE_FAKE_AREA
 bool	DMArea::sClassRegistered	= false;
-#define	kDMAreaClassName	"RW_Area"
+#define	kDMAreaClassName	L"RW_Area"
 #endif
 
 extern	HINSTANCE	gMyInstance;
@@ -206,7 +208,7 @@ DMArea::DMArea (void)
 #if	kUSE_FAKE_AREA
 	if (not sClassRegistered)
 	{
-		WNDCLASS	wndclass;
+		WNDCLASSW	wndclass;
 		wndclass.style = CS_NOCLOSE;
 		wndclass.lpfnWndProc = (WNDPROC) AreaWndProc;
 		wndclass.cbClsExtra = 0;
@@ -217,7 +219,7 @@ DMArea::DMArea (void)
 		wndclass.hbrBackground = (HBRUSH) ::GetStockObject (NULL_BRUSH);
 		wndclass.lpszMenuName = NULL;
 		wndclass.lpszClassName = kDMAreaClassName;
-		sClassRegistered = ::RegisterClass (&wndclass) ? true: false;
+		sClassRegistered = ::RegisterClassW (&wndclass) ? true: false;
 		sClassRegistered = true;	//mbs 30062011	RegisterClass will fail when re-opening DB
 	}
 #endif
@@ -381,7 +383,7 @@ DMArea::DrawDesign (PA_PluginParameters params)
     CGContextScaleCTM (cg, 1.0, -1.0);
     CGContextTranslateCTM (cg, 0, -(portBounds.fBottom - portBounds.fTop));
 #else
-	HDC     dc = (HDC) PA_GetUpdateHDC();
+	HDC     dc = (HDC) PA_GetHDC (params);
 	(*screen).SetContext (dc);
 #endif
 	
@@ -865,11 +867,11 @@ DMArea::HandleEvent (void)
 			if (sClassRegistered)
 			{
 				DWORD	exStyle = 0;	// WS_EX_TRANSPARENT
-				mArea = ::CreateWindowEx (exStyle, kDMAreaClassName, "", WS_CHILD | WS_CLIPCHILDREN,	//mbs 30062011	WS_CLIPCHILDREN
+				mArea = ::CreateWindowExW (exStyle, kDMAreaClassName, L"", WS_CHILD | WS_CLIPCHILDREN,	//mbs 30062011	WS_CLIPCHILDREN
 					mAreaFullRect.left, mAreaFullRect.top, mAreaFullRect.Width(), mAreaFullRect.Height(),
 					(HWND) mAreaProperties.fWinHWND, NULL, gMyInstance, NULL);
 				if (::IsWindow (mArea))
-					::SetWindowLong (mArea, GWL_USERDATA, (LPARAM) this);
+					::SetWindowLongPtrW (mArea, GWLP_USERDATA, (LONG_PTR) this);
 				mScreen->SetHWNDContext (mArea);	//mbs 13052010
 			}
 #else
@@ -888,7 +890,7 @@ DMArea::HandleEvent (void)
 
 		case eAE_IsFocusable:
 #if	kUSE_CLIPMODE
-			PA_SetPluginAreaClipMode ((long) this, 1);	//mbs 13052010
+			PA_SetPluginAreaClipMode ((PA_PluginRef) PA_GetAreaReference (mCurParams), 1);	//mbs 13052010 - the area reference (mInternalID), was "this"
 #endif
 			PA_SetAreaFocusable (mCurParams, true);
 			break;
@@ -2468,7 +2470,12 @@ typedef UInt32		OptionBits;
 typedef double		EventTime;
 typedef EventTime	EventTimeout;
 
-Boolean	__stdcall	StillDown (void);
+// the (primary) mouse button is still pressed
+static	Boolean	StillDown (void)
+{
+	const int	button = ::GetSystemMetrics (SM_SWAPBUTTON) ? VK_RBUTTON : VK_LBUTTON;
+	return (::GetAsyncKeyState (button) & 0x8000) != 0;
+}
 #endif
 
 
@@ -3551,7 +3558,7 @@ DMArea::TrackNewGuide (QDPoint wPt, bool inVertical)
 	mDirty = true;
 //	DeselectAll();
 				
-	hobj = CreateObject (inVertical? PSObjPropOGuideV: PSObjPropOGuideH, (DMBase*) 0, NULL);
+	hobj = CreateObject (inVertical? PSObjPropOGuideV: PSObjPropOGuideH, (DMBase*) 0, RWXmlNode());
 	if (hobj)
 	{
 		mShowGuides = true;
@@ -3919,13 +3926,59 @@ const
 
 #if	WINVER
 #if	kUSE_FAKE_AREA
-extern	"C"	
+// Our child window ("fake area") passes mouse and key messages on to 4D. The old 32 bit
+// build linked 4D's ASI_ functions from ASINTPPC.lib, which has no 64 bit version; they
+// are looked up in the 4D executable at run time instead. When 4D does not export them,
+// the messages go to 4D's window (the parent), mouse coordinates converted.
+namespace
 {
-	LONG __stdcall ASI_EventMouse( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
-	LONG __stdcall ASI_NCMessage( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
-	void __stdcall ASI_EventKey( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
-	LONG __stdcall ASI_EventMouse( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
-	BOOLEAN __stdcall ASI_EventUpdate( HWND hSubWnd );
+	typedef	LONG	(__stdcall *ASIMessageProc) (HWND, UINT, WPARAM, LPARAM);
+	typedef	void	(__stdcall *ASIKeyProc) (HWND, UINT, WPARAM, LPARAM);
+
+	template <class Proc>
+	Proc	HostProc (const char *inName)
+	{
+		return reinterpret_cast <Proc> (::GetProcAddress (::GetModuleHandleW (NULL), inName));
+	}
+
+	LRESULT	ForwardToParent (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, bool inClientCoordinates)
+	{
+		HWND	parent = ::GetParent (hWnd);
+		if (parent == NULL)
+			return 0;
+		if (inClientCoordinates)
+		{
+			POINT	pt = { (LONG) (short) LOWORD (lParam), (LONG) (short) HIWORD (lParam) };
+			::MapWindowPoints (hWnd, parent, &pt, 1);
+			lParam = MAKELPARAM (pt.x, pt.y);
+		}
+		return ::SendMessageW (parent, message, wParam, lParam);
+	}
+
+	LONG	ASI_EventMouse (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	{
+		static const ASIMessageProc	proc = HostProc<ASIMessageProc> ("ASI_EventMouse");
+		if (proc)
+			return proc (hWnd, message, wParam, lParam);
+		return (LONG) ForwardToParent (hWnd, message, wParam, lParam, message != WM_SETCURSOR);	// WM_SETCURSOR: no coordinates
+	}
+
+	LONG	ASI_NCMessage (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	{
+		static const ASIMessageProc	proc = HostProc<ASIMessageProc> ("ASI_NCMessage");
+		if (proc)
+			return proc (hWnd, message, wParam, lParam);
+		return (LONG) ForwardToParent (hWnd, message, wParam, lParam, false);	// screen coordinates
+	}
+
+	void	ASI_EventKey (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	{
+		static const ASIKeyProc	proc = HostProc<ASIKeyProc> ("ASI_EventKey");
+		if (proc)
+			proc (hWnd, message, wParam, lParam);
+		else
+			ForwardToParent (hWnd, message, wParam, lParam, false);
+	}
 }
 #endif
 
@@ -3941,7 +3994,7 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case WM_MOUSEWHEEL:
 		{
 			long APIENTRY fakeAreaWheelEvtHndlr (ListDataHandle area, HWND hWnd, WPARAM wParam, LPARAM lParam);
-			AreaPrivateData* pdata = (AreaPrivateData*)GetWindowLong(hWnd, GWL_USERDATA);
+			AreaPrivateData* pdata = (AreaPrivateData*)::GetWindowLongPtrW (hWnd, GWLP_USERDATA);
 			if (pdata)
 			{
 				ListDataHandle 	listHandle = (ListDataHandle) pdata->aref;
@@ -3975,7 +4028,7 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case WM_NCHITTEST:
 		{
 			// handle mNoHitTest "hole" for editing in 4D
-			DMArea	*a = reinterpret_cast <DMArea*> (::GetWindowLong (hWnd, GWL_USERDATA));
+			DMArea	*a = reinterpret_cast <DMArea*> (::GetWindowLongPtrW (hWnd, GWLP_USERDATA));
 			if (a != NULL && not a->mNoHitTest.IsEmpty())
 			{
 				POINT	pt;
@@ -4026,7 +4079,7 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case WM_PAINT:
 		{
 #if	1
-			DMArea	*a = reinterpret_cast <DMArea*> (::GetWindowLong (hWnd, GWL_USERDATA));
+			DMArea	*a = reinterpret_cast <DMArea*> (::GetWindowLongPtrW (hWnd, GWLP_USERDATA));
 			if (a != NULL)
 				a->HandleUpdate (true);
 			lResult = ::DefWindowProc (hWnd, iMessage, wParam, lParam);
@@ -4056,7 +4109,7 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			ASI_EventCommand(hWnd, iMessage, wParam, lParam);
 			lResult = DefWindowProc(hWnd, iMessage, wParam, lParam);
 				{
-				AreaPrivateData* pdata = (AreaPrivateData*)GetWindowLong(hWnd, GWL_USERDATA);
+				AreaPrivateData* pdata = (AreaPrivateData*)::GetWindowLongPtrW (hWnd, GWLP_USERDATA);
 
 				if (pdata && pdata->proc)
 					pdata->proc(pdata->aref, (void*)lParam);
@@ -4083,7 +4136,7 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case WM_VSCROLL:
 		{
 			HWND	hitControl = (HWND)lParam;
-			UIScrollBar	*sb = reinterpret_cast <UIScrollBar*> (::GetWindowLong (hitControl, GWL_USERDATA));
+			UIScrollBar	*sb = reinterpret_cast <UIScrollBar*> (::GetWindowLongPtrW (hitControl, GWLP_USERDATA));
 			if (sb != NULL)
 			{
 				sb->ScrollProc (LOWORD (wParam));
@@ -4112,7 +4165,7 @@ DMArea::AreaWndProc (HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			case WM_VSCROLL:
 			{
 				HWND	hitControl = (HWND)lParam;
-				UIScrollBar	*sb = reinterpret_cast <UIScrollBar*> (::GetWindowLong (hitControl, GWL_USERDATA));
+				UIScrollBar	*sb = reinterpret_cast <UIScrollBar*> (::GetWindowLongPtrW (hitControl, GWLP_USERDATA));
 				if (sb != NULL)
 				{
 					sb->ScrollProc (LOWORD (wParam));
@@ -4143,7 +4196,7 @@ DMArea::RegisterProc (void)
 	if (it == sWndProcMap.end())
 	{
 		wndProcMap	v;
-		v.oldProc = SetWindowLong (key, GWL_WNDPROC, (LONG) AreaWndProc);
+		v.oldProc = (WNDPROC) ::SetWindowLongPtrW (key, GWLP_WNDPROC, (LONG_PTR) AreaWndProc);
 		v.refCount = 1;
 		WndProcMap::value_type	value (key, v);
 		sWndProcMap.insert (value);

@@ -1,213 +1,220 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ReportWriter plugin for 4D, Windows x64 (4D v20 and later).
+  Before the first build run podofo\build_win.ps1 (PoDoFo and its libraries in podofo\win64).
+  Output: test\Plugins\ReportWriter.bundle\Contents\Windows64\ReportWriter.4DX
+  The sources are the Xcode target's, with RWWinPageComposer / RWFontsWin instead of the Mac composers.
+-->
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="4D Plugin API\4DPluginAPI.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsCpp</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsCpp</CompileAs>
-    </ClCompile>
-    <ClCompile Include="4DPlugin-ReportWriter.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="4D Plugin API\4DPluginAPI.h" />
-    <ClInclude Include="4D Plugin API\EntryPoints.h" />
-    <ClInclude Include="4D Plugin API\Flags.h" />
-    <ClInclude Include="4D Plugin API\PrivateTypes.h" />
-    <ClInclude Include="4D Plugin API\PublicTypes.h" />
-    <ClInclude Include="4DPlugin-ReportWriter.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="4D Plugin API\4DPluginAPI.def" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{7A96E65F-9359-489F-A82A-C705EAE67CC4}</ProjectGuid>
-    <RootNamespace>My4DPlugin</RootNamespace>
-    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ReportWriter</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-      <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-      <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)test\plugins\$(ProjectName).bundle\contents\windows\</OutDir>
-      <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)test\plugins\$(ProjectName).bundle\contents\windows64\</OutDir>
-      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Objs\$(Configuration)\</IntDir>
-      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Objs\$(Configuration)\</IntDir>
-      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-      <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)test\plugins\$(ProjectName).bundle\contents\windows\</OutDir>
-      <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)test\plugins\$(ProjectName).bundle\contents\windows64\</OutDir>
-      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)Objs\$(Configuration)\</IntDir>
-      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)Objs\$(Configuration)\</IntDir>
-      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.4DX</TargetExt>
-      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.4DX</TargetExt>
-      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.4DX</TargetExt>
-      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.4DX</TargetExt>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-      <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-      <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-      <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
+    <OutDir>$(ProjectDir)test\Plugins\$(ProjectName).bundle\Contents\Windows64\</OutDir>
+    <IntDir>$(ProjectDir)build\win64\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.4DX</TargetExt>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);4D Plugin API\Classes;4D Plugin API;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MY4DPLUGIN_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <CallingConvention>Cdecl</CallingConvention>
-      <CompileAs>Default</CompileAs>
-      <DisableSpecificWarnings>4146;4018;4800;4244;4068;</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(TargetPath)</OutputFile>
-      <ModuleDefinitionFile>.\4D Plugin API\4DPluginAPI.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <TargetMachine>MachineX86</TargetMachine>
-      <EntryPointSymbol>
-      </EntryPointSymbol>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);4D Plugin API\Classes;4D Plugin API;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN64;WIN32;_DEBUG;_WINDOWS;_USRDLL;MY4DPLUGIN_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;WIN64;_WINDOWS;_USRDLL;PODOFO_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);RW;DM;SRP;ET;pugixml;rapidjson\include;4D Plugin API;podofo\win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>RWWinPrefix.h</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/utf-8 /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <CallingConvention>Cdecl</CallingConvention>
-      <CompileAs>Default</CompileAs>
-      <OmitFramePointers>false</OmitFramePointers>
-      <DisableSpecificWarnings>4146;4018;4800;4244;4068;4267</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <OutputFile>$(TargetPath)</OutputFile>
-      <ModuleDefinitionFile>.\4D Plugin API\4DPluginAPI.def</ModuleDefinitionFile>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
+      <ModuleDefinitionFile>4D Plugin API\4DPluginAPI.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>podofo\win64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>podofo.lib;podofo_private.lib;podofo_3rdparty.lib;freetype.lib;libpng16.lib;jpeg.lib;libssl.lib;libcrypto.lib;zlib.lib;libxml2.lib;ws2_32.lib;crypt32.lib;bcrypt.lib;gdiplus.lib;comdlg32.lib;winspool.lib;shell32.lib;ole32.lib;winmm.lib;gdi32.lib;user32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir);support;include;include\windows;4D Plugin API\Classes;4D Plugin API;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NONDLL;BGDWIN32;WIN32;NOMINMAX;_WINDOWS;NDEBUG;_USRDLL;MY4DPLUGIN_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <CallingConvention>Cdecl</CallingConvention>
-      <DisableSpecificWarnings>4146;4018;4800;4244;4068;</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(TargetPath)</OutputFile>
-      <ModuleDefinitionFile>.\4D Plugin API\4DPluginAPI.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX86</TargetMachine>
-      <EntryPointSymbol>
-      </EntryPointSymbol>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib\windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
+    <PostBuildEvent>
+      <Message>Copy manifest.json into the plugin bundle</Message>
+      <Command>if not exist "$(OutDir)..\Resources" mkdir "$(OutDir)..\Resources"
+copy /Y "$(ProjectDir)manifest.json" "$(OutDir)..\Resources\manifest.json"
+if exist "$(ProjectDir)constants.xlf" copy /Y "$(ProjectDir)constants.xlf" "$(OutDir)..\Resources\constants.xlf"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir);support;include;include\windows;4D Plugin API\Classes;4D Plugin API;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NONDLL;BGDWIN32;WIN64;WIN32;NOMINMAX;_WINDOWS;NDEBUG;_USRDLL;MY4DPLUGIN_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;WIN64;_WINDOWS;_USRDLL;PODOFO_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);RW;DM;SRP;ET;pugixml;rapidjson\include;4D Plugin API;podofo\win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>RWWinPrefix.h</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/utf-8 /Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <CallingConvention>Cdecl</CallingConvention>
-      <OmitFramePointers>false</OmitFramePointers>
-      <DisableSpecificWarnings>4146;4018;4800;4244;4068;4267</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <OutputFile>$(TargetPath)</OutputFile>
-      <ModuleDefinitionFile>.\4D Plugin API\4DPluginAPI.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib\windows64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>4D Plugin API\4DPluginAPI.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>podofo\win64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>podofo.lib;podofo_private.lib;podofo_3rdparty.lib;freetype.lib;libpng16.lib;jpeg.lib;libssl.lib;libcrypto.lib;zlib.lib;libxml2.lib;ws2_32.lib;crypt32.lib;bcrypt.lib;gdiplus.lib;comdlg32.lib;winspool.lib;shell32.lib;ole32.lib;winmm.lib;gdi32.lib;user32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Message>Copy manifest.json into the plugin bundle</Message>
+      <Command>if not exist "$(OutDir)..\Resources" mkdir "$(OutDir)..\Resources"
+copy /Y "$(ProjectDir)manifest.json" "$(OutDir)..\Resources\manifest.json"
+if exist "$(ProjectDir)constants.xlf" copy /Y "$(ProjectDir)constants.xlf" "$(OutDir)..\Resources\constants.xlf"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="DM\DMArea.cpp" />
+    <ClCompile Include="DM\DMObject.cpp" />
+    <ClCompile Include="DM\DMReport.cpp" />
+    <ClCompile Include="DM\DMUndo.cpp" />
+    <ClCompile Include="DM\PSObject.cpp" />
+    <ClCompile Include="DM\UIScrollBar.cpp" />
+    <ClCompile Include="ET\ETObject.cpp" />
+    <ClCompile Include="ET\ETReport.cpp" />
+    <ClCompile Include="ET\ETReportData.cpp" />
+    <ClCompile Include="ET\ETSection.cpp" />
+    <ClCompile Include="RW\RWBaseTypes.cpp" />
+    <ClCompile Include="RW\RWCalculator.cpp" />
+    <ClCompile Include="RW\RWDataProvider.cpp" />
+    <ClCompile Include="RW\RWDataSource.cpp" />
+    <ClCompile Include="RW\RWDataSourceProvider.cpp" />
+    <ClCompile Include="RW\RWFontsWin.cpp" />
+    <ClCompile Include="RW\RWObject.cpp" />
+    <ClCompile Include="RW\RWPageComposer.cpp" />
+    <ClCompile Include="RW\RWPdfFonts.cpp" />
+    <ClCompile Include="RW\RWPoDoFoPageComposer.cpp" />
+    <ClCompile Include="RW\RWReportData.cpp" />
+    <ClCompile Include="RW\RWReportWriter.cpp" />
+    <ClCompile Include="RW\RWSection.cpp" />
+    <ClCompile Include="RW\RWString.cpp" />
+    <ClCompile Include="RW\RWStyle.cpp" />
+    <ClCompile Include="RW\RWTable.cpp" />
+    <ClCompile Include="RW\RWTextFormatter.cpp" />
+    <ClCompile Include="RW\RWWinPageComposer.cpp" />
+    <ClCompile Include="RW\RWXml.cpp" />
+    <ClCompile Include="RW\RWXmlJson.cpp" />
+    <ClCompile Include="SRP\ExtendedExecute.cpp" />
+    <ClCompile Include="SRP\RW4DText.cpp" />
+    <ClCompile Include="SRP\SR4DData.cpp" />
+    <ClCompile Include="SRP\SRDataFormatter.cpp" />
+    <ClCompile Include="SRP\SRDataSource.cpp" />
+    <ClCompile Include="SRP\SRDataSourceProvider.cpp" />
+    <ClCompile Include="SRP\SRLicense.cpp" />
+    <ClCompile Include="SRP\SRObject.cpp" />
+    <ClCompile Include="SRP\SRPlugin.cpp" />
+    <ClCompile Include="SRP\SRReportData.cpp" />
+    <ClCompile Include="SRP\SRReportWriter.cpp" />
+    <ClCompile Include="SRP\SRSection.cpp" />
+    <ClCompile Include="SRP\SRTable.cpp" />
+    <ClCompile Include="pugixml\pugixml.cpp" />
+    <ClCompile Include="4D Plugin API\4DPluginAPI.c">
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DM\DMArea.h" />
+    <ClInclude Include="DM\DMObject.h" />
+    <ClInclude Include="DM\DMReport.h" />
+    <ClInclude Include="DM\DMUndo.h" />
+    <ClInclude Include="DM\PSObjProps.h" />
+    <ClInclude Include="DM\PSObject.h" />
+    <ClInclude Include="DM\UIScrollBar.h" />
+    <ClInclude Include="ET\ETObject.h" />
+    <ClInclude Include="ET\ETReport.h" />
+    <ClInclude Include="ET\ETReportData.h" />
+    <ClInclude Include="ET\ETSection.h" />
+    <ClInclude Include="RW\RWBaseTypes.h" />
+    <ClInclude Include="RW\RWCalculator.h" />
+    <ClInclude Include="RW\RWDataProvider.h" />
+    <ClInclude Include="RW\RWDataSource.h" />
+    <ClInclude Include="RW\RWDataSourceProvider.h" />
+    <ClInclude Include="RW\RWJson.h" />
+    <ClInclude Include="RW\RWObject.h" />
+    <ClInclude Include="RW\RWPageComposer.h" />
+    <ClInclude Include="RW\RWPdfFonts.h" />
+    <ClInclude Include="RW\RWPoDoFoPageComposer.h" />
+    <ClInclude Include="RW\RWReportData.h" />
+    <ClInclude Include="RW\RWReportVariables.h" />
+    <ClInclude Include="RW\RWReportWriter.h" />
+    <ClInclude Include="RW\RWSection.h" />
+    <ClInclude Include="RW\RWString.h" />
+    <ClInclude Include="RW\RWString4D.h" />
+    <ClInclude Include="RW\RWStyle.h" />
+    <ClInclude Include="RW\RWTextFormatter.h" />
+    <ClInclude Include="RW\RWWinPageComposer.h" />
+    <ClInclude Include="RW\RWWinPrefix.h" />
+    <ClInclude Include="RW\RWXml.h" />
+    <ClInclude Include="RW\RWXmlJson.h" />
+    <ClInclude Include="SRP\ExtendedExecute.h" />
+    <ClInclude Include="SRP\RW4DText.h" />
+    <ClInclude Include="SRP\SR4DData.h" />
+    <ClInclude Include="SRP\SRDataFormatter.h" />
+    <ClInclude Include="SRP\SRDataSource.h" />
+    <ClInclude Include="SRP\SRDataSourceProvider.h" />
+    <ClInclude Include="SRP\SRLicense.h" />
+    <ClInclude Include="SRP\SRObject.h" />
+    <ClInclude Include="SRP\SRPlugin.h" />
+    <ClInclude Include="SRP\SRReportData.h" />
+    <ClInclude Include="SRP\SRReportWriter.h" />
+    <ClInclude Include="SRP\SRSection.h" />
+    <ClInclude Include="theVersion.h" />
+    <ClInclude Include="4D Plugin API\4DPluginAPI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="manifest.json" />
+    <None Include="4D Plugin API\4DPluginAPI.def" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>

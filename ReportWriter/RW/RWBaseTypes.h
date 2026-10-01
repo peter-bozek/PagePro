@@ -3,7 +3,7 @@
 
 # include   "4DPluginAPI.h"		// Flags.h: VERSIONMAC / VERSIONWIN
 
-// MACVER used to come from a prefix header (RW/MacCarbonPrefix.h) the project no longer uses;
+// MACVER used to come from a prefix header (RW/MacCarbonPrefix.h, removed); the Windows build defines it in RWWinPrefix.h;
 // without it every "#if MACVER" compiled its Windows branch on the Mac.
 #if	VERSIONMAC && !defined(MACVER)
 # define	MACVER			1
@@ -16,6 +16,7 @@
 #endif
 # include	"RWString.h"
 # include	"RWXml.h"
+# include	<cassert>
 # include	<math.h>
 # include   <string>
 # include   <vector>

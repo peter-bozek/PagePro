@@ -1,7 +1,7 @@
 # include	"RWStyle.h"
 # include	"PSObjProps.h"
 
-#if	WIN32
+#if	VERSIONWIN
 	const	char		RWStyle::cDefFontName[]			= "Arial";
 //	const	char		RWStyle::cDefFontPSName[]		= "Arial";
 	const	float		RWStyle::cDefFontSize			= 8;

@@ -16,7 +16,7 @@
 # include	"4DPluginAPI.h"
 // using namespace	FourDAPIEx;
 
-#if	true
+#if	MACVER
 #  include	"RWCTPageComposer.h"		// CoreGraphics + CoreText
 #else
 # include	"RWWinPageComposer.h"
@@ -138,7 +138,7 @@ static	float					RoundUI (float f);
 				void			UnRegisterProc (void);
 	struct	wndProcMap
 	{
-		LONG	oldProc;
+		WNDPROC	oldProc;
 		long	refCount;
 	};
 	typedef	RWMap<HWND,wndProcMap>	WndProcMap;
