@@ -1,0 +1,5 @@
+# build products of build_mac.sh / build_win.ps1 (rebuild with the scripts)
+.build/
+.build-win/
+mac/
+win64/

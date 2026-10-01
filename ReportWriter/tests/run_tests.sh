@@ -36,3 +36,25 @@ clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$ROOT/
 
 mkdir -p "$OUT/export"
 "$OUT/ETExportTests" "$OUT/export"
+
+# PDF output (PoDoFo 1.0): needs podofo/build_mac.sh to have run
+PODOFO="$ROOT/podofo/mac"
+if [ -f "$PODOFO/lib/libpodofo.a" ]; then
+	VERSION_H="${RW_VERSION_HEADER_DIR:-$ROOT/../../new SRP current_16/Resources}"	# theVersion.h (not in the repository yet)
+	clang++ "${FLAGS[@]}" -I "$ROOT/tinyXML" -I "$ROOT/DM" -I "$ROOT/SRP" -I "$PODOFO/include" -I "$VERSION_H" -DPODOFO_STATIC \
+		-w -fpascal-strings -fsanitize=address,undefined \
+		"$ROOT/tests/PdfComposerTests.cpp" "$ROOT/RW/RWPoDoFoPageComposer.cpp" "$ROOT/RW/RWPageComposer.cpp" \
+		"$ROOT/RW/RWPdfFonts.cpp" "$ROOT/RW/RWFontsMac.cpp" "$ROOT/RW/RWTextFormatter.cpp" "$ROOT/RW/RWStyle.cpp" \
+		"$ROOT/RW/RWBaseTypes.cpp" "$ROOT/RW/RWString.cpp" "$ROOT/RW/RWXml.cpp" "$ROOT/DM/PSObject.cpp" "$ROOT/SRP/ExtendedExecute.cpp" \
+		"$ROOT/RW/RWCTPageComposer.cpp" "$ROOT/RW/RWMacCGPageComposer.cpp" -x objective-c++ "$ROOT/RW/RWMacPageComposer.cpp" -x none \
+		"$OUT/pugixml.o" "$OUT/4DPluginAPI.o" \
+		"$PODOFO/lib/libpodofo.a" "$PODOFO/lib/libpodofo_private.a" "$PODOFO/lib/libpodofo_3rdparty.a" \
+		"$PODOFO/lib/libfreetype.a" "$PODOFO/lib/libpng16.a" "$PODOFO/lib/libjpeg.a" "$PODOFO/lib/libssl.a" "$PODOFO/lib/libcrypto.a" \
+		-lz -lxml2 -framework CoreFoundation -framework CoreGraphics -framework CoreText -framework ImageIO \
+		-framework AppKit -framework Carbon -framework IOKit -o "$OUT/PdfComposerTests"
+
+	mkdir -p "$OUT/pdf"
+	"$OUT/PdfComposerTests" "$OUT/pdf"
+else
+	echo "PdfComposerTests skipped: run podofo/build_mac.sh first"
+fi

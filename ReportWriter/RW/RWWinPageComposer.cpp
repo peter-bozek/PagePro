@@ -694,9 +694,9 @@ RWWinPageComposer::AdoptDefSetting (bool inOrientation)
 				for (i = 0; i < 65536; i++)
 				{
 					if (i == 0)
-						swprintf (p, 20, L".xps");
+						swprintf (p, 20, L".pdf");
 					else
-						swprintf (p, 20, L" %d.xps", i);
+						swprintf (p, 20, L" %d.pdf", i);
 					int	fh = _wopen (mDestination.GetWStr(), O_WRONLY | O_BINARY | O_CREAT | O_EXCL);
 					if (fh != -1)
 					{
@@ -712,8 +712,8 @@ RWWinPageComposer::AdoptDefSetting (bool inOrientation)
 		}
 
 		UString	drvn (L"winspool");
-		UString	devn (L"Microsoft XPS Document Writer");
-		UString	outn (L"XPSPort:");
+		UString	devn (L"Microsoft Print to PDF");	// was "Microsoft XPS Document Writer"
+		UString	outn (L"PORTPROMPT:");			// the file name comes from DOCINFO::lpszOutput
 		SIZE_T	size = (drvn.StrLength() + devn.StrLength() + outn.StrLength() + 3) * sizeof (UTF16Char) + sizeof (DEVNAMES);
 		HGLOBAL		hDevNames = GlobalAlloc (GMEM_MOVEABLE, size);
 		DEVNAMES	*dstDevNames = (DEVNAMES*) GlobalLock (hDevNames);

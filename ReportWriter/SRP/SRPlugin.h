@@ -50,7 +50,7 @@ enum
 	eProcessSRP,			// RW_Process_RW(&T;&L;&T):L
 	ePrintRW,				// RW_Print_RW(&T;&L;&L;&T;&L;&T):L
 
-	eColorPicker,			// RW_ColorPicker(&L):L
+	eColorPicker_Removed,	// was RW_ColorPicker(&L):L - removed, 4D has Select RGB color; slot kept so later command numbers do not change
 
 	eTextStyleAdd,			// RW_AddStyle(&T;&T;&L;&L;&L;&T;&8;&L;&L;&8;&L;&L):L
 	eTextStyleRemove,		// RW_RemoveStyle(&T;&T;&L;&L;&L;&T;&8;&L;&L;&8;&L):L
@@ -128,7 +128,6 @@ long RW_DoRedo (long inRepRef);
 
 long RW_PrintSettings (long inRepRef, long inOptions);
 
-long RW_ColorPicker (PA_PluginParameters params);
 long RW_AddRemoveStyle (PA_PluginParameters params, bool inAdd);
 long RW_ApplyStyle (PA_PluginParameters params);
 

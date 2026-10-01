@@ -33,10 +33,11 @@
 		D26EBFA92AF2736E001E7074 /* tinyxml2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFA62AF2736E001E7074 /* tinyxml2.cpp */; };
 		D26EBFAA2AF2736E001E7074 /* xmltest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFA72AF2736E001E7074 /* xmltest.cpp */; };
 		D26EBFEC2AF274EE001E7074 /* RWCTPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */; };
+		153A3315A65B305A8B500D94 /* RWPdfFonts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 023456056F41B96F9770D22D /* RWPdfFonts.cpp */; };
+		592F29AE4F6E397879376CDA /* RWFontsMac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2462DFF3994DD5FEE32C5432 /* RWFontsMac.cpp */; };
 		D26EBFEE2AF274EE001E7074 /* RWObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB32AF274EE001E7074 /* RWObject.cpp */; };
 		D26EBFF32AF274EE001E7074 /* RWPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB82AF274EE001E7074 /* RWPageComposer.cpp */; };
 		D26EBFF52AF274EE001E7074 /* ETReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFBA2AF274EE001E7074 /* ETReport.cpp */; };
-		D26EBFF62AF274EE001E7074 /* RWPDFPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFBB2AF274EE001E7074 /* RWPDFPageComposer.cpp */; };
 		D26EBFFA2AF274EE001E7074 /* RWDataProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFBF2AF274EE001E7074 /* RWDataProvider.cpp */; };
 		D26EBFFC2AF274EF001E7074 /* ETObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFC12AF274EE001E7074 /* ETObject.cpp */; };
 		D26EBFFE2AF274EF001E7074 /* RWPoDoFoPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFC32AF274EE001E7074 /* RWPoDoFoPageComposer.cpp */; };
@@ -141,13 +142,17 @@
 		D26EBFAD2AF274EE001E7074 /* RWTextFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWTextFormatter.h; sourceTree = "<group>"; };
 		D26EBFAF2AF274EE001E7074 /* ETObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETObject.h; sourceTree = "<group>"; };
 		D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWCTPageComposer.cpp; sourceTree = "<group>"; };
+		86D0702CB2D1FAF8A4E9D315 /* RWPdfFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPdfFonts.h; sourceTree = "<group>"; };
+		023456056F41B96F9770D22D /* RWPdfFonts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWPdfFonts.cpp; sourceTree = "<group>"; };
+		522FC4EBB53A8CC49E4CB2CD /* RWFontsMac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWFontsMac.h; sourceTree = "<group>"; };
+		2462DFF3994DD5FEE32C5432 /* RWFontsMac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWFontsMac.cpp; sourceTree = "<group>"; };
+		5593EB86748F9B907C433C7D /* RWFontsWin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWFontsWin.cpp; sourceTree = "<group>"; };
 		D26EBFB22AF274EE001E7074 /* ETReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETReport.h; sourceTree = "<group>"; };
 		D26EBFB32AF274EE001E7074 /* RWObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWObject.cpp; sourceTree = "<group>"; };
 		D26EBFB52AF274EE001E7074 /* RWMacPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWMacPageComposer.h; sourceTree = "<group>"; };
 		D26EBFB82AF274EE001E7074 /* RWPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWPageComposer.cpp; sourceTree = "<group>"; };
 		D26EBFB92AF274EE001E7074 /* RWReportWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWReportWriter.h; sourceTree = "<group>"; };
 		D26EBFBA2AF274EE001E7074 /* ETReport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ETReport.cpp; sourceTree = "<group>"; };
-		D26EBFBB2AF274EE001E7074 /* RWPDFPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWPDFPageComposer.cpp; sourceTree = "<group>"; };
 		D26EBFBC2AF274EE001E7074 /* ETReportData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETReportData.h; sourceTree = "<group>"; };
 		D26EBFBD2AF274EE001E7074 /* RWReportVariables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWReportVariables.h; sourceTree = "<group>"; };
 		D26EBFBF2AF274EE001E7074 /* RWDataProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWDataProvider.cpp; sourceTree = "<group>"; };
@@ -166,7 +171,6 @@
 		D26EBFCF2AF274EE001E7074 /* RWStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWStyle.h; sourceTree = "<group>"; };
 		D26EBFD02AF274EE001E7074 /* RWPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPageComposer.h; sourceTree = "<group>"; };
 		D26EBFD12AF274EE001E7074 /* ETSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETSection.h; sourceTree = "<group>"; };
-		D26EBFD22AF274EE001E7074 /* RWPDFPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPDFPageComposer.h; sourceTree = "<group>"; };
 		D26EBFD32AF274EE001E7074 /* RWSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWSection.h; sourceTree = "<group>"; };
 		D26EBFD52AF274EE001E7074 /* RWPoDoFoPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPoDoFoPageComposer.h; sourceTree = "<group>"; };
 		D26EBFD72AF274EE001E7074 /* MacCarbonPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacCarbonPrefix.h; sourceTree = "<group>"; };
@@ -416,8 +420,11 @@
 				D26EBFDE2AF274EE001E7074 /* RWMacPageComposer.cpp */,
 				D26EBFD92AF274EE001E7074 /* RWCTPageComposer.h */,
 				D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */,
-				D26EBFD22AF274EE001E7074 /* RWPDFPageComposer.h */,
-				D26EBFBB2AF274EE001E7074 /* RWPDFPageComposer.cpp */,
+				86D0702CB2D1FAF8A4E9D315 /* RWPdfFonts.h */,
+				023456056F41B96F9770D22D /* RWPdfFonts.cpp */,
+				522FC4EBB53A8CC49E4CB2CD /* RWFontsMac.h */,
+				2462DFF3994DD5FEE32C5432 /* RWFontsMac.cpp */,
+				5593EB86748F9B907C433C7D /* RWFontsWin.cpp */,
 				D26EBFD52AF274EE001E7074 /* RWPoDoFoPageComposer.h */,
 				D26EBFC32AF274EE001E7074 /* RWPoDoFoPageComposer.cpp */,
 				D26EBFDA2AF274EE001E7074 /* RWReportData.h */,
@@ -611,8 +618,9 @@
 				D22610752B3DB5A400CFC83D /* SRReportWriter.cpp in Sources */,
 				D26EC01F2AF274EF001E7074 /* RWTable.cpp in Sources */,
 				D26EBFEC2AF274EE001E7074 /* RWCTPageComposer.cpp in Sources */,
+				153A3315A65B305A8B500D94 /* RWPdfFonts.cpp in Sources */,
+				592F29AE4F6E397879376CDA /* RWFontsMac.cpp in Sources */,
 				D26EBFFC2AF274EF001E7074 /* ETObject.cpp in Sources */,
-				D26EBFF62AF274EE001E7074 /* RWPDFPageComposer.cpp in Sources */,
 				D226108C2B3DB5A400CFC83D /* RW4DText.cpp in Sources */,
 				D26EC03F2AF44891001E7074 /* UIScrollBar.cpp in Sources */,
 				D26EBFA92AF2736E001E7074 /* tinyxml2.cpp in Sources */,
@@ -690,20 +698,37 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					PODOFO_STATIC,
+				);
 				HEADER_SEARCH_PATHS = (
 					"include/**",
 					pugixml,
 					rapidjson/include,
+					podofo/mac/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/podofo/mac/lib",
 					"$(PROJECT_DIR)/a",
 				);
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-lpodofo",
+					"-lpodofo_private",
+					"-lpodofo_3rdparty",
+					"-lfreetype",
+					"-lpng16",
+					"-ljpeg",
+					"-lssl",
+					"-lcrypto",
+					"-lz",
+					"-lxml2",
+				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
 				PRODUCT_NAME = ReportWriter;
@@ -747,20 +772,37 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					PODOFO_STATIC,
+				);
 				HEADER_SEARCH_PATHS = (
 					"include/**",
 					pugixml,
 					rapidjson/include,
+					podofo/mac/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/podofo/mac/lib",
 					"$(PROJECT_DIR)/a",
 				);
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-lpodofo",
+					"-lpodofo_private",
+					"-lpodofo_3rdparty",
+					"-lfreetype",
+					"-lpng16",
+					"-ljpeg",
+					"-lssl",
+					"-lcrypto",
+					"-lz",
+					"-lxml2",
+				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
 				PRODUCT_NAME = ReportWriter;
@@ -803,20 +845,37 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					PODOFO_STATIC,
+				);
 				HEADER_SEARCH_PATHS = (
 					"include/**",
 					pugixml,
 					rapidjson/include,
+					podofo/mac/include,
 				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/podofo/mac/lib",
 					"$(PROJECT_DIR)/a",
 				);
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-lpodofo",
+					"-lpodofo_private",
+					"-lpodofo_3rdparty",
+					"-lfreetype",
+					"-lpng16",
+					"-ljpeg",
+					"-lssl",
+					"-lcrypto",
+					"-lz",
+					"-lxml2",
+				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = eu.pagepro.ReportWriter;
 				PRODUCT_NAME = ReportWriter;

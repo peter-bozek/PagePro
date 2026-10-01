@@ -37,7 +37,6 @@ using namespace	std;
 HINSTANCE	gMyInstance = 0;
 WCHAR		gLastFontName[32];
 //ULONG_PTR	sGdiplusToken = 0;
-COLORREF	gUserColors [16];
 
 
 extern "C"	BOOL __stdcall DllMain(HINSTANCE hInst, DWORD fdwReason, LPVOID lpvReserved);
@@ -421,10 +420,6 @@ try
 			
 		case ePrintSettings:		//	repRef, options
 			PA_ReturnLong (params, RW_PrintSettings (PA_GetLongParameter (params, 1), PA_GetLongParameter (params, 2)));
-			break;
-
-		case eColorPicker:			// ioColor
-			PA_ReturnLong (params, RW_ColorPicker (params));
 			break;
 
 		case eTextStyleAdd:			//	outStr, inStr, from, to, style, fontName, fontSize, fontColor, setColor, scale, rounding, mode
@@ -2434,35 +2429,6 @@ long RW_PrintSettings (long inRepRef, long inOptions)
 	return result;
 }
 
-
-
-long RW_ColorPicker (PA_PluginParameters params)
-{
-#if	MACVER
-	// ••• TODO •••	the Carbon color picker (NPickColor) does not exist in 64 bit macOS;
-	//				replace with NSColorPanel or 4D's "Select RGB color" (MIGRATION_PLAN.md)
-	(void) params;
-	return 0;		// no color chosen
-#else
-	CHOOSECOLORW	color;
-	memset (&color, 0, sizeof (color));
-	color.lStructSize = sizeof (color);
-	color.hwndOwner = (HWND) PA_GetHWND (0);
-	color.Flags = CC_RGBINIT | CC_FULLOPEN | CC_ANYCOLOR;
-	color.rgbResult = (unsigned long) PA_GetLongParameter (params, 1);
-	//mbs 30062010	Win uses BGR, we use RGB...
-	color.rgbResult = (color.rgbResult & 0x00FF00) | ((color.rgbResult & 0xFF0000) >> 16) | ((color.rgbResult & 0x0000FF) << 16);
-	color.lpCustColors = gUserColors;
-	if (::ChooseColorW (&color))
-	{
-		//mbs 30062010	Win uses BGR, we use RGB...
-		color.rgbResult = (color.rgbResult & 0x00FF00) | ((color.rgbResult & 0xFF0000) >> 16) | ((color.rgbResult & 0x0000FF) << 16);
-		PA_SetLongParameter	(params, 1, color.rgbResult);
-		return 1;
-	}
-#endif
-	return 0;
-}
 
 
 long RW_AddRemoveStyle (PA_PluginParameters params, bool inAdd)

@@ -154,17 +154,17 @@ SR4DData::GetPictureFrom4D (void *ph, RWValue &outValue, bool inForPDF)
 				bestKind = RWValue::eValue_PictureTIFF;
 			}
 			PA_DisposeUnistring (&u);
-//	PoDoFo has problems with ARGB in TIFF & PNG
-//			if (bestKind > RWValue::eValue_PicturePICT && (not inForPDF || (bestKind >= RWValue::eValue_PictureJPG && bestKind <= RWValue::eValue_PictureTIFF)))
-			if (bestKind > RWValue::eValue_PicturePICT && (not inForPDF || bestKind == RWValue::eValue_PictureJPG))
+			// PDF (PoDoFo 1.0): JPEG is embedded unchanged, PNG decoded and Flate compressed (alpha becomes a soft mask)
+			if (bestKind > RWValue::eValue_PicturePICT && (not inForPDF || bestKind == RWValue::eValue_PictureJPG || bestKind == RWValue::eValue_PicturePNG))
 				break;
 			index++;
 		}
 		if (bestKind != RWValue::eValue_Undefined)
 		{
-			if (inForPDF && (bestKind < RWValue::eValue_PictureJPG || bestKind > RWValue::eValue_PictureTIFF))
+			if (inForPDF && bestKind != RWValue::eValue_PictureJPG && bestKind != RWValue::eValue_PicturePNG)
 			{
-				PA_Unichar		fmt [] = { '.', 'j', 'p', 'g', 0 };
+				// lossless and keeps transparency (was .jpg)
+				PA_Unichar		fmt [] = { '.', 'p', 'n', 'g', 0 };
 				PA_Unistring	uni = PA_CreateUnistring (fmt);
 /*
  switch (inKind)

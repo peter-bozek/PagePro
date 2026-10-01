@@ -10,6 +10,7 @@
 #include "RWCTPageComposer.h"
 #include "RWStyle.h"
 #include "RWStringCF.h"
+#include "RWFontsMac.h"
 
 struct	RWMacPrintTextContext
 {
@@ -121,45 +122,7 @@ RWCTPageComposer::StyleChanged (RWStyle *inStyle)
 CTFontRef
 RWCTPageComposer::CreateFont (const CText inName, long inNameLength, float inSize, int style)
 {
-	RWStringView	name = RWStringView (inName).substr (0, size_t (std::max (inNameLength, 0L)));
-	CFStringRef	fontName = RWStr::CreateCFString (name);
-	CTFontRef	font = CTFontCreateWithName (fontName, inSize, NULL);
-	if (font == NULL)
-	{
-		printf ("RWCTPageComposer::CreateFont: font '%s' not found!\n", RWStr::ToUTF8 (name).c_str());
-		::CFRelease (fontName);
-		fontName = CFStringCreateWithCString (kCFAllocatorDefault, RWStyle::cDefFontName, kCFStringEncodingUTF8);
-		font = CTFontCreateWithName (fontName, inSize, NULL);
-		if (font == NULL)
-		{
-			::CFRelease (fontName);
-			fontName = CFStringCreateWithCString (kCFAllocatorDefault, RWStyle::cDefFontName, kCFStringEncodingUTF8);
-			font = CTFontCreateWithName (fontName, inSize, NULL);
-		}
-	}
-	::CFRelease (fontName);
-	if (font != NULL && (style & (RWStyle::st_bold | RWStyle::st_italic)) != 0)
-	{
-		// font variation - bold/italic
-		CTFontSymbolicTraits	fstyle = 0;
-		if (style & RWStyle::st_bold)
-			fstyle |= kCTFontBoldTrait;
-		if (style & RWStyle::st_italic)
-			fstyle |= kCTFontItalicTrait;
-		CTFontRef	fontA = CTFontCreateCopyWithSymbolicTraits (font, 0.0, NULL, fstyle, kCTFontItalicTrait | kCTFontBoldTrait);
-		if (fontA == NULL && fstyle == (kCTFontBoldTrait | kCTFontItalicTrait))
-		{
-			fontA = CTFontCreateCopyWithSymbolicTraits (font, 0.0, NULL, kCTFontBoldTrait, kCTFontItalicTrait | kCTFontBoldTrait);
-			if (fontA == NULL)
-				fontA = CTFontCreateCopyWithSymbolicTraits (font, 0.0, NULL, kCTFontItalicTrait, kCTFontItalicTrait | kCTFontBoldTrait);
-		}
-		if (fontA != NULL)
-		{
-			::CFRelease (font);
-			font = fontA;
-		}
-	}
-	return font;
+	return RWCreateCTFont (RWStringView (inName).substr (0, size_t (std::max (inNameLength, 0L))), inSize, style);
 }
 
 

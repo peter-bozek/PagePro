@@ -1,6 +1,6 @@
 # include	"RWPageComposer.h"
-#if	WINVER
 # include	"RWPoDoFoPageComposer.h"
+#if	WINVER
 # include	<Windows.h>
 # include	<WinSpool.h>
 #endif
@@ -555,24 +555,23 @@ RWPageComposer::CreatePrinterComposer (unsigned long inFlags, CText &inDst, CTex
 {
 	RWPageComposer	*obj = NULL;
 
+	// PDF files: PoDoFo on both platforms, the same output on macOS and Windows
+	if ((inFlags & eDestinationMask) == eDestinationPDF && !inDst.empty())
+		return new RWPoDoFoPageComposer (inFlags & ~eDestinationScreen, inDst, inPrinter);
+
 #if	WINVER
+	// preview prints to "Microsoft Print to PDF" (was the XPS Document Writer);
+	// without that printer the preview is a PoDoFo PDF
 	if ((inFlags & eDestinationMask) == eDestinationPreview)
 	{
 		HANDLE	printer = NULL;
-		::OpenPrinterW (L"Microsoft XPS Document Writer", &printer, NULL);
+		::OpenPrinterW (const_cast <LPWSTR> (L"Microsoft Print to PDF"), &printer, NULL);
 		if (printer != NULL)
-		{
 			::ClosePrinter (printer);
-		}
-		else
-		{
-			inFlags = (inFlags & ~eDestinationMask) | eDestinationPDF;
-		}
+		else if (!inDst.empty())
+			return new RWPoDoFoPageComposer ((inFlags & ~(eDestinationMask | eDestinationScreen)) | eDestinationPDF, inDst, inPrinter);
 	}
-	if ((inFlags & eDestinationMask) == eDestinationPDF && inDst.StrLength())
-		obj = new RWPoDoFoPageComposer (inFlags & ~eDestinationScreen, inDst, inPrinter);	//mbs 25072011	printer
-	else
-		obj = new RWWinPageComposer (inFlags & ~eDestinationScreen, inDst, inPrinter);	//mbs 25072011	printer
+	obj = new RWWinPageComposer (inFlags & ~eDestinationScreen, inDst, inPrinter);	//mbs 25072011	printer
 #else
 	obj = (RWPageComposer *)new RWCTPageComposer (inFlags & ~eDestinationScreen, inDst, inPrinter);	//mbs 25072011	printer
 #endif
@@ -739,7 +738,10 @@ RWPageComposer::DrawTextBox (CText inText, RWStyle *inStyle, const SRect &inRect
 	if (mPageIsOpen)
 	{
 #if	MACVER
-		static_cast <RWMacPageComposer*> (this)->GetGContext();
+		// only the Quartz composers have a graphics context (not RWPoDoFoPageComposer)
+		RWMacPageComposer	*macComposer = dynamic_cast <RWMacPageComposer*> (this);
+		if (macComposer)
+			macComposer->GetGContext();
 #endif
 		if (inStyle->GetBackColor().alpha != 0)	// (inStyle->GetBackColor() != cWhiteColor)
 			DrawRect (inRect, 0, false, cWhiteColor, true, inStyle->GetBackColor());
@@ -766,13 +768,15 @@ RWPageComposer::DrawTextBox (CText inText, RWStyle *inStyle, const SRect &inRect
 				}
 			}
 #if	MACVER
-			static_cast <RWMacPageComposer*> (this)->ReleaseGContext();
+			if (macComposer)
+				macComposer->ReleaseGContext();
 #endif
 		}
 		catch (...)
 		{
 #if	MACVER
-			static_cast <RWMacPageComposer*> (this)->ReleaseGContext();
+			if (macComposer)
+				macComposer->ReleaseGContext();
 #endif
 			throw;
 		}
