@@ -61,7 +61,7 @@ Rules for new and ported code:
     - `RWObject.h`: position / order comparators had lost their `template` line, so `std::sort` of objects did not compile.
     - `RWMacPageComposer::ParseReport` dereferenced a missing `PageFormat` / `PrintSettings` child.
     - `RWTable::ParseHeading` counted comment nodes as heading rows.
-  - **Not compilable, needs a decision** (phase 0): `RWPDFPageComposer.cpp` includes `RWll.h`, which is not in the project; `RWPoDoFoPageComposer.cpp` needs the PoDoFo library. Both are in the target. Either supply the libraries or remove the two files from the target (the CoreText composer produces PDF on the Mac).
+  - `RWPDFPageComposer.cpp` (PDFlib, unused) and `RWPoDoFoPageComposer.cpp` (PoDoFo 0.9) do not compile; decided in phase 7b.
   Per-file compile errors after phase 4 (the next phases' work lists): RW 24, all in files outside the target or needing missing libraries (RWDemoDataSource 11, RWPaper 9, RWll / RWPDFPageComposer / RWPoDoFoPageComposer / RWWinPageComposer 1 each). SRP 368 (RW4DText 85, SRObject 84, SRTable 60, SRReportData 26, SRDataSource 24, SRSection 23, ExtendedExecute 22, SRDataFormatter 17, SR4DData 15, SRReportWriter 6). DM 289 (DMReport 128, DMObject 82, DMArea 54 as Objective-C++, DMUndo 15, UIScrollBar 10). ET 59.
 - [x] **5. SRP module.** Every SRP file compiles; `SRPlugin.cpp`'s only remaining errors come from DM headers (phase 7).
   - All `FILE*` writers deleted (about 900 lines); the tree writers use `RWXmlNode`. `RWXmlNode::SetAttribute` is a typed setter that writes `bool` as `1` / `0`. tinyxml2 wrote `true`, which the numeric readers parse as 0, so e.g. header `firstPage` / `lastPage` settings were lost.
@@ -70,7 +70,7 @@ Rules for new and ported code:
   - Interfaces declared for later phases: `ETReportData (RWXmlDocument*)`, `bool ETReport::ReportToFile (path)`, `DMReport (RWXmlDocument*)`, `SetReport` / `GetReport` / `CreateObject` with `RWXmlDocument` / `RWXmlNode`.
   - `SRDataFormatter 2.cpp` (a naive rewrite that lost the boolean formats and duplicated the symbol) removed.
   - **Fixes**: empty text after variable substitution and XLIFF localization (`basic_string (str, pos)`), `RW4DText::RemoveSpan` not shortening split spans, script callback passing a truncated 64-bit pointer (now the internal ID via `PA_ExecuteMethodByID`), `RW_SetLicense` declared and defined with different types, NULL base style in the style export, `auto_ptr` over `new[]`, null dereference in `RW_NewObject`.
-  - **Not functional on the Mac, needs a decision**: `RW_ColorPicker` used Carbon's `NPickColor`, which does not exist in 64 bit; it now returns "no color chosen". Replace with `NSColorPanel` (Objective-C++) or 4D's `Select RGB color`. Windows is unchanged.
+  - **Not functional on the Mac, decision postponed (2026-10-01)**: `RW_ColorPicker` used Carbon's `NPickColor`, which does not exist in 64 bit; it now returns "no color chosen". Replace with `NSColorPanel` (Objective-C++) or 4D's `Select RGB color`. Windows is unchanged.
   - Observation: license validation is commented out in `SRLicense.cpp`; any non-empty license string is accepted.
 
 - [ ] **6. ET module + JSON.**
@@ -78,6 +78,13 @@ Rules for new and ported code:
   - Output layer: XML into an `RWXmlDocument`, HTML / text / CSV into an `RWString`, new `eo_json = 0x8000` into an `RWJsonDocument` (or streaming `RWJsonUTF8Writer` if exports get very large). Write once as UTF-8.
   - 4D command / flag to request JSON.
 - [ ] **7. DM module.** `DMReport`, `DMObject`, `PSObject`, `DMUndo`. Property tables (`PSObjProps`) keep ASCII names. Add `std::string_view` name overloads to `RWXmlNode` if the per-call conversion shows up in profiles.
+- [ ] **7b. PDF output (decision 2026-10-01).**
+  - PDF files are produced by one PoDoFo 1.0 composer on macOS **and** Windows, in 4D desktop and 4D Server. The output is identical on both platforms and does not depend on installed printers. Printing and on-screen preview stay native (CoreText / GDI+).
+  - Windows preview uses "Microsoft Print to PDF" instead of "Microsoft XPS Document Writer" (`RWPageComposer::CreatePrinterComposer`).
+  - Reports use standard paper sizes and PDF file size is not a concern (full font embedding is acceptable).
+  - Rewrite `RWPoDoFoPageComposer` (written for PoDoFo 0.9) against the 1.0 API; font lookup and embedding per platform (CoreText on the Mac, GDI font data on Windows), so text measurement and output use the same metrics.
+  - Build PoDoFo and its dependencies (FreeType, zlib, OpenSSL, image libraries; confirm against the 1.0 release) for macOS arm64 + x86_64 and Windows x64. Check the licence (LGPL) against the distribution model (dynamic linking or relinkable objects).
+  - Remove the PDFlib composer (`RWPDFPageComposer`, `RWll`); nothing creates it.
 - [ ] **8. Removal.** `tinyXML/` (incl. `xmltest.cpp`, which has its own `main`), `SRP/SRDataFormatter 2.cpp`, jsoncpp (`include/json`, `a/libjsoncpp.a`, `lib/windows*/jsoncpp.lib`, `support/4DPlugin-JSON.*`, which nothing includes).
 - [ ] **9. Plugin shell.** Replace the wizard stub (`4DPlugin-ReportWriter.cpp`, `manifest.json`) with the real command table from `SRPlugin.cpp`. Update `ReportWriter.vcxproj`: sources, include paths `pugixml;rapidjson/include`, C++17, `/utf-8`.
 - [ ] **10. Verification.** Corpus round trip (load → save → diff, whitespace-normalised) against the TinyXML build output; 4D test database on macOS arm64 + x86_64 and Windows x64.
