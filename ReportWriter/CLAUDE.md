@@ -23,9 +23,9 @@
 - **Lesson:** `NSPageLayout`/`NSPrintPanel` `printInfo` is only valid while the panel is running. Don't read it after `runModalWithPrintInfo:`.
 - **Not checked yet:** Page Setup alone (`GetPageBounds` → `OpenSession(true, false)`) had the same failure, so a paper size or orientation chosen there was probably ignored before this fix. The owner should confirm it now takes effect.
 - **Earlier symptom** with `PPro_PreviewRW(""; PP_Default)`: alert "PDF -14" and `DrawDynamicPage: Body does not fit on a new page!?!`. It is probably the same bug. Re-test it.
-- **Also found (not fixed yet):**
-  - `RW_Print_RW` in `SRP/SRPlugin.cpp` never returns `rwReport.GetLastError()`, while `RW_Print` does, so its errors are lost.
-  - `PPro_CommandDispatch` ignores the error results of the print calls.
+- **Leave as they are (owner's decision):**
+  - `RW_Print_RW` doesn't return its error, but nothing uses it.
+  - `PPro_CommandDispatch`, called from menus, doesn't show print errors. This is intentional.
 
 ## Notes
 - The working tree has uncommitted changes from earlier sessions (`RW/RWBaseTypes.*`, `RW/RWMacCGPageComposer.cpp`, `RW/RWPoDoFoPageComposer.cpp`, `SRP/SR4DData.*`, the Xcode project, …). Don't revert them.
