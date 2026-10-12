@@ -1985,7 +1985,11 @@ SRVariable::Write (RWXmlNode inParent, bool inIsInBody, bool inUseCalculator)
 		else if (mValue.GetKind() >= RWValue::eValue_PictRefScreen)
 		{
 			if (mDataID == 0)	// || (mVar != NULL && mVar->IsChanged()))
+			{
+				if (mValue.GetBlobSize() == 0)
+					RW_PictLog ("SRObject: picture of \"%s\" is empty (kind %d)", RWStr::ToUTF8 (mSource).c_str(), int (mValue.GetKind()));
 				mDataID = GetDataSource().EmitPicture (mValue);
+			}
 			me = SRObject::WriteSelf (inParent, "Pict");
 			if (mDataID != 0)
 				me.SetAttribute (u"dataID", mDataID);

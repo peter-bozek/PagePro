@@ -1,0 +1,526 @@
+{
+	"destination": "detailScreen",
+	"width": 230,
+	"height": 360,
+	"markerBody": 360,
+	"markerBreak": 360,
+	"markerFooter": 360,
+	"events": [
+		"onClick",
+		"onDataChange",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Variable8": {
+					"type": "input",
+					"top": 30,
+					"left": 90,
+					"width": 130,
+					"height": 12,
+					"dataSource": "PP_ObjectID",
+					"class": "DefautSmall",
+					"fill": "transparent",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Variable9": {
+					"type": "input",
+					"top": 50,
+					"left": 90,
+					"width": 40,
+					"height": 12,
+					"dataSource": "PP_PrintOrder",
+					"class": "DefautSmall",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Popup Drop down List4": {
+					"type": "dropdown",
+					"top": 67,
+					"left": 90,
+					"width": 100,
+					"height": 18,
+					"dataSource": "PP_PrintPopup",
+					"class": "PPro_Tahoma10Bold",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 5,
+					"left": 5,
+					"width": 220,
+					"height": 12,
+					"class": "PPro_Tahoma10Bold",
+					"text": ":xliff:PP_SettingsLine"
+				},
+				"Linie": {
+					"type": "line",
+					"top": 20,
+					"left": 0,
+					"width": 230
+				},
+				"Text19": {
+					"type": "text",
+					"top": 30,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjID"
+				},
+				"Text22": {
+					"type": "text",
+					"top": 50,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjPrintorder"
+				},
+				"Text6": {
+					"type": "text",
+					"top": 70,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjPrinting"
+				},
+				"Linie1": {
+					"type": "line",
+					"top": 90,
+					"left": 0,
+					"width": 230
+				},
+				"Variable6": {
+					"type": "input",
+					"top": 100,
+					"left": 90,
+					"width": 40,
+					"height": 12,
+					"dataSource": "PP_LineWidth",
+					"class": "DefautSmall",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Popup Drop down List5": {
+					"type": "dropdown",
+					"top": 97,
+					"left": 140,
+					"width": 20,
+					"height": 18,
+					"dataSource": "PP_WidthPopup",
+					"focusable": false,
+					"class": "PPro_Tahoma10Bold",
+					"method": "ObjectMethods/Popup Drop down List5.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"PP_ColorOpacityLine": {
+					"type": "input",
+					"top": 140,
+					"left": 90,
+					"width": 25,
+					"height": 12,
+					"dataSource": "PP_LineOpacity",
+					"dataSourceTypeHint": "number",
+					"class": "DefautSmall",
+					"contextMenu": "none",
+					"numberFormat": "##0",
+					"min": 0,
+					"max": 255,
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_LineColor": {
+					"type": "rectangle",
+					"top": 119,
+					"left": 90,
+					"width": 38,
+					"height": 14
+				},
+				"Invisible Button1": {
+					"type": "button",
+					"top": 120,
+					"left": 91,
+					"width": 36,
+					"height": 12,
+					"dataSource": "PP_ColorPickerBtn",
+					"display": false,
+					"method": "ObjectMethods/Invisible Button1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Text5": {
+					"type": "text",
+					"top": 100,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjLinePixel"
+				},
+				"Text8": {
+					"type": "text",
+					"top": 120,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjLineColor"
+				},
+				"Text20": {
+					"type": "text",
+					"top": 140,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjOpacity"
+				},
+				"FrameOpacityPopup": {
+					"type": "dropdown",
+					"top": 137,
+					"left": 125,
+					"width": 20,
+					"height": 18,
+					"dataSource": "PP_FrameOpacityPopup",
+					"focusable": false,
+					"class": "PPro_Tahoma10Bold",
+					"method": "ObjectMethods/FrameOpacityPopup.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Linie2": {
+					"type": "line",
+					"top": 160,
+					"left": 0,
+					"width": 230
+				},
+				"PP_PosVariable1": {
+					"type": "input",
+					"top": 170,
+					"left": 90,
+					"width": 40,
+					"height": 12,
+					"dataSource": "PP_Point1x",
+					"class": "DefautSmall",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_PosVariable2": {
+					"type": "input",
+					"top": 190,
+					"left": 90,
+					"width": 40,
+					"height": 12,
+					"dataSource": "PP_Point1y",
+					"class": "DefautSmall",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_PosVariable3": {
+					"type": "input",
+					"top": 210,
+					"left": 90,
+					"width": 40,
+					"height": 12,
+					"dataSource": "PP_Point2x",
+					"class": "DefautSmall",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_PosVariable6": {
+					"type": "input",
+					"top": 230,
+					"left": 90,
+					"width": 40,
+					"height": 12,
+					"dataSource": "PP_Point2y",
+					"class": "DefautSmall",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Check Box6": {
+					"type": "checkbox",
+					"top": 258,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_VisibleBtn",
+					"text": ":xliff:PP_ObjVisible",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box7": {
+					"type": "checkbox",
+					"top": 278,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_LockedBtn",
+					"text": ":xliff:PP_ObjLocked",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box8": {
+					"type": "checkbox",
+					"top": 298,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_FixVBtn",
+					"text": ":xliff:PP_ObjFixed",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box9": {
+					"type": "checkbox",
+					"top": 318,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_BindVBtn",
+					"text": ":xliff:PP_ObjBind",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Popup Drop down List3": {
+					"type": "dropdown",
+					"top": 337,
+					"left": 91,
+					"width": 100,
+					"height": 18,
+					"dataSource": "PP_AlignPopup",
+					"focusable": false,
+					"class": "PPro_Tahoma10Bold",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Text4": {
+					"type": "text",
+					"top": 340,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjInGroup"
+				},
+				"Text23": {
+					"type": "text",
+					"top": 170,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjLine1x"
+				},
+				"Text9": {
+					"type": "text",
+					"top": 190,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjLine1y"
+				},
+				"Text11": {
+					"type": "text",
+					"top": 210,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjLine2x"
+				},
+				"Text12": {
+					"type": "text",
+					"top": 230,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjLine2y"
+				},
+				"Text13": {
+					"type": "text",
+					"top": 170,
+					"left": 140,
+					"width": 50,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjPointsShort"
+				},
+				"Text14": {
+					"type": "text",
+					"top": 190,
+					"left": 140,
+					"width": 50,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjPointsShort"
+				},
+				"Text15": {
+					"type": "text",
+					"top": 210,
+					"left": 140,
+					"width": 50,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjPointsShort"
+				},
+				"Text16": {
+					"type": "text",
+					"top": 230,
+					"left": 140,
+					"width": 50,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjPointsShort"
+				},
+				"Linie3": {
+					"type": "line",
+					"top": 250,
+					"left": 0,
+					"width": 230
+				}
+			},
+			"entryOrder": [
+				"Variable9",
+				"Popup Drop down List4",
+				"Variable6",
+				"Popup Drop down List5",
+				"PP_ColorOpacityLine",
+				"FrameOpacityPopup",
+				"PP_PosVariable1",
+				"PP_PosVariable2",
+				"PP_PosVariable3",
+				"PP_PosVariable6",
+				"Check Box6",
+				"Check Box7",
+				"Check Box8",
+				"Check Box9",
+				"Popup Drop down List3"
+			]
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

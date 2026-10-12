@@ -1,0 +1,302 @@
+{
+	"destination": "detailScreen",
+	"rightMargin": 5,
+	"bottomMargin": 8,
+	"markerBody": 76,
+	"markerBreak": 76,
+	"markerFooter": 76,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onActivate",
+		"onDeactivate",
+		"onDoubleClick",
+		"onLosingFocus",
+		"onGettingFocus",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDragOver",
+		"onCloseBox",
+		"onUnload",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Invisible Button": {
+					"type": "button",
+					"top": -10,
+					"left": 26,
+					"width": 20,
+					"height": 11,
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"shortcutKey": "[Esc]",
+					"display": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button1": {
+					"type": "button",
+					"top": -10,
+					"left": 50,
+					"width": 20,
+					"height": 11,
+					"dataSource": "PP_OK",
+					"action": "cancel",
+					"shortcutKey": "[Enter]",
+					"display": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"InlineEdit1": {
+					"type": "input",
+					"top": 33,
+					"left": 5,
+					"width": 178,
+					"height": 14,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"dataSource": "PP_InlineEdit",
+					"fontFamily": ".Lucida Grande UI",
+					"fontSize": 12,
+					"hideFocusRing": true,
+					"styledText": true,
+					"dragging": "none",
+					"method": "ObjectMethods/InlineEdit1.4dm",
+					"events": [
+						"onLoad",
+						"onLosingFocus",
+						"onGettingFocus",
+						"onDrop",
+						"onDataChange",
+						"onUnload",
+						"onAfterKeystroke",
+						"onSelectionChange",
+						"onAfterEdit"
+					]
+				},
+				"Page2Box": {
+					"type": "dropdown",
+					"top": 4,
+					"left": 5,
+					"width": 45,
+					"height": 19,
+					"sizingX": "grow",
+					"dataSource": "PP_Fonts",
+					"fontFamily": "Tahoma",
+					"fontSize": 10,
+					"method": "ObjectMethods/Page2Box.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page2List": {
+					"type": "dropdown",
+					"top": 4,
+					"left": 55,
+					"width": 45,
+					"height": 19,
+					"sizingX": "move",
+					"dataSource": "PP_FontSizePopup",
+					"choiceList": [
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"14",
+						"18",
+						"24",
+						"36"
+					],
+					"class": "PPro_Tahoma10",
+					"method": "ObjectMethods/Page2List.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Picture Button": {
+					"type": "pictureButton",
+					"top": 6,
+					"left": 105,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_StyleB",
+					"shortcutKey": "b",
+					"shortcutAccel": true,
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleBold.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Picture Button.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Picture Button1": {
+					"type": "pictureButton",
+					"top": 6,
+					"left": 126,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_StyleI",
+					"shortcutKey": "i",
+					"shortcutAccel": true,
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleItalics.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Picture Button1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Picture Button2": {
+					"type": "pictureButton",
+					"top": 6,
+					"left": 147,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_StyleU",
+					"shortcutKey": "u",
+					"shortcutAccel": true,
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleUnderline.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Picture Button2.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Bild2": {
+					"type": "picture",
+					"top": 6,
+					"left": 167,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"pictureFormat": "scaled",
+					"picture": "Images/Bild2.png"
+				},
+				"Unsichtbare Schaltfläche": {
+					"type": "button",
+					"top": 5,
+					"left": 167,
+					"width": 16,
+					"height": 18,
+					"sizingX": "move",
+					"dataSource": "PP_TextColor",
+					"display": false,
+					"method": "ObjectMethods/Unsichtbare Schaltfläche.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Bild3": {
+					"type": "picture",
+					"top": 57,
+					"left": 167,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"sizingY": "move",
+					"pictureFormat": "scaled",
+					"picture": "Images/Bild3.png"
+				},
+				"Bild4": {
+					"type": "picture",
+					"top": 57,
+					"left": 146,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"sizingY": "move",
+					"pictureFormat": "scaled",
+					"picture": "Images/Bild4.png"
+				},
+				"Unsichtbare Schaltfläche1": {
+					"type": "button",
+					"top": 57,
+					"left": 146,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"sizingY": "move",
+					"dataSource": "PP_CancelEdit",
+					"action": "cancel",
+					"display": false
+				},
+				"Unsichtbare Schaltfläche2": {
+					"type": "button",
+					"top": 57,
+					"left": 167,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"sizingY": "move",
+					"dataSource": "PP_AcceptEdit",
+					"action": "accept",
+					"display": false
+				}
+			},
+			"entryOrder": [
+				"Page2Box",
+				"Page2List"
+			]
+		}
+	]
+}

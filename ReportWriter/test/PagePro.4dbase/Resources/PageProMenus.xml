@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus version="1">
+	<!-- Editor menu bar -->
+	<menu id="PP_DefaultMenu">
+		<menu text=":xliff:PP_File">
+			<item text=":xliff:PP_New" reference="flNew" method="PPro_Menu"/>
+			<item text=":xliff:PP_Open" reference="flOpen" shortcut="O" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_Save" reference="flSave" shortcut="S" method="PPro_Menu"/>
+			<item text=":xliff:PP_SaveAs" reference="flSaveAs" shortcut="S" shift="true" method="PPro_Menu"/>
+			<!--item text=":xliff:PP_SaveAs" reference="flSaveAs" method="PPro_Menu"-->
+			<item text=":xliff:PP_Revert" reference="flRevert" method="PPro_Menu"/>
+			<item text="-"/>
+			<menu text=":xliff:PP_Export">
+				<item text=":xliff:PP_ExportText" reference="flExportText" method="PPro_Menu"/>
+				<item text=":xliff:PP_ExportHTML" reference="flExportHTML" method="PPro_Menu"/>
+				<item text=":xliff:PP_ExportXML" reference="flExportXML" method="PPro_Menu"/>
+				<item text=":xliff:PP_ExportPDF" reference="flExportPDF" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_ExportRW" reference="flExportRW" method="PPro_Menu"/>
+  			</menu>
+			<item text="-"/>
+			<item text=":xliff:PP_PageSetup" reference="flPageS" shortcut="P" shift="true" method="PPro_Menu"/>
+			<item text=":xliff:PP_Print" reference="flPrint" shortcut="P" method="PPro_Menu"/>
+			<item text=":xliff:PP_Preview" reference="flPrintPr" shortcut="P" alt="true" method="PPro_Menu"/>
+			<item text=":xliff:PP_PrintRW" reference="flPrintRW" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_Exit" reference="flExit" shortcut="W" method="PPro_Menu"/>
+		</menu>
+		<menu text=":xliff:PP_Edit">
+			<item text=":xliff:PP_Undo" reference="editUndo" standard_action="17" shortcut="Z"/>
+			<item text=":xliff:PP_Redo" reference="editRedo" standard_action="31" shortcut="Z" shift="true"/>
+			<item text="-"/>
+			<item text=":xliff:PP_Cut" reference="editCut" standard_action="18" shortcut="X" enable="1"/>
+			<item text=":xliff:PP_Copy" reference="editCopy" standard_action="19" shortcut="C" enable="1"/>
+			<item text=":xliff:PP_Paste" reference="editPaste" standard_action="20" shortcut="V" enable="1"/>
+			<item text=":xliff:PP_Clear" reference="editClear" standard_action="21"/>
+			<item text=":xliff:PP_SelectAll" reference="editSelect" standard_action="22" shortcut="A"/>
+			<item text="-"/>
+			<item text=":xliff:PP_Duplicate" reference="edDuplicate" shortcut="D" method="PPro_Menu"/>
+		</menu>
+		<menu text=":xliff:PP_Object">
+			<item text=":xliff:PP_BringToFront" reference="obFront" shortcut="F" method="PPro_Menu"/>
+			<item text=":xliff:PP_SendToBack" reference="obBack" shortcut="F" shift="true" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_Group" reference="obGroup" shortcut="G" method="PPro_Menu"/>
+			<item text=":xliff:PP_Ungroup" reference="obUngroup" shortcut="G" shift="true" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_Lock" reference="obLock" method="PPro_Menu"/>
+			<item text=":xliff:PP_Unlock" reference="obUnlock" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_Hide" reference="obHide" method="PPro_Menu"/>
+			<item text=":xliff:PP_ShowAll" reference="obShow" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_DontPrint" reference="obNotPrint" method="PPro_Menu"/>
+		</menu>
+		<menu text=":xliff:PP_Text">
+			<item text=":xliff:PP_Font" reference="txFont" method="PPro_Menu"/>
+			<menu text=":xliff:PP_Style">
+				<item text=":xliff:PP_Plain" reference="st" shortcut="N" shift="true" method="PPro_Menu"/>
+				<item text=":xliff:PP_Bold" reference="stBold" shortcut="B" method="PPro_Menu"/>
+				<item text=":xliff:PP_Italic" reference="stItalic" shortcut="I" method="PPro_Menu"/>
+				<item text=":xliff:PP_Underline" reference="stUnderine" shortcut="U" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_Lowercase" reference="stLower" method="PPro_Menu"/>
+				<item text=":xliff:PP_Uppercase" reference="stUpper" method="PPro_Menu"/>
+				<item text=":xliff:PP_Capitals" reference="stCapitals" method="PPro_Menu"/>
+			</menu>
+			<menu text=":xliff:PP_Size">
+				<item text=":xliff:PP_Size7" reference="stSize7" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size8" reference="stSize8" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size9" reference="stSize9" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size10" reference="stSize10" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size11" reference="stSize11" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size12" reference="stSize12" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size14" reference="stSize14" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size18" reference="stSize18" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size24" reference="stSize24" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_Size+" reference="stBigger" shortcut="+" shift="true" method="PPro_Menu"/>
+				<item text=":xliff:PP_Size-" reference="stSmaller" shortcut="-" shift="true" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_SizeOther" reference="stOther" method="PPro_Menu"/>
+			</menu>
+			<item text=":xliff:PP_TextColor" reference="txColor" method="PPro_Menu"/>
+			<item text="-"/>
+			<menu text=":xliff:PP_HorAlign">
+				<item text=":xliff:PP_Left" reference="haLeft" method="PPro_Menu"/>
+				<item text=":xliff:PP_Center" reference="haCenter" method="PPro_Menu"/>
+				<item text=":xliff:PP_Right" reference="haRight" method="PPro_Menu"/>
+				<item text=":xliff:PP_Justify" reference="haJustify" method="PPro_Menu"/>
+			</menu>
+			<menu text=":xliff:PP_VertAlign">
+				<item text=":xliff:PP_Top" reference="vaTop" method="PPro_Menu"/>
+				<item text=":xliff:PP_Center" reference="vaCenter" method="PPro_Menu"/>
+				<item text=":xliff:PP_Bottom" reference="vaBottom" method="PPro_Menu"/>
+			</menu>
+			<item text="-"/>
+			<item text=":xliff:PP_LineSpace+" reference="txSpace+" shortcut="*" method="PPro_Menu"/>
+			<item text=":xliff:PP_LineSpace-" reference="txSpace-" shortcut="#" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_AutoWrap" reference="txWrap" method="PPro_Menu"/>
+		</menu>
+		<menu text=":xliff:PP_Insert">
+			<item text=":xliff:PP_InsertSection" reference="inSection" method="PPro_Menu"/>
+			<item text=":xliff:PP_NewStyle" reference="inStyle" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_RefInsert" reference="refInsert" shortcut="K" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_ShowRef" reference="dpNames" method="PPro_Menu"/>
+			<item text=":xliff:PP_ShowValues" reference="dpValues" method="PPro_Menu"/>
+			<item text=":xliff:PP_UpdateValues" reference="refUpdate" shortcut="U" shift="true" method="PPro_Menu"/>
+			<!-- item text="-"/-->
+			<!--item text=":xliff:PP_FreezeValues" reference="refFreeze" method="PPro_Menu"/-->
+		</menu>
+		<menu text=":xliff:PP_Display">
+			<item text=":xliff:PP_SetupRuler" reference="unitSetup" shortcut="R" shift="true" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_Rulers" reference="dpRulers" shortcut="R" method="PPro_Menu"/>
+			<item text=":xliff:PP_Grid" reference="dpGrid" method="PPro_Menu"/>
+			<item text=":xliff:PP_SnapToGrid" reference="dpToGrid" shortcut="T" shift="true" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_ShowGuides" reference="dpShowGuides" method="PPro_Menu"/>
+			<item text=":xliff:PP_SnapToGuides" reference="dpSnapGuides" method="PPro_Menu"/>
+			<item text=":xliff:PP_LockGuides" reference="dpLockGuides" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_ShowObjectFrame" reference="dpShowBorders" method="PPro_Menu"/>
+			<item text="-"/>
+			<menu text=":xliff:PP_Content">
+				<item text=":xliff:PP_Normal" reference="dpNormal" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_Names" reference="dpNames" method="PPro_Menu"/>
+				<item text=":xliff:PP_Alias" reference="dpAlias" method="PPro_Menu"/>
+				<item text=":xliff:PP_IDs" reference="dpIDs" method="PPro_Menu"/>
+				<item text=":xliff:PP_Formats" reference="dpFormats" method="PPro_Menu"/>
+				<item text=":xliff:PP_PrintOrder" reference="dpPrintOrder" method="PPro_Menu"/>
+				<item text=":xliff:PP_Values" reference="dpValues" method="PPro_Menu"/>
+  			</menu>
+			<item text="-"/>
+			<item text=":xliff:PP_Size1" reference="dpSize1" shortcut="1" method="PPro_Menu"/>
+			<item text=":xliff:PP_Size0" reference="dpPaper" shortcut="=" method="PPro_Menu"/>
+			<item text=":xliff:PP_Size+" reference="dpBig" shortcut="+" method="PPro_Menu"/>
+			<item text=":xliff:PP_Size-" reference="dpSmall" shortcut="-" method="PPro_Menu"/>
+		</menu>
+	</menu>
+
+	<!-- Blue Editor menu bar -->
+	<menu id="PP_BlueMenu">
+		<menu text=":xliff:PP_MenuFile">
+			<menu text=":xliff:PP_MenuFileNewSub">
+				<item text=":xliff:PP_MenuFileNewStatic" reference="flNewStatic" shortcut="N" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuFileNewDynamic" reference="flNewDynamic" shortcut="N" shift="true" method="PPro_Menu"/>
+			</menu>
+			<item text=":xliff:PP_MenuFileOpen" reference="flOpen" shortcut="O" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuFileClose" reference="flExit" shortcut="W" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuFileSave" reference="flSave" shortcut="S" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuFileSaveAs" reference="flSaveAs" shortcut="S" shift="true" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuFileRevert" reference="flRevert" method="PPro_Menu"/>
+			<item text="-"/>
+			<menu text=":xliff:PP_MenuFileExportSub">
+				<item text=":xliff:PP_MenuFileExportText" reference="flExportText" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuFileExportHTML" reference="flExportHTML" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuFileExportXML" reference="flExportXML" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_MenuFileExportRW" reference="flExportRW" method="PPro_Menu"/>
+  			</menu>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuFileSetupRuler" reference="unitSetup" shortcut="R" shift="true" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuFilePageSetup" reference="flPageS" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuFilePrint" reference="flPrint" shortcut="P" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuFilePreview" reference="flPrintPr" shortcut="P" shift="true" method="PPro_Menu"/>
+		</menu>
+		<menu text=":xliff:PP_MenuEdit">
+			<item text=":xliff:PP_MenuEditUndo" standard_action="17" shortcut="Z"/>
+			<item text=":xliff:PP_MenuEditRedo" standard_action="31" shortcut="Z" shift="true"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuEditCut" standard_action="18" shortcut="X" enable="1"/>
+			<item text=":xliff:PP_MenuEditCopy" standard_action="19" shortcut="C" enable="1"/>
+			<item text=":xliff:PP_MenuEditPaste" standard_action="20" shortcut="V" enable="1"/>
+			<item text=":xliff:PP_MenuEditClear" standard_action="21"/>
+			<item text=":xliff:PP_MenuEditSelectAll" standard_action="22" shortcut="A"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuEditDuplicate" reference="edDuplicate" shortcut="D" method="PPro_Menu"/>
+		</menu>
+		<menu text=":xliff:PP_MenuObject">
+			<item text=":xliff:PP_MenuObjectBringToFront" reference="obFront" shortcut="F" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuObjectSendToBack" reference="obBack" shortcut="F" shift="true" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuObjectGroup" reference="obGroup" shortcut="G" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuObjectUngroup" reference="obUngroup" shortcut="G" shift="true" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuObjectUnlockAll" reference="obUnlock" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuObjectInsertSection" reference="inSection" method="PPro_Menu"/>
+		</menu>
+		<menu text=":xliff:PP_MenuText">
+			<item text=":xliff:PP_MenuTextFont" reference="txFont" method="PPro_Menu"/>
+			<menu text=":xliff:PP_MenuTextStyle">
+				<item text=":xliff:PP_MenuTextPlain" reference="st" shortcut="E" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextBold" reference="stBold" shortcut="B" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextItalic" reference="stItalic" shortcut="I" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextUnderline" reference="stUnderine" shortcut="U" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_MenuTextLowercase" reference="stLower" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextUppercase" reference="stUpper" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextCapitals" reference="stCapitals" method="PPro_Menu"/>
+			</menu>
+			<menu text=":xliff:PP_MenuTextSize">
+				<item text=":xliff:PP_MenuTextSize7" reference="stSize7" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSize8" reference="stSize8" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSize9" reference="stSize9" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSize10" reference="stSize10" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSize11" reference="stSize11" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSize12" reference="stSize12" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSize14" reference="stSize14" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSize18" reference="stSize18" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSize24" reference="stSize24" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_MenuTextSizePlus" reference="stBigger" shortcut="+" shift="true" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextSizeMinus" reference="stSmaller" shortcut="-" shift="true" method="PPro_Menu"/>
+			</menu>
+			<item text=":xliff:PP_MenuTextTextColor" reference="txColor" method="PPro_Menu"/>
+			<item text="-"/>
+			<menu text=":xliff:PP_MenuTextHorAlign">
+				<item text=":xliff:PP_MenuTextLeft" reference="haLeft" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextCenter" reference="haCenter" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextRight" reference="haRight" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextJustify" reference="haJustify" method="PPro_Menu"/>
+			</menu>
+			<menu text=":xliff:PP_MenuTextVertAlign">
+				<item text=":xliff:PP_MenuTextTop" reference="vaTop" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextCenter" reference="vaCenter" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuTextBottom" reference="vaBottom" method="PPro_Menu"/>
+			</menu>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuTextLineSpacePlus" reference="txSpace+" shortcut="*" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuTextLineSpaceMinus" reference="txSpace-" shortcut="#" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_FreezeValues" reference="refFreeze" method="PPro_Menu"/>
+		</menu>
+		<menu text=":xliff:PP_MenuDisplay">
+			<item text=":xliff:PP_MenuDisplayRulers" reference="dpRulers" shortcut="R" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuDisplayGrid" reference="dpGrid" shortcut="L" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuDisplayShowGuides" reference="dpShowGuides" shortcut="L" shift="true" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuDisplaySnapToGrid" reference="dpToGrid" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuDisplaySnapToGuides" reference="dpSnapGuides" method="PPro_Menu"/>
+			<item text="-"/>
+			<menu text=":xliff:PP_MenuDisplayContent">
+				<item text=":xliff:PP_MenuDisplayNormal" reference="dpNormal" shortcut="K" alt="true" method="PPro_Menu"/>
+				<item text="-"/>
+				<item text=":xliff:PP_MenuDisplayNames" reference="dpNames" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuDisplayIDs" reference="dpIDs" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuDisplayFormats" reference="dpFormats" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuDisplayPrintOrder" reference="dpPrintOrder" method="PPro_Menu"/>
+				<item text=":xliff:PP_MenuDisplayValues" reference="dpValues" shortcut="K" shift="true" method="PPro_Menu"/>
+  			</menu>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuDisplaySize1" reference="dpSize1" shortcut="1" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuDisplaySize0" reference="dpPaper" shortcut="=" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuDisplaySize+" reference="dpBig" shortcut="+" method="PPro_Menu"/>
+			<item text=":xliff:PP_MenuDisplaySize-" reference="dpSmall" shortcut="-" method="PPro_Menu"/>
+			<item text="-"/>
+			<item text=":xliff:PP_MenuDisplayXML" reference="dpShowXMLTree" shortcut="M" shift="true" method="PPro_Menu"/>
+		</menu>
+	</menu>
+
+
+	<!-- New menu -->
+	<menu id="PP_Variables">
+		<item text="RWRecord"/>
+		<item text="RWDate"/>
+		<item text="RWTime"/>
+		<item text="-"/>
+		<item text="PAGE"/>
+		<item text="PAGES"/>
+		<item text="SUBPAGE"/>
+		<item text="SUBPAGES"/>
+		<item text="FRAME"/>
+		<item text="FRAMES"/>
+	</menu>
+
+<!-- formatting menu -->
+	<menu id="PP_Formats">
+		<menu text=":xliff:PP_FormatDate">
+			<item text=":xliff:PP_DateFormat1" reference="1"/>
+			<item text=":xliff:PP_DateFormat2" reference="2"/>
+			<item text=":xliff:PP_DateFormat3" reference="3"/>
+			<item text=":xliff:PP_DateFormat4" reference="4"/>
+			<item text=":xliff:PP_DateFormat5" reference="5"/>
+			<item text=":xliff:PP_DateFormat6" reference="6"/>
+			<item text=":xliff:PP_DateFormat7" reference="7"/>
+			<item text=":xliff:PP_DateFormat8" reference="8"/>
+			<item text=":xliff:PP_DateFormat9" reference="100"/>
+		</menu>
+		<menu text=":xliff:PP_FormatTime">
+			<item text=":xliff:PP_TimeFormat1" reference="1"/>
+			<item text=":xliff:PP_TimeFormat2" reference="2"/>
+			<item text=":xliff:PP_TimeFormat3" reference="3"/>
+			<item text=":xliff:PP_TimeFormat4" reference="4"/>
+			<item text=":xliff:PP_TimeFormat5" reference="5"/>
+			<item text=":xliff:PP_TimeFormat6" reference="6"/>
+			<item text=":xliff:PP_TimeFormat7" reference="7"/>
+			<item text=":xliff:PP_TimeFormat8" reference="8"/>
+			<item text=":xliff:PP_TimeFormat9" reference="9"/>
+			<item text=":xliff:PP_TimeFormat10" reference="100"/>
+		</menu>
+		<menu text=":xliff:PP_FormatNumber">
+			<item text=":xliff:PP_NumberFormat1" reference="### ### ##0.00"/>
+			<item text=":xliff:PP_NumberFormat2" reference="### ### ##0"/>
+			<item text=":xliff:PP_NumberFormat3" reference="### ##0"/>
+			<item text=":xliff:PP_NumberFormat4" reference="###,###,##0.00"/>
+			<item text=":xliff:PP_NumberFormat5" reference="###,###,##0"/>
+			<item text=":xliff:PP_NumberFormat6" reference="#### ### ##0 €"/>
+			<item text=":xliff:PP_NumberFormat7" reference="### ### ##0.00 €"/>
+			<item text=":xliff:PP_NumberFormat8" reference="##0.00 %"/>
+		</menu>
+	</menu>
+
+</menus>

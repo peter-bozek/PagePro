@@ -1,0 +1,750 @@
+{
+	"bars": [
+		{
+			"id": 1,
+			"name": "PP_DefaultMenu",
+			"items": [
+				{
+					"link": 23241
+				},
+				{
+					"link": 3801
+				},
+				{
+					"link": 32002
+				},
+				{
+					"link": 32004
+				},
+				{
+					"link": 32003
+				},
+				{
+					"link": 32000
+				}
+			]
+		},
+		{
+			"id": 2,
+			"name": "PP_EmptyMenu",
+			"items": [
+				{
+					"link": 3801
+				}
+			]
+		}
+	],
+	"menus": [
+		{
+			"link": 23241,
+			"title": ":xliff:PP_File",
+			"items": [
+				{
+					"title": ":xliff:PP_New",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "N",
+					"parameter": "flNew"
+				},
+				{
+					"title": ":xliff:PP_Open",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "O",
+					"parameter": "flOpen"
+				},
+				{
+					"title": "Item 3",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Save",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "S",
+					"parameter": "flSave"
+				},
+				{
+					"title": ":xliff:PP_SaveAs",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "S",
+					"parameter": "flSaveAs"
+				},
+				{
+					"title": ":xliff:PP_Revert",
+					"method": "PPro_Menu",
+					"parameter": "flRevert"
+				},
+				{
+					"title": "Item 14",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Prefs",
+					"method": "PPro_Menu",
+					"parameter": "flPrefs"
+				},
+				{
+					"title": "Item 7",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_PageSetup",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "P",
+					"parameter": "flPageS"
+				},
+				{
+					"title": ":xliff:PP_Print",
+					"method": "PPro_Menu",
+					"parameter": "flPrint"
+				},
+				{
+					"title": ":xliff:PP_Preview",
+					"method": "PPro_Menu",
+					"shortcutAlt": true,
+					"shortcutAccel": true,
+					"shortcutKey": "P",
+					"parameter": "flPrintPr"
+				},
+				{
+					"title": "Item 11",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Exit",
+					"method": "PPro_Menu",
+					"parameter": "flExit"
+				}
+			]
+		},
+		{
+			"link": 3801,
+			"title": ":xliff:PP_Edit",
+			"items": [
+				{
+					"title": ":131,18",
+					"shortcutAccel": true,
+					"shortcutKey": "Z",
+					"parameter": "emUndo",
+					"action": "undo"
+				},
+				{
+					"title": "(-",
+					"isSeparator": true
+				},
+				{
+					"title": ":131,20",
+					"shortcutAccel": true,
+					"shortcutKey": "X",
+					"parameter": "emCut",
+					"action": "cut"
+				},
+				{
+					"title": ":131,21",
+					"shortcutAccel": true,
+					"shortcutKey": "C",
+					"parameter": "emCopy",
+					"action": "copy"
+				},
+				{
+					"title": ":131,22",
+					"shortcutAccel": true,
+					"shortcutKey": "V",
+					"parameter": "emPaste",
+					"action": "paste"
+				},
+				{
+					"title": ":131,23",
+					"parameter": "emClear",
+					"action": "clear"
+				},
+				{
+					"title": ":131,24",
+					"shortcutAccel": true,
+					"shortcutKey": "A",
+					"parameter": "emSelectAll",
+					"action": "selectAll"
+				},
+				{
+					"title": "(-",
+					"isSeparator": true
+				},
+				{
+					"title": ":Xliff:PP_Duplicate",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "D",
+					"parameter": "edDuplicate",
+					"action": "showClipboard"
+				}
+			]
+		},
+		{
+			"link": 32001,
+			"title": ":xliff:PP_Properties",
+			"items": [
+				{
+					"title": ":xliff:PP_Report",
+					"method": "PPro_ReportProps"
+				},
+				{
+					"title": ":xliff:PP_Data",
+					"method": "PPro_DataSourceProps"
+				},
+				{
+					"title": ":xliff:PP_Editor",
+					"method": "PPro_EditorProps"
+				},
+				{
+					"title": ":xliff:PP_Styles",
+					"method": "PPro_StylesProps"
+				}
+			]
+		},
+		{
+			"link": 32000,
+			"title": ":xliff:PP_Display",
+			"items": [
+				{
+					"title": ":xliff:PP_SetupRuler",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "R",
+					"parameter": "unitSetup"
+				},
+				{
+					"title": "Item 8",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Rulers",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "R",
+					"parameter": "dpRulers"
+				},
+				{
+					"title": ":xliff:PP_Grid",
+					"method": "PPro_Menu",
+					"parameter": "dpGrid"
+				},
+				{
+					"title": ":xliff:PP_SnapToGrid",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "T",
+					"parameter": "dpToGrid"
+				},
+				{
+					"title": "Item 8",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_ShowGuides",
+					"method": "PPro_Menu",
+					"parameter": "dpShowGuides"
+				},
+				{
+					"title": ":xliff:PP_SnapToGuides",
+					"method": "PPro_Menu",
+					"parameter": "dpSnapGuides"
+				},
+				{
+					"title": ":xliff:PP_LockGuides",
+					"method": "PPro_Menu",
+					"parameter": "dpLockGuides"
+				},
+				{
+					"title": "Item 9",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Content",
+					"state": "checked",
+					"method": "PPro_Menu",
+					"parameter": "dpNames",
+					"link": 32011
+				},
+				{
+					"title": "Item 5",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Size1",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "1",
+					"parameter": "dpSize1"
+				},
+				{
+					"title": ":xliff:PP_Size0",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "=",
+					"parameter": "dpPaper"
+				},
+				{
+					"title": ":xliff:PP_Size+",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "+",
+					"parameter": "dpBig"
+				},
+				{
+					"title": ":xliff:PP_Size-",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "-",
+					"parameter": "dpSmall"
+				}
+			]
+		},
+		{
+			"link": 32011,
+			"title": ":xlif:PP_Content",
+			"items": [
+				{
+					"title": ":xliff:PP_Normal",
+					"method": "PPro_Menu",
+					"parameter": "dpNormal"
+				},
+				{
+					"title": "Item 2",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Names",
+					"method": "PPro_Menu",
+					"parameter": "dpNames"
+				},
+				{
+					"title": ":xliff:PP_IDs",
+					"method": "PPro_Menu",
+					"parameter": "dpIDs"
+				},
+				{
+					"title": ":xliff:PP_Formats",
+					"method": "PPro_Menu",
+					"parameter": "dpFormats"
+				},
+				{
+					"title": ":xliff:PP_PrintOrder",
+					"method": "PPro_Menu",
+					"parameter": "dpPrintOrder"
+				},
+				{
+					"title": ":xliff:PP_Values",
+					"method": "PPro_Menu",
+					"parameter": "dpValues"
+				}
+			]
+		},
+		{
+			"link": 32002,
+			"title": ":xliff:PP_Object",
+			"items": [
+				{
+					"title": ":xliff:PP_ObjSettings",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "E",
+					"parameter": "obProps"
+				},
+				{
+					"title": "Item 3",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_BringToFront",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "F",
+					"parameter": "obFront"
+				},
+				{
+					"title": ":xliff:PP_SendToBack",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "F",
+					"parameter": "obBack"
+				},
+				{
+					"title": "Item 5",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Group",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "G",
+					"parameter": "obGroup"
+				},
+				{
+					"title": ":xliff:PP_Ungroup",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "G",
+					"parameter": "obUngroup"
+				},
+				{
+					"title": "Item 8",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Align",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "/",
+					"parameter": "obAlign"
+				},
+				{
+					"title": "Item 10",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Lock",
+					"method": "PPro_Menu",
+					"parameter": "obLock"
+				},
+				{
+					"title": ":xliff:PP_Unlock",
+					"method": "PPro_Menu",
+					"parameter": "obUnlock"
+				},
+				{
+					"title": "Item 13",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Hide",
+					"method": "PPro_Menu",
+					"parameter": "obHide"
+				},
+				{
+					"title": ":xliff:PP_ShowAll",
+					"method": "PPro_Menu",
+					"parameter": "obShow"
+				},
+				{
+					"title": "Item 16",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_DontPrint",
+					"method": "PPro_Menu",
+					"parameter": "obNotPrint"
+				}
+			]
+		},
+		{
+			"link": 32003,
+			"title": ":xliff:PP_Insert",
+			"items": [
+				{
+					"title": ":xliff:PP_InsertSection",
+					"parameter": "inSection"
+				},
+				{
+					"title": ":xliff:PP_NewStyle",
+					"parameter": "inStyle"
+				},
+				{
+					"title": "Item 7",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_RefInsert",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "K",
+					"parameter": "refInsert"
+				},
+				{
+					"title": "Item 3",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_ShowRef",
+					"method": "PPro_Menu",
+					"parameter": "refShowRef"
+				},
+				{
+					"title": ":xliff:PP_ShowValues",
+					"method": "PPro_Menu",
+					"parameter": "refShowVal"
+				},
+				{
+					"title": ":xliff:PP_UpdateValues",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "U",
+					"parameter": "refUpdate"
+				}
+			]
+		},
+		{
+			"link": 32004,
+			"title": ":xliff:PP_Text",
+			"items": [
+				{
+					"title": ":xliff:PP_Font",
+					"parameter": "txFont"
+				},
+				{
+					"title": ":xliff:PP_Style",
+					"link": 32007
+				},
+				{
+					"title": ":xliff:PP_Size",
+					"link": 32006
+				},
+				{
+					"title": ":xliff:PP_TextColor",
+					"method": "PPro_Menu",
+					"parameter": "txColor"
+				},
+				{
+					"title": "Item 6",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_HorAlign",
+					"link": 32008
+				},
+				{
+					"title": ":xliff:PP_VertAlign",
+					"link": 32009
+				},
+				{
+					"title": "Item 9",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_LineSpace+",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "*",
+					"parameter": "txSpace+"
+				},
+				{
+					"title": ":xliff:PP_LineSpace-",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "#",
+					"parameter": "txSpace-"
+				},
+				{
+					"title": "Item 12",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_AutoWrap",
+					"method": "PPro_Menu",
+					"parameter": "txWrap"
+				}
+			]
+		},
+		{
+			"link": 32005,
+			"title": ":xliff:PP_Size",
+			"items": [
+				{
+					"title": "Lucida Grande"
+				}
+			]
+		},
+		{
+			"link": 32006,
+			"title": ":xliff:PP_Size",
+			"items": [
+				{
+					"title": ":xliff:PP_Size7",
+					"method": "PPro_Menu",
+					"parameter": "stSize7"
+				},
+				{
+					"title": ":xliff:PP_Size8",
+					"method": "PPro_Menu",
+					"parameter": "stSize8"
+				},
+				{
+					"title": ":xliff:PP_Size9",
+					"method": "PPro_Menu",
+					"parameter": "stSize9"
+				},
+				{
+					"title": ":xliff:PP_Size10",
+					"method": "PPro_Menu",
+					"parameter": "stSize10"
+				},
+				{
+					"title": ":xliff:PP_Size11",
+					"method": "PPro_Menu",
+					"parameter": "stSize11"
+				},
+				{
+					"title": ":xliff:PP_Size12",
+					"method": "PPro_Menu",
+					"parameter": "stSize12"
+				},
+				{
+					"title": ":xliff:PP_Size14",
+					"method": "PPro_Menu",
+					"parameter": "stSize14"
+				},
+				{
+					"title": ":xliff:PP_Size18",
+					"method": "PPro_Menu",
+					"parameter": "stSize18"
+				},
+				{
+					"title": ":xliff:PP_Size24",
+					"method": "PPro_Menu",
+					"parameter": "stSize24"
+				},
+				{
+					"title": "Item 10",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Size+",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "+",
+					"parameter": "stBigger"
+				},
+				{
+					"title": ":xliff:PP_Size-",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "-",
+					"parameter": "stSmaller"
+				},
+				{
+					"title": "Item 13",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_SizeOther",
+					"method": "PPro_Menu",
+					"parameter": "stOther"
+				}
+			]
+		},
+		{
+			"link": 32007,
+			"title": ":xliff:PP_Style",
+			"items": [
+				{
+					"title": ":xliff:PP_Plain",
+					"method": "PPro_Menu",
+					"shortcutShift": true,
+					"shortcutAccel": true,
+					"shortcutKey": "N",
+					"parameter": "stPlain"
+				},
+				{
+					"title": ":xliff:PP_Bold",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "B",
+					"parameter": "stBold"
+				},
+				{
+					"title": ":xliff:PP_Italic",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "I",
+					"parameter": "stItalic"
+				},
+				{
+					"title": ":xliff:PP_Underline",
+					"method": "PPro_Menu",
+					"shortcutAccel": true,
+					"shortcutKey": "U",
+					"parameter": "stUnderline"
+				},
+				{
+					"title": "Item 5",
+					"isSeparator": true
+				},
+				{
+					"title": ":xliff:PP_Lowercase",
+					"method": "PPro_Menu",
+					"parameter": "stLower"
+				},
+				{
+					"title": ":xliff:PP_Uppercase",
+					"method": "PPro_Menu",
+					"parameter": "stUpper"
+				},
+				{
+					"title": ":xliff:PP_Capitals",
+					"method": "PPro_Menu",
+					"parameter": "stCapitals"
+				}
+			]
+		},
+		{
+			"link": 32008,
+			"title": ":xliff:PP_HorAlign",
+			"items": [
+				{
+					"title": ":xliff:PP_Left",
+					"method": "PPro_Menu",
+					"parameter": "haLeft"
+				},
+				{
+					"title": ":xliff:PP_Center",
+					"method": "PPro_Menu",
+					"parameter": "haCenter"
+				},
+				{
+					"title": ":xliff:PP_Right",
+					"method": "PPro_Menu",
+					"parameter": "haRight"
+				},
+				{
+					"title": ":xliff:PP_Justify",
+					"method": "PPro_Menu",
+					"parameter": "haJustify"
+				}
+			]
+		},
+		{
+			"link": 32009,
+			"title": ":xliff:PP_VertAlign",
+			"items": [
+				{
+					"title": ":xliff:PP_Top",
+					"method": "PPro_Menu",
+					"parameter": "vaTop"
+				},
+				{
+					"title": ":xliff:PP_Center",
+					"method": "PPro_Menu",
+					"parameter": "vaCenter"
+				},
+				{
+					"title": ":xliff:PP_Bottom",
+					"method": "PPro_Menu",
+					"parameter": "vaBottom"
+				}
+			]
+		}
+	]
+}

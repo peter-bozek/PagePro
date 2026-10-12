@@ -1,0 +1,240 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"rightMargin": 0,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Popup Drop down List": {
+					"type": "dropdown",
+					"top": 37,
+					"left": 150,
+					"width": 90,
+					"height": 20,
+					"dataSource": "PP_RulerUnits",
+					"focusable": false,
+					"class": "PPro_Tahoma12Bold",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Popup Drop down List1": {
+					"type": "dropdown",
+					"top": 67,
+					"left": 150,
+					"width": 90,
+					"height": 20,
+					"dataSource": "PP_UnitRounding",
+					"focusable": false,
+					"class": "PPro_Tahoma12Bold",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Variable": {
+					"type": "input",
+					"top": 100,
+					"left": 150,
+					"width": 40,
+					"height": 14,
+					"dataSource": "PP_ProximityLimit",
+					"dataSourceTypeHint": "number",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Variable1": {
+					"type": "input",
+					"top": 130,
+					"left": 150,
+					"width": 40,
+					"height": 14,
+					"dataSource": "PP_GridSize",
+					"dataSourceTypeHint": "number",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Button": {
+					"type": "button",
+					"top": 176,
+					"left": 240,
+					"width": 120,
+					"height": 24,
+					"dataSource": "PP_OK",
+					"action": "accept",
+					"text": ":xliff:PP_BtnOK",
+					"class": "PPro_Buttons",
+					"defaultButton": true,
+					"events": [
+						"onClick"
+					]
+				},
+				"Button2": {
+					"type": "button",
+					"top": 176,
+					"left": 110,
+					"width": 120,
+					"height": 24,
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"shortcutKey": "[Esc]",
+					"text": ":xliff:PP_BtnCancel",
+					"class": "PPro_Buttons",
+					"events": [
+						"onClick"
+					]
+				},
+				"Text6": {
+					"type": "text",
+					"top": 40,
+					"left": 10,
+					"width": 130,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjRulerUnit"
+				},
+				"Text7": {
+					"type": "text",
+					"top": 7,
+					"left": 10,
+					"width": 360,
+					"height": 14,
+					"class": "PPro_Tahoma12Bold",
+					"text": ":xliff:PP_SettingsRulerAndGrid"
+				},
+				"Linie": {
+					"type": "line",
+					"top": 25,
+					"left": 0,
+					"width": 380
+				},
+				"Text8": {
+					"type": "text",
+					"top": 70,
+					"left": 10,
+					"width": 130,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjUnitRounding"
+				},
+				"Text9": {
+					"type": "text",
+					"top": 100,
+					"left": 10,
+					"width": 130,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjProximityLimit"
+				},
+				"Text10": {
+					"type": "text",
+					"top": 130,
+					"left": 10,
+					"width": 130,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjGridSize"
+				},
+				"Text13": {
+					"type": "text",
+					"top": 100,
+					"left": 200,
+					"width": 50,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"text": ":xliff:PP_ObjPointsShort"
+				},
+				"Text11": {
+					"type": "text",
+					"top": 130,
+					"left": 200,
+					"width": 50,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"text": ":xliff:PP_ObjPointsShort"
+				}
+			}
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

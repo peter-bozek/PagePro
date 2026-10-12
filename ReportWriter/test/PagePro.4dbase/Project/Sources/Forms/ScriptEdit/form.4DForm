@@ -1,0 +1,484 @@
+{
+	"destination": "detailScreen",
+	"rightMargin": 12,
+	"bottomMargin": 12,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onResize",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Rectangle": {
+					"type": "rectangle",
+					"top": 42,
+					"left": 12,
+					"width": 558,
+					"height": 260,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"stroke": "#FFFFFF"
+				},
+				"Variable3": {
+					"type": "input",
+					"top": 42,
+					"left": 12,
+					"width": 558,
+					"height": 260,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"dataSource": "PP_Script",
+					"class": "Default",
+					"contextMenu": "none",
+					"scrollbarVertical": "visible",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Variable3.4dm",
+					"events": [
+						"onAfterKeystroke"
+					]
+				},
+				"Button2": {
+					"type": "button",
+					"top": 500,
+					"left": 472,
+					"width": 100,
+					"height": 22,
+					"sizingX": "move",
+					"sizingY": "move",
+					"dataSource": "PP_OK",
+					"action": "cancel",
+					"text": ":xliff:PP_OK",
+					"class": "Default",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button3": {
+					"type": "button",
+					"top": 500,
+					"left": 360,
+					"width": 100,
+					"height": 22,
+					"sizingX": "move",
+					"sizingY": "move",
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"text": ":xliff:PP_Back",
+					"class": "Default",
+					"method": "ObjectMethods/Button3.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Hierarchical List": {
+					"type": "list",
+					"top": 348,
+					"left": 12,
+					"width": 186,
+					"height": 120,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"dataSource": "PP_TableList",
+					"enterable": false,
+					"focusable": false,
+					"scrollbarVertical": "visible",
+					"scrollbarHorizontal": "hidden",
+					"class": "Default",
+					"method": "ObjectMethods/Hierarchical List.4dm",
+					"events": [
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDoubleClick",
+						"onPrintingDetail"
+					]
+				},
+				"Hierarchical List1": {
+					"type": "list",
+					"top": 348,
+					"left": 204,
+					"width": 186,
+					"height": 120,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"dataSource": "PP_VariableList",
+					"enterable": false,
+					"focusable": false,
+					"scrollbarVertical": "visible",
+					"scrollbarHorizontal": "hidden",
+					"class": "Default",
+					"method": "ObjectMethods/Hierarchical List1.4dm",
+					"events": [
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDoubleClick",
+						"onPrintingDetail"
+					]
+				},
+				"Hierarchical List2": {
+					"type": "list",
+					"top": 348,
+					"left": 396,
+					"width": 188,
+					"height": 120,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"dataSource": "PP_CommandList",
+					"enterable": false,
+					"focusable": false,
+					"scrollbarVertical": "visible",
+					"scrollbarHorizontal": "hidden",
+					"class": "Default",
+					"method": "ObjectMethods/Hierarchical List2.4dm",
+					"events": [
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDoubleClick",
+						"onPrintingDetail"
+					]
+				},
+				"Splitter": {
+					"type": "splitter",
+					"top": 306,
+					"left": 4,
+					"width": 587,
+					"height": 4,
+					"sizingX": "grow",
+					"sizingY": "move",
+					"dataSource": "PP_Splitter1",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Splitter1": {
+					"type": "splitter",
+					"top": 318,
+					"left": 200,
+					"width": 2,
+					"height": 152,
+					"sizingY": "grow",
+					"dataSource": "PP_Splitter2",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Splitter2": {
+					"type": "splitter",
+					"top": 318,
+					"left": 392,
+					"width": 2,
+					"height": 152,
+					"sizingY": "grow",
+					"dataSource": "PP_Splitter3",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button1": {
+					"type": "button",
+					"top": 500,
+					"left": 130,
+					"width": 100,
+					"height": 22,
+					"sizingY": "move",
+					"dataSource": "PP_Test",
+					"text": ":xliff:PP_Test",
+					"class": "Default",
+					"method": "ObjectMethods/Button1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Picture Button": {
+					"type": "pictureButton",
+					"top": 312,
+					"left": 553,
+					"width": 32,
+					"height": 32,
+					"sizingX": "move",
+					"dataSource": "PP_TypeAhead",
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_TypeAhead.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/Picture Button.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Button4": {
+					"type": "button",
+					"top": 474,
+					"left": 10,
+					"width": 100,
+					"height": 22,
+					"sizingY": "move",
+					"dataSource": "PP_Test",
+					"text": ":xliff:PP_ScriptSave",
+					"class": "Default",
+					"method": "ObjectMethods/Button4.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button5": {
+					"type": "button",
+					"top": 474,
+					"left": 130,
+					"width": 100,
+					"height": 22,
+					"sizingY": "move",
+					"dataSource": "PP_Test",
+					"text": ":xliff:PP_ScriptLoad",
+					"class": "Default",
+					"method": "ObjectMethods/Button5.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 327,
+					"left": 12,
+					"width": 175,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_ScriptFields"
+				},
+				"Text1": {
+					"type": "text",
+					"top": 327,
+					"left": 204,
+					"width": 175,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_ScriptVars"
+				},
+				"Text2": {
+					"type": "text",
+					"top": 327,
+					"left": 396,
+					"width": 155,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_ScriptCommands"
+				},
+				"PP_ScriptVar": {
+					"type": "input",
+					"top": 8,
+					"left": 43,
+					"width": 516,
+					"height": 15,
+					"sizingX": "grow",
+					"dataSource": "PP_ScriptName",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onLoad",
+						"onValidate",
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Field1": {
+					"type": "input",
+					"top": 8,
+					"left": 12,
+					"width": 16,
+					"height": 16,
+					"dataSource": "PP_ScriptPicture",
+					"dataSourceTypeHint": "picture",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"pictureFormat": "truncatedCenter",
+					"dragging": "none",
+					"events": [
+						"onLoad",
+						"onValidate",
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"SearchPicker": {
+					"type": "subform",
+					"top": 6,
+					"left": 374,
+					"width": 205,
+					"height": 30,
+					"dataSource": "PP_Search",
+					"dataSourceTypeHint": "text",
+					"detailForm": "SearchPicker",
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"doubleClickInEmptyAreaAction": "addSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"method": "ObjectMethods/SearchPicker.4dm",
+					"events": [
+						"onLoad",
+						"onDataChange"
+					]
+				},
+				"Invisible Button": {
+					"type": "button",
+					"top": 7,
+					"left": 338,
+					"width": 6,
+					"height": 6,
+					"dataSource": "PP_SearchNext",
+					"shortcutKey": "g",
+					"shortcutAccel": true,
+					"display": false,
+					"method": "ObjectMethods/Invisible Button.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button1": {
+					"type": "button",
+					"top": 17,
+					"left": 338,
+					"width": 6,
+					"height": 6,
+					"dataSource": "PP_SearchBack",
+					"shortcutKey": "g",
+					"shortcutAccel": true,
+					"shortcutShift": true,
+					"display": false,
+					"method": "ObjectMethods/Invisible Button1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button2": {
+					"type": "button",
+					"top": 27,
+					"left": 338,
+					"width": 6,
+					"height": 6,
+					"dataSource": "PP_SearchSet",
+					"shortcutKey": "e",
+					"shortcutAccel": true,
+					"display": false,
+					"method": "ObjectMethods/Invisible Button2.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				}
+			}
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

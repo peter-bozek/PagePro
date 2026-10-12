@@ -1,0 +1,2 @@
+PP_CurrentObject:=PPro_ConvertRepeatingLine(PP_ExtArea; PP_CurrentObject)
+PPro_SubformVisibility(PP_ExtArea)

@@ -1,0 +1,26 @@
+{
+	"TabAlignment": {
+		"lineHeight": 18,
+		"editable": false,
+		"items": [
+			{
+				"text": "Left",
+				"ref": 1,
+				"editable": true,
+				"collapsed": true
+			},
+			{
+				"text": "Center",
+				"ref": 2,
+				"editable": true,
+				"collapsed": true
+			},
+			{
+				"text": "Right",
+				"ref": 3,
+				"editable": true,
+				"collapsed": true
+			}
+		]
+	}
+}

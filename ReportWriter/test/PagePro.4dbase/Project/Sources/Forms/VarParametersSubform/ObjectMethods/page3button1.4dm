@@ -1,0 +1,4 @@
+PPro_OpacityButtonScript(->PP_FrameOpacity)
+C_LONGINT:C283($err)
+PP_FrameColor:=(PP_FrameColor & 0x00FFFFFF) | ((PP_FrameOpacity & 0x00FF) << 0x0018)
+$err:=PPro_SetPropertyInteger(PP_ExtArea; 0; PProp_FrameColor:K7906:45; PP_FrameColor)

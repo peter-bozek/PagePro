@@ -1,0 +1,1390 @@
+{
+	"shared": true,
+	"windowMinWidth": 800,
+	"rightMargin": 19,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onClick",
+		"onOutsideCall",
+		"onActivate",
+		"onDeactivate",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onCloseBox",
+		"onUnload",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"PP_SubformText": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 420,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "TextParamsSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformTable": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 436,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "TableParamsSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformStyle": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 399,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "number",
+					"detailForm": "StylePAramsSubform",
+					"focusable": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformDataSource": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 340,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "number",
+					"detailForm": "DataSourceParametersSubform",
+					"focusable": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformGuide": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 126,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "GuideParamsSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformReport": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 324,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "number",
+					"detailForm": "ReportParametersSubform",
+					"focusable": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformGroup": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 156,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "GroupParamsSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformVar": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 476,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "VarParametersSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformHeader": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 335,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "HeaderPropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformBreakHeader": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 276,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "BreakHeaderPropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformFooter": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 356,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "FooterPropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformBreakFooter": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 276,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "BreakFooterPropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformWatermark": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 242,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "WatermarkPropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformBody": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 196,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "BodyPropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformPage": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 120,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "PagePropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Rectangle": {
+					"type": "rectangle",
+					"top": 194,
+					"left": 568,
+					"width": 244,
+					"height": 480,
+					"sizingX": "move",
+					"fill": "transparent",
+					"stroke": "#C5FFC0"
+				},
+				"PP_LB": {
+					"type": "listbox",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 474,
+					"sizingX": "move",
+					"sizingY": "grow",
+					"resizingMode": "legacy",
+					"dataSource": "PP_PropertyPalette",
+					"movableRows": false,
+					"rowHeight": "20px",
+					"rowHeightAutoMin": "20px",
+					"rowHeightAutoMax": "20px",
+					"staticColumnCount": 1,
+					"selectionMode": "single",
+					"horizontalLineStroke": "#AAAAAA",
+					"verticalLineStroke": "#AAAAAA",
+					"stroke": "#000000",
+					"fill": "#FFFFFF",
+					"fontFamily": "Lucida Grande",
+					"fontSize": 13,
+					"columns": [
+						{
+							"name": "Column3",
+							"dataSource": [
+								"PP_PropertyGroup",
+								"PP_PropName"
+							],
+							"width": 112,
+							"minWidth": 10,
+							"maxWidth": 32000,
+							"enterable": false,
+							"stroke": "#000000",
+							"fill": "#FFFFFF",
+							"textAlign": "automatic",
+							"verticalAlign": "automatic",
+							"fontFamily": "Lucida Grande",
+							"fontSize": 11,
+							"events": [
+								"onClick",
+								"onDataChange"
+							],
+							"header": {
+								"name": "Header3",
+								"text": ":xliff:PP_Property",
+								"dataSource": "PP_LBHeader1",
+								"stroke": "#000000",
+								"textAlign": "automatic",
+								"verticalAlign": "automatic",
+								"fontFamily": "Lucida Grande",
+								"fontSize": 11
+							},
+							"footer": {
+								"name": "Footer1",
+								"stroke": "#000000",
+								"fill": "#FFFFFF",
+								"textAlign": "automatic",
+								"verticalAlign": "automatic",
+								"fontFamily": "Lucida Grande",
+								"fontSize": 13
+							}
+						},
+						{
+							"name": "Column2",
+							"dataSource": "PP_PropValue",
+							"width": 113,
+							"minWidth": 10,
+							"maxWidth": 32000,
+							"stroke": "#000000",
+							"fill": "#FFFFFF",
+							"textAlign": "automatic",
+							"verticalAlign": "automatic",
+							"fontFamily": "Lucida Grande",
+							"fontSize": 11,
+							"events": [
+								"onDataChange"
+							],
+							"method": "ObjectMethods/Column2.4dm",
+							"header": {
+								"name": "Header2",
+								"text": ":xliff:PP_Value",
+								"dataSource": "PP_LBHeader3",
+								"stroke": "#000000",
+								"textAlign": "automatic",
+								"verticalAlign": "automatic",
+								"fontFamily": "Lucida Grande",
+								"fontSize": 11
+							},
+							"footer": {
+								"name": "Footer2",
+								"stroke": "#000000",
+								"fill": "#FFFFFF",
+								"textAlign": "automatic",
+								"verticalAlign": "automatic",
+								"fontFamily": "Lucida Grande",
+								"fontSize": 13
+							}
+						}
+					]
+				},
+				"PP_SubformRepeat": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 436,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "RepVarPropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformTableHeader": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 466,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "TableHeaderPropertiesColumn",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformColumn": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 470,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "ColumnPropertiesSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformLine": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 231,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "number",
+					"detailForm": "LineParamsSubform",
+					"focusable": false,
+					"hideFocusRing": true,
+					"enterableInList": false,
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformRect": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 320,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "number",
+					"detailForm": "RectParamsSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformOval": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 278,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "OvalParametersSubform",
+					"focusable": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_SubformPict": {
+					"type": "subform",
+					"top": 196,
+					"left": 570,
+					"width": 240,
+					"height": 442,
+					"sizingX": "move",
+					"dataSource": "PP_CurrentObject",
+					"dataSourceTypeHint": "text",
+					"detailForm": "PictParamsSubform",
+					"focusable": false,
+					"enterableInList": false,
+					"deletableInList": false,
+					"doubleClickInRowAction": "editSubrecord",
+					"selectionMode": "multiple",
+					"printFrame": "variable",
+					"borderStyle": "system",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Rectangle1": {
+					"type": "rectangle",
+					"top": 43,
+					"left": 2,
+					"width": 40,
+					"height": 631,
+					"sizingY": "grow",
+					"fill": "#E2FFDF"
+				},
+				"Rectangle2": {
+					"type": "rectangle",
+					"top": 0,
+					"left": 2,
+					"width": 812,
+					"height": 42,
+					"sizingX": "grow",
+					"fill": "#E2FFDF"
+				},
+				"Variable": {
+					"type": "input",
+					"top": 6,
+					"left": 212,
+					"width": 37,
+					"height": 12,
+					"dataSource": "PP_X",
+					"class": "DefautSmall",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Left"
+					},
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Variable.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Variable2": {
+					"type": "input",
+					"top": 6,
+					"left": 303,
+					"width": 37,
+					"height": 12,
+					"dataSource": "PP_W",
+					"class": "DefautSmall",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Width"
+					},
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Variable2.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Variable4": {
+					"type": "input",
+					"top": 6,
+					"left": 437,
+					"width": 37,
+					"height": 12,
+					"dataSource": "PP_R",
+					"class": "DefautSmall",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Right"
+					},
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Variable4.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Variable1": {
+					"type": "input",
+					"top": 24,
+					"left": 212,
+					"width": 37,
+					"height": 12,
+					"dataSource": "PP_Y",
+					"class": "DefautSmall",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Top"
+					},
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Variable1.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Variable3": {
+					"type": "input",
+					"top": 24,
+					"left": 303,
+					"width": 37,
+					"height": 12,
+					"dataSource": "PP_H",
+					"class": "DefautSmall",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Height"
+					},
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Variable3.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Variable5": {
+					"type": "input",
+					"top": 24,
+					"left": 437,
+					"width": 37,
+					"height": 12,
+					"dataSource": "PP_B",
+					"class": "DefautSmall",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Bottom"
+					},
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Variable5.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Combo Box2": {
+					"type": "dropdown",
+					"top": 12,
+					"left": 484,
+					"width": 80,
+					"height": 20,
+					"dataSource": "PP_Units",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Unit"
+					},
+					"class": "Default",
+					"method": "ObjectMethods/Combo Box2.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Combo Box1": {
+					"type": "dropdown",
+					"top": 12,
+					"left": 644,
+					"width": 145,
+					"height": 20,
+					"sizingX": "move",
+					"dataSource": "PP_Styles",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Style"
+					},
+					"class": "Default",
+					"method": "ObjectMethods/Combo Box1.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Hierarchical List": {
+					"type": "list",
+					"top": 46,
+					"left": 570,
+					"width": 240,
+					"height": 116,
+					"sizingX": "move",
+					"sizingY": "grow",
+					"dataSource": "PP_XMLRoot",
+					"enterable": false,
+					"selectionMode": "multiple",
+					"scrollbarVertical": "visible",
+					"scrollbarHorizontal": "hidden",
+					"class": "Default",
+					"method": "ObjectMethods/Hierarchical List.4dm",
+					"events": [
+						"onDoubleClick",
+						"onSelectionChange"
+					]
+				},
+				"Variable6": {
+					"type": "input",
+					"top": 642,
+					"left": 6,
+					"width": 32,
+					"height": 16,
+					"sizingY": "move",
+					"dataSource": "PP_Scaling",
+					"dataSourceTypeHint": "number",
+					"class": "DefautSmall",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Scale"
+					},
+					"contextMenu": "none",
+					"numberFormat": "###0%",
+					"min": 10,
+					"max": 10000,
+					"method": "ObjectMethods/Variable6.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Splitter1": {
+					"type": "splitter",
+					"top": 166,
+					"left": 568,
+					"width": 244,
+					"height": 1,
+					"sizingX": "move",
+					"dataSource": "PP_Splitter",
+					"events": [
+						"onClick"
+					]
+				},
+				"Text1": {
+					"type": "text",
+					"top": 622,
+					"left": 6,
+					"width": 32,
+					"height": 16,
+					"sizingY": "move",
+					"class": "DefautSmall",
+					"textAlign": "center",
+					"text": ":xliff:PP_ScaleLabel"
+				},
+				"Text": {
+					"type": "text",
+					"top": 14,
+					"left": 575,
+					"width": 63,
+					"height": 16,
+					"sizingX": "move",
+					"class": "Default",
+					"textAlign": "right",
+					"text": ":xliff:PP_Style"
+				},
+				"Picture Button": {
+					"type": "pictureButton",
+					"top": 6,
+					"left": 82,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ButtonLock",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Lock"
+					},
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_Lock.png",
+					"method": "ObjectMethods/Picture Button.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"PP_Tool1": {
+					"type": "pictureButton",
+					"top": 50,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolCursor",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Pointer "
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Pointer.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool1.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Line": {
+					"type": "line",
+					"top": 322,
+					"left": 5,
+					"width": 34,
+					"stroke": "#AAAAAA",
+					"strokeWidth": 2
+				},
+				"PP_Tool2": {
+					"type": "pictureButton",
+					"top": 84,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolText",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Text"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Text.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool2.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"PP_Tool3": {
+					"type": "pictureButton",
+					"top": 118,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolVariable",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Variable"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Variable.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool3.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"PP_Tool4": {
+					"type": "pictureButton",
+					"top": 152,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolField",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Field"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Field.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool4.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"PP_Tool5": {
+					"type": "pictureButton",
+					"top": 186,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolRect",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Rectangle"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Rect.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool5.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"PP_Tool6": {
+					"type": "pictureButton",
+					"top": 220,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolOval",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Oval"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Oval.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool6.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"PP_Tool7": {
+					"type": "pictureButton",
+					"top": 254,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolLine",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Line"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Line.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool7.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Invisible Button12": {
+					"type": "button",
+					"top": 6,
+					"left": 656,
+					"width": 4,
+					"height": 6,
+					"dataSource": "PP_Enter",
+					"shortcutKey": "[Enter]",
+					"display": false,
+					"events": [
+						"onClick"
+					]
+				},
+				"Invisible Button13": {
+					"type": "button",
+					"top": 5,
+					"left": 647,
+					"width": 4,
+					"height": 6,
+					"dataSource": "PP_Esc",
+					"shortcutKey": "[Esc]",
+					"display": false,
+					"events": [
+						"onClick"
+					]
+				},
+				"PP_Tool8": {
+					"type": "pictureButton",
+					"top": 328,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolTable",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Table"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Table.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool8.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Invisible Button15": {
+					"type": "pictureButton",
+					"top": 552,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"sizingY": "move",
+					"dataSource": "PP_ButtonPlus",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/ZoomPlus"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_GlassPlus.png",
+					"switchWhenRollover": true,
+					"switchBackWhenReleased": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/Invisible Button15.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Invisible Button16": {
+					"type": "pictureButton",
+					"top": 586,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"sizingY": "move",
+					"dataSource": "PP_ButtonMinus",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/ZoomMinus"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_GlassMinus.png",
+					"switchWhenRollover": true,
+					"switchBackWhenReleased": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/Invisible Button16.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Invisible Button17": {
+					"type": "pictureButton",
+					"top": 511,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"sizingY": "move",
+					"dataSource": "PP_Button1",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Glass_Paper"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_GlassPage.png",
+					"switchWhenRollover": true,
+					"switchBackWhenReleased": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/Invisible Button17.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Text2": {
+					"type": "text",
+					"top": 6,
+					"left": 163,
+					"width": 44,
+					"height": 12,
+					"class": "DefautSmall",
+					"textAlign": "right",
+					"text": ":xliff:PP_Left"
+				},
+				"Text3": {
+					"type": "text",
+					"top": 24,
+					"left": 163,
+					"width": 44,
+					"height": 12,
+					"class": "DefautSmall",
+					"textAlign": "right",
+					"text": ":xliff:PP_Top"
+				},
+				"Text4": {
+					"type": "text",
+					"top": 6,
+					"left": 254,
+					"width": 44,
+					"height": 12,
+					"class": "DefautSmall",
+					"textAlign": "right",
+					"text": ":xliff:PP_Width"
+				},
+				"Text5": {
+					"type": "text",
+					"top": 24,
+					"left": 254,
+					"width": 44,
+					"height": 12,
+					"class": "DefautSmall",
+					"textAlign": "right",
+					"text": ":xliff:PP_Height"
+				},
+				"Picture Button1": {
+					"type": "pictureButton",
+					"top": 6,
+					"left": 46,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ButtonGroup",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Group"
+					},
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_Group.png",
+					"method": "ObjectMethods/Picture Button1.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"PP_Tool9": {
+					"type": "pictureButton",
+					"top": 288,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ToolPicture",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Picture"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Picture.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Tool9.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Invisible Button1": {
+					"type": "pictureButton",
+					"top": 170,
+					"left": 786,
+					"width": 22,
+					"height": 22,
+					"sizingX": "move",
+					"dataSource": "PP_ListBox",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/DisplayList"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_ListBox.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/Invisible Button1.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Invisible Button2": {
+					"type": "pictureButton",
+					"top": 170,
+					"left": 759,
+					"width": 22,
+					"height": 22,
+					"sizingX": "move",
+					"dataSource": "PP_Dialogs",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/DisplayForm"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Dialogs.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/Invisible Button2.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Text6": {
+					"type": "text",
+					"top": 6,
+					"left": 388,
+					"width": 44,
+					"height": 12,
+					"class": "DefautSmall",
+					"textAlign": "right",
+					"text": ":xliff:PP_Right"
+				},
+				"Text7": {
+					"type": "text",
+					"top": 24,
+					"left": 388,
+					"width": 44,
+					"height": 12,
+					"class": "DefautSmall",
+					"textAlign": "right",
+					"text": ":xliff:PP_Bottom"
+				},
+				"Invisible Button3": {
+					"type": "pictureButton",
+					"top": 477,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"sizingY": "move",
+					"dataSource": "PP_Button1",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Zoom100"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Glass1.png",
+					"switchWhenRollover": true,
+					"switchBackWhenReleased": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/Invisible Button3.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Line1": {
+					"type": "line",
+					"top": 6,
+					"left": 120,
+					"height": 32,
+					"stroke": "#AAAAAA",
+					"strokeWidth": 2
+				},
+				"Picture Popup Menu": {
+					"type": "picturePopup",
+					"top": 6,
+					"left": 126,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ObjectsAlignPopup",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Alignment"
+					},
+					"rowCount": 6,
+					"picture": "/RESOURCES/Images/library/PP_AlignPopup.png",
+					"method": "ObjectMethods/Picture Popup Menu.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"PP_ButtonInfo": {
+					"type": "pictureButton",
+					"top": 6,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_ButtonInfo",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/About"
+					},
+					"picture": "/RESOURCES/Images/library/PP_Logo.png",
+					"loopBackToFirstFrame": true,
+					"method": "ObjectMethods/PP_ButtonInfo.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Line2": {
+					"type": "line",
+					"top": 362,
+					"left": 5,
+					"width": 34,
+					"stroke": "#AAAAAA",
+					"strokeWidth": 2
+				},
+				"PP_Palette": {
+					"type": "pictureButton",
+					"top": 368,
+					"left": 6,
+					"width": 32,
+					"height": 32,
+					"dataSource": "PP_PaletteIcon",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/ObjectsPalette"
+					},
+					"columnCount": 4,
+					"picture": "/RESOURCES/Images/library/PP_Palette.png",
+					"switchWhenRollover": true,
+					"useLastFrameAsDisabled": true,
+					"method": "ObjectMethods/PP_Palette.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Picture Button3": {
+					"type": "pictureButton",
+					"top": 8,
+					"left": 356,
+					"width": 26,
+					"height": 26,
+					"dataSource": "PP_LockProportions",
+					"tooltip": {
+						"$ref": "/SOURCES/tips.json#/Proportions"
+					},
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_ChainIcon.png",
+					"loopBackToFirstFrame": true,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Line3": {
+					"type": "line",
+					"top": 12,
+					"left": 343,
+					"width": 8
+				},
+				"Line4": {
+					"type": "line",
+					"top": 30,
+					"left": 343,
+					"width": 8
+				},
+				"Line5": {
+					"type": "line",
+					"top": 12,
+					"left": 350,
+					"height": 18
+				},
+				"Line6": {
+					"type": "line",
+					"top": 20,
+					"left": 351,
+					"width": 4
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE base SYSTEM "http://www.4d.com/dtd/2007/base.dtd" >
+<base name="PagePro_v19" uuid="EAA4C8A515ED47A596A10114E265A432" collation_locale="en">
+	<schema name="DEFAULT_SCHEMA"/>
+	<base_extra data_file_path=":PagePro.4DD" package_name="PagePro_v19" structure_file_name="PagePro" ppc_code_stamp="1136">
+		<temp_folder folder_selector="system"/>
+	</base_extra>
+</base>

@@ -444,6 +444,8 @@ RWDataProvider::ParseValue (RWXmlNode inNode, RWDataID &outID, RWValue &outVar)
 			SBlob	data;
 			data.Init();
 			RWTools::ReadData (inNode, data);
+			if (data.fSize == 0)
+				RW_PictLog ("RWDataProvider: picture data is empty (kind %d)", int (kind));
 			outVar.SetPicture (kind, data, true);
 			break;
 		}

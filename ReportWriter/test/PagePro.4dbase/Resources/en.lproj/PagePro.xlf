@@ -1,0 +1,3683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Translation file.
+This file is distributed under the same license as the product package.
+-->
+<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">
+<xliff version="1.0">
+	<file datatype="x-STR#" original="undefined" source-language="en" target-language="en">
+  	<header>
+         <prop-group name="Xliff-Editor.4dbase">
+            <prop prop-type="version">1.0</prop>
+         </prop-group>
+      </header>
+    	<body>
+      	<group id="12001" resname="PP_MenuBar">
+        	<trans-unit id="1" resname="PP_New">
+               <source>New</source>
+               <target>New</target>
+            </trans-unit>
+					<trans-unit id="2" resname="PP_Open">
+						 <source>Open</source>
+						 <target>Open</target>
+					</trans-unit>
+					<trans-unit id="3" resname="PP_Save">
+						 <source>Save</source>
+						 <target>Save</target>
+					</trans-unit>
+					<trans-unit id="4" resname="PP_SaveAs">
+						 <source>Save As</source>
+						 <target>Save As</target>
+					</trans-unit>
+					<trans-unit id="5" resname="PP_Revert">
+						 <source>Revert to Saved</source>
+						 <target>Revert to Saved</target>
+					</trans-unit>
+					<trans-unit id="6" resname="PP_PageSetup">
+						 <source>Page Setup</source>
+						 <target>Page Setup</target>
+					</trans-unit>
+					<trans-unit id="7" resname="PP_Print">
+						 <source>Print</source>
+						 <target>Print</target>
+					</trans-unit>
+					<trans-unit id="8" resname="PP_Preview">
+						 <source>Print Preview</source>
+						 <target>Print Preview</target>
+					</trans-unit>
+					<trans-unit id="10" resname="PP_Exit">
+						 <source>Exit</source>
+						 <target>Exit</target>
+					</trans-unit>
+					<trans-unit id="11" resname="PP_Prefs">
+						 <source>Preferences</source>
+						 <target>Preferences</target>
+					</trans-unit>
+					<trans-unit id="12" resname="PP_Display">
+						 <source>Display</source>
+						 <target>Display</target>
+					</trans-unit>
+					<trans-unit id="13" resname="PP_Grid">
+						 <source>Grid</source>
+						 <target>Grid</target>
+					</trans-unit>
+					<trans-unit id="14" resname="PP_Rulers">
+						 <source>Rulers</source>
+						 <target>Rulers</target>
+					</trans-unit>
+					<trans-unit id="15" resname="PP_Size">
+						 <source>Size</source>
+						 <target>Size</target>
+					</trans-unit>
+					<trans-unit id="16" resname="PP_Names">
+						 <source>Names</source>
+						 <target>Names</target>
+					</trans-unit>
+					<trans-unit id="17" resname="PP_Hidden">
+						 <source>Hidden Objecs</source>
+						 <target>Hidden Objecs</target>
+					</trans-unit>
+					<trans-unit id="18" resname="PP_Properties">
+						 <source>Properties</source>
+						 <target>Properties</target>
+					</trans-unit>
+					<trans-unit id="19" resname="PP_Report">
+						 <source>Report</source>
+						 <target>Report</target>
+					</trans-unit>
+					<trans-unit id="20" resname="PP_Data">
+						 <source>Data Source</source>
+						 <target>Data Source</target>
+					</trans-unit>
+					<trans-unit id="21" resname="PP_Editor">
+						 <source>Editor</source>
+						 <target>Editor</target>
+					</trans-unit>
+					<trans-unit id="22" resname="PP_Styles">
+						 <source>Styles</source>
+						 <target>Styles</target>
+					</trans-unit>
+					<trans-unit id="23" resname="PP_Duplicate">
+						 <source>Duplicate</source>
+						 <target>Duplicate</target>
+					</trans-unit>
+					<trans-unit id="24" resname="PP_Object">
+						 <source>Object</source>
+						 <target>Object</target>
+					</trans-unit>
+					<trans-unit id="25" resname="PP_ObjSettings">
+						 <source>Object Settings...</source>
+						 <target>Object Settings...</target>
+					</trans-unit>
+					<trans-unit id="26" resname="PP_BringToFront">
+						 <source>Bring to Front</source>
+						 <target>Bring to Front</target>
+					</trans-unit>
+					<trans-unit id="27" resname="PP_SendToBack">
+						 <source>Send to Back</source>
+						 <target>Send to Back</target>
+					</trans-unit>
+					<trans-unit id="28" resname="PP_Group">
+						 <source>Group</source>
+						 <target>Group</target>
+					</trans-unit>
+					<trans-unit id="29" resname="PP_Ungroup">
+						 <source>Ungroup</source>
+						 <target>Ungroup</target>
+					</trans-unit>
+					<trans-unit id="30" resname="PP_Align">
+						 <source>Align</source>
+						 <target>Align</target>
+					</trans-unit>
+					<trans-unit id="31" resname="PP_Lock">
+						 <source>Lock</source>
+						 <target>Lock</target>
+					</trans-unit>
+					<trans-unit id="32" resname="PP_Unlock">
+						<source>Unlock All</source>
+						 <target>Unlock All</target>
+					</trans-unit>
+					<trans-unit id="33" resname="PP_Hide">
+						 <source>Hide</source>
+						 <target>Hide</target>
+					</trans-unit>
+					<trans-unit id="34" resname="PP_ShowAll">
+						 <source>Show All</source>
+						 <target>Show All</target>
+					</trans-unit>
+					<trans-unit id="35" resname="PP_DontPrint">
+						 <source>Do not Print</source>
+						 <target>Do not Print</target>
+					</trans-unit>
+					<trans-unit id="36" resname="PP_SetupRuler">
+						 <source>Setup Ruler...</source>
+						 <target>Setup Ruler...</target>
+					</trans-unit>
+					<trans-unit id="37" resname="PP_SnapToGrid">
+						 <source>Snap to Grid</source>
+						 <target>Snap to Grid</target>
+					</trans-unit>
+			 		<trans-unit id="38" resname="PP_Size1">
+						 <source>Original Size</source>
+						 <target>Original Size</target>
+					</trans-unit>
+					<trans-unit id="39" resname="PP_Size0">
+						 <source>Paper Size</source>
+						 <target>Paper Size</target>
+					</trans-unit>
+					<trans-unit id="40" resname="PP_Size+">
+						 <source>Zoom in</source>
+						 <target>Zoom in</target>
+					</trans-unit>
+					<trans-unit id="41" resname="PP_Size-">
+						 <source>Zoom out</source>
+						 <target>Zoom out</target>
+					</trans-unit>
+					<trans-unit id="42" resname="PP_Reference">
+						 <source>References</source>
+						 <target>References</target>
+					</trans-unit>
+					<trans-unit id="43" resname="PP_RefInsert">
+						 <source>Insert Reference</source>
+						 <target>Insert Reference</target>
+					</trans-unit>
+					<trans-unit id="44" resname="PP_RefFormat">
+						 <source>Format Reference</source>
+						 <target>Format Reference</target>
+					</trans-unit>
+					<trans-unit id="45" resname="PP_TextToRef">
+						 <source>Text to Reference</source>
+						 <target>Text to Reference</target>
+					</trans-unit>
+					<trans-unit id="46" resname="PP_RefToText">
+						 <source>Reference to Text</source>
+						 <target>Reference to Text</target>
+					</trans-unit>
+					<trans-unit id="47" resname="PP_ShowRef">
+						 <source>Show References</source>
+						 <target>Show References</target>
+					</trans-unit>
+					<trans-unit id="48" resname="PP_ShowValues">
+						 <source>Show Values</source>
+						 <target>Show Values</target>
+					</trans-unit>
+					<trans-unit id="49" resname="PP_UpdateValues">
+						 <source>Update Values</source>
+						 <target>Update Values</target>
+					</trans-unit>
+					<trans-unit id="50" resname="PP_FreezeValues">
+						 <source>Freeze Values</source>
+						 <target>Freeze Values</target>
+					</trans-unit>
+					<trans-unit id="51" resname="PP_Text">
+						 <source>Text</source>
+						 <target>Text</target>
+					</trans-unit>
+					<trans-unit id="52" resname="PP_Stylesheets">
+						 <source>Stylesheets...</source>
+						 <target>Stylesheets...</target>
+					</trans-unit>
+					<trans-unit id="53" resname="PP_Font">
+						 <source>Font</source>
+						 <target>Font</target>
+					</trans-unit>
+					<trans-unit id="54" resname="PP_Style">
+						 <source>Style</source>
+						 <target>Style</target>
+					</trans-unit>
+					<trans-unit id="55" resname="PP_Size">
+						 <source>Size</source>
+						 <target>Size</target>
+					</trans-unit>
+					<trans-unit id="56" resname="PP_TextColor">
+						 <source>Color...</source>
+						 <target>Color...</target>
+					</trans-unit>
+					<trans-unit id="57" resname="PP_HorAlign">
+						 <source>Horizontal Alignment</source>
+						 <target>Horizontal Alignment</target>
+					</trans-unit>
+					<trans-unit id="58" resname="PP_VertAlign">
+						 <source>Vertical Alignment</source>
+						 <target>Vertical Alignment</target>
+					</trans-unit>
+					<trans-unit id="59" resname="PP_LineSpace+">
+						 <source>Line space more</source>
+						 <target>Line space more</target>
+					</trans-unit>
+					<trans-unit id="60" resname="PP_LineSpace-">
+						 <source>Line space less</source>
+						 <target>Line space less</target>
+					</trans-unit>
+					<trans-unit id="61" resname="PP_AutoWrap">
+						 <source>Auto Line Wrap</source>
+						 <target>Auto Line Wrap</target>
+					</trans-unit>
+					<trans-unit id="62" resname="PP_Plain">
+						 <source>Plain</source>
+						 <target>Plain</target>
+					</trans-unit>
+					<trans-unit id="63" resname="PP_Bold">
+						 <source>Bold</source>
+						 <target>Bold</target>
+					</trans-unit>
+					<trans-unit id="64" resname="PP_Italic">
+						 <source>Italic</source>
+						 <target>Italic</target>
+					</trans-unit>
+					<trans-unit id="65" resname="PP_Underline">
+						 <source>Underline</source>
+						 <target>Underline</target>
+					</trans-unit>
+					<trans-unit id="66" resname="PP_Lowercase">
+						 <source>Lowercase</source>
+						 <target>Lowercase</target>
+					</trans-unit>
+					<trans-unit id="67" resname="PP_Uppercase">
+						 <source>Uppercase</source>
+						 <target>Uppercase</target>
+					</trans-unit>
+					<trans-unit id="68" resname="PP_Capitals">
+						 <source>Capitals</source>
+						 <target>Capitals</target>
+					</trans-unit>
+					<trans-unit id="69" resname="PP_Left">
+						 <source>Left</source>
+						 <target>Left</target>
+					</trans-unit>
+					<trans-unit id="70" resname="PP_Center">
+						 <source>Center</source>
+						 <target>Center</target>
+					</trans-unit>
+					<trans-unit id="71" resname="PP_Right">
+						 <source>Right</source>
+						 <target>Right</target>
+					</trans-unit>
+					<trans-unit id="72" resname="PP_Justify">
+						 <source>Justify</source>
+						 <target>Justify</target>
+					</trans-unit>
+					<trans-unit id="73" resname="PP_Top">
+						 <source>Top</source>
+						 <target>Top</target>
+					</trans-unit>
+					<trans-unit id="74" resname="PP_Bottom">
+						 <source>Bottom</source>
+						 <target>Bottom</target>
+					</trans-unit>
+					<trans-unit id="75" resname="PP_Size7">
+						 <source>7</source>
+						 <target>7</target>
+					</trans-unit>
+					<trans-unit id="76" resname="PP_Size8">
+						 <source>8</source>
+						 <target>8</target>
+					</trans-unit>
+					<trans-unit id="77" resname="PP_Size9">
+						 <source>9</source>
+						 <target>9</target>
+					</trans-unit>
+					<trans-unit id="78" resname="PP_Size10">
+						 <source>10</source>
+						 <target>10</target>
+					</trans-unit>
+					<trans-unit id="79" resname="PP_Size11">
+						 <source>11</source>
+						 <target>11</target>
+					</trans-unit>
+					<trans-unit id="80" resname="PP_Size12">
+						 <source>12</source>
+						 <target>12</target>
+					</trans-unit>
+					<trans-unit id="81" resname="PP_Size14">
+						 <source>14</source>
+						 <target>14</target>
+					</trans-unit>
+					<trans-unit id="82" resname="PP_Size18">
+						 <source>18</source>
+						 <target>18</target>
+					</trans-unit>
+					<trans-unit id="83" resname="PP_Size24">
+						 <source>24</source>
+						 <target>24</target>
+					</trans-unit>
+					<trans-unit id="84" resname="PP_Size+">
+						 <source>Bigger</source>
+						 <target>Bigger</target>
+					</trans-unit>
+					<trans-unit id="85" resname="PP_Size-">
+						 <source>Smaller</source>
+						 <target>Smaller</target>
+					</trans-unit>
+					<trans-unit id="86" resname="PP_SizeOther">
+						 <source>Other...</source>
+						 <target>Other...</target>
+					</trans-unit>
+					<trans-unit id="87" resname="PP_TopLeft">
+						 <source>Top / Left</source>
+						 <target>Top / Left</target>
+					</trans-unit>
+					<trans-unit id="88" resname="PP_BottomRight">
+						 <source>Bottom / Right</source>
+						 <target>Bottom / Right</target>
+					</trans-unit>
+					<trans-unit id="89" resname="PP_ObjectHeader">
+						 <source>Object Properties</source>
+						 <target>Object Properties</target>
+					</trans-unit>
+					<trans-unit id="90" resname="PP_ID">
+						 <source>ID</source>
+						 <target>ID</target>
+					</trans-unit>
+					<trans-unit id="91" resname="PP_Order">
+						 <source>Print Order</source>
+						 <target>Print Order</target>
+					</trans-unit>
+					<trans-unit id="92" resname="PP_FixV">
+						 <source>Fixed </source>
+						 <target>Fixed </target>
+					</trans-unit>
+					<trans-unit id="93" resname="PP_Bind">
+						 <source>Grow</source>
+						 <target>Grow</target>
+					</trans-unit>
+					<trans-unit id="94" resname="PP_Expand">
+						 <source>Expand</source>
+						 <target>Expand</target>
+					</trans-unit>
+					<trans-unit id="95" resname="PP_Align">
+						 <source>Align</source>
+						 <target>Align</target>
+					</trans-unit>
+					<trans-unit id="96" resname="PP_Printing">
+               <source>Printing</source>
+               <target>Printing</target>
+            </trans-unit>
+					<trans-unit id="97" resname="PP_Lock">
+				<source>Lock</source>
+				<target>Lock</target>
+			</trans-unit>
+					<trans-unit id="98" resname="PP_Content">
+				<source>Content</source>
+				<target>Content</target>
+			</trans-unit>
+					<trans-unit id="99" resname="PP_Normal">
+				<source>Normal</source>
+				<target>Normal</target>
+			</trans-unit>
+					<trans-unit id="100" resname="PP_Names">
+				<source>Names</source>
+				<target>Names</target>
+			</trans-unit>
+					<trans-unit id="101" resname="PP_IDs">
+						<source>IDs</source>
+						<target>IDs</target>
+					</trans-unit>
+					<trans-unit id="102" resname="PP_Formats">
+						<source>Formats</source>
+						<target>Formats</target>
+					</trans-unit>
+					<trans-unit id="103" resname="PP_PrintOrder">
+						<source>Print Order</source>
+						<target>Print Order</target>
+					</trans-unit>
+					<trans-unit id="104" resname="PP_Values">
+						<source>Values</source>
+						<target>Values</target>
+					</trans-unit>
+					<trans-unit id="105" resname="PP_InsertSection">
+						<source>Insert Section...</source>
+						<target>Insert Section...</target>
+					</trans-unit>
+					<trans-unit id="106" resname="PP_ShowGuides">
+						<source>Guides</source>
+						<target>Guides</target>
+					</trans-unit>
+					<trans-unit id="107" resname="PP_SnapToGuides">
+						<source>Snap to Guides</source>
+						<target>Snap to Guides</target>
+					</trans-unit>
+					<trans-unit id="108" resname="PP_LockGuides">
+						<source>Lock Guides</source>
+						<target>Lock Guides</target>
+					</trans-unit>
+					<trans-unit id="109" resname="PP_File">
+						<source>File</source>
+						<target>File</target>
+					</trans-unit>
+					<trans-unit id="110" resname="PP_Edit">
+						<source>Edit</source>
+						<target>Edit</target>
+					</trans-unit>
+					<trans-unit id="111" resname="PP_SelectAll">
+						<source>Select All</source>
+						<target>Select All</target>
+					</trans-unit>
+					<trans-unit id="112" resname="PP_Undo">
+						<source>Undo</source>
+						<target>Undo</target>
+					</trans-unit>
+					<trans-unit id="113" resname="PP_Redo">
+						<source>Redo</source>
+						<target>Redo</target>
+					</trans-unit>
+					<trans-unit id="114" resname="PP_Cut">
+						<source>Cut</source>
+						<target>Cut</target>
+					</trans-unit>
+					<trans-unit id="115" resname="PP_Copy">
+						<source>Copy</source>
+						<target>Copy</target>
+					</trans-unit>
+					<trans-unit id="116" resname="PP_Paste">
+						<source>Paste</source>
+						<target>Paste</target>
+					</trans-unit>
+					<trans-unit id="117" resname="PP_Clear">
+						<source>Clear</source>
+						<target>Clear</target>
+					</trans-unit>
+					<trans-unit id="118" resname="PP_Insert">
+						<source>Insert</source>
+						<target>Insert</target>
+					</trans-unit>
+					<trans-unit id="119" resname="PP_NewStyle">
+						<source>New Style</source>
+						<target>New Style</target>
+					</trans-unit>
+					<trans-unit id="120" resname="PP_ObjectSettings">
+						<source>Object Settings</source>
+						<target>Object Settings</target>
+					</trans-unit>
+					<trans-unit id="121" resname="PP_Export">
+						<source>Export to File...</source>
+						<target>Export to File...</target>
+					</trans-unit>
+					<trans-unit id="122" resname="PP_ExportText">
+						<source>text</source>
+						<target>text</target>
+					</trans-unit>
+					<trans-unit id="123" resname="PP_ExportHTML">
+						<source>HTML</source>
+						<target>HTML</target>
+					</trans-unit>
+					<trans-unit id="124" resname="PP_ExportXML">
+						<source>XML</source>
+						<target>XML</target>
+					</trans-unit>
+					<trans-unit id="125" resname="PP_ExportRW">
+						<source>Preprint file</source>
+						<target>Preprint file</target>
+					</trans-unit>
+					<trans-unit id="126" resname="PP_PrintRW">
+						<source>Print RW file</source>
+						<target>Print RW file</target>
+					</trans-unit>
+					<trans-unit id="127" resname="PP_MenuDisplayXML">
+						<source>Display XML tree</source>
+						<target>Display XML tree</target>
+					</trans-unit>
+					<trans-unit id="128" resname="PP_ExportPDF">
+						<source>PDF</source>
+						<target>PDF</target>
+					</trans-unit>
+				</group>
+				<group id="12002" resname="PP_Dialogs">
+            <trans-unit id="1" resname="PP_OpenDocument">
+               <source>Select a PagePro Document</source>
+               <target>Select a PagePro Document</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_OK">
+               <source>OK</source>
+               <target>OK</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Cancel">
+               <source>Cancel</source>
+               <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_X">
+               <source>X</source>
+               <target>X</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_Y">
+               <source>Y</source>
+               <target>Y</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_Width">
+               <source>Width</source>
+               <target>Width</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_Height">
+               <source>Height</source>
+               <target>Height</target>
+            </trans-unit>
+          	<trans-unit id="8" resname="PP_DocumentType">
+               <source>Document Type</source>
+               <target>Document Type</target>
+            </trans-unit>
+          	<trans-unit id="9" resname="PP_DynamicReport">
+               <source>dynamic report</source>
+               <target>dynamic report</target>
+            </trans-unit>
+          	<trans-unit id="10" resname="PP_StaticReport">
+               <source>static report</source>
+               <target>static report</target>
+         	</trans-unit>
+          	<trans-unit id="11" resname="PP_Units">
+               <source>Units</source>
+               <target>Units</target>
+         	</trans-unit>
+          	<trans-unit id="12" resname="PP_RulerUnit">
+               <source>Ruler Unit</source>
+               <target>Ruler Unit</target>
+         	</trans-unit>
+          	<trans-unit id="13" resname="PP_ProximityLimit">
+               <source>Proximity Limit</source>
+               <target>Proximity Limit</target>
+         	</trans-unit>
+          	<trans-unit id="14" resname="PP_UnitRounding">
+               <source>Coordinates Rounding</source>
+               <target>Coordinates Rounding</target>
+         	</trans-unit>
+          	<trans-unit id="15" resname="PP_PointCode">
+               <source>pt</source>
+               <target>pt</target>
+         	</trans-unit>
+          	<trans-unit id="16" resname="PP_ConfirmChanges">
+               <source>Do you want to save changes?</source>
+               <target>Do you want to save changes?</target>
+         	</trans-unit>
+          	<trans-unit id="17" resname="PP_EditScript">
+               <source>Edit line</source>
+               <target>Edit line</target>
+         	</trans-unit>
+          	<trans-unit id="18" resname="PP_Back">
+               <source>Revert</source>
+               <target>Revert</target>
+         	</trans-unit>
+          	<trans-unit id="19" resname="PP_AddNewSection">
+               <source>Add new section</source>
+               <target>Add new section</target>
+         	</trans-unit>
+           	<trans-unit id="20" resname="PP_AddSymmetricSection">
+               <source>Add second corresponding section</source>
+               <target>Add second corresponding section</target>
+         	</trans-unit>
+          	<trans-unit id="21" resname="PP_SectionType">
+               <source>Section type</source>
+               <target>Section type</target>
+         	</trans-unit>
+          	<trans-unit id="22" resname="PP_ScaleLabel">
+               <source>Scale</source>
+               <target>Scale</target>
+         	</trans-unit>
+            <trans-unit id="23" resname="PP_Test">
+               <source>Test</source>
+               <target>Test</target>
+         	</trans-unit>
+          	<trans-unit id="24" resname="PP_Yes">
+               <source>Yes</source>
+               <target>Yes</target>
+         	</trans-unit>
+          	<trans-unit id="25" resname="PP_No">
+               <source>No</source>
+               <target>No</target>
+         	</trans-unit>
+          	<trans-unit id="26" resname="PP_ScriptSave">
+               <source>Save</source>
+               <target>Save</target>
+         	</trans-unit>
+          	<trans-unit id="27" resname="PP_ScriptLoad">
+               <source>Load</source>
+               <target>Load</target>
+         	</trans-unit>
+         		<trans-unit id="28" resname="PP_ScriptFields">
+               <source>Tables and Fields</source>
+               <target>Tables and Fields</target>
+         	</trans-unit>
+          	<trans-unit id="29" resname="PP_ScriptVars">
+               <source>Defined Variables</source>
+               <target>Defined Variables</target>
+         	</trans-unit>
+          	<trans-unit id="30" resname="PP_ScriptCommands">
+               <source>Commands</source>
+               <target>Commands</target>
+         	</trans-unit>
+         		<trans-unit id="31" resname="PP_GridSize">
+               <source>Grid Size</source>
+               <target>Grid Size</target>
+         	</trans-unit>
+         		<trans-unit id="32" resname="PP_Fonts">
+               <source>Fonts</source>
+               <target>Fonts</target>
+         	</trans-unit>
+         		<trans-unit id="33" resname="PP_ConfirmFreeze">
+               <source>Are you sure you want to freeze references? This will replace variable and field objects with text objects containing current value of the objects.</source>
+               <target>Are you sure you want to freeze references? This will replace variable and field objects with text objects containing current value of the objects.</target>
+         	</trans-unit>
+         		<trans-unit id="34" resname="PP_ConfirmFreezeOK">
+               <source>Freeze</source>
+               <target>Freeze</target>
+         	</trans-unit>
+        </group>
+        <group id="12003" resname="LineProperties">
+            <trans-unit id="1" resname="PP_LineHeader">
+               <source>Line Properties</source>
+               <target>Line Properties</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_LineStart">
+               <source>First point (x,y)</source>
+               <target>First point (x,y)</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_LineEnd">
+               <source>Second point (x,y)</source>
+               <target>Second point (x,y)</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_LineWidth">
+               <source>LineWidth</source>
+               <target>LineWidth</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_LineColor">
+               <source>Line Color</source>
+               <target>Line Color</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_Red">
+               <source>Red</source>
+               <target>Red</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_Blue">
+               <source>Blue</source>
+               <target>Blue</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_Green">
+               <source>Green</source>
+               <target>Green</target>
+            </trans-unit>
+				</group>
+				<group id="12004" resname="PP_RectProperties">
+            <trans-unit id="1" resname="PP_RectHeader">
+               <source>Rectangle Properties</source>
+               <target>Rectangle Properties</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Top">
+               <source>Top</source>
+               <target>Top</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Left">
+               <source>Left</source>
+               <target>Left</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Bottom">
+               <source>Bottom</source>
+               <target>Bottom</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_Right">
+               <source>Right</source>
+               <target>Right</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_Frame">
+               <source>Frame</source>
+               <target>Frame</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_Fill">
+               <source>Fill</source>
+               <target>Fill</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_FillColor">
+               <source>Fill Color</source>
+               <target>Fill Color</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_FrameWidth">
+               <source>Frame Width</source>
+               <target>Frame Width</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_FrameColor">
+               <source>Frame Color</source>
+               <target>Frame Color</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_OvalHeader">
+               <source>Oval Properties</source>
+               <target>Oval Properties</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_Configuration">
+               <source>Configuration</source>
+               <target>Configuration</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_PictHeader">
+               <source>Picture Properties</source>
+               <target>Picture Properties</target>
+            </trans-unit>
+				</group>
+        <group id="12005" resname="PP_ObjProperties">
+            <trans-unit id="1" resname="PP_ID">
+               <source>Object ID</source>
+               <target>Object ID</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_PrintOrder">
+               <source>Print Order</source>
+               <target>Print Order</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Printing">
+               <source>Printing</source>
+               <target>Printing</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Visible">
+               <source>Visible</source>
+               <target>Visible</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_Locked">
+               <source>Locked</source>
+               <target>Locked</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_Fixed">
+               <source>Fixed Coordinates</source>
+               <target>Fixed Coordinates</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_Bind">
+               <source>Bound to bottom</source>
+               <target>Bound to bottom</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_HAlignment">
+               <source>Alignment in group</source>
+               <target>Alignment in group</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_PageSetupBtn">
+               <source>Page Setup</source>
+               <target>Page Setup</target>
+            </trans-unit>
+           	<trans-unit id="10" resname="PP_PictureSize">
+               <source>Data size</source>
+               <target>Data size</target>
+            </trans-unit>
+           	<trans-unit id="11" resname="PP_Format">
+               <source>Format</source>
+               <target>Format</target>
+            </trans-unit>
+           	<trans-unit id="12" resname="PP_FrameOffset">
+               <source>Offset</source>
+               <target>Offset</target>
+            </trans-unit>
+          	<trans-unit id="13" resname="PP_Load">
+               <source>Load</source>
+               <target>Load</target>
+            </trans-unit>
+          	<trans-unit id="14" resname="PP_Name">
+               <source>Name</source>
+               <target>Name</target>
+            </trans-unit>
+          	<trans-unit id="15" resname="PP_SetSize">
+               <source>Set Size from Dimensions</source>
+               <target>Set Size from Dimensions</target>
+            </trans-unit>
+         		<trans-unit id="16" resname="PP_Dimensions">
+               <source>Dimensions</source>
+               <target>Dimensions</target>
+            </trans-unit>
+         		<trans-unit id="17" resname="PP_ObjectRotation">
+               <source>Rotation</source>
+               <target>Rotation</target>
+            </trans-unit>
+         		<trans-unit id="18" resname="PP_ObjectMirroring">
+               <source>Mirroring</source>
+               <target>Mirroring</target>
+            </trans-unit>
+         		<trans-unit id="19" resname="PP_ObjectSkewing">
+               <source>Skewing</source>
+               <target>Skewing</target>
+            </trans-unit>
+         		<trans-unit id="20" resname="PP_Deformation">
+               <source>Deformations</source>
+               <target>Deformations</target>
+            </trans-unit>
+		  	</group>
+				<group id="12006" resname="PP_ObjectTree">
+            <trans-unit id="1" resname="PP_EditorStyles">
+               <source>Editor Styles</source>
+               <target>Editor Styles</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Reprot">
+               <source>Report</source>
+               <target>Report</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_DataSource">
+               <source>Data Source</source>
+               <target>Data Source</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_GlobalStyles">
+               <source>Styles</source>
+               <target>Styles</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_ObjectStyles">
+               <source>Object Styles</source>
+               <target>Object Styles</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_Sections">
+               <source>Sections</source>
+               <target>Sections</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_Property">
+               <source>Property</source>
+               <target>Property</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_Value">
+               <source>Value</source>
+               <target>Value</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_Guides">
+               <source>Guides</source>
+               <target>Guides</target>
+            </trans-unit>
+				</group>
+        <group id="12007" resname="PP_StyleProperties">
+            <trans-unit id="1" resname="PP_Alignment">
+               <source>Alignment</source>
+               <target>Alignment</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_VAlignment">
+               <source>Vertical Alignment</source>
+               <target>Vertical Alignment</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Printing">
+               <source>Printing</source>
+               <target>Printing</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Wrap">
+               <source>Wrapping</source>
+               <target>Wrapping</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_Rotation">
+               <source>Rotation</source>
+               <target>Rotation</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_LineSpacing">
+               <source>Line Spacing</source>
+               <target>Line Spacing</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_HorScale">
+               <source>Horizontal Scaling</source>
+               <target>Horizontal Scaling</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_TextColorLabel">
+               <source>Text Color</source>
+               <target>Text Color</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_BackColor">
+               <source>Back Color</source>
+               <target>Back Color</target>
+            </trans-unit>
+          	<trans-unit id="10" resname="PP_Transparent">
+               <source>Transparent</source>
+               <target>Transparent</target>
+            </trans-unit>
+           	<trans-unit id="11" resname="PP_FontName">
+               <source>Font name</source>
+               <target>Font name</target>
+            </trans-unit>
+           	<trans-unit id="12" resname="PP_FontSize">
+               <source>Font size</source>
+               <target>Font size</target>
+            </trans-unit>
+				</group>
+				<group id="12008" resname="PP_TextProperties">
+            <trans-unit id="1" resname="PP_Content">
+               <source>Content</source>
+               <target>Content</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_MultiStyle">
+               <source>Multi style</source>
+               <target>Multi style</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_DrawIfEmpty">
+               <source>If empty</source>
+               <target>If empty</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Dynamic">
+               <source>Dynamic</source>
+               <target>Dynamic</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_KeepTogether">
+               <source>Keep together</source>
+               <target>Keep together</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_DrawPopup">
+               <source>Draw</source>
+               <target>Draw</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_Expandable">
+               <source>Can expand</source>
+               <target>Can expand</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_TextPropertiesLbl">
+               <source>Text Properties</source>
+               <target>Text Properties</target>
+            </trans-unit>
+           <trans-unit id="9" resname="PP_CommonPropertiesLbl">
+               <source>Multi-object Properties</source>
+               <target>Multi-object Properties</target>
+            </trans-unit>
+           <trans-unit id="10" resname="PP_TextOpacityLabel">
+               <source>Text Opacity</source>
+               <target>Text Opacity</target>
+            </trans-unit>
+           <trans-unit id="11" resname="PP_LineOpacityLabel">
+               <source>Line Opacity</source>
+               <target>Line Opacity</target>
+            </trans-unit>
+           <trans-unit id="12" resname="PP_BackgroundOpacityLabel">
+               <source>Background Opacity</source>
+               <target>Background Opacity</target>
+            </trans-unit>
+           <trans-unit id="13" resname="PP_FillOpacityLabel">
+               <source>Background Opacity</source>
+               <target>Background Opacity</target>
+            </trans-unit>
+           <trans-unit id="14" resname="PP_FrameOpacityLabel">
+               <source>Frame Opacity</source>
+               <target>Frame Opacity</target>
+            </trans-unit>
+           <trans-unit id="15" resname="PP_TabAlignLabel">
+               <source>Alignment</source>
+               <target>Alignment</target>
+            </trans-unit>
+           <trans-unit id="16" resname="PP_TabPosLabel">
+               <source>Position</source>
+               <target>Position</target>
+            </trans-unit>
+						<trans-unit id="17" resname="PP_DimmingLabel">
+							<source>Image dimming</source>
+							<target>Image dimming</target>
+						</trans-unit>
+				</group>
+				<group id="12009" resname="PP_VarProperties">
+            <trans-unit id="1" resname="PP_Source">
+               <source>Source</source>
+               <target>Source</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Element">
+               <source>Element</source>
+               <target>Element</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_CalcType">
+               <source>Calculation</source>
+               <target>Calculation</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_ScriptLabel">
+               <source>Script</source>
+               <target>Script</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_EditBtn">
+               <source>Edit</source>
+               <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_VarPropertiesLbl">
+               <source>Variable / Field Properties</source>
+               <target>Variable / Field Properties</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_RepVarPropertiesLbl">
+               <source>Repeating Object Properties</source>
+               <target>Repeating Object Properties</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_RepeatingLbl">
+               <source>Repeating</source>
+               <target>Repeating</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_RepConvert">
+               <source>Convert to Table</source>
+               <target>Convert to Table</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_RepConvertLine">
+               <source>Convert Line to Table</source>
+               <target>Convert Line to Table</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_RepOffset">
+               <source>Offset</source>
+               <target>Offset</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_Degree">
+               <source>°</source>
+               <target>°</target>
+            </trans-unit>
+		</group>
+ 				<group id="12010" resname="PP_DataProperties">
+            <trans-unit id="1" resname="PP_Iterations">
+               <source>Iterations</source>
+               <target>Iterations</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_RelateOne">
+               <source>Relate one</source>
+               <target>Relate one</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_RelateMany">
+               <source>Relate many</source>
+               <target>Relate many</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Callback">
+               <source>Callback</source>
+               <target>Callback</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_SRPComaptibility">
+               <source>SRP Comaptibility</source>
+               <target>SRP Comaptibility</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_StartScriptLabel">
+               <source>Start Script</source>
+               <target>Start Script</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_BodyScriptLabel">
+               <source>Body Script</source>
+               <target>Body Script</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_EndScriptLabel">
+               <source>End Script</source>
+               <target>End Script</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_Margins">
+               <source>Unprintable margins</source>
+               <target>Unprintable margins</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_PhysicalPaper">
+               <source>Physical paper</source>
+               <target>Physical paper</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_CleanPageSetup">
+               <source>Clean Page Setup</source>
+               <target>Clean Page Setup</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_SetPageSetup">
+               <source>Set Page Setup</source>
+               <target>Set Page Setup</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_LabelReport">
+               <source>Print labels</source>
+               <target>Print labels</target>
+            </trans-unit>
+            <trans-unit id="14" resname="PP_LabelGrid">
+               <source>Labels</source>
+               <target>Labels</target>
+            </trans-unit>
+            <trans-unit id="15" resname="PP_LabelMargins">
+               <source>Margins</source>
+               <target>Margins</target>
+            </trans-unit>
+		</group>
+				<group id="12011" resname="PP_GuideProperties">
+            <trans-unit id="1" resname="PP_GuideType">
+               <source>Type</source>
+               <target>Type</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_GuideTypeHor">
+               <source>horizontal</source>
+               <target>horizontal</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_GuideTypeVert">
+               <source>vertical</source>
+               <target>vertical</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_GuidePosition">
+               <source>Position</source>
+               <target>Position</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_GuidePropertiesLbl">
+               <source>Guide Properties</source>
+               <target>Guide Properties</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_GroupPropertiesLbl">
+               <source>Group Properties</source>
+               <target>Group Properties</target>
+            </trans-unit>
+           <trans-unit id="7" resname="PP_ReportPropertiesLbl">
+               <source>Report Properties</source>
+               <target>Report Properties</target>
+            </trans-unit>
+           <trans-unit id="8" resname="PP_DataPropertiesLbl">
+               <source>Data Source Properties</source>
+               <target>Data Source Properties</target>
+            </trans-unit>
+           <trans-unit id="9" resname="PP_StylePropertiesLbl">
+               <source>Style Properties</source>
+               <target>Style Properties</target>
+            </trans-unit>
+           <trans-unit id="10" resname="PP_StylePropertiesID">
+               <source>Style ID</source>
+               <target>Style ID</target>
+            </trans-unit>
+			<trans-unit id="11" resname="PP_StyleDelete">
+				  <source>Delete Style</source>
+				  <target>Delete Style</target>
+			  </trans-unit>
+		</group>
+ 				<group id="12012" resname="PP_SectionProperties">
+            <trans-unit id="1" resname="PP_SectionPropertiesLbl">
+               <source>Section Properties</source>
+               <target>Section Properties</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_SectionFixSpace">
+               <source>Fixed height</source>
+               <target>Fixed height</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_SectionMinSpace">
+               <source>Minimum space</source>
+               <target>Minimum space</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_SectionKeepTogether">
+               <source>Keep together</source>
+               <target>Keep together</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_SectionDraw">
+               <source>Is printed</source>
+               <target>Is printed</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_SectionPageThrow">
+               <source>New page</source>
+               <target>New page</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_SectionFill">
+               <source>Fill to bottom</source>
+               <target>Fill to bottom</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_SectionBind">
+               <source>Bind to bottom</source>
+               <target>Bind to bottom</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_SectionOnTop">
+               <source>On top</source>
+               <target>On top</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_SectionPrintingOn">
+               <source>Printing on</source>
+               <target>Printing on</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_SectionFirst">
+               <source>irst page</source>
+               <target>first page</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_SectionLast">
+               <source>last page</source>
+               <target>last page</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_SectionEven">
+               <source>even pages</source>
+               <target>even pages</target>
+            </trans-unit>
+            <trans-unit id="14" resname="PP_SectionOdd">
+               <source>odd pages</source>
+               <target>odd pages</target>
+            </trans-unit>
+            <trans-unit id="15" resname="PP_SectionNotFirst">
+               <source>but not last page</source>
+               <target>but not last page</target>
+            </trans-unit>
+            <trans-unit id="16" resname="PP_SectionAlways">
+               <source>On each page</source>
+               <target>On each page</target>
+            </trans-unit>
+            <trans-unit id="17" resname="PP_SectionBreakOn">
+               <source>Break on</source>
+               <target>Break on</target>
+            </trans-unit>
+            <trans-unit id="18" resname="PP_SectionBreakName">
+               <source>Name</source>
+               <target>Name</target>
+            </trans-unit>
+		</group>
+  			<group id="12013" resname="PP_TableProperties">
+            <trans-unit id="1" resname="PP_TablePropertiesLbl">
+               <source>Table Properties</source>
+               <target>Table Properties</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_TableHeaderProp">
+               <source>Header Cell Properties</source>
+               <target>Header Cell Properties</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_TableColumnProp">
+               <source>Column Properties</source>
+               <target>Column Properties</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_TableDisplayHeader">
+               <source>Display header</source>
+               <target>Display header</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_TableHeaderLines">
+               <source>Header lines</source>
+               <target>Header lines</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_TableDisplayColumns">
+               <source>Display columns</source>
+               <target>Display columns</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_TableColumnCount">
+               <source>No of columns</source>
+               <target>No of columns</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_TableDoubleFrame">
+               <source>Double frame around table</source>
+               <target>Double frame around table</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_TableRowHeight">
+               <source>Row height</source>
+               <target>Row height</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_TableRowGridWidth">
+               <source>Row grid width</source>
+               <target>Row grid width</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_TableColSpan">
+               <source>Column span</source>
+               <target>Column span</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_TableRowSpan">
+               <source>Row span</source>
+               <target>Row span</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_TableCellHeight">
+               <source>Cell height</source>
+               <target>Cell height</target>
+            </trans-unit>
+            <trans-unit id="14" resname="PP_TableCellWidth">
+               <source>Cell width</source>
+               <target>Cell width</target>
+            </trans-unit>
+            <trans-unit id="15" resname="PP_TableCellAutoWidth">
+               <source>0 if auto width</source>
+               <target>0 if auto width</target>
+            </trans-unit>
+            <trans-unit id="16" resname="PP_TableLevel">
+               <source>Level</source>
+               <target>Level</target>
+            </trans-unit>
+            <trans-unit id="17" resname="PP_TableColumnWidth">
+               <source>Column width</source>
+               <target>Column width</target>
+            </trans-unit>
+            <trans-unit id="18" resname="PP_TableRowNumber">
+               <source>row number</source>
+               <target>row number</target>
+            </trans-unit>
+            <trans-unit id="19" resname="PP_TableDuplicates">
+               <source>print duplicates</source>
+               <target>print duplicates</target>
+            </trans-unit>
+            <trans-unit id="20" resname="PP_TableDisplayGrid">
+               <source>Display horizontal grid</source>
+               <target>Display horizontal grid</target>
+            </trans-unit>
+            <trans-unit id="21" resname="PP_TableOrderNo">
+               <source>Order No</source>
+               <target>Order No</target>
+            </trans-unit>
+            <trans-unit id="22" resname="PP_TableColumnNo">
+               <source>Column No</source>
+               <target>Column No</target>
+            </trans-unit>
+		</group>
+				<group id="12014" resname="PP_VirtualStructure">
+            <trans-unit id="1" resname="PP_RWVariables">
+               <source>ScriptVar</source>
+               <target>ScriptVar</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_PrintVariables">
+               <source>PrintVar</source>
+               <target>PrintVar</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_VSVAriables">
+               <source>Variables</source>
+               <target>Variables</target>
+            </trans-unit>
+           <trans-unit id="4" resname="PP_VSFields">
+               <source>Fields</source>
+               <target>Fields</target>
+            </trans-unit>
+           <trans-unit id="4" resname="PP_VSTables">
+               <source>Tables</source>
+               <target>Tables</target>
+            </trans-unit>
+		</group>
+				<group id="12015" resname="PP_ExportDialog">
+					<trans-unit id="1" resname="PP_ExportSectionLbl">
+								 <source>Export Sections</source>
+								 <target>Export Sections</target>
+							</trans-unit>
+							<trans-unit id="2" resname="PP_ExportSectionBreaks">
+								 <source>Breaks</source>
+								 <target>Breaks</target>
+							</trans-unit>
+							<trans-unit id="3" resname="PP_ExportSectionHeaders">
+								 <source>Headers and Footers</source>
+								 <target>Headers and Footers</target>
+							</trans-unit>
+						 <trans-unit id="4" resname="PP_ExportTextLbl">
+								 <source>Text export</source>
+								 <target>Text export</target>
+							</trans-unit>
+						 <trans-unit id="5" resname="PP_ExportTexts">
+								 <source>Export static texts</source>
+								 <target>Export static texts</target>
+							</trans-unit>
+						 <trans-unit id="6" resname="PP_ExportVars">
+								 <source>Only fields and variables</source>
+								 <target>Only fields and variables</target>
+							</trans-unit>
+						 <trans-unit id="7" resname="PP_ExportTextFormat">
+								 <source>File Format</source>
+								 <target>File Format</target>
+							</trans-unit>
+						 <trans-unit id="8" resname="PP_ExportTextTab">
+								 <source>Tab delimited</source>
+								 <target>Tab delimited</target>
+							</trans-unit>
+						 <trans-unit id="9" resname="PP_ExportTextCVS">
+								 <source>CVS</source>
+								 <target>CVS</target>
+							</trans-unit>
+			</group>
+				<group id="12016" resname="PP_ScriptDialogHeaders">
+							<trans-unit id="1" resname="PP_ScriptSection">
+								 <source>Section Script</source>
+								 <target>Section Script</target>
+							</trans-unit>
+							<trans-unit id="2" resname="PP_ScriptStart">
+								 <source>Data Source Start Script</source>
+								 <target>Data Source Start Script</target>
+							</trans-unit>
+							<trans-unit id="3" resname="PP_ScriptBody">
+								 <source>Data Source Body Script</source>
+								 <target>Data Source Body Script</target>
+							</trans-unit>
+						 <trans-unit id="4" resname="PP_ScriptEnd">
+								 <source>Data Source End Script</source>
+								 <target>Data Source End Script</target>
+							</trans-unit>
+						 <trans-unit id="5" resname="PP_ScriptColumn">
+								 <source>Column Script</source>
+								 <target>Column Script</target>
+							</trans-unit>
+						 <trans-unit id="6" resname="PP_ScriptTable">
+								 <source>Table Script</source>
+								 <target>Table Script</target>
+							</trans-unit>
+						 <trans-unit id="7" resname="PP_ScriptVariable">
+								 <source>Script</source>
+								 <target>Script</target>
+							</trans-unit>
+			</group>
+				<group id="12017" resname="PP_Palette">
+            <trans-unit id="1" resname="PP_PaletteWindow">
+               <source>PagePro Palette</source>
+               <target>PagePro Palette</target>
+            </trans-unit>
+		</group>
+      	<group id="12101" resname="PP_Messages">
+            <trans-unit id="1" resname="PP_SectionDeleteMsg">
+               <source>Body or page section cannot be deleted.</source>
+               <target>Body or page section cannot be deleted.</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_ObjectDeleteMsg">
+               <source>This object cannot be deleted.</source>
+               <target>This object cannot be deleted.</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_StyleDeleteMsg">
+               <source>Default style cannot be deleted.</source>
+               <target>Default Style cannot be deleted.</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_SectionDeleteConfirm">
+               <source>You are trying to delete section that is not empty. Are you sure you want to delete it?</source>
+               <target>You are trying to delete section that is not empty. Are you sure you want to delete it?</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_GroupDeleteConfirm">
+               <source>You are trying to delete group that contains objects. Are you sure you want to delete it?
+
+Click Cancel button and use Ungroup command to remove group without deleting its content.</source>
+               <target>You are trying to delete group that contains objects. Are you sure you want to delete it?
+
+Click Cancel button and use Ungroup command to remove group without deleting its content.</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_SectionLockMsg">
+               <source>Some Section is selected, do you want to lock it?</source>
+               <target>Some Section is selected, do you want to lock it?</target>
+            </trans-unit>
+		</group>
+				<group id="13001" resname="PP_AlignTypes">
+            <trans-unit id="1" resname="PP_AlignTypesNone">
+               <source>none</source>
+               <target>none</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_AlignTypesLeft">
+               <source>left</source>
+               <target>left</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_AlignTypesCenter">
+               <source>center</source>
+               <target>center</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_AlignTypesRight">
+               <source>right</source>
+               <target>right</target>
+            </trans-unit>
+         </group>
+        <group id="13002" resname="PP_DrawTypes">
+            <trans-unit id="1" resname="PP_DrawTypesNo">
+               <source>No</source>
+               <target>No</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_DrawTypesYes">
+               <source>Yes</source>
+               <target>Yes</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_DrawTypesOverflaw">
+               <source>On Overflow</source>
+               <target>On Overflow</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_DrawTypesAlways">
+               <source>Always</source>
+               <target>Always</target>
+            </trans-unit>
+		</group>
+				<group id="13003" resname="PP_TextAlignment">
+            <trans-unit id="1" resname="PP_TextAlignDefault">
+               <source>default</source>
+               <target>default</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_TextAlignLeft">
+               <source>left</source>
+               <target>left</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_TextAlignCenter">
+               <source>center</source>
+               <target>center</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_TextAlignRight">
+               <source>right</source>
+               <target>right</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_TextAlignJustify">
+               <source>justify</source>
+               <target>justify</target>
+            </trans-unit>
+           <trans-unit id="6" resname="PP_TextAlignFulljustify">
+               <source>full-justify</source>
+               <target>full-justify</target>
+            </trans-unit>
+        </group>
+        <group id="13004" resname="PP_DocumentFormat">
+            <trans-unit id="1" resname="PP_FormatSimple">
+               <source>simple</source>
+               <target>simple</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Format2Page">
+               <source>left and right header</source>
+               <target>left and right header</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_FormatBreaks">
+               <source>with break processing</source>
+               <target>with break processing</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_FormatBreak2Pages">
+               <source>break processing with left and right headers</source>
+               <target>break processing with left and right headers</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_FormatBreaks2">
+               <source>2-level break processing</source>
+               <target>2-level break processing</target>
+            </trans-unit>
+        </group>
+       	<group id="13005" resname="PP_PictureFormat">
+            <trans-unit id="1" resname="PP_FormatNormal">
+               <source>normal</source>
+               <target>normal</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_FormatCentered">
+               <source>centered</source>
+               <target>centered</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_FormatScaled">
+               <source>scaled to fit</source>
+               <target>scaled to fit</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_FormatScaledProp">
+               <source>scaled to fit, proportional</source>
+               <target>scaled to fit, proportional</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_FormatScaledCentered">
+               <source>scaled to fit, proportional, centered</source>
+               <target>scaled to fit, proportional, centered</target>
+            </trans-unit>
+        </group>
+      	<group id="13006" resname="PP_PPropertyNames">
+            <trans-unit id="1" resname="PP_kind">
+               <source>Object;Kind</source>
+               <target>Object;Kind</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_order">
+               <source>Object;Order</source>
+               <target>Object;Order</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_id">
+               <source>Object;ID</source>
+               <target>Object;ID</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_visible">
+               <source>Object;Visible</source>
+               <target>Object;Visible</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_locked">
+               <source>Object;Locked</source>
+               <target>Object;Locked</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_selected">
+               <source>Object;Selected</source>
+               <target>Object;Selected</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_type">
+               <source>Object;Type</source>
+               <target>Object;Type</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_name">
+               <source>Object;Name</source>
+               <target>Object;Name</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_r">
+               <source>Coordinates;Rect</source>
+               <target>Coordinates;Rect</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_r.left">
+               <source>Coordinates;Left</source>
+               <target>Coordinates;Left</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_r.top">
+               <source>Coordinates;Top</source>
+               <target>Coordinates;Top</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_r.right">
+               <source>Coordinates;Right</source>
+               <target>Coordinates;Right</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_r.bottom">
+               <source>Coordinates;Bottom</source>
+               <target>Coordinates;Bottom</target>
+            </trans-unit>
+            <trans-unit id="14" resname="PP_r.width">
+               <source>Coordinates;Width</source>
+               <target>Coordinates;Width</target>
+            </trans-unit>
+            <trans-unit id="15" resname="PP_r.height">
+               <source>Coordinates;Height</source>
+               <target>Coordinates;Height</target>
+            </trans-unit>
+            <trans-unit id="16" resname="PP_fixV">
+               <source>Position Options;Fixed</source>
+               <target>Position Options;Fixed</target>
+            </trans-unit>
+            <trans-unit id="17" resname="PP_bindV">
+               <source>Position Options;Bound to Bottom</source>
+               <target>Position Options;Bound to Bottom</target>
+            </trans-unit>
+            <trans-unit id="18" resname="PP_draw">
+               <source>Position Options;Draw</source>
+               <target>Position Options;Draw</target>
+            </trans-unit>
+            <trans-unit id="19" resname="PP_expandV">
+               <source>Position Options;Expand</source>
+               <target>Position Options;Expand</target>
+            </trans-unit>
+           <trans-unit id="20" resname="PP_align">
+               <source>Position Options;Align</source>
+               <target>Position Options;Align</target>
+            </trans-unit>
+            <trans-unit id="21" resname="PP_fillPattern">
+               <source>Visual Properties;Fill</source>
+               <target>Visual Properties;Fill</target>
+            </trans-unit>
+            <trans-unit id="22" resname="PP_fillColor">
+               <source>Visual Properties;Fill Color</source>
+               <target>Visual Properties;Fill Color</target>
+            </trans-unit>
+            <trans-unit id="23" resname="PP_thickness">
+               <source>Visual Properties;Line Width</source>
+               <target>Visual Properties;Line Width</target>
+            </trans-unit>
+            <trans-unit id="24" resname="PP_lineColor">
+               <source>Visual Properties;Line Color</source>
+               <target>Visual Properties;Line Color</target>
+            </trans-unit>
+            <trans-unit id="25" resname="PP_flags">
+               <source>Visual Properties;Flags</source>
+               <target>Visual Properties;Flags</target>
+            </trans-unit>
+            <trans-unit id="26" resname="PP_frame">
+               <source>Visual Properties;Frame</source>
+               <target>Visual Properties;Frame</target>
+            </trans-unit>
+            <trans-unit id="27" resname="PP_frameThickness">
+               <source>Visual Properties;Frame Width</source>
+               <target>Visual Properties;Frame Width</target>
+            </trans-unit>
+            <trans-unit id="28" resname="PP_frameOffset">
+               <source>Visual Properties;Frame Offset</source>
+               <target>Visual Properties;Frame Offset</target>
+            </trans-unit>
+            <trans-unit id="29" resname="PP_frameColor">
+               <source>Visual Properties;Frame Color</source>
+               <target>Visual Properties;Frame Color</target>
+            </trans-unit>
+          <trans-unit id="30" resname="PP_text">
+               <source>Content;Text</source>
+               <target>Content;Text</target>
+            </trans-unit>
+            <trans-unit id="31" resname="PP_source">
+               <source>Content;Source</source>
+               <target>Content;Source</target>
+            </trans-unit>
+            <trans-unit id="32" resname="PP_format">
+               <source>Content;Format</source>
+               <target>Content;Format</target>
+            </trans-unit>
+            <trans-unit id="33" resname="PP_alias">
+               <source>Content;Virtual Field</source>
+               <target>Content;Virtual Field</target>
+            </trans-unit>
+            <trans-unit id="34" resname="PP_attributed">
+               <source>Content;Multi Style</source>
+               <target>Content;Multi Style</target>
+            </trans-unit>
+            <trans-unit id="35" resname="PP_dynamic">
+               <source>Content;Dynamic</source>
+               <target>Content;Dynamic</target>
+            </trans-unit>
+            <trans-unit id="36" resname="PP_empty">
+               <source>Content;If Empty</source>
+               <target>Content;If Empty</target>
+            </trans-unit>
+            <trans-unit id="37" resname="PP_calc">
+               <source>Content;Calulated value</source>
+               <target>Content;Calulated value</target>
+            </trans-unit>
+            <trans-unit id="38" resname="PP_repeat">
+               <source>Content;Repeat</source>
+               <target>Content;Repeat</target>
+            </trans-unit>
+            <trans-unit id="39" resname="PP_callback">
+               <source>Script;Callback</source>
+               <target>Script;Callback</target>
+            </trans-unit>
+            <trans-unit id="40" resname="PP_Script">
+               <source>Script;Script</source>
+               <target>Script;Script</target>
+            </trans-unit>
+            <trans-unit id="41" resname="PP_StartScript">
+               <source>Script;Start Script</source>
+               <target>Script;Start Script</target>
+            </trans-unit>
+            <trans-unit id="42" resname="PP_BodyScript">
+               <source>Script;Body Script</source>
+               <target>Script;Body Script</target>
+            </trans-unit>
+            <trans-unit id="43" resname="PP_EndScript">
+               <source>Script;End Script</source>
+               <target>Script;End Script</target>
+            </trans-unit>
+            <trans-unit id="44" resname="PP_SRPCompatibility">
+               <source>Script;SRP Compatibility</source>
+               <target>Script;SRP Compatibility</target>
+            </trans-unit>
+             <trans-unit id="45" resname="PP_iterations">
+               <source>Script;Iterations</source>
+               <target>Script;Iterations</target>
+            </trans-unit>
+            <trans-unit id="46" resname="PP_tableID">
+               <source>Script;Table ID</source>
+               <target>Script;Table ID</target>
+            </trans-unit>
+            <trans-unit id="47" resname="PP_relateOne">
+               <source>Script;Relate One</source>
+               <target>Script;Relate One</target>
+            </trans-unit>
+            <trans-unit id="48" resname="PP_relateMany">
+               <source>Script;Relate Many</source>
+               <target>Script;Relate Many</target>
+            </trans-unit>
+            <trans-unit id="49" resname="PP_calc">
+               <source>Script;Calculation</source>
+               <target>Script;Calculation</target>
+            </trans-unit>
+            <trans-unit id="50" resname="PP_repeat">
+               <source>Script;Repeat</source>
+               <target>Script;Repeat</target>
+            </trans-unit>
+            <trans-unit id="51" resname="PP_repeatOffset">
+               <source>Script;Offset</source>
+               <target>Script;Offset</target>
+            </trans-unit>
+            <trans-unit id="52" resname="PP_style">
+               <source>Style;Style</source>
+               <target>Style;Style</target>
+            </trans-unit>
+           <trans-unit id="53" resname="PP_baseId">
+               <source>Style;Base Style</source>
+               <target>Style;Base Style</target>
+            </trans-unit>
+           <trans-unit id="54" resname="PP_features">
+               <source>Style;Features</source>
+               <target>Style;Features</target>
+            </trans-unit>
+           <trans-unit id="55" resname="PP_font">
+               <source>Style;Font</source>
+               <target>Style;Font</target>
+            </trans-unit>
+           <trans-unit id="56" resname="PP_size">
+               <source>Style;Size</source>
+               <target>Style;Size</target>
+            </trans-unit>
+            <trans-unit id="57" resname="PP_bold">
+               <source>Style;Bold</source>
+               <target>Style;Bold</target>
+            </trans-unit>
+            <trans-unit id="58" resname="PP_italic">
+               <source>Style;Italics</source>
+               <target>Style;Italics</target>
+            </trans-unit>
+            <trans-unit id="59" resname="PP_underline">
+               <source>Style;Underline</source>
+               <target>Style;Underline</target>
+            </trans-unit>
+            <trans-unit id="60" resname="PP_wrap">
+               <source>Style;Wrap</source>
+               <target>Style;Wrap</target>
+            </trans-unit>
+            <trans-unit id="61" resname="PP_halign">
+               <source>Style;Horizontal Align</source>
+               <target>Style;Horizontal Align</target>
+            </trans-unit>
+            <trans-unit id="62" resname="PP_valign">
+               <source>Style;Vertical Align</source>
+               <target>Style;Vertical Align</target>
+            </trans-unit>
+            <trans-unit id="63" resname="PP_textColor">
+               <source>Style;Text Color</source>
+               <target>Style;Text Color</target>
+            </trans-unit>
+            <trans-unit id="64" resname="PP_backColor">
+               <source>Style;Background Color</source>
+               <target>Style;Background Color</target>
+            </trans-unit>
+            <trans-unit id="65" resname="PP_rotation">
+               <source>Style;Rotation</source>
+               <target>Style;Rotation</target>
+            </trans-unit>
+            <trans-unit id="66" resname="PP_lineSpacing">
+               <source>Style;Line Spacing</source>
+               <target>Style;Line Spacing</target>
+            </trans-unit>
+            <trans-unit id="67" resname="PP_hScale">
+               <source>Style;Horizontal scaling</source>
+               <target>Style;Horizontal scaling</target>
+            </trans-unit>
+            <trans-unit id="68" resname="PP_baseLineShift">
+               <source>Style;Baseline </source>
+               <target>Style;Baseline Shift</target>
+            </trans-unit>
+            <trans-unit id="69" resname="PP_height">
+               <source>Section;Height</source>
+               <target>Section;Height</target>
+            </trans-unit>
+            <trans-unit id="70" resname="PP_bindToBottom">
+               <source>Section;Bind to Bottom</source>
+               <target>Section;Bind to Bottom</target>
+            </trans-unit>
+            <trans-unit id="71" resname="PP_fixed">
+               <source>Section;Fixed position</source>
+               <target>Section;Fixed position</target>
+            </trans-unit>
+            <trans-unit id="72" resname="PP_firstPage">
+               <source>Section;First Page</source>
+               <target>Section;First Page</target>
+            </trans-unit>
+            <trans-unit id="73" resname="PP_evenPage">
+               <source>Section;Even Page</source>
+               <target>Section;Even Page</target>
+            </trans-unit>
+            <trans-unit id="74" resname="PP_oddPage">
+               <source>Section;Odd Page</source>
+               <target>Section;Odd Page</target>
+            </trans-unit>
+            <trans-unit id="75" resname="PP_lastPage">
+               <source>Section;Last Page</source>
+               <target>Section;Last Page</target>
+            </trans-unit>
+            <trans-unit id="76" resname="PP_fillPage">
+               <source>Section;Fill Page</source>
+               <target>Section;Fill Page</target>
+            </trans-unit>
+            <trans-unit id="77" resname="PP_minSpace">
+               <source>Section;Minimum Space</source>
+               <target>Section;Minimum Space</target>
+            </trans-unit>
+            <trans-unit id="78" resname="PP_pageThrow">
+               <source>Section;Throw Page</source>
+               <target>Section;Throw Page</target>
+            </trans-unit>
+            <trans-unit id="79" resname="PP_draw">
+               <source>Drawing;Draw</source>
+               <target>Drawing;Draw</target>
+            </trans-unit>
+            <trans-unit id="80" resname="PP_keepTogether">
+               <source>Drawing;Keep Together</source>
+               <target>Drawing;Keep Together</target>
+            </trans-unit>
+            <trans-unit id="81" resname="PP_fixedHEight">
+               <source>Drawing;Fixed Height</source>
+               <target>Drawing;Fixed Height</target>
+            </trans-unit>
+            <trans-unit id="82" resname="PP_breakOn">
+               <source>Break;Break On Type</source>
+               <target>Break;Break On Type</target>
+            </trans-unit>
+             <trans-unit id="83" resname="PP_breakOnField">
+               <source>Break;On Field</source>
+               <target>Break;On Field</target>
+            </trans-unit>
+             <trans-unit id="84" resname="PP_breakOnVariable">
+               <source>Break;On Variable</source>
+               <target>Break;On Variable</target>
+            </trans-unit>
+             <trans-unit id="85" resname="PP_breakOnArray">
+               <source>Break;On Array</source>
+               <target>Break;On Array</target>
+            </trans-unit>
+             <trans-unit id="86" resname="PP_level">
+               <source>Break;Level</source>
+               <target>Break;Level</target>
+            </trans-unit>
+             <trans-unit id="87" resname="PP_always">
+               <source>Break;Always</source>
+               <target>Break;Always</target>
+            </trans-unit>
+             <trans-unit id="88" resname="PP_breakType">
+               <source>Break;Type</source>
+               <target>Break;Type</target>
+            </trans-unit>
+             <trans-unit id="89" resname="PP_simple">
+               <source>Report;Static report</source>
+               <target>Report;Static report</target>
+            </trans-unit>
+            <trans-unit id="90" resname="PP_pageWidth">
+               <source>Report;Page Width</source>
+               <target>Report;Page Width</target>
+            </trans-unit>
+            <trans-unit id="91" resname="PP_pageHeight">
+               <source>Report;Page Height</source>
+               <target>Report;Page Height</target>
+            </trans-unit>
+            <trans-unit id="92" resname="PP_pageMargins">
+               <source>Report;Margins</source>
+               <target>Report;Margins</target>
+            </trans-unit>
+            <trans-unit id="93" resname="PP_usePhysical">
+               <source>Report;Physical Paper</source>
+               <target>Report;Physical Paper</target>
+            </trans-unit>
+            <trans-unit id="94" resname="PP_PageFormat">
+               <source>Report;Page Format (Mac)</source>
+               <target>Report;PageFormat (Mac)</target>
+            </trans-unit>
+            <trans-unit id="95" resname="PP_PrintSettings">
+               <source>Report;Print Settings (Mac)</source>
+               <target>Report;Print Settings (Mac</target>
+            </trans-unit>
+            <trans-unit id="96" resname="PP_DevMode">
+               <source>Report;Device Mode (Win)</source>
+               <target>Report;evice Mode (Win)</target>
+            </trans-unit>
+            <trans-unit id="97" resname="PP_DeviceNames">
+               <source>Report;Device Names (Win)</source>
+               <target>Report;Device Names (Win)</target>
+            </trans-unit>
+            <trans-unit id="98" resname="PP_PageSetupDlg">
+               <source>Report;Page Setup (Win)</source>
+               <target>Report;Page Setup (Win)</target>
+            </trans-unit>
+            <trans-unit id="99" resname="PP_PrintDlg">
+               <source>Report;Print Dialog (Win)</source>
+               <target>Report;Print Dialog (Win)</target>
+            </trans-unit>
+            <trans-unit id="100" resname="PP_showMargins">
+               <source>Editor;Margins</source>
+               <target>Editor;Margins</target>
+            </trans-unit>
+            <trans-unit id="101" resname="PP_showRulers">
+               <source>Editor;Rulers</source>
+               <target>Editor;Rulers</target>
+            </trans-unit>
+            <trans-unit id="102" resname="PP_rulerUnits">
+               <source>Editor;Ruler Unit</source>
+               <target>Editor;Ruler Unit</target>
+            </trans-unit>
+            <trans-unit id="103" resname="PP_showGrid">
+               <source>Editor;Grid</source>
+               <target>Editor;Grid</target>
+            </trans-unit>
+            <trans-unit id="104" resname="PP_gridSize">
+               <source>Editor;Grid Size</source>
+               <target>Editor;Grid Size</target>
+            </trans-unit>
+            <trans-unit id="105" resname="PP_snapToGrid">
+               <source>Editor;Snap to Grid</source>
+               <target>Editor;Snap to Grid</target>
+            </trans-unit>
+            <trans-unit id="106" resname="PP_showGuides">
+               <source>Editor;Guides</source>
+               <target>Editor;Guides</target>
+            </trans-unit>
+            <trans-unit id="107" resname="PP_lockGuides">
+               <source>Editor;Lock Guides</source>
+               <target>Editor;Lock Guides</target>
+            </trans-unit>
+            <trans-unit id="108" resname="PP_snapToGuide">
+               <source>Editor;Snap to Guide</source>
+               <target>Editor;Snap to Guide</target>
+            </trans-unit>
+            <trans-unit id="109" resname="PP_showObjBorders">
+               <source>Editor;Show Object Border</source>
+               <target>Editor;Show Object Border</target>
+            </trans-unit>
+            <trans-unit id="110" resname="PP_scale">
+               <source>Editor;Scale</source>
+               <target>Editor;Scale</target>
+            </trans-unit>
+            <trans-unit id="111" resname="PP_snapLimit">
+               <source>Editor;Snap proximity</source>
+               <target>Editor;Snap proximity</target>
+            </trans-unit>
+            <trans-unit id="112" resname="PP_rounding">
+               <source>Editor;Coordinates Rounding</source>
+               <target>Editor;Coordinates Rounding</target>
+            </trans-unit>
+            <trans-unit id="113" resname="PP_tool">
+               <source>Area;Selected Tool</source>
+               <target>Area;Selected Tool</target>
+            </trans-unit>
+            <trans-unit id="114" resname="PP_scrollLeft">
+               <source>Area;Horizontal Scroll Pos</source>
+               <target>Area;Horizontal Scroll Pos</target>
+            </trans-unit>
+            <trans-unit id="115" resname="PP_scrollTop">
+               <source>Area;Vertical Scroll Pos</source>
+               <target>Area;Vertical Scroll Pos</target>
+            </trans-unit>
+            <trans-unit id="116" resname="PP_drawingMode">
+               <source>Area;Drawing Mode</source>
+               <target>Area;Drawing Mode</target>
+            </trans-unit>
+            <trans-unit id="117" resname="PP_hdrs">
+               <source>Table;Header Lines</source>
+               <target>Table;Header Lines</target>
+            </trans-unit>
+            <trans-unit id="118" resname="PP_cols">
+               <source>Table;Columns</source>
+               <target>Table;Columns</target>
+            </trans-unit>
+            <trans-unit id="119" resname="PP_rows">
+               <source>Table;Rows</source>
+               <target>Table;Rows</target>
+            </trans-unit>
+            <trans-unit id="120" resname="PP_hGridThickness">
+               <source>Table;Grid Line Width</source>
+               <target>Table;Grid Line Width</target>
+            </trans-unit>
+            <trans-unit id="121" resname="PP_hedr">
+               <source>Table;Draw Headers</source>
+               <target>Table;Draw Headers</target>
+            </trans-unit>
+            <trans-unit id="122" resname="PP_codr">
+               <source>Table;Draw Columns</source>
+               <target>Table;Draw Columns</target>
+            </trans-unit>
+            <trans-unit id="123" resname="PP_colspan">
+               <source>Header;Column Span</source>
+               <target>Header;Column Span</target>
+            </trans-unit>
+            <trans-unit id="124" resname="PP_rowspan">
+               <source>Header;Row Span</source>
+               <target>Header;Row Span</target>
+            </trans-unit>
+            <trans-unit id="125" resname="PP_width">
+               <source>Column;Width</source>
+               <target>Column;Width</target>
+            </trans-unit>
+            <trans-unit id="126" resname="PP_grid">
+               <source>Column;Grid</source>
+               <target>Column;Grid</target>
+            </trans-unit>
+            <trans-unit id="127" resname="PP_rownum">
+               <source>Column;Row Number</source>
+               <target>Column;Row Number</target>
+            </trans-unit>
+            <trans-unit id="128" resname="PP_duplicates">
+               <source>Column;Print Duplicate Values</source>
+               <target>Column;Print Duplicate Values</target>
+            </trans-unit>
+            <trans-unit id="129" resname="PP_version">
+               <source>Inernal;Version</source>
+               <target>Inernal;Version</target>
+            </trans-unit>
+        </group>
+				<group id="13007" resname="PP_LineWidthPopup">
+            <trans-unit id="1" resname="PP_Line025">
+               <source>0.25</source>
+               <target>0.25</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Line05">
+               <source>0.5</source>
+               <target>0.5</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Line10">
+               <source>1</source>
+               <target>1</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Line20">
+               <source>2</source>
+               <target>2</target>
+            </trans-unit>
+        </group>
+				<group id="13008" resname="PP_EmptyDrawPopup">
+            <trans-unit id="1" resname="PP_EmptyDraw">
+               <source>draw</source>
+               <target>draw</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_EmptyRemove">
+               <source>remove</source>
+               <target>remove</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_EmptyRemoveRow">
+               <source>remove group</source>
+               <target>remove group</target>
+            </trans-unit>
+         </group>
+				<group id="13009" resname="PP_RulerUnitPopup">
+            <trans-unit id="1" resname="PP_UnitPoint">
+               <source>pt</source>
+               <target>pt</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_UnitMM">
+               <source>mm</source>
+               <target>mm</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_UnitInch">
+               <source>inch</source>
+               <target>inch</target>
+            </trans-unit>
+         </group>
+ 				<group id="13010" resname="PP_UIRounding">
+            <trans-unit id="1" resname="PP_UIRound1">
+               <source>1 pt</source>
+               <target>1 pt</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_UIRound10">
+               <source>0.1 pt</source>
+               <target>0.1 pt</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_UIRound100">
+               <source>0.01 pt</source>
+               <target>0.01 pt</target>
+            </trans-unit>
+         </group>
+ 				<group id="13011" resname="PP_TextTabs">
+            <trans-unit id="1" resname="PP_TextTab1">
+               <source>Properties</source>
+               <target>Properties</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_TextTab2">
+               <source>Style</source>
+               <target>Style</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_TextTab3">
+               <source>Frame</source>
+               <target>Frame</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_TextTab4">
+               <source>Colors</source>
+               <target>Colors</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_TextTab5">
+               <source>Tabs</source>
+               <target>Tabs</target>
+            </trans-unit>
+         </group>
+ 				<group id="13012" resname="PP_VarElement">
+            <trans-unit id="1" resname="PP_elementAuto">
+               <source>-1 automatic index</source>
+               <target>-1 automatic index</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_elementVariable">
+               <source>-2 Variable</source>
+               <target>-2 Variable</target>
+            </trans-unit>
+         </group>
+ 				<group id="13013" resname="PP_CalcTypePopup">
+            <trans-unit id="1" resname="PP_CalcTypeNone">
+               <source>none</source>
+               <target>none</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_CalcTypeTotal">
+               <source>total</source>
+               <target>total</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_CalcTypeMin">
+               <source>min</source>
+               <target>min</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_CalcTypeAverage">
+               <source>average</source>
+               <target>average</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_CalcTypeMax">
+               <source>max</source>
+               <target>max</target>
+            </trans-unit>
+           <trans-unit id="6" resname="PP_CalcTypeCount">
+               <source>count</source>
+               <target>count</target>
+            </trans-unit>
+           <trans-unit id="7" resname="PP_CalcTypeStdVal">
+               <source>standard mean value</source>
+               <target>standard mean value</target>
+            </trans-unit>
+           <trans-unit id="8" resname="PP_CalcTypeStdDev">
+               <source>standard deviation</source>
+               <target>standard deviation</target>
+            </trans-unit>
+        </group>
+ 				<group id="13014" resname="PP_SourceOptions">
+            <trans-unit id="1" resname="PP_Source1">
+               <source>undefined</source>
+               <target>undefined</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Source2">
+               <source>table</source>
+               <target>table</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Source3">
+               <source>fixed</source>
+               <target>fixed</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Source4">
+               <source>variable</source>
+               <target>variable</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_Source5">
+               <source>array</source>
+               <target>array</target>
+            </trans-unit>
+        </group>
+ 				<group id="13015" resname="PP_RelationOptions">
+            <trans-unit id="1" resname="PP_Relation1">
+               <source>no</source>
+               <target>no</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Relation2">
+               <source>automatic</source>
+               <target>automatic</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Relation3">
+               <source>manual</source>
+               <target>manual</target>
+            </trans-unit>
+        </group>
+  			<group id="13016" resname="PP_AddSectionTypes">
+            <trans-unit id="1" resname="PP_Section1">
+               <source>Header</source>
+               <target>Header</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Section2">
+               <source>Break Header</source>
+               <target>Break Header</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Section3">
+               <source>Break Footer</source>
+               <target>Break Footer</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Section4">
+               <source>Footer</source>
+               <target>Footer</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_Section5">
+               <source>Watermark</source>
+               <target>Watermark</target>
+            </trans-unit>
+        </group>
+ 				<group id="13017" resname="PP_PageBreak">
+            <trans-unit id="1" resname="PP_PageBreakNone">
+               <source>none</source>
+               <target>none</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_PageBreakBefore">
+               <source>before</source>
+               <target>before</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_PageBreakAfter">
+               <source>after</source>
+               <target>after</target>
+            </trans-unit>
+        </group>
+  			<group id="13018" resname="PP_BreakTypesPopup">
+            <trans-unit id="1" resname="PP_BreakTypes1">
+               <source>none</source>
+               <target>none</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_BreakTypes2">
+               <source>field</source>
+               <target>field</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_BreakTypes3">
+               <source>variable</source>
+               <target>variable</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_BreakTypes4">
+               <source>array</source>
+               <target>array</target>
+            </trans-unit>
+        </group>
+  			<group id="13019" resname="PP_VarIndexPopup">
+            <trans-unit id="1" resname="PP_VarIndexPopup1">
+               <source>-1 (auto indexed array)</source>
+               <target>-1 (auto indexed array)</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_VarIndexPopup2">
+               <source>-2 (variable)</source>
+               <target>-2 (variable)</target>
+            </trans-unit>
+        </group>
+        <group id="13020" resname="PP_UnitsPopup">
+            <trans-unit id="1" resname="PP_UnitsPopup1">
+               <source>point</source>
+               <target>point</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_UnitsPopup2">
+               <source>mm</source>
+               <target>mm</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_UnitsPopup3">
+               <source>inch</source>
+               <target>inch</target>
+            </trans-unit>
+        </group>
+        <group id="13021" resname="PP_Formatting">
+            <trans-unit id="1" resname="PP_FormatDate">
+               <source>Date</source>
+               <target>Date</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_DateFormat1">
+               <source>Short system</source>
+               <target>Short system</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_DateFormat2">
+               <source>Abbreviated system</source>
+               <target>Abbreviated system</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_DateFormat3">
+               <source>Long system</source>
+               <target>Long system</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_DateFormat4">
+               <source>Internal short special</source>
+               <target>Internal short special</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_DateFormat5">
+               <source>Internal long</source>
+               <target>Internal long</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_DateFormat6">
+               <source>Internal abbreviated</source>
+               <target>Internal abbreviated</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_DateFormat7">
+               <source>Internal short</source>
+               <target>Internal short</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_DateFormat8">
+               <source>ISO date</source>
+               <target>ISO date</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_DateFormat9">
+               <source>Blank if null</source>
+               <target>Blank if null</target>
+            </trans-unit>
+           <trans-unit id="11" resname="PP_FormatTime">
+               <source>Time</source>
+               <target>Time</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_TimeFormat1">
+               <source>HH MM SS</source>
+               <target>HH MM SS</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_TimeFormat2">
+               <source>HH MM</source>
+               <target>HH MM</target>
+            </trans-unit>
+            <trans-unit id="14" resname="PP_TimeFormat3">
+               <source>Hour Min Sec</source>
+               <target>Hour Min Sec</target>
+            </trans-unit>
+            <trans-unit id="15" resname="PP_TimeFormat4">
+               <source>Hour Min</source>
+               <target>Hour Min</target>
+            </trans-unit>
+            <trans-unit id="16" resname="PP_TimeFormat5">
+               <source>HH MM AM PM</source>
+               <target>HH MM AM PM</target>
+            </trans-unit>
+            <trans-unit id="17" resname="PP_TimeFormat6">
+               <source>MM SS</source>
+               <target>MM SS</target>
+            </trans-unit>
+            <trans-unit id="18" resname="PP_TimeFormat7">
+               <source>Min Sec</source>
+               <target>Min Sec</target>
+            </trans-unit>
+            <trans-unit id="19" resname="PP_TimeFormat8">
+               <source>ISO Time</source>
+               <target>ISO Time</target>
+            </trans-unit>
+            <trans-unit id="20" resname="PP_TimeFormat9">
+               <source>System time short</source>
+               <target>System time short</target>
+            </trans-unit>
+          <trans-unit id="21" resname="PP_TimeFormat10">
+               <source>Blank if null</source>
+               <target>Blank if null</target>
+            </trans-unit>
+            <trans-unit id="22" resname="PP_FormatNumber">
+               <source>Numbers</source>
+               <target>Numbers</target>
+            </trans-unit>
+            <trans-unit id="23" resname="PP_NumberFormat1">
+               <source>### ### ##0.00</source>
+               <target>### ### ##0.00</target>
+            </trans-unit>
+            <trans-unit id="24" resname="PP_NumberFormat2">
+               <source>### ### ##0</source>
+               <target>### ### ##0</target>
+            </trans-unit>
+            <trans-unit id="25" resname="PP_NumberFormat3">
+               <source>### ##0</source>
+               <target>### ##0</target>
+            </trans-unit>
+            <trans-unit id="26" resname="PP_NumberFormat4">
+               <source>###,###,##0.00</source>
+               <target>###,###,##0.00</target>
+            </trans-unit>
+            <trans-unit id="27" resname="PP_NumberFormat5">
+               <source>###,###,##0</source>
+               <target>###,###,##0</target>
+            </trans-unit>
+            <trans-unit id="28" resname="PP_NumberFormat6">
+               <source>### ### ##0 €</source>
+               <target>### ### ##0 €</target>
+            </trans-unit>
+            <trans-unit id="29" resname="PP_NumberFormat7">
+               <source>### ### ##0.00 €</source>
+               <target>### ### ##0.00 €</target>
+            </trans-unit>
+            <trans-unit id="30" resname="PP_NumberFormat8">
+               <source>##0.00 %</source>
+               <target>##0.00 %</target>
+            </trans-unit>
+         </group>
+ 				<group id="13022" resname="PP_SourceOptionsMirror">
+ 		<!-- this is mirror of PP_SourceOptions - do not translate -->
+            <trans-unit id="1" resname="PP_Source1M">
+               <source>undefined</source>
+               <target>undefined</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Source2M">
+               <source>table</source>
+               <target>table</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Source3M">
+               <source>fixed</source>
+               <target>fixed</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_Source4M">
+               <source>variable</source>
+               <target>variable</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_Source5M">
+               <source>array</source>
+               <target>array</target>
+            </trans-unit>
+        </group>
+ 				<group id="13023" resname="PP_RelationOptionsMirror">
+ 		<!-- this is mirror of PP_RelationOptions - do not translate -->
+            <trans-unit id="1" resname="PP_Relation1M">
+               <source>no</source>
+               <target>no</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_Relation2M">
+               <source>automatic</source>
+               <target>automatic</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_Relation3M">
+               <source>manual</source>
+               <target>manual</target>
+            </trans-unit>
+        </group>
+				<group id="13024" resname="PP_AlignTypesMirror">
+ 		<!-- do not translate -->
+            <trans-unit id="1" resname="PP_AlignTypesNoneM">
+               <source>none</source>
+               <target>none</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_AlignTypesLeftM">
+               <source>left</source>
+               <target>left</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_AlignTypesCenterM">
+               <source>center</source>
+               <target>center</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_AlignTypesRightM">
+               <source>right</source>
+               <target>right</target>
+            </trans-unit>
+         </group>
+        <group id="13025" resname="PP_DrawTypesMirror">
+ 		<!-- do not translate -->
+            <trans-unit id="1" resname="PP_DrawTypesNoM">
+               <source>no</source>
+               <target>no</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_DrawTypesYesM">
+               <source>yes</source>
+               <target>yes</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_DrawTypesOverflawM">
+               <source>on overflow</source>
+               <target>on overflow</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_DrawTypesAlwaysM">
+               <source>always</source>
+               <target>always</target>
+            </trans-unit>
+		</group>
+        <group id="13026" resname="PP_RepeatPopup">
+            <trans-unit id="1" resname="PP_RepeatPopup1">
+               <source>none</source>
+               <target>none</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_RepeatPopup2">
+               <source>vertical</source>
+               <target>vertical</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_RepeatPopup3">
+               <source>horizontal</source>
+               <target>horizontal</target>
+            </trans-unit>
+		</group>
+				<group id="13027" resname="PP_RepeatPopupParams">
+ 		<!-- do not translate -->
+            <trans-unit id="1" resname="PP_RepeatPopupParams1">
+               <source>none</source>
+               <target>none</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_RepeatPopupParams2">
+               <source>vertical</source>
+               <target>vertical</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_RepeatPopupParams3">
+               <source>horizontal</source>
+               <target>horizontal</target>
+            </trans-unit>
+		</group>
+        <group id="13100" resname="PP_Dialogs">
+            <trans-unit id="1" resname="PP_SettingsRect">
+               <source>Settings: Rectangle</source>
+               <target>Settings: Rectangle</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_SettingsOval">
+               <source>Settings: Oval</source>
+               <target>Settings: Oval</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_SettingsLine">
+               <source>Settings: Line</source>
+               <target>Settings: Line</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_SettingsPicture">
+               <source>Settings: Picture</source>
+               <target>Settings: Picture</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_SettingsText">
+               <source>Settings: Text</source>
+               <target>Settings: Text</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_SettingsForm">
+               <source>Settings: Report</source>
+               <target>Settings: Report</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_SettingsSection">
+               <source>Settings: Section</source>
+               <target>Settings: Section</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_SettingsFieldVar">
+               <source>Settings: Field / Variable</source>
+               <target>Settings: Field / Variable</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_SettingsTable">
+               <source>Settings: Table</source>
+               <target>Settings: Table</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_SettingsTableHeader">
+               <source>Settings: Table :: Header</source>
+               <target>Settings: Table :: Header</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_SettingsTableData">
+               <source>Settings: Table :: Data</source>
+               <target>Settings: Table :: Data</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_SettingsGroup">
+               <source>Settings: Group</source>
+               <target>Settings: Group</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_SettingsGuides">
+               <source>Settings: Guide lines</source>
+               <target>Settings: Guide lines</target>
+            </trans-unit>
+            <trans-unit id="14" resname="PP_SettingsDataSource">
+               <source>Settings: Data source</source>
+               <target>Settings: Data source</target>
+            </trans-unit>
+            <trans-unit id="15" resname="PP_SettingsRepObjects">
+               <source>Settings: Repeating objects</source>
+               <target>Settings: Repeating objects</target>
+            </trans-unit>
+            <trans-unit id="16" resname="PP_SettingsStyle">
+               <source>Settings: Style sheets</source>
+               <target>Settings: Style sheets</target>
+            </trans-unit>
+            <trans-unit id="17" resname="PP_SettingsAddSection">
+               <source>Add new section ...</source>
+               <target>Add new section ...</target>
+            </trans-unit>
+            <trans-unit id="18" resname="PP_SettingsNewReport">
+               <source>New report ...</source>
+               <target>New report ...</target>
+            </trans-unit>
+            <trans-unit id="19" resname="PP_SettingsRulerAndGrid">
+               <source>Ruler and grid settings ...</source>
+               <target>Ruler and grid settings ...</target>
+            </trans-unit>
+            <trans-unit id="20" resname="PP_SettingsScript">
+               <source>Edit script ...</source>
+               <target>Edit script ...</target>
+            </trans-unit>
+            <trans-unit id="21" resname="PP_SettingsStyleSheets">
+               <source>Edit style sheets ...</source>
+               <target>Edit style sheets ...</target>
+            </trans-unit>
+            <trans-unit id="22" resname="PP_SettingsExport">
+               <source>Export settings ...</source>
+               <target>Export settings ...</target>
+            </trans-unit>
+		</group>
+        <group id="13101" resname="PP_DialogObjects">
+            <trans-unit id="1" resname="PP_ObjID">
+               <source>Object ID:</source>
+               <target>Object ID:</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_ObjPrintorder">
+               <source>Printorder:</source>
+               <target>Printorder:</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_ObjPrinting">
+               <source>Printing:</source>
+               <target>Printing:</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_ObjFrameSize">
+               <source>Frame:</source>
+               <target>Frame:</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_ObjFrameType">
+               <source>Frame type:</source>
+               <target>Frame type:</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_ObjFrameColor">
+               <source>Frame color:</source>
+               <target>Frame color:</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_ObjOpacity">
+               <source>Opacity:</source>
+               <target>Opacity:</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_ObjFillCB">
+               <source>Fill</source>
+               <target>Fill</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_ObjFillColor">
+               <source>Fill color:</source>
+               <target>Fill color:</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_ObjPosLeft">
+               <source>Position left:</source>
+               <target>Position left:</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_ObjPosTop">
+               <source>Position top:</source>
+               <target>Position top:</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_ObjWidth">
+               <source>Width:</source>
+               <target>Width:</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_ObjHeight">
+               <source>Height:</source>
+               <target>Height:</target>
+            </trans-unit>
+            <trans-unit id="14" resname="PP_ObjPointsShort">
+               <source>pt</source>
+               <target>pt</target>
+            </trans-unit>
+            <trans-unit id="15" resname="PP_ObjRectColumns">
+               <source>Columns:</source>
+               <target>Columns:</target>
+            </trans-unit>
+            <trans-unit id="16" resname="PP_ObjRectRows">
+               <source>Rows:</source>
+               <target>Rows:</target>
+            </trans-unit>
+            <trans-unit id="17" resname="PP_ObjVisible">
+               <source>Visible</source>
+               <target>Visible</target>
+            </trans-unit>
+            <trans-unit id="18" resname="PP_ObjLocked">
+               <source>Locked</source>
+               <target>Locked</target>
+            </trans-unit>
+            <trans-unit id="19" resname="PP_ObjFixed">
+               <source>Fixed position</source>
+               <target>Fixed position</target>
+            </trans-unit>
+            <trans-unit id="20" resname="PP_ObjBind">
+               <source>Verical bind</source>
+               <target>Verical bind</target>
+            </trans-unit>
+            <trans-unit id="20" resname="PP_ObjInGroup">
+               <source>In the group:</source>
+               <target>In the group:</target>
+            </trans-unit>
+            <trans-unit id="21" resname="PP_ObjLine1x">
+               <source>Point 1 x:</source>
+               <target>Point 1 x:</target>
+            </trans-unit>
+            <trans-unit id="22" resname="PP_ObjLine1y">
+               <source>Point 1 y:</source>
+               <target>Point 1 y:</target>
+            </trans-unit>
+            <trans-unit id="23" resname="PP_ObjLine2x">
+               <source>Point 2 x:</source>
+               <target>Point 2 x:</target>
+            </trans-unit>
+            <trans-unit id="24" resname="PP_ObjLine2y">
+               <source>Point 2 y:</source>
+               <target>Point 2 y:</target>
+            </trans-unit>
+            <trans-unit id="25" resname="PP_ObjPictSize">
+               <source>Size:</source>
+               <target>Size:</target>
+            </trans-unit>
+            <trans-unit id="26" resname="PP_ObjPictDim">
+               <source>Dimensions:</source>
+               <target>Dimensions:</target>
+            </trans-unit>
+            <trans-unit id="27" resname="PP_ObjPictFormat">
+               <source>Format:</source>
+               <target>Format:</target>
+            </trans-unit>
+            <trans-unit id="28" resname="PP_ObjOffset">
+               <source>Offset:</source>
+               <target>Offset:</target>
+            </trans-unit>
+            <trans-unit id="29" resname="PP_ObjFrame">
+               <source>Frame</source>
+               <target>Frame</target>
+            </trans-unit>
+            <trans-unit id="30" resname="PP_ObjOrigSize">
+               <source>Original size</source>
+               <target>Original size</target>
+            </trans-unit>
+            <trans-unit id="30" resname="PP_ObjPictLoad">
+               <source>Load picture ...</source>
+               <target>Load picture ...</target>
+            </trans-unit>
+            <trans-unit id="31" resname="PP_ObjTextContent">
+               <source>Content:</source>
+               <target>Content:</target>
+            </trans-unit>
+            <trans-unit id="32" resname="PP_ObjFontName">
+               <source>Font:</source>
+               <target>Font:</target>
+            </trans-unit>
+            <trans-unit id="33" resname="PP_ObjFontSize">
+               <source>Font Size:</source>
+               <target>Font Size:</target>
+            </trans-unit>
+            <trans-unit id="34" resname="PP_ObjFontStyle">
+               <source>Style:</source>
+               <target>Style:</target>
+            </trans-unit>
+            <trans-unit id="35" resname="PP_ObjTextAlignH">
+               <source>Align H:</source>
+               <target>Align H:</target>
+            </trans-unit>
+            <trans-unit id="36" resname="PP_ObjTextAlignV">
+               <source>Align V:</source>
+               <target>Align V:</target>
+            </trans-unit>
+            <trans-unit id="37" resname="PP_ObjRotation">
+               <source>Rotation:</source>
+               <target>Rotation:</target>
+            </trans-unit>
+            <trans-unit id="38" resname="PP_ObjTextSpacingV">
+               <source>Line spacing:</source>
+               <target>Line spacing:</target>
+            </trans-unit>
+            <trans-unit id="39" resname="PP_ObjTextScaleH">
+               <source>Scaling H:</source>
+               <target>Scaling H:</target>
+            </trans-unit>
+            <trans-unit id="40" resname="PP_ObjIfEmpty">
+               <source>If empty:</source>
+               <target>If empty:</target>
+            </trans-unit>
+            <trans-unit id="41" resname="PP_ObjNoFill">
+               <source>Transparent</source>
+               <target>Transparent</target>
+            </trans-unit>
+            <trans-unit id="42" resname="PP_ObjTextColor">
+               <source>Font color:</source>
+               <target>Font color:</target>
+            </trans-unit>
+            <trans-unit id="43" resname="PP_ObjLineColor">
+               <source>Line color:</source>
+               <target>Line color:</target>
+            </trans-unit>
+            <trans-unit id="44" resname="PP_ObjLinePixel">
+               <source>Line width:</source>
+               <target>Line width:</target>
+            </trans-unit>
+            <trans-unit id="45" resname="PP_IsStaticReport">
+               <source>Static Report</source>
+               <target>Static Report</target>
+            </trans-unit>
+            <trans-unit id="46" resname="PP_ShowPhysicalPaper">
+               <source>Physical paper</source>
+               <target>Physical paper</target>
+            </trans-unit>
+            <trans-unit id="47" resname="PP_ShowPrintableArea">
+               <source>Show margins</source>
+               <target>Show margins</target>
+            </trans-unit>
+            <trans-unit id="48" resname="PP_PaperWidth">
+               <source>Paper width:</source>
+               <target>Paper width:</target>
+            </trans-unit>
+            <trans-unit id="49" resname="PP_PaperHeight">
+               <source>Paper height:</source>
+               <target>Paper height:</target>
+            </trans-unit>
+            <trans-unit id="50" resname="PP_PaperMarginLeft">
+               <source>Left margin:</source>
+               <target>Left margin:</target>
+            </trans-unit>
+            <trans-unit id="51" resname="PP_PaperMarginRight">
+               <source>Right margin:</source>
+               <target>Right margin:</target>
+            </trans-unit>
+            <trans-unit id="52" resname="PP_PaperMarginTop">
+               <source>Top margin:</source>
+               <target>Top margin:</target>
+            </trans-unit>
+            <trans-unit id="53" resname="PP_PaperMarginBottom">
+               <source>Bottom margin:</source>
+               <target>Bottom margin:</target>
+            </trans-unit>
+            <trans-unit id="54" resname="PP_ShowObjectFrame">
+               <source>Show object frames</source>
+               <target>Show object frames</target>
+            </trans-unit>
+            <trans-unit id="55" resname="PP_ShowRuler">
+               <source>Show ruler</source>
+               <target>Show ruler</target>
+            </trans-unit>
+            <trans-unit id="56" resname="PP_ObjRulerUnits">
+               <source>Ruler units:</source>
+               <target>Ruler units:</target>
+            </trans-unit>
+            <trans-unit id="57" resname="PP_ShowGrid">
+               <source>Show grid</source>
+               <target>Show grid</target>
+            </trans-unit>
+            <trans-unit id="58" resname="PP_ObjGridSize">
+               <source>Grid size:</source>
+               <target>Grid size:</target>
+            </trans-unit>
+            <trans-unit id="59" resname="PP_ObjAlignToGrid">
+               <source>Align to grid</source>
+               <target>Align to grid</target>
+            </trans-unit>
+            <trans-unit id="60" resname="PP_ObjShowGuides">
+               <source>Show guidelines</source>
+               <target>Show guidelines</target>
+            </trans-unit>
+            <trans-unit id="61" resname="PP_ObjSnapToGuides">
+               <source>Snap to guides</source>
+               <target>Snap to guides</target>
+            </trans-unit>
+            <trans-unit id="62" resname="PP_ObjLockGuides">
+               <source>Lock guides</source>
+               <target>Lock guides</target>
+            </trans-unit>
+            <trans-unit id="63" resname="PP_ObjSnapProximity">
+               <source>Snap proximity:</source>
+               <target>Snap proximity:</target>
+            </trans-unit>
+            <trans-unit id="64" resname="PP_ObjType">
+               <source>Type:</source>
+               <target>Type:</target>
+            </trans-unit>
+            <trans-unit id="65" resname="PP_ObjScript">
+               <source>Script:</source>
+               <target>Script:</target>
+            </trans-unit>
+            <trans-unit id="66" resname="PP_ObjOpenScriptEditor">
+               <source>Open Script editor ...</source>
+               <target>Open Script editor ...</target>
+            </trans-unit>
+            <trans-unit id="67" resname="PP_ObjReportType">
+               <source>Report type:</source>
+               <target>Report type:</target>
+            </trans-unit>
+            <trans-unit id="68" resname="PP_ObjFixedHeight">
+               <source>Fixed size</source>
+               <target>Fixed size</target>
+            </trans-unit>
+            <trans-unit id="69" resname="PP_ObjWillBePrinted">
+               <source>Will be printed</source>
+               <target>Will be printed</target>
+            </trans-unit>
+            <trans-unit id="70" resname="PP_ObjMinimumSpace">
+               <source>Minimum space:</source>
+               <target>Minimum space:</target>
+            </trans-unit>
+            <trans-unit id="71" resname="PP_ObjPageBreak">
+               <source>Page break:</source>
+               <target>Page break:</target>
+            </trans-unit>
+            <trans-unit id="72" resname="PP_ObjSectionPrintOn">
+               <source>Print section on:</source>
+               <target>Print section on:</target>
+            </trans-unit>
+            <trans-unit id="73" resname="PP_ObjOnFirstPage">
+               <source>First page</source>
+               <target>First page</target>
+            </trans-unit>
+            <trans-unit id="74" resname="PP_ObjOnOddPages">
+               <source>Odd page numbers</source>
+               <target>Odd page numbers</target>
+            </trans-unit>
+            <trans-unit id="75" resname="PP_ObjOddNotOnLast">
+               <source>Not if last page</source>
+               <target>Not if last page</target>
+            </trans-unit>
+            <trans-unit id="76" resname="PP_ObjOnEvenPages">
+               <source>Even page numbers</source>
+               <target>Even page numbers</target>
+            </trans-unit>
+            <trans-unit id="77" resname="PP_ObjEvenNotOnLast">
+               <source>Not if last page</source>
+               <target>Not if last page</target>
+            </trans-unit>
+            <trans-unit id="78" resname="PP_ObjOnLastPage">
+               <source>Last page</source>
+               <target>Last page</target>
+            </trans-unit>
+            <trans-unit id="79" resname="PP_ObjKeepTogether">
+               <source>Keep together</source>
+               <target>Keep together</target>
+            </trans-unit>
+            <trans-unit id="80" resname="PP_ObjFillDown">
+               <source>Fill section</source>
+               <target>Fill section</target>
+            </trans-unit>
+            <trans-unit id="81" resname="PP_ObjAlignBottom">
+               <source>Align to bottom</source>
+               <target>Align to bottom</target>
+            </trans-unit>
+            <trans-unit id="82" resname="PP_ObjPrintAlways">
+               <source>Print always</source>
+               <target>Print always</target>
+            </trans-unit>
+            <trans-unit id="83" resname="PP_ObjBreakLevel">
+               <source>Break level:</source>
+               <target>Break level:</target>
+            </trans-unit>
+            <trans-unit id="84" resname="PP_ObjBreakOn">
+               <source>Break on:</source>
+               <target>Break on:</target>
+            </trans-unit>
+            <trans-unit id="85" resname="PP_ObjBreakName">
+               <source>Reference:</source>
+               <target>Reference:</target>
+            </trans-unit>
+            <trans-unit id="86" resname="PP_ObjSource">
+               <source>Reference:</source>
+               <target>Reference:</target>
+            </trans-unit>
+            <trans-unit id="87" resname="PP_ObjFormat">
+               <source>Format:</source>
+               <target>Format:</target>
+            </trans-unit>
+            <trans-unit id="88" resname="PP_ObjElement">
+               <source>Element:</source>
+               <target>Element:</target>
+            </trans-unit>
+            <trans-unit id="89" resname="PP_ObjCalculation">
+               <source>Calculation:</source>
+               <target>Calculation:</target>
+            </trans-unit>
+            <trans-unit id="90" resname="PP_ObjTableDisplayHeader">
+               <source>Show Header</source>
+               <target>Show Header</target>
+            </trans-unit>
+            <trans-unit id="91" resname="PP_ObjHeaderRows">
+               <source>Header lines:</source>
+               <target>Header lines:</target>
+            </trans-unit>
+            <trans-unit id="92" resname="PP_ObjTableDisplayCols">
+               <source>Show Columns</source>
+               <target>Show Columns</target>
+            </trans-unit>
+            <trans-unit id="93" resname="PP_ObjColumns">
+               <source>Columns:</source>
+               <target>Columns:</target>
+            </trans-unit>
+            <trans-unit id="94" resname="PP_ObjRowHeight">
+               <source>Row height:</source>
+               <target>Row height:</target>
+            </trans-unit>
+            <trans-unit id="95" resname="PP_ObjRowGridWidth">
+               <source>Row line width:</source>
+               <target>Row line width:</target>
+            </trans-unit>
+            <trans-unit id="96" resname="PP_ObjDoubleFrame">
+               <source>Double frame</source>
+               <target>Double frame</target>
+            </trans-unit>
+            <trans-unit id="97" resname="PP_ObjOverCols">
+               <source>Column spreading:</source>
+               <target>Column spreading:</target>
+            </trans-unit>
+            <trans-unit id="98" resname="PP_ObjOverRows">
+               <source>Row spreading:</source>
+               <target>Row spreading:</target>
+            </trans-unit>
+            <trans-unit id="99" resname="PP_ObjCellHeight">
+               <source>Cell height:</source>
+               <target>Cell height:</target>
+            </trans-unit>
+            <trans-unit id="100" resname="PP_ObjCellWidth">
+               <source>Cell width:</source>
+               <target>Cell width:</target>
+            </trans-unit>
+            <trans-unit id="101" resname="PP_ObjCellAutoWidth">
+               <source>(0 = automatic)</source>
+               <target>(0 = automatic)</target>
+            </trans-unit>
+            <trans-unit id="102" resname="PP_ObjTablePosition">
+               <source>Position:</source>
+               <target>Position:</target>
+            </trans-unit>
+            <trans-unit id="103" resname="PP_ObjColumnNumber">
+               <source>Column:</source>
+               <target>Column:</target>
+            </trans-unit>
+            <trans-unit id="104" resname="PP_ObjColumnWidth">
+               <source>Column width:</source>
+               <target>Column width:</target>
+            </trans-unit>
+            <trans-unit id="105" resname="PP_ObjTableRowNum">
+               <source>Table row number</source>
+               <target>Table row number</target>
+            </trans-unit>
+            <trans-unit id="106" resname="PP_ObjPrintDuplicates">
+               <source>Duplicate values</source>
+               <target>Duplicate values</target>
+            </trans-unit>
+            <trans-unit id="107" resname="PP_ObjDisplayGrid">
+               <source>Show grid</source>
+               <target>Show grid</target>
+            </trans-unit>
+            <trans-unit id="108" resname="PP_ObjAlignInGroup">
+               <source>Alignment:</source>
+               <target>Alignment:</target>
+            </trans-unit>
+            <trans-unit id="109" resname="PP_ObjExpandable">
+               <source>Expandable</source>
+               <target>Expandable</target>
+            </trans-unit>
+            <trans-unit id="110" resname="PP_ObjPosition">
+               <source>Position:</source>
+               <target>Position:</target>
+            </trans-unit>
+            <trans-unit id="111" resname="PP_ObjSectionOnTop">
+               <source>Print On Top</source>
+               <target>Print On Top</target>
+            </trans-unit>
+            <trans-unit id="112" resname="PP_ObjDataSource">
+               <source>Source:</source>
+               <target>Source:</target>
+            </trans-unit>
+            <trans-unit id="113" resname="PP_ObjIterations">
+               <source>Iterations:</source>
+               <target>Iterations:</target>
+            </trans-unit>
+            <trans-unit id="114" resname="PP_ObjRelateOne">
+               <source>Relate one:</source>
+               <target>Relate one:</target>
+            </trans-unit>
+            <trans-unit id="115" resname="PP_ObjRelateMany">
+               <source>Relate many:</source>
+               <target>Relate many:</target>
+            </trans-unit>
+            <trans-unit id="116" resname="PP_ObjStartScript">
+               <source>Start script:</source>
+               <target>Start script:</target>
+            </trans-unit>
+            <trans-unit id="117" resname="PP_ObjBodyScript">
+               <source>Body Script:</source>
+               <target>Body Script:</target>
+            </trans-unit>
+            <trans-unit id="118" resname="PP_ObjEndScript">
+               <source>End Script:</source>
+               <target>End Script:</target>
+            </trans-unit>
+            <trans-unit id="119" resname="PP_ObjCallback">
+               <source>Callback method:</source>
+               <target>Callback method:</target>
+            </trans-unit>
+            <trans-unit id="120" resname="PP_ObjSRPCompatibility">
+               <source>SRP Compatibility</source>
+               <target>SRP Compatibility</target>
+            </trans-unit>
+            <trans-unit id="121" resname="PP_ObjRepeating">
+               <source>Repeating:</source>
+               <target>Repeating:</target>
+            </trans-unit>
+            <trans-unit id="122" resname="PP_ObjConvert2Table">
+               <source>Convert to table</source>
+               <target>Convert to table</target>
+            </trans-unit>
+            <trans-unit id="123" resname="PP_ObjConvertLine2Table">
+               <source>Convert line to table</source>
+               <target>Convert line to table</target>
+            </trans-unit>
+            <trans-unit id="124" resname="PP_ObjStyleID">
+               <source>Style ID:</source>
+               <target>Style ID:</target>
+            </trans-unit>
+            <trans-unit id="125" resname="PP_ObjStyleName">
+               <source>Style name:</source>
+               <target>Style name:</target>
+            </trans-unit>
+            <trans-unit id="125" resname="PP_ObjDeleteStyle">
+               <source>Delete style ...</source>
+               <target>Delete style ...</target>
+            </trans-unit>
+            <trans-unit id="126" resname="PP_ObjSectionType">
+               <source>Type to add:</source>
+               <target>Type to add:</target>
+            </trans-unit>
+            <trans-unit id="127" resname="PP_ObjAddCorrespondingTypes">
+               <source>Add corresponding type</source>
+               <target>Add corresponding type</target>
+            </trans-unit>
+            <trans-unit id="128" resname="PP_BtnCancel">
+               <source>Cancel</source>
+               <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="129" resname="PP_BtnOK">
+               <source>OK</source>
+               <target>OK</target>
+            </trans-unit>
+            <trans-unit id="130" resname="PP_BtnPageSetup">
+               <source>Page setup ...</source>
+               <target>Page setup ...</target>
+            </trans-unit>
+            <trans-unit id="131" resname="PP_ObjStaticReport">
+               <source>Static report</source>
+               <target>Static report</target>
+            </trans-unit>
+            <trans-unit id="132" resname="PP_ObjDynamicReport">
+               <source>Dynamic report</source>
+               <target>Dynamic report</target>
+            </trans-unit>
+            <trans-unit id="133" resname="PP_ObjConfiguration">
+               <source>Configuration:</source>
+               <target>Configuration:</target>
+            </trans-unit>
+            <trans-unit id="134" resname="PP_ObjRulerUnit">
+               <source>Ruler unit:</source>
+               <target>Ruler unit:</target>
+            </trans-unit>
+            <trans-unit id="135" resname="PP_ObjUnitRounding">
+               <source>Unit rounding:</source>
+               <target>Unit rounding:</target>
+            </trans-unit>
+            <trans-unit id="136" resname="PP_ObjProximityLimit">
+               <source>Proximity limit:</source>
+               <target>Proximity limit:</target>
+            </trans-unit>
+            <trans-unit id="137" resname="PP_ObjScriptToEdit">
+               <source>Script</source>
+               <target>Script</target>
+            </trans-unit>
+            <trans-unit id="138" resname="PP_ObjFields">
+               <source>Tables and fields</source>
+               <target>Tables and fields</target>
+            </trans-unit>
+            <trans-unit id="139" resname="PP_ObjVariables">
+               <source>Defined variables</source>
+               <target>Defined variables</target>
+            </trans-unit>
+            <trans-unit id="140" resname="PP_ObjCommands">
+               <source>Commands</source>
+               <target>Commands</target>
+            </trans-unit>
+            <trans-unit id="141" resname="PP_BtnSaveWithDlg">
+               <source>Save ...</source>
+               <target>Save ...</target>
+            </trans-unit>
+            <trans-unit id="142" resname="PP_BtnLoadWithDlg">
+               <source>Load ...</source>
+               <target>Load ...</target>
+            </trans-unit>
+            <trans-unit id="143" resname="PP_BtnRunScript">
+               <source>Test script</source>
+               <target>Test script</target>
+            </trans-unit>
+            <trans-unit id="144" resname="PP_BtnDoNotSave">
+               <source>Back</source>
+               <target>Back</target>
+            </trans-unit>
+            <trans-unit id="145" resname="PP_BtnNewStyle">
+               <source>Add new Style sheet</source>
+               <target>Add new Style sheet</target>
+            </trans-unit>
+            <trans-unit id="146" resname="PP_BtnDeleteStyle">
+               <source>Delete Style sheet</source>
+               <target>Delete Style sheet</target>
+            </trans-unit>
+            <trans-unit id="147" resname="PP_BtnClose">
+               <source>Close</source>
+               <target>Close</target>
+            </trans-unit>
+            <trans-unit id="148" resname="PP_HdrStyleName">
+               <source>Style sheet</source>
+               <target>Style sheet</target>
+            </trans-unit>
+            <trans-unit id="149" resname="PP_ObjTableLevel">
+               <source>Table level:</source>
+               <target>Table level:</target>
+            </trans-unit>
+            <trans-unit id="150" resname="PP_ExpSectionBreaks">
+               <source>Export section breaks</source>
+               <target>Export section breaks</target>
+            </trans-unit>
+            <trans-unit id="151" resname="PP_ExpSectionHeaders">
+               <source>Export headers and footers</source>
+               <target>Export headers and footers</target>
+            </trans-unit>
+            <trans-unit id="152" resname="PP_HdrExportSections">
+               <source>Export sections</source>
+               <target>Export sections</target>
+            </trans-unit>
+            <trans-unit id="153" resname="PP_HdrTextExport">
+               <source>Text export options</source>
+               <target>Text export options</target>
+            </trans-unit>
+            <trans-unit id="154" resname="PP_ExpStaticText">
+               <source>Export with static text</source>
+               <target>Export with static text</target>
+            </trans-unit>
+            <trans-unit id="155" resname="PP_ExpDynamicOnly">
+               <source>Export only fields and variables</source>
+               <target>Export only fields and variables</target>
+            </trans-unit>
+            <trans-unit id="156" resname="PP_HdrExportFormat">
+               <source>File format</source>
+               <target>File format</target>
+            </trans-unit>
+            <trans-unit id="157" resname="PP_ExpTabDelimited">
+               <source>Tab delimited</source>
+               <target>Tab delimited</target>
+            </trans-unit>
+            <trans-unit id="158" resname="PP_ExpAsCVS">
+               <source>CVS</source>
+               <target>CVS</target>
+            </trans-unit>
+		</group>
+				<group id="13102" resname="PP_TextTabs2">
+            <trans-unit id="1" resname="PP_TextTab1">
+               <source>Style</source>
+               <target>Style</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_TextTab2">
+               <source>Color</source>
+               <target>Color</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_TextTab3">
+               <source>Content</source>
+               <target>Content</target>
+            </trans-unit>
+		</group>
+				<group id="13103" resname="PP_ReportTypes">
+            <trans-unit id="1" resname="PP_ReportTypeDynamic">
+               <source>Dynamic</source>
+               <target>Dynamic</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_ReportTypeStatic">
+               <source>Static</source>
+               <target>Static</target>
+            </trans-unit>
+		</group>
+				<group id="13104" resname="PP_TextTabsVar">
+            <trans-unit id="1" resname="PP_TextTabVar1">
+               <source>Style</source>
+               <target>Style</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_TextTabVar2">
+               <source>Color</source>
+               <target>Color</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_TextTabVar3">
+               <source>Script</source>
+               <target>Script</target>
+            </trans-unit>
+		</group>
+				<group id="13105" resname="PP_EditStyles">
+            <trans-unit id="1" resname="PP_EditStylesText">
+               <source>Edit style sheets ...</source>
+               <target>Edit style sheets ...</target>
+            </trans-unit>
+		</group>
+				<group id="13106" resname="PP_MenuEntries">
+            <trans-unit id="1" resname="PP_MenuFile">
+               <source>File</source>
+               <target>File</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_MenuFileNewSub">
+               <source>New</source>
+               <target>New</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_MenuFileNewStatic">
+               <source>Static report</source>
+               <target>Static report</target>
+            </trans-unit>
+            <trans-unit id="4" resname="PP_MenuFileNewDynamic">
+               <source>Dynamic report ...</source>
+               <target>Dynamic report ...</target>
+            </trans-unit>
+            <trans-unit id="5" resname="PP_MenuFileOpen">
+               <source>Open ...</source>
+               <target>Open ...</target>
+            </trans-unit>
+            <trans-unit id="6" resname="PP_MenuFileClose">
+               <source>Close</source>
+               <target>Close</target>
+            </trans-unit>
+            <trans-unit id="7" resname="PP_MenuFileSave">
+               <source>Save</source>
+               <target>Save</target>
+            </trans-unit>
+            <trans-unit id="8" resname="PP_MenuFileSaveAs">
+               <source>Save as ...</source>
+               <target>Save as ...</target>
+            </trans-unit>
+            <trans-unit id="9" resname="PP_MenuFileRevert">
+               <source>Revert to saved</source>
+               <target>Revert to saved</target>
+            </trans-unit>
+            <trans-unit id="10" resname="PP_MenuFileExportSub">
+               <source>Export to file</source>
+               <target>Export to file</target>
+            </trans-unit>
+            <trans-unit id="11" resname="PP_MenuFileExportText">
+               <source>Text ...</source>
+               <target>Text ...</target>
+            </trans-unit>
+            <trans-unit id="12" resname="PP_MenuFileExportHTML">
+               <source>HTML ...</source>
+               <target>HTML ...</target>
+            </trans-unit>
+            <trans-unit id="13" resname="PP_MenuFileExportXML">
+               <source>XML ...</source>
+               <target>XML ...</target>
+            </trans-unit>
+            <trans-unit id="14" resname="PP_MenuFileExportRW">
+               <source>Preprint ...</source>
+               <target>Preprint ...</target>
+            </trans-unit>
+            <trans-unit id="15" resname="PP_MenuFileSetupRuler">
+               <source>Setup ruler ...</source>
+               <target>Setup ruler ...</target>
+            </trans-unit>
+            <trans-unit id="16" resname="PP_MenuFilePageSetup">
+               <source>Page setup ...</source>
+               <target>Page setup ...</target>
+            </trans-unit>
+            <trans-unit id="17" resname="PP_MenuFilePrint">
+               <source>Print ...</source>
+               <target>Print ...</target>
+            </trans-unit>
+            <trans-unit id="18" resname="PP_MenuFilePreview">
+               <source>Preview</source>
+               <target>Preview</target>
+            </trans-unit>
+            <trans-unit id="19" resname="PP_MenuEdit">
+               <source>Edit</source>
+               <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="20" resname="PP_MenuEditUndo">
+               <source>Undo</source>
+               <target>Undo</target>
+            </trans-unit>
+            <trans-unit id="21" resname="PP_MenuEditRedo">
+               <source>Redo</source>
+               <target>Redo</target>
+            </trans-unit>
+            <trans-unit id="22" resname="PP_MenuEditCut">
+               <source>Cut</source>
+               <target>Cut</target>
+            </trans-unit>
+            <trans-unit id="23" resname="PP_MenuEditCopy">
+               <source>Copy</source>
+               <target>Copy</target>
+            </trans-unit>
+            <trans-unit id="24" resname="PP_MenuEditPaste">
+               <source>Paste</source>
+               <target>Paste</target>
+            </trans-unit>
+            <trans-unit id="25" resname="PP_MenuEditClear">
+               <source>Clear</source>
+               <target>Clear</target>
+            </trans-unit>
+            <trans-unit id="26" resname="PP_MenuEditSelectAll">
+               <source>Select all</source>
+               <target>Select all</target>
+            </trans-unit>
+            <trans-unit id="27" resname="PP_MenuEditDuplicate">
+               <source>Duplicate</source>
+               <target>Duplicate</target>
+            </trans-unit>
+            <trans-unit id="28" resname="PP_MenuObject">
+               <source>Object</source>
+               <target>Object</target>
+            </trans-unit>
+            <trans-unit id="29" resname="PP_MenuObjectBringToFront">
+               <source>Bring to front</source>
+               <target>Bring to front</target>
+            </trans-unit>
+            <trans-unit id="30" resname="PP_MenuObjectSendToBack">
+               <source>Send to back</source>
+               <target>Send to back</target>
+            </trans-unit>
+            <trans-unit id="31" resname="PP_MenuObjectGroup">
+               <source>Group</source>
+               <target>Group</target>
+            </trans-unit>
+            <trans-unit id="32" resname="PP_MenuObjectUngroup">
+               <source>Ungroup</source>
+               <target>Ungroup</target>
+            </trans-unit>
+            <trans-unit id="33" resname="PP_MenuObjectUnlockAll">
+               <source>Unlock all</source>
+               <target>Unlock all</target>
+            </trans-unit>
+            <trans-unit id="34" resname="PP_MenuObjectInsertSection">
+               <source>Insert section ...</source>
+               <target>Insert section ...</target>
+            </trans-unit>
+            <trans-unit id="35" resname="PP_MenuText">
+               <source>Text</source>
+               <target>Text</target>
+            </trans-unit>
+            <trans-unit id="36" resname="PP_MenuTextFont">
+               <source>Font</source>
+               <target>Font</target>
+            </trans-unit>
+            <trans-unit id="37" resname="PP_MenuTextStyle">
+               <source>Style</source>
+               <target>Style</target>
+            </trans-unit>
+            <trans-unit id="38" resname="PP_MenuTextPlain">
+               <source>Plain</source>
+               <target>Plain</target>
+            </trans-unit>
+            <trans-unit id="39" resname="PP_MenuTextBold">
+               <source>Bold</source>
+               <target>Bold</target>
+            </trans-unit>
+            <trans-unit id="40" resname="PP_MenuTextItalic">
+               <source>Italic</source>
+               <target>Italic</target>
+            </trans-unit>
+            <trans-unit id="41" resname="PP_MenuTextUnderline">
+               <source>Underline</source>
+               <target>Underline</target>
+            </trans-unit>
+            <trans-unit id="42" resname="PP_MenuTextLowercase">
+               <source>Lowercase</source>
+               <target>Lowercase</target>
+            </trans-unit>
+            <trans-unit id="43" resname="PP_MenuTextUppercase">
+               <source>Uppercase</source>
+               <target>Uppercase</target>
+            </trans-unit>
+            <trans-unit id="44" resname="PP_MenuTextCapitals">
+               <source>Capitals</source>
+               <target>Capitals</target>
+            </trans-unit>
+            <trans-unit id="45" resname="PP_MenuTextSize">
+               <source>Size</source>
+               <target>Size</target>
+            </trans-unit>
+            <trans-unit id="46" resname="PP_MenuTextSize7">
+               <source>7 Point</source>
+               <target>7 Point</target>
+            </trans-unit>
+            <trans-unit id="47" resname="PP_MenuTextSize8">
+               <source>8 Point</source>
+               <target>8 Point</target>
+            </trans-unit>
+            <trans-unit id="48" resname="PP_MenuTextSize9">
+               <source>9 Point</source>
+               <target>9 Point</target>
+            </trans-unit>
+            <trans-unit id="49" resname="PP_MenuTextSize10">
+               <source>10 Point</source>
+               <target>10 Point</target>
+            </trans-unit>
+            <trans-unit id="50" resname="PP_MenuTextSize11">
+               <source>11 Point</source>
+               <target>11 Point</target>
+            </trans-unit>
+            <trans-unit id="51" resname="PP_MenuTextSize12">
+               <source>12 Point</source>
+               <target>12 Point</target>
+            </trans-unit>
+            <trans-unit id="52" resname="PP_MenuTextSize14">
+               <source>14 Point</source>
+               <target>14 Point</target>
+            </trans-unit>
+            <trans-unit id="53" resname="PP_MenuTextSize18">
+               <source>18 Point</source>
+               <target>18 Point</target>
+            </trans-unit>
+            <trans-unit id="54" resname="PP_MenuTextSize24">
+               <source>24 Point</source>
+               <target>24 Point</target>
+            </trans-unit>
+            <trans-unit id="55" resname="PP_MenuTextSizePlus">
+               <source>Bigger</source>
+               <target>Bigger</target>
+            </trans-unit>
+            <trans-unit id="56" resname="PP_MenuTextSizeMinus">
+               <source>Smaller</source>
+               <target>Smaller</target>
+            </trans-unit>
+            <trans-unit id="57" resname="PP_MenuTextTextColor">
+               <source>Text color ...</source>
+               <target>Text color ...</target>
+            </trans-unit>
+            <trans-unit id="58" resname="PP_MenuTextHorAlign">
+               <source>Horizontal alignment</source>
+               <target>Horizontal alignment</target>
+            </trans-unit>
+            <trans-unit id="59" resname="PP_MenuTextLeft">
+               <source>Left</source>
+               <target>Left</target>
+            </trans-unit>
+            <trans-unit id="60" resname="PP_MenuTextCenter">
+               <source>Center</source>
+               <target>Center</target>
+            </trans-unit>
+            <trans-unit id="61" resname="PP_MenuTextRight">
+               <source>Right</source>
+               <target>Right</target>
+            </trans-unit>
+            <trans-unit id="62" resname="PP_MenuTextJustify">
+               <source>Justify</source>
+               <target>Justify</target>
+            </trans-unit>
+            <trans-unit id="63" resname="PP_MenuTextVertAlign">
+               <source>Vertical alignment</source>
+               <target>Vertical alignment</target>
+            </trans-unit>
+            <trans-unit id="64" resname="PP_MenuTextTop">
+               <source>Top</source>
+               <target>Top</target>
+            </trans-unit>
+            <trans-unit id="65" resname="PP_MenuTextBottom">
+               <source>Bottom</source>
+               <target>Bottom</target>
+            </trans-unit>
+            <trans-unit id="66" resname="PP_MenuTextLineSpacePlus">
+               <source>More line spacing</source>
+               <target>More line spacing</target>
+            </trans-unit>
+            <trans-unit id="67" resname="PP_MenuTextLineSpaceMinus">
+               <source>Less line spacing</source>
+               <target>Less line spacing</target>
+            </trans-unit>
+            <trans-unit id="68" resname="PP_MenuTextRefInsert">
+               <source>Insert reference ...</source>
+               <target>Insert reference ...</target>
+            </trans-unit>
+            <trans-unit id="69" resname="PP_MenuDisplay">
+               <source>Display</source>
+               <target>Display</target>
+            </trans-unit>
+            <trans-unit id="70" resname="PP_MenuDisplayRulers">
+               <source>Show rulers</source>
+               <target>Show rulers</target>
+            </trans-unit>
+            <trans-unit id="71" resname="PP_MenuDisplayGrid">
+               <source>Show grid</source>
+               <target>Show grid</target>
+            </trans-unit>
+            <trans-unit id="72" resname="PP_MenuDisplayGuides">
+               <source>Show guides</source>
+               <target>Show guides</target>
+            </trans-unit>
+            <trans-unit id="73" resname="PP_MenuDisplaySnapToGrid">
+               <source>Snap to grid</source>
+               <target>Snap to grid</target>
+            </trans-unit>
+            <trans-unit id="74" resname="PP_MenuDisplaySnapToGuides">
+               <source>Snap to guides</source>
+               <target>Snap to guides</target>
+            </trans-unit>
+            <trans-unit id="75" resname="PP_MenuDisplayContent">
+               <source>Content</source>
+               <target>Content</target>
+            </trans-unit>
+            <trans-unit id="76" resname="PP_MenuDisplayNormal">
+               <source>Normal</source>
+               <target>Normal</target>
+            </trans-unit>
+            <trans-unit id="77" resname="PP_MenuDisplayNames">
+               <source>References</source>
+               <target>References</target>
+            </trans-unit>
+            <trans-unit id="78" resname="PP_MenuDisplayIDs">
+               <source>IDs</source>
+               <target>IDs</target>
+            </trans-unit>
+            <trans-unit id="79" resname="PP_MenuDisplayFormats">
+               <source>Formats</source>
+               <target>Formats</target>
+            </trans-unit>
+            <trans-unit id="80" resname="PP_MenuDisplayPrintOrder">
+               <source>Print order</source>
+               <target>Print order</target>
+            </trans-unit>
+            <trans-unit id="81" resname="PP_MenuDisplayValues">
+               <source>Values</source>
+               <target>Values</target>
+            </trans-unit>
+            <trans-unit id="82" resname="PP_MenuDisplaySize1">
+               <source>Original size</source>
+               <target>Original size</target>
+            </trans-unit>
+            <trans-unit id="83" resname="PP_MenuDisplaySize0">
+               <source>Fit in windows</source>
+               <target>Fit in windows</target>
+            </trans-unit>
+            <trans-unit id="84" resname="PP_MenuDisplaySize+">
+               <source>Zoom in</source>
+               <target>Zoom in</target>
+            </trans-unit>
+            <trans-unit id="85" resname="PP_MenuDisplaySize-">
+               <source>Zoom out</source>
+               <target>Zoom out</target>
+            </trans-unit>
+		</group>
+				<group id="13107" resname="PP_TabAlignment">
+            <trans-unit id="1" resname="PP_TabAlignLeft">
+               <source>Left</source>
+               <target>Left</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_TabAlignCenter">
+               <source>Center</source>
+               <target>Center</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_TabAlignRight">
+               <source>Right</source>
+               <target>Right</target>
+            </trans-unit>
+				</group>
+				<group id="13108" resname="PP_TabAlignmentMirror">
+				<!-- this is mirror of PP_TabAlignment array - do not translate -->
+            <trans-unit id="1" resname="PP_TabAlignLeftM">
+               <source>Left</source>
+               <target>Left</target>
+            </trans-unit>
+            <trans-unit id="2" resname="PP_TabAlignCenterM">
+               <source>Center</source>
+               <target>Center</target>
+            </trans-unit>
+            <trans-unit id="3" resname="PP_TabAlignRightM">
+               <source>Right</source>
+               <target>Right</target>
+            </trans-unit>
+				</group>
+   		</body>
+   </file>
+</xliff>

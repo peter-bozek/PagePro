@@ -1,0 +1,1311 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"rightMargin": 0,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onClick",
+		"onOutsideCall",
+		"onMenuSelect",
+		"onDataChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Variable6": {
+					"type": "input",
+					"top": 65,
+					"left": 375,
+					"width": 195,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_ObjectName",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Variable6.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page1Box": {
+					"type": "combo",
+					"top": 93,
+					"left": 375,
+					"width": 195,
+					"height": 18,
+					"sizingX": "move",
+					"dataSource": "PP_Fonts",
+					"class": "PPro_Tahoma12",
+					"method": "ObjectMethods/Page1Box.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Variable5": {
+					"type": "input",
+					"top": 120,
+					"left": 375,
+					"width": 40,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_FontSize",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page1List": {
+					"type": "dropdown",
+					"top": 118,
+					"left": 425,
+					"width": 20,
+					"height": 20,
+					"sizingX": "move",
+					"dataSource": "PP_FontSizePopup",
+					"focusable": false,
+					"choiceList": [
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"14",
+						"18",
+						"24",
+						"36"
+					],
+					"class": "DefautSmall",
+					"method": "ObjectMethods/Page1List.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Variable1": {
+					"type": "input",
+					"top": 220,
+					"left": 465,
+					"width": 30,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_Rotation",
+					"dataSourceTypeHint": "number",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"numberFormat": "##0°",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page1Variable6": {
+					"type": "input",
+					"top": 245,
+					"left": 375,
+					"width": 40,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_LineSpacing",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page1Variable7": {
+					"type": "input",
+					"top": 270,
+					"left": 375,
+					"width": 40,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_HorScale",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page1Box2": {
+					"type": "checkbox",
+					"top": 292,
+					"left": 375,
+					"width": 195,
+					"height": 20,
+					"sizingX": "move",
+					"dataSource": "PP_WrapBtn",
+					"text": ":xliff:PP_Wrap",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page2Gruppe1": {
+					"type": "input",
+					"top": 355,
+					"left": 375,
+					"width": 30,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_TextOpacity",
+					"dataSourceTypeHint": "number",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"numberFormat": "##0",
+					"min": 0,
+					"max": 255,
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page2TextOpacityPopup": {
+					"type": "dropdown",
+					"top": 353,
+					"left": 415,
+					"width": 20,
+					"height": 18,
+					"sizingX": "move",
+					"dataSource": "PP_TextOpacityPopup",
+					"focusable": false,
+					"class": "PPro_Tahoma10Bold",
+					"method": "ObjectMethods/Page2TextOpacityPopup.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page2Box7": {
+					"type": "checkbox",
+					"top": 387,
+					"left": 455,
+					"width": 120,
+					"height": 20,
+					"sizingX": "move",
+					"dataSource": "PP_FrameBtn",
+					"text": ":xliff:PP_Frame",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page2Variable3": {
+					"type": "input",
+					"top": 390,
+					"left": 375,
+					"width": 30,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_LineWidth",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page2Popup1": {
+					"type": "dropdown",
+					"top": 388,
+					"left": 415,
+					"width": 20,
+					"height": 18,
+					"sizingX": "move",
+					"dataSource": "PP_WidthPopup",
+					"focusable": false,
+					"class": "PPro_Tahoma10Bold",
+					"method": "ObjectMethods/Page2Popup1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page2Opacity1": {
+					"type": "input",
+					"top": 440,
+					"left": 375,
+					"width": 30,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_FrameOpacity",
+					"dataSourceTypeHint": "number",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"numberFormat": "##0",
+					"min": 0,
+					"max": 255,
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Page2Opacity1.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page2OpacityPopup1": {
+					"type": "dropdown",
+					"top": 438,
+					"left": 415,
+					"width": 20,
+					"height": 18,
+					"sizingX": "move",
+					"dataSource": "PP_FrameOpacityPopup",
+					"focusable": false,
+					"class": "PPro_Tahoma10Bold",
+					"method": "ObjectMethods/Page2OpacityPopup1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box2": {
+					"type": "checkbox",
+					"top": 437,
+					"left": 455,
+					"width": 120,
+					"height": 20,
+					"sizingX": "move",
+					"dataSource": "PP_TransparentFrameColor",
+					"text": ":xliff:PP_Transparent",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"method": "ObjectMethods/Check Box2.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Page2FillOpacity": {
+					"type": "input",
+					"top": 500,
+					"left": 375,
+					"width": 30,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_FillOpacity",
+					"dataSourceTypeHint": "number",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"numberFormat": "##0",
+					"min": 0,
+					"max": 255,
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Page2FillOpacity.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page2FillOpacityPopup": {
+					"type": "dropdown",
+					"top": 498,
+					"left": 415,
+					"width": 20,
+					"height": 18,
+					"sizingX": "move",
+					"dataSource": "PP_FillOpacityPopup",
+					"focusable": false,
+					"class": "PPro_Tahoma10Bold",
+					"method": "ObjectMethods/Page2FillOpacityPopup.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page2Box1": {
+					"type": "checkbox",
+					"top": 497,
+					"left": 455,
+					"width": 120,
+					"height": 20,
+					"sizingX": "move",
+					"dataSource": "PP_TransparentBackColor",
+					"text": ":xliff:PP_ObjNoFill",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"method": "ObjectMethods/Page2Box1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"LB_Styles": {
+					"type": "listbox",
+					"top": 40,
+					"left": 20,
+					"width": 220,
+					"height": 475,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"resizingMode": "legacy",
+					"dataSource": "PP_StyleLB",
+					"hideFocusRing": true,
+					"rowHeight": "20px",
+					"rowHeightAutoMin": "20px",
+					"rowHeightAutoMax": "20px",
+					"staticColumnCount": 4,
+					"selectionMode": "single",
+					"horizontalLineStroke": "#AAAAAA",
+					"verticalLineStroke": "#AAAAAA",
+					"stroke": "#000000",
+					"fill": "#FFFFFF",
+					"fontFamily": "Lucida Grande",
+					"fontSize": 12,
+					"method": "ObjectMethods/LB_Styles.4dm",
+					"events": [
+						"onSelectionChange"
+					],
+					"columns": [
+						{
+							"name": "Spalte1",
+							"dataSource": "PP_StyleName",
+							"width": 107,
+							"minWidth": 10,
+							"maxWidth": 32000,
+							"resizable": false,
+							"enterable": false,
+							"stroke": "automatic",
+							"fill": "#FFFFFF",
+							"textAlign": "left",
+							"verticalAlign": "automatic",
+							"fontFamily": "Tahoma",
+							"fontSize": 12,
+							"header": {
+								"name": "Kopf1",
+								"text": ":xliff:PP_HdrStyleName",
+								"dataSource": "PP_StylesHdr01",
+								"stroke": "automatic",
+								"textAlign": "left",
+								"verticalAlign": "automatic",
+								"fontFamily": "Tahoma",
+								"fontSize": 10
+							},
+							"footer": {
+								"stroke": "#000000",
+								"fill": "#FFFFFF",
+								"textAlign": "automatic",
+								"verticalAlign": "automatic",
+								"fontFamily": "Lucida Grande",
+								"fontSize": 12
+							}
+						},
+						{
+							"name": "Spalte2",
+							"dataSource": "PP_StyleProps",
+							"width": 50,
+							"minWidth": 10,
+							"maxWidth": 32000,
+							"resizable": false,
+							"enterable": false,
+							"visibility": "hidden",
+							"stroke": "automatic",
+							"fill": "#FFFFFF",
+							"textAlign": "left",
+							"verticalAlign": "automatic",
+							"fontFamily": "Tahoma",
+							"fontSize": 12,
+							"header": {
+								"name": "Kopf2",
+								"text": "Props",
+								"dataSource": "PP_StylesHdr02",
+								"stroke": "automatic",
+								"textAlign": "left",
+								"verticalAlign": "automatic",
+								"fontFamily": "Tahoma",
+								"fontSize": 10
+							},
+							"footer": {
+								"name": "1",
+								"stroke": "#000000",
+								"fill": "#FFFFFF",
+								"textAlign": "automatic",
+								"verticalAlign": "automatic",
+								"fontFamily": "Lucida Grande",
+								"fontSize": 12
+							}
+						},
+						{
+							"name": "Spalte3",
+							"dataSource": "PP_StyleID",
+							"dataSourceTypeHint": "number",
+							"width": 50,
+							"minWidth": 10,
+							"maxWidth": 32000,
+							"resizable": false,
+							"enterable": false,
+							"visibility": "hidden",
+							"stroke": "automatic",
+							"fill": "#FFFFFF",
+							"textAlign": "left",
+							"verticalAlign": "automatic",
+							"fontFamily": "Tahoma",
+							"fontSize": 12,
+							"header": {
+								"name": "Kopf3",
+								"text": "ID",
+								"dataSource": "PP_StylesHdr03",
+								"stroke": "automatic",
+								"textAlign": "left",
+								"verticalAlign": "automatic",
+								"fontFamily": "Tahoma",
+								"fontSize": 10
+							},
+							"footer": {
+								"name": "2",
+								"stroke": "#000000",
+								"fill": "#FFFFFF",
+								"textAlign": "automatic",
+								"verticalAlign": "automatic",
+								"fontFamily": "Lucida Grande",
+								"fontSize": 12
+							}
+						},
+						{
+							"name": "Spalte4",
+							"dataSource": "PP_StyleRef",
+							"dataSourceTypeHint": "number",
+							"width": 100,
+							"minWidth": 10,
+							"maxWidth": 32000,
+							"resizable": false,
+							"enterable": false,
+							"visibility": "hidden",
+							"stroke": "automatic",
+							"fill": "#FFFFFF",
+							"textAlign": "left",
+							"verticalAlign": "automatic",
+							"fontFamily": "Tahoma",
+							"fontSize": 12,
+							"header": {
+								"name": "Kopf4",
+								"text": "Ref",
+								"dataSource": "PP_StylesHdr04",
+								"stroke": "automatic",
+								"textAlign": "left",
+								"verticalAlign": "automatic",
+								"fontFamily": "Tahoma",
+								"fontSize": 10
+							},
+							"footer": {
+								"name": "3",
+								"stroke": "#000000",
+								"fill": "#FFFFFF",
+								"textAlign": "automatic",
+								"verticalAlign": "automatic",
+								"fontFamily": "Lucida Grande",
+								"fontSize": 12
+							}
+						}
+					]
+				},
+				"Button": {
+					"type": "button",
+					"top": 526,
+					"left": 20,
+					"width": 220,
+					"height": 24,
+					"sizingY": "move",
+					"dataSource": "PP_DeleteStyle",
+					"text": ":xliff:PP_BtnDeleteStyle",
+					"fontFamily": "Lucida Grande",
+					"fontSize": 13,
+					"focusable": false,
+					"method": "ObjectMethods/Button.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Variable7": {
+					"type": "input",
+					"top": 40,
+					"left": 375,
+					"width": 195,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_ObjectID",
+					"class": "PPro_Tahoma12",
+					"focusable": false,
+					"fill": "transparent",
+					"enterable": false,
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Text7": {
+					"type": "text",
+					"top": 40,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjStyleID"
+				},
+				"Text8": {
+					"type": "text",
+					"top": 65,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjStyleName"
+				},
+				"Linie1": {
+					"type": "line",
+					"top": 85,
+					"left": 260,
+					"width": 320,
+					"sizingX": "move"
+				},
+				"Page1Button11": {
+					"type": "pictureButton",
+					"top": 144,
+					"left": 375,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_StyleB",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleBold.png",
+					"borderStyle": "raised",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button16": {
+					"type": "pictureButton",
+					"top": 144,
+					"left": 397,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_StyleI",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleItalics.png",
+					"borderStyle": "raised",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button17": {
+					"type": "pictureButton",
+					"top": 144,
+					"left": 419,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_StyleU",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleUnderline.png",
+					"borderStyle": "raised",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button18": {
+					"type": "pictureButton",
+					"top": 169,
+					"left": 375,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_AlignLEft",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleLeft.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button18.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button19": {
+					"type": "pictureButton",
+					"top": 169,
+					"left": 397,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_AlignRight",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleRignt.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button19.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button20": {
+					"type": "pictureButton",
+					"top": 169,
+					"left": 419,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_AlignCenter",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleCenter.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button20.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button21": {
+					"type": "pictureButton",
+					"top": 169,
+					"left": 441,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_AlignJustify",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleJustify.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button21.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button23": {
+					"type": "pictureButton",
+					"top": 194,
+					"left": 375,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_VAlignTop",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleVAlignTop.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button23.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button24": {
+					"type": "pictureButton",
+					"top": 194,
+					"left": 397,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_VAlignCenter",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleVAlighCenter.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button24.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button25": {
+					"type": "pictureButton",
+					"top": 194,
+					"left": 419,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_VAlignBottom",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleVAlignBottom.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button25.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button26": {
+					"type": "pictureButton",
+					"top": 219,
+					"left": 375,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_Rotation0",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleRotation0.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button26.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button27": {
+					"type": "pictureButton",
+					"top": 219,
+					"left": 397,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_Rotation90",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleRotation90.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button27.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button28": {
+					"type": "pictureButton",
+					"top": 219,
+					"left": 419,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_Rotation180",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleRotation180.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button28.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Button29": {
+					"type": "pictureButton",
+					"top": 219,
+					"left": 441,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_Rotation270",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleRotation270.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button29.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Text3": {
+					"type": "text",
+					"top": 245,
+					"left": 420,
+					"width": 20,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"text": "%"
+				},
+				"Page1Text4": {
+					"type": "text",
+					"top": 270,
+					"left": 420,
+					"width": 20,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"text": "%"
+				},
+				"Page1Button22": {
+					"type": "pictureButton",
+					"top": 169,
+					"left": 463,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_AlignFullJustify",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleFullJustify.png",
+					"borderStyle": "raised",
+					"method": "ObjectMethods/Page1Button22.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page1Text2": {
+					"type": "text",
+					"top": 95,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjFontName"
+				},
+				"Page1Text5": {
+					"type": "text",
+					"top": 120,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjFontSize"
+				},
+				"Page1Text7": {
+					"type": "text",
+					"top": 145,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjFontStyle"
+				},
+				"Page1Text8": {
+					"type": "text",
+					"top": 170,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjTextAlignH"
+				},
+				"Page1Text9": {
+					"type": "text",
+					"top": 195,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjTextAlignV"
+				},
+				"Page1Text1": {
+					"type": "text",
+					"top": 220,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjRotation"
+				},
+				"Page1Text12": {
+					"type": "text",
+					"top": 245,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjTextSpacingV"
+				},
+				"Page1Text13": {
+					"type": "text",
+					"top": 270,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjTextScaleH"
+				},
+				"PP_TextColor": {
+					"type": "rectangle",
+					"top": 330,
+					"left": 375,
+					"width": 38,
+					"height": 16,
+					"sizingX": "move"
+				},
+				"Page2Button3": {
+					"type": "button",
+					"top": 331,
+					"left": 376,
+					"width": 36,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_ColorPickerBtn",
+					"display": false,
+					"method": "ObjectMethods/Page2Button3.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"PP_BackColor": {
+					"type": "rectangle",
+					"top": 475,
+					"left": 375,
+					"width": 38,
+					"height": 16,
+					"sizingX": "move"
+				},
+				"Page2Button1": {
+					"type": "button",
+					"top": 476,
+					"left": 376,
+					"width": 36,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_ColorPickerBtn",
+					"display": false,
+					"method": "ObjectMethods/Page2Button1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page2Text21": {
+					"type": "text",
+					"top": 500,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjOpacity"
+				},
+				"Page2Text4": {
+					"type": "text",
+					"top": 355,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjOpacity"
+				},
+				"PP_FrameColor": {
+					"type": "rectangle",
+					"top": 415,
+					"left": 375,
+					"width": 38,
+					"height": 16,
+					"sizingX": "move"
+				},
+				"Page2ib1": {
+					"type": "button",
+					"top": 416,
+					"left": 376,
+					"width": 36,
+					"height": 14,
+					"sizingX": "move",
+					"dataSource": "PP_ColorPickerBtn",
+					"display": false,
+					"method": "ObjectMethods/Page2ib1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Page2Text5": {
+					"type": "text",
+					"top": 390,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjFrameSize"
+				},
+				"Page2Text8": {
+					"type": "text",
+					"top": 415,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjFrameColor"
+				},
+				"Page2Text2": {
+					"type": "text",
+					"top": 440,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjOpacity"
+				},
+				"Page2Text1": {
+					"type": "text",
+					"top": 475,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjFillColor"
+				},
+				"Page2Text3": {
+					"type": "text",
+					"top": 330,
+					"left": 255,
+					"width": 110,
+					"height": 14,
+					"sizingX": "move",
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjTextColor"
+				},
+				"Linie2": {
+					"type": "line",
+					"top": 320,
+					"left": 260,
+					"width": 320,
+					"sizingX": "move"
+				},
+				"Text1": {
+					"type": "text",
+					"top": 6,
+					"left": 10,
+					"width": 440,
+					"height": 16,
+					"sizingX": "grow",
+					"class": "PPro_Tahoma12Bold",
+					"text": ":xliff:PP_SettingsStyleSheets"
+				},
+				"Linie6": {
+					"type": "line",
+					"top": 25,
+					"left": 0,
+					"width": 600,
+					"sizingX": "grow"
+				},
+				"Linie3": {
+					"type": "line",
+					"top": 380,
+					"left": 260,
+					"width": 320,
+					"sizingX": "move"
+				},
+				"Linie4": {
+					"type": "line",
+					"top": 465,
+					"left": 260,
+					"width": 320,
+					"sizingX": "move"
+				},
+				"Button1": {
+					"type": "button",
+					"top": 560,
+					"left": 20,
+					"width": 220,
+					"height": 24,
+					"sizingY": "move",
+					"dataSource": "PP_AddStyle",
+					"text": ":xliff:PP_BtnNewStyle",
+					"class": "PPro_Buttons",
+					"focusable": false,
+					"method": "ObjectMethods/Button1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button2": {
+					"type": "button",
+					"top": 560,
+					"left": 460,
+					"width": 120,
+					"height": 24,
+					"sizingX": "move",
+					"sizingY": "move",
+					"dataSource": "PP_OK",
+					"action": "accept",
+					"text": ":xliff:PP_BtnClose",
+					"class": "PPro_Tahoma12",
+					"focusable": false,
+					"defaultButton": true,
+					"events": [
+						"onClick"
+					]
+				}
+			}
+		}
+	],
+	"editor": {
+		"activeView": "Ebene 1",
+		"defaultView": "Ebene 1",
+		"views": {
+			"Ebene 1": {},
+			"Ebene 2": {},
+			"Ebene 3": {},
+			"Ebene 4": {},
+			"Ebene 5": {},
+			"Ebene 6": {},
+			"Ebene 7": {},
+			"Ebene 8": {},
+			"Ebene 9": {}
+		}
+	}
+}

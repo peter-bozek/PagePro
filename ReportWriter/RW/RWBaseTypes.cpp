@@ -2,6 +2,8 @@
 # include	"RWStyle.h"
 # include	"RWString4D.h"
 # include	<cctype>
+# include	<cstdarg>
+# include	<cstdio>
 # include	<memory>
 
 #if	WINVER
@@ -1640,4 +1642,21 @@ RWTools::ParseTextForVar (bool inAttributed, RWStringView inString, long inTextL
 	}
 
 	return false;
+}
+
+
+// ---------------------------------------------------------------------------
+// RW_PictLog
+// ---------------------------------------------------------------------------
+
+void
+RW_PictLog (const char *inFormat, ...)
+{
+	va_list	args;
+	va_start (args, inFormat);
+	printf ("RW pict: ");
+	vprintf (inFormat, args);
+	printf ("\n");
+	fflush (stdout);
+	va_end (args);
 }

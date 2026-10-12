@@ -1,0 +1,1 @@
+ PPro_SetPropertyString (report; object; property; value) -> error   Property value setter for string or text properties    C_LONGINT($1)  //report where is the object  C_LONGINT($2)  //object to set property  C_TEXT($3)  //property ID  C_TEXT($4)  //value  C_LONGINT($0)  //error code  

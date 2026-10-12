@@ -20,7 +20,7 @@ virtual	void				Fetch (long inIteration, bool inSeek) = 0;
 		long				GetSize (void) const;
 
 static	void				GetPictureAsBlobFrom4D (void *ph, RWValue &outValue);
-static	void				GetPictureFrom4D (void *ph, RWValue &outValue, bool inForPDF);
+static	void				GetPictureFrom4D (void *ph, RWValue &outValue, bool inForPDF, bool inAllowConvert = true);
 static	void		*		Get4DPicture (const RWValue &inValue);
 
 protected:

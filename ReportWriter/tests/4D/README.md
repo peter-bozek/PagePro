@@ -33,6 +33,11 @@ Commands only the new plugin has are called with `EXECUTE FORMULA` (their result
 `(new)`), so the same test runs with older plugins. The delete step runs last: the production
 plugin crashes there (NULL area in `DMReport::RemoveObject`, fixed).
 
+`RWT_Pict` (pass it as `[method]`): pictures from 4D picture variables and a picture array
+(PNG, JPEG, SVG, GIF from `RWTest/Resources/pictures`), printed to PDF twice; `pict.after`
+checks the 4D variables still hold their pictures. The plugin's `RW pict:` diagnostics are in
+`4d_stdout.txt`.
+
 Not covered (needs a person in front of 4D): the editor area (`%ReportWriter`: drawing, mouse,
 keyboard, undo / redo, `RW_GetEditorRect`), printing to a printer, print preview, page / job
 setup dialogs (`RW_PrintSettings`).

@@ -1,0 +1,226 @@
+{
+	"destination": "detailScreen",
+	"rightMargin": 19,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Group Box": {
+					"type": "groupBox",
+					"top": 16,
+					"left": 16,
+					"width": 340,
+					"height": 190,
+					"class": "Default",
+					"text": ":xliff:PP_Units"
+				},
+				"Popup Drop down List": {
+					"type": "dropdown",
+					"top": 49,
+					"left": 206,
+					"width": 120,
+					"height": 20,
+					"dataSource": "PP_RulerUnits",
+					"class": "Default",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Popup Drop down List1": {
+					"type": "dropdown",
+					"top": 73,
+					"left": 206,
+					"width": 120,
+					"height": 20,
+					"dataSource": "PP_UnitRounding",
+					"class": "Default",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Variable": {
+					"type": "input",
+					"top": 98,
+					"left": 206,
+					"width": 60,
+					"height": 16,
+					"dataSource": "PP_ProximityLimit",
+					"dataSourceTypeHint": "number",
+					"class": "Default",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Variable1": {
+					"type": "input",
+					"top": 122,
+					"left": 206,
+					"width": 60,
+					"height": 16,
+					"dataSource": "PP_GridSize",
+					"dataSourceTypeHint": "number",
+					"class": "Default",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Button": {
+					"type": "button",
+					"top": 214,
+					"left": 253,
+					"width": 100,
+					"height": 22,
+					"dataSource": "PP_OK",
+					"action": "accept",
+					"text": ":xliff:PP_OK",
+					"class": "Default",
+					"defaultButton": true,
+					"events": [
+						"onClick"
+					]
+				},
+				"Button2": {
+					"type": "button",
+					"top": 214,
+					"left": 132,
+					"width": 100,
+					"height": 22,
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"shortcutKey": "[Esc]",
+					"text": ":xliff:PP_Cancel",
+					"class": "Default",
+					"events": [
+						"onClick"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 50,
+					"left": 34,
+					"width": 152,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_RulerUnit"
+				},
+				"Text1": {
+					"type": "text",
+					"top": 74,
+					"left": 34,
+					"width": 152,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_UnitRounding"
+				},
+				"Text3": {
+					"type": "text",
+					"top": 98,
+					"left": 274,
+					"width": 32,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_PointCode"
+				},
+				"Text4": {
+					"type": "text",
+					"top": 122,
+					"left": 34,
+					"width": 152,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_GridSize"
+				},
+				"Text5": {
+					"type": "text",
+					"top": 122,
+					"left": 274,
+					"width": 32,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_PointCode"
+				},
+				"Text2": {
+					"type": "text",
+					"top": 98,
+					"left": 34,
+					"width": 152,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_ProximityLimit"
+				}
+			}
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

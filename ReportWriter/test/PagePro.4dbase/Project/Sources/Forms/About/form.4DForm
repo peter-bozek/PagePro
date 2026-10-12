@@ -1,0 +1,230 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Invisible Button1": {
+					"type": "button",
+					"top": 128,
+					"left": 0,
+					"width": 172,
+					"height": 230,
+					"dataSource": "PP_Cancel",
+					"display": true,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Rectangle": {
+					"type": "rectangle",
+					"top": 188,
+					"left": 0,
+					"width": 172,
+					"height": 92
+				},
+				"Picture7": {
+					"type": "picture",
+					"top": 192,
+					"left": 25,
+					"width": 126,
+					"height": 48,
+					"pictureFormat": "scaled",
+					"picture": "/RESOURCES/Images/library/INFORCE_Logo.png"
+				},
+				"Picture8": {
+					"type": "picture",
+					"top": 0,
+					"left": 2,
+					"width": 170,
+					"height": 128,
+					"pictureFormat": "scaled",
+					"picture": "/RESOURCES/Images/library/PagePro_Logo.png"
+				},
+				"Variable": {
+					"type": "input",
+					"top": 132,
+					"left": 2,
+					"width": 170,
+					"height": 16,
+					"dataSource": "PP_VersionString",
+					"class": "Default",
+					"textAlign": "center",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 244,
+					"left": 2,
+					"width": 170,
+					"height": 32,
+					"class": "Default",
+					"textAlign": "center",
+					"text": "© INFORCE Bratislava 2010 - 2018"
+				},
+				"Variable1": {
+					"type": "input",
+					"top": 152,
+					"left": 2,
+					"width": 170,
+					"height": 36,
+					"dataSource": "PP_PluginVersionString",
+					"class": "Default",
+					"textAlign": "center",
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button": {
+					"type": "button",
+					"top": 0,
+					"left": 0,
+					"width": 172,
+					"height": 130,
+					"dataSource": "PP_PageProURLBtn",
+					"display": false,
+					"method": "ObjectMethods/Invisible Button.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button2": {
+					"type": "button",
+					"top": 369,
+					"left": 16,
+					"width": 33,
+					"height": 17,
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"shortcutKey": "[Esc]",
+					"display": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button3": {
+					"type": "button",
+					"top": 369,
+					"left": 56,
+					"width": 33,
+					"height": 17,
+					"dataSource": "PP_OK",
+					"action": "cancel",
+					"shortcutKey": "[Return]",
+					"display": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Text1": {
+					"type": "text",
+					"top": 284,
+					"left": 2,
+					"width": 170,
+					"height": 74,
+					"class": "Default",
+					"textAlign": "center",
+					"text": "written by\rMiloslav Bystricky\rand \rPeter Bozek"
+				}
+			}
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	},
+	"geometryStamp": 176,
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	}
+}

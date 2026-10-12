@@ -1,0 +1,277 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"rightMargin": 0,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Button": {
+					"type": "button",
+					"top": 306,
+					"left": 210,
+					"width": 120,
+					"height": 24,
+					"dataSource": "PP_OK",
+					"action": "accept",
+					"text": ":xliff:PP_BtnOK",
+					"class": "PPro_Buttons",
+					"focusable": false,
+					"defaultButton": true,
+					"method": "ObjectMethods/Button.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Check Box": {
+					"type": "checkbox",
+					"top": 59,
+					"left": 40,
+					"width": 280,
+					"height": 20,
+					"dataSource": "PP_ExportBreaks",
+					"text": ":xliff:PP_ExpSectionBreaks",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box1": {
+					"type": "checkbox",
+					"top": 84,
+					"left": 40,
+					"width": 280,
+					"height": 20,
+					"dataSource": "PP_ExportHeaders",
+					"text": ":xliff:PP_ExpSectionHeaders",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box2": {
+					"type": "radio",
+					"top": 139,
+					"left": 40,
+					"width": 280,
+					"height": 20,
+					"dataSource": "PP_ExportTexts",
+					"text": ":xliff:PP_ExpStaticText",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"radioGroup": "Gruppe3",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box3": {
+					"type": "radio",
+					"top": 164,
+					"left": 40,
+					"width": 280,
+					"height": 20,
+					"dataSource": "PP_ExportVars",
+					"text": ":xliff:PP_ExpDynamicOnly",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"radioGroup": "Gruppe3",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box4": {
+					"type": "radio",
+					"top": 219,
+					"left": 40,
+					"width": 280,
+					"height": 20,
+					"dataSource": "PP_ExportTabs",
+					"text": ":xliff:PP_ExpTabDelimited",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"radioGroup": "Gruppe4",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box5": {
+					"type": "radio",
+					"top": 244,
+					"left": 40,
+					"width": 280,
+					"height": 20,
+					"dataSource": "PP_ExportCVS",
+					"text": ":xliff:PP_ExpAsCVS",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"radioGroup": "Gruppe4",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button1": {
+					"type": "button",
+					"top": 306,
+					"left": 20,
+					"width": 120,
+					"height": 24,
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"text": ":xliff:PP_BtnCancel",
+					"class": "PPro_Buttons",
+					"focusable": false,
+					"events": [
+						"onClick"
+					]
+				},
+				"Text4": {
+					"type": "text",
+					"top": 7,
+					"left": 10,
+					"width": 330,
+					"height": 14,
+					"class": "PPro_Tahoma12Bold",
+					"text": ":xliff:PP_SettingsExport"
+				},
+				"Linie": {
+					"type": "line",
+					"top": 25,
+					"left": 0,
+					"width": 350
+				},
+				"Text1": {
+					"type": "text",
+					"top": 37,
+					"left": 20,
+					"width": 310,
+					"height": 12,
+					"class": "PPro_Tahoma10Bold",
+					"text": ":xliff:PP_HdrExportSections"
+				},
+				"Text2": {
+					"type": "text",
+					"top": 117,
+					"left": 20,
+					"width": 310,
+					"height": 12,
+					"class": "PPro_Tahoma10Bold",
+					"text": ":xliff:PP_HdrTextExport"
+				},
+				"Text3": {
+					"type": "text",
+					"top": 197,
+					"left": 20,
+					"width": 310,
+					"height": 12,
+					"class": "PPro_Tahoma10Bold",
+					"text": ":xliff:PP_HdrExportFormat"
+				},
+				"Linie1": {
+					"type": "line",
+					"top": 50,
+					"left": 20,
+					"width": 310
+				},
+				"Linie2": {
+					"type": "line",
+					"top": 130,
+					"left": 20,
+					"width": 310
+				},
+				"Linie3": {
+					"type": "line",
+					"top": 210,
+					"left": 20,
+					"width": 310
+				}
+			}
+		}
+	],
+	"editor": {
+		"groups": {
+			"Gruppe3": [
+				"Check Box2",
+				"Check Box3"
+			],
+			"Gruppe4": [
+				"Check Box4",
+				"Check Box5"
+			]
+		},
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

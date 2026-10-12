@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><preferences stamp="16">
+	<com.4d>
+		<interface>
+			<misc/>
+			<developper disable_formula_editor_filtering="true" display_toolbar="false"/>
+			<user color_scheme="light" flush_window="false" print_progress="false" splash_screen="false"/>                                                                            </interface>
+		<database>
+			<misc non_blocking_printing="false" prefer_null_than_blank_values="false" split_catalog="true" standard_xpath="false"/>
+			<cpu_priority/>
+			<data_storage allow_data_read_only="true"/>                                                                            </database>
+		<server>
+			<misc/>
+			<network>
+				<options publication_name="PagePro.4DB" use_legacy_network_layer="true"/>
+				<client_server use_encryption="false"/>                                      </network>
+			<ip_config>
+				<allow_deny_table>
+					<allow_deny address="*" allow="true"/>                                                </allow_deny_table>                                      </ip_config>                                                                            </server>
+		<web>
+			<standalone_server>
+				<configuration automatic_session_management="true" port_number="8080" session_mode="2"/>
+				<log>
+					<backup daily="" hourly="" monthly="" size="0" weekly=""/>                                                </log>
+				<misc use_4dvar_comments="true" use_js_for_entry_control="false"/>
+				<options>
+					<cache use_4d_web_cache="false"/>
+				</options>                                                                                                      </standalone_server>
+			<remote>
+				<configuration allow_ssl="false" automatic_session_management="true" session_mode="2"/>
+				<misc/>
+				<options>
+					<cache use_4d_web_cache="false"/>
+				</options>                                      </remote>                                                    </web>
+		<compiler>
+			<options compilation_path="3" fat_binary="true" symbol_file="false"/>
+			<typage default_for_button="2" default_for_numeric="1"/>
+			<method_suffix arrays="Arrays" interprocess_arrays="Arrays_Inter" interprocess_variables="Variables_Inter" methods="Methods" variables="Variables"/>                                                                      </compiler>                                                                                  </com.4d>        </preferences>

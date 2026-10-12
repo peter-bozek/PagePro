@@ -1,0 +1,223 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"rightMargin": 0,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Button": {
+					"type": "button",
+					"top": 175,
+					"left": 320,
+					"width": 120,
+					"height": 24,
+					"dataSource": "PP_OK",
+					"action": "accept",
+					"text": ":xliff:PP_BtnOK",
+					"class": "PPro_Buttons",
+					"focusable": false,
+					"defaultButton": true,
+					"method": "ObjectMethods/Button.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 40,
+					"left": 10,
+					"width": 130,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjSectionType"
+				},
+				"Popup Drop down List": {
+					"type": "dropdown",
+					"top": 37,
+					"left": 150,
+					"width": 200,
+					"height": 20,
+					"dataSource": "PP_ReportTypes",
+					"focusable": false,
+					"class": "PPro_Tahoma12Bold",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box": {
+					"type": "checkbox",
+					"top": 67,
+					"left": 150,
+					"width": 300,
+					"height": 20,
+					"dataSource": "PP_Add2Section",
+					"text": ":xliff:PP_ObjAddCorrespondingTypes",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button1": {
+					"type": "button",
+					"top": 175,
+					"left": 190,
+					"width": 120,
+					"height": 24,
+					"dataSource": "PP_Cancel",
+					"action": "accept",
+					"text": ":xliff:PP_BtnCancel",
+					"class": "PPro_Buttons",
+					"focusable": false,
+					"events": [
+						"onClick"
+					]
+				},
+				"Popup Drop down List2": {
+					"type": "dropdown",
+					"top": 97,
+					"left": 150,
+					"width": 200,
+					"height": 20,
+					"dataSource": "PP_BreakOnPopup",
+					"focusable": false,
+					"class": "PPro_Tahoma12Bold",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"PP_PosVariable2": {
+					"type": "input",
+					"top": 130,
+					"left": 150,
+					"width": 170,
+					"height": 14,
+					"dataSource": "PP_Source",
+					"class": "PPro_Tahoma12",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"PP_PosText2": {
+					"type": "text",
+					"top": 130,
+					"left": 10,
+					"width": 130,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjSource"
+				},
+				"Popup Drop down List1": {
+					"type": "dropdown",
+					"top": 128,
+					"left": 330,
+					"width": 20,
+					"height": 20,
+					"dataSource": "PP_ColumnPopup",
+					"dataSourceTypeHint": "integer",
+					"class": "PPro_Tahoma12",
+					"method": "ObjectMethods/Popup Drop down List1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Text4": {
+					"type": "text",
+					"top": 7,
+					"left": 10,
+					"width": 440,
+					"height": 14,
+					"class": "PPro_Tahoma12Bold",
+					"text": ":xliff:PP_SettingsAddSection"
+				},
+				"Linie": {
+					"type": "line",
+					"top": 25,
+					"left": 0,
+					"width": 460
+				},
+				"Text1": {
+					"type": "text",
+					"top": 100,
+					"left": 10,
+					"width": 130,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjPageBreak"
+				}
+			}
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

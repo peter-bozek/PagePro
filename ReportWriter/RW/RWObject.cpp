@@ -1572,6 +1572,9 @@ RWPict::Draw (RWPageComposer &inComposer, SRect &inRect, bool inIsOverflow)
 			}
 			inComposer.DrawPict (r, mPicture, mFormat, &mComposerPictureData, mObjectRotation, ((float)mFillColor.alpha) / 0xFFFF);
 		}
+		else	// every failure on the way ends here: the picture is skipped
+			RW_PictLog ("RWPict::Draw: picture not drawn, it has no size (dataID %ld, kind %d, %zu bytes)",
+						long (mDataID), int (mPicture.GetKind()), mPicture.GetBlobSize());
 
 		mPrinted = true;
 

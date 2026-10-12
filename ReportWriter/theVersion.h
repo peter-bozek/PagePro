@@ -4,10 +4,10 @@
 #endif
 
 
-#define kVersionValue1			1	// major
-#define kVersionValue2			7	// minor
+#define kVersionValue1			2	// major
+#define kVersionValue2			0	// minor
 #define kVersionValue3			0	// fix
-#define kVersionValue4			2	// build
+#define kVersionValue4			1	// build
 
 #if	TARGET_DEBUG
 #define kIsDevRelease			1
@@ -20,20 +20,20 @@
 #else
 #define kIsDevRelease			0
 #define kVersionStage			2	// dev (0), alpha (1), beta (2), release (3)
-#define kVersion				1.7.1
-#define kVersionString			"1.7.1"
+#define kVersion				2.0.0
+#define kVersionString			"2.0.0"
 #endif
 
 #ifndef	RC_INVOKED
-#define kProductCopyright		©2009-2022 INFORCE Bratislava spol. s r. o.
+#define kProductCopyright		©2009-2026 INFORCE Bratislava spol. s r. o.
 #endif
-#define kProductCopyrightString	"©2009-2022 INFORCE Bratislava spol. s r. o."
-#define kProductVersion			1.7.1
-#define kProductVersionString	"1.7.1"
+#define kProductCopyrightString	"©2009-2026 INFORCE Bratislava spol. s r. o."
+#define kProductVersion			2.0.0
+#define kProductVersionString	"2.0.0"
 #define kProductName			Report Writer for 4D
 #define kProductNameString		"Report Writer for 4D"
 #define	kProductWebString		"http://www.pagepro4d.eu"
-#define kDLLName				"RW.4DX"
+#define kDLLName				"ReportWriter.4DX"
 
 // mac only
 #define kVersionLang			0	// english-us

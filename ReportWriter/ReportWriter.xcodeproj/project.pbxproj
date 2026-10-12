@@ -7,7 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		153A3315A65B305A8B500D94 /* RWPdfFonts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 023456056F41B96F9770D22D /* RWPdfFonts.cpp */; };
+		501BEE37760712DDF51AB1B2 /* RWXmlJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D397B184BD1FD879BBD2555 /* RWXmlJson.cpp */; };
+		55269F99D433E9CFBE139C37 /* RWMacCGPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DC14767A06C3A88E9B07032F /* RWMacCGPageComposer.cpp */; };
+		592F29AE4F6E397879376CDA /* RWFontsMac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2462DFF3994DD5FEE32C5432 /* RWFontsMac.cpp */; };
+		777136D274BAE8AE2E65FE47 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 453AE3927F2325A3947271B9 /* pugixml.cpp */; };
 		8D01CCCA0486CAD60068D4B7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		B8729E566CCB10A18D7B86E3 /* RWString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 302672E938BCD3A1839D17ED /* RWString.cpp */; };
 		D13116A91A03ACB700DE1322 /* 4DPluginAPI.c in Sources */ = {isa = PBXBuildFile; fileRef = D13116A81A03ACB700DE1322 /* 4DPluginAPI.c */; settings = {COMPILER_FLAGS = "-Wno-multichar"; }; };
 		D134D4AC1A030BA0008D14EF /* manifest.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = D134D4A91A030B06008D14EF /* manifest.json */; };
 		D22610372B3DADBF00CFC83D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D22610362B3DADBF00CFC83D /* Carbon.framework */; };
@@ -29,8 +35,6 @@
 		D226108B2B3DB5A400CFC83D /* SR4DData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226106A2B3DB5A400CFC83D /* SR4DData.cpp */; };
 		D226108C2B3DB5A400CFC83D /* RW4DText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D226106B2B3DB5A400CFC83D /* RW4DText.cpp */; };
 		D26EBFEC2AF274EE001E7074 /* RWCTPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */; };
-		153A3315A65B305A8B500D94 /* RWPdfFonts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 023456056F41B96F9770D22D /* RWPdfFonts.cpp */; };
-		592F29AE4F6E397879376CDA /* RWFontsMac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2462DFF3994DD5FEE32C5432 /* RWFontsMac.cpp */; };
 		D26EBFEE2AF274EE001E7074 /* RWObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB32AF274EE001E7074 /* RWObject.cpp */; };
 		D26EBFF32AF274EE001E7074 /* RWPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFB82AF274EE001E7074 /* RWPageComposer.cpp */; };
 		D26EBFF52AF274EE001E7074 /* ETReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EBFBA2AF274EE001E7074 /* ETReport.cpp */; };
@@ -56,11 +60,7 @@
 		D26EC03E2AF44891001E7074 /* DMReport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0312AF44891001E7074 /* DMReport.cpp */; };
 		D26EC03F2AF44891001E7074 /* UIScrollBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0322AF44891001E7074 /* UIScrollBar.cpp */; };
 		D26EC0432AF44891001E7074 /* PSObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D26EC0362AF44891001E7074 /* PSObject.cpp */; };
-		B8729E566CCB10A18D7B86E3 /* RWString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 302672E938BCD3A1839D17ED /* RWString.cpp */; };
 		E1170334DFE80D2DFC7D2B13 /* RWXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0475D027BAF4D58FCE82BB9E /* RWXml.cpp */; };
-		501BEE37760712DDF51AB1B2 /* RWXmlJson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D397B184BD1FD879BBD2555 /* RWXmlJson.cpp */; };
-		777136D274BAE8AE2E65FE47 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 453AE3927F2325A3947271B9 /* pugixml.cpp */; };
-		55269F99D433E9CFBE139C37 /* RWMacCGPageComposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DC14767A06C3A88E9B07032F /* RWMacCGPageComposer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -77,13 +77,28 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		023456056F41B96F9770D22D /* RWPdfFonts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWPdfFonts.cpp; sourceTree = "<group>"; };
+		0475D027BAF4D58FCE82BB9E /* RWXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWXml.cpp; sourceTree = "<group>"; };
 		189286350695AD8900B05D6E /* ReportWriter.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReportWriter.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		18B684F006944F2000CC6A1E /* 4DPluginAPI.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = 4DPluginAPI.h; sourceTree = "<group>"; };
 		18B684F106944F2000CC6A1E /* EntryPoints.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = EntryPoints.h; sourceTree = "<group>"; };
 		18B684F206944F2000CC6A1E /* Flags.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Flags.h; sourceTree = "<group>"; };
 		18B684F306944F2000CC6A1E /* PrivateTypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PrivateTypes.h; sourceTree = "<group>"; };
 		18B684F406944F2000CC6A1E /* PublicTypes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PublicTypes.h; sourceTree = "<group>"; };
+		1C2E84224FA1010FF69D3E5F /* RWString4D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWString4D.h; sourceTree = "<group>"; };
+		23CCEFE0F1785C05DFC706A8 /* RWMacCGPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWMacCGPageComposer.h; sourceTree = "<group>"; };
+		2462DFF3994DD5FEE32C5432 /* RWFontsMac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWFontsMac.cpp; sourceTree = "<group>"; };
+		302672E938BCD3A1839D17ED /* RWString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWString.cpp; sourceTree = "<group>"; };
+		453AE3927F2325A3947271B9 /* pugixml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pugixml.cpp; sourceTree = "<group>"; };
+		487BA6D04F90754620F3392E /* pugixml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugixml.hpp; sourceTree = "<group>"; };
+		50FFC6632610D90AFC041BB0 /* RWStringCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWStringCF.h; sourceTree = "<group>"; };
+		522FC4EBB53A8CC49E4CB2CD /* RWFontsMac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWFontsMac.h; sourceTree = "<group>"; };
+		5593EB86748F9B907C433C7D /* RWFontsWin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWFontsWin.cpp; sourceTree = "<group>"; };
+		7D397B184BD1FD879BBD2555 /* RWXmlJson.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWXmlJson.cpp; sourceTree = "<group>"; };
+		801651092CB3344CB1D85B71 /* RWXmlJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWXmlJson.h; sourceTree = "<group>"; };
+		86D0702CB2D1FAF8A4E9D315 /* RWPdfFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPdfFonts.h; sourceTree = "<group>"; };
 		8D01CCD10486CAD60068D4B7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BC0A20D03806F473C84005DD /* RWString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWString.h; sourceTree = "<group>"; };
 		D130064E12F02D9700702C0E /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		D13116A81A03ACB700DE1322 /* 4DPluginAPI.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = 4DPluginAPI.c; sourceTree = "<group>"; };
 		D134D4A91A030B06008D14EF /* manifest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
@@ -124,11 +139,6 @@
 		D26EBFAD2AF274EE001E7074 /* RWTextFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWTextFormatter.h; sourceTree = "<group>"; };
 		D26EBFAF2AF274EE001E7074 /* ETObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETObject.h; sourceTree = "<group>"; };
 		D26EBFB12AF274EE001E7074 /* RWCTPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWCTPageComposer.cpp; sourceTree = "<group>"; };
-		86D0702CB2D1FAF8A4E9D315 /* RWPdfFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWPdfFonts.h; sourceTree = "<group>"; };
-		023456056F41B96F9770D22D /* RWPdfFonts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWPdfFonts.cpp; sourceTree = "<group>"; };
-		522FC4EBB53A8CC49E4CB2CD /* RWFontsMac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWFontsMac.h; sourceTree = "<group>"; };
-		2462DFF3994DD5FEE32C5432 /* RWFontsMac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWFontsMac.cpp; sourceTree = "<group>"; };
-		5593EB86748F9B907C433C7D /* RWFontsWin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWFontsWin.cpp; sourceTree = "<group>"; };
 		D26EBFB22AF274EE001E7074 /* ETReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETReport.h; sourceTree = "<group>"; };
 		D26EBFB32AF274EE001E7074 /* RWObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWObject.cpp; sourceTree = "<group>"; };
 		D26EBFB52AF274EE001E7074 /* RWMacPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWMacPageComposer.h; sourceTree = "<group>"; };
@@ -179,20 +189,10 @@
 		D26EC0342AF44891001E7074 /* DMObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMObject.h; sourceTree = "<group>"; };
 		D26EC0352AF44891001E7074 /* DMReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DMReport.h; sourceTree = "<group>"; };
 		D26EC0362AF44891001E7074 /* PSObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PSObject.cpp; sourceTree = "<group>"; };
-		BC0A20D03806F473C84005DD /* RWString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWString.h; sourceTree = "<group>"; };
-		302672E938BCD3A1839D17ED /* RWString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWString.cpp; sourceTree = "<group>"; };
-		1C2E84224FA1010FF69D3E5F /* RWString4D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWString4D.h; sourceTree = "<group>"; };
 		D37570E890BF05931EE866A1 /* RWXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWXml.h; sourceTree = "<group>"; };
-		0475D027BAF4D58FCE82BB9E /* RWXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWXml.cpp; sourceTree = "<group>"; };
-		801651092CB3344CB1D85B71 /* RWXmlJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWXmlJson.h; sourceTree = "<group>"; };
-		7D397B184BD1FD879BBD2555 /* RWXmlJson.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWXmlJson.cpp; sourceTree = "<group>"; };
-		F05CFDAD07009E5034B965DD /* RWJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWJson.h; sourceTree = "<group>"; };
-		487BA6D04F90754620F3392E /* pugixml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugixml.hpp; sourceTree = "<group>"; };
-		FE574AA54321327F404FABA4 /* pugiconfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugiconfig.hpp; sourceTree = "<group>"; };
-		453AE3927F2325A3947271B9 /* pugixml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pugixml.cpp; sourceTree = "<group>"; };
-		23CCEFE0F1785C05DFC706A8 /* RWMacCGPageComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWMacCGPageComposer.h; sourceTree = "<group>"; };
 		DC14767A06C3A88E9B07032F /* RWMacCGPageComposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RWMacCGPageComposer.cpp; sourceTree = "<group>"; };
-		50FFC6632610D90AFC041BB0 /* RWStringCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWStringCF.h; sourceTree = "<group>"; };
+		F05CFDAD07009E5034B965DD /* RWJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWJson.h; sourceTree = "<group>"; };
+		FE574AA54321327F404FABA4 /* pugiconfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugiconfig.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,6 +275,16 @@
 			path = "4D Plugin API";
 			sourceTree = "<group>";
 		};
+		6595A6724B552C1A513D381E /* pugixml */ = {
+			isa = PBXGroup;
+			children = (
+				487BA6D04F90754620F3392E /* pugixml.hpp */,
+				FE574AA54321327F404FABA4 /* pugiconfig.hpp */,
+				453AE3927F2325A3947271B9 /* pugixml.cpp */,
+			);
+			path = pugixml;
+			sourceTree = "<group>";
+		};
 		D108BD7A1A03D1E6001F1B90 /* Manifest */ = {
 			isa = PBXGroup;
 			children = (
@@ -328,16 +338,6 @@
 			);
 			path = SRP;
 			sourceTree = SOURCE_ROOT;
-		};
-		6595A6724B552C1A513D381E /* pugixml */ = {
-			isa = PBXGroup;
-			children = (
-				487BA6D04F90754620F3392E /* pugixml.hpp */,
-				FE574AA54321327F404FABA4 /* pugiconfig.hpp */,
-				453AE3927F2325A3947271B9 /* pugixml.cpp */,
-			);
-			path = pugixml;
-			sourceTree = "<group>";
 		};
 		D26EBFAC2AF274EE001E7074 /* RW */ = {
 			isa = PBXGroup;
@@ -532,7 +532,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if test \"$CONFIGURATION\" == 'Deployment'; then\n\n    USER_NAME=keisuke.miyako@4d.com\n    UUID=`uuidgen | tr -d - | tr -d '\\n' | tr '[:upper:]' '[:lower:]'`\n    DEVELOPER_ID=`security find-identity -p codesigning -v | egrep 'Developer ID Application[^\"]+' -o`\n    PRODUCT_PATH=\"$CODESIGNING_FOLDER_PATH\"\n    \n    #clean\n    xattr -cr \"$PRODUCT_PATH\"\n    codesign --remove-signature \"$PRODUCT_PATH\"\n    \n    #sign\n    codesign --verbose --deep --timestamp --force --sign \"$DEVELOPER_ID\" \"$PRODUCT_PATH\"\n    \n    #archive\n    DMG_PATH=\"$PROJECT_DIR/$PRODUCT_NAME.dmg\"\n    ZIP_PATH=\"$PROJECT_DIR/$PRODUCT_NAME.zip\" #for windows\n    rm -f \"$DMG_PATH\"\n    hdiutil create -format UDBZ -plist -srcfolder \"$PRODUCT_PATH\" \"$DMG_PATH\"\n    rm -f \"$ZIP_PATH\"\n    ditto -c -k --keepParent \"$PRODUCT_PATH\" \"$ZIP_PATH\"\n    \n    xcrun notarytool submit \"$ZIP_PATH\" --keychain-profile \"notarytool\" --wait\n    xcrun notarytool submit \"$DMG_PATH\" --keychain-profile \"notarytool\" --wait\n        \n    xcrun stapler staple \"$DMG_PATH\"\n\nelse\n    echo \"No notarization performed as this is not a release build.\"\nfi\n";
+			shellScript = "if test \"$CONFIGURATION\" == 'Deployment'; then\n\n    USER_NAME=bozek@inforce.sk\n    UUID=`uuidgen | tr -d - | tr -d '\\n' | tr '[:upper:]' '[:lower:]'`\n    DEVELOPER_ID=`security find-identity -p codesigning -v | egrep 'Developer ID Application[^\"]+' -o`\n    PRODUCT_PATH=\"$CODESIGNING_FOLDER_PATH\"\n    \n    #clean\n    xattr -cr \"$PRODUCT_PATH\"\n    codesign --remove-signature \"$PRODUCT_PATH\"\n    \n    #sign\n    codesign --verbose --deep --timestamp --force --sign \"Developer ID Application: INFORCE Bratislava, spol. s r.o. (3X63W4TBDH)\" \"$PRODUCT_PATH\"\n     \n    #archive\n    DMG_PATH=\"$PROJECT_DIR/$PRODUCT_NAME.dmg\"\n    ZIP_PATH=\"$PROJECT_DIR/$PRODUCT_NAME.zip\" #for windows\n    rm -f \"$DMG_PATH\"\n    hdiutil create -format UDBZ -plist -srcfolder \"$PRODUCT_PATH\" \"$DMG_PATH\"\n    rm -f \"$ZIP_PATH\"\n    ditto -c -k --keepParent \"$PRODUCT_PATH\" \"$ZIP_PATH\"\n    \n    xcrun notarytool submit \"$ZIP_PATH\" --keychain-profile \"notarytool\" --wait\n    xcrun notarytool submit \"$DMG_PATH\" --keychain-profile \"notarytool\" --wait\n        \n    xcrun stapler staple \"$DMG_PATH\"\n\nelse\n    echo \"No notarization performed as this is not a release build.\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -632,14 +632,14 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_VERSION = "";
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					PODOFO_STATIC,
 				);
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
 					pugixml,
 					rapidjson/include,
@@ -707,14 +707,14 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_VERSION = "";
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					PODOFO_STATIC,
 				);
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
 					pugixml,
 					rapidjson/include,
@@ -781,14 +781,14 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_VERSION = "";
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					PODOFO_STATIC,
 				);
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
 					pugixml,
 					rapidjson/include,
@@ -835,6 +835,7 @@
 		42D60B440A9DDBC8002ABB42 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -877,7 +878,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OBJROOT = "$(SRCROOT)/build";
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SYMROOT = "$(SRCROOT)/test/Plugins";
 			};
@@ -886,6 +887,7 @@
 		42D60B450A9DDBC8002ABB42 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -927,6 +929,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OBJROOT = "$(SRCROOT)/build";
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SYMROOT = "$(SRCROOT)/test/Plugins";
 			};
@@ -935,6 +938,7 @@
 		42D60B460A9DDBC8002ABB42 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -975,6 +979,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SYMROOT = "$(SRCROOT)/test/Plugins";
 			};

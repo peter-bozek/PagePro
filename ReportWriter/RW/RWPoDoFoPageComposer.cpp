@@ -539,11 +539,15 @@ RWPoDoFoPageComposer::GetPictBounds (SRect &ioRect, const RWPicture &inPicture, 
 				pd->fWidth = float (image->GetWidth());
 				pd->fHeight = float (image->GetHeight());
 				pd->fImage = std::move (image);
+				if (pd->fWidth <= 0 || pd->fHeight <= 0)
+					RW_PictLog ("RWPoDoFoPageComposer::GetPictBounds: image has no size (%g x %g)", pd->fWidth, pd->fHeight);
 			}
 			catch (const PdfError &e)
 			{
 				LogPdfError ("GetPictBounds", e);
 			}
+		else
+			RW_PictLog ("RWPoDoFoPageComposer::GetPictBounds: no picture data (source kind %d, %zu bytes)", int (inPicture.GetKind()), inPicture.GetBlobSize());
 	}
 
 	if (inGrow && pd->fImage != nullptr)	// can shrink / expand

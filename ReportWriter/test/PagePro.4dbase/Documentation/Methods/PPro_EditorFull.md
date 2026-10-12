@@ -1,0 +1,1 @@
+ Opens windows with standard PagePro editor   PPro_EditorFull (         report;           text with report definition        callback;         name of callback method        reportReference;  string passed to callback method        menuBar)          optional - menu bar number to restore on exit   -> modified report    

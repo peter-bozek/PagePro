@@ -1,0 +1,52 @@
+.Default {
+	font-family: Lucida Grande;
+	font-size: 13px;
+}
+
+.DefautSmall {
+	font-family: Lucida Grande;
+	font-size: 10px;
+}
+
+.PPro_Buttons {
+	font-family: Lucida Grande;
+	font-size: 13px;
+}
+
+.PPro_Buttons_11 {
+	font-family: Lucida Grande;
+	font-size: 11px;
+}
+
+.PPro_ButtonsKlein {
+	font-family: Lucida Grande;
+	font-size: 10px;
+}
+
+.PPro_Tahoma10 {
+	font-family: Tahoma;
+	font-size: 10px;
+}
+
+.PPro_Tahoma10Bold {
+	font-family: Tahoma;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+.PPro_Tahoma12 {
+	font-family: Tahoma;
+	font-size: 12px;
+}
+
+.PPro_Tahoma12Bold {
+	font-family: Tahoma;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.PPro_Tahoma13 {
+	font-family: Tahoma;
+	font-size: 12px;
+}
+

@@ -1,0 +1,283 @@
+{
+	"destination": "detailScreen",
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onActivate",
+		"onDeactivate",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onCloseBox",
+		"onUnload",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Invisible Button": {
+					"type": "button",
+					"top": 25,
+					"left": 138,
+					"width": 10,
+					"height": 8,
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"shortcutKey": "[Esc]",
+					"display": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button1": {
+					"type": "button",
+					"top": 36,
+					"left": 138,
+					"width": 10,
+					"height": 6,
+					"dataSource": "PP_OK",
+					"action": "cancel",
+					"shortcutKey": "[Enter]",
+					"display": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"InlineEditPlain": {
+					"type": "input",
+					"top": 26,
+					"left": 4,
+					"width": 130,
+					"height": 14,
+					"sizingX": "grow",
+					"sizingY": "grow",
+					"dataSource": "PP_InlineEditPlain",
+					"fontFamily": "System Font Regular",
+					"fontSize": 12,
+					"contextMenu": "none",
+					"dragging": "none",
+					"method": "ObjectMethods/InlineEditPlain.4dm",
+					"events": [
+						"onValidate",
+						"onLosingFocus",
+						"onGettingFocus",
+						"onDrop",
+						"onDataChange",
+						"onUnload",
+						"onAfterKeystroke",
+						"onAfterEdit"
+					]
+				},
+				"Page2Box": {
+					"type": "dropdown",
+					"top": 6,
+					"left": 3,
+					"width": 50,
+					"height": 14,
+					"sizingX": "grow",
+					"dataSource": "PP_Fonts",
+					"fontFamily": "Lucida Grande",
+					"fontSize": 11,
+					"method": "ObjectMethods/Page2Box.4dm",
+					"events": [
+						"onClick",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Page2Variable5": {
+					"type": "input",
+					"top": 6,
+					"left": 54,
+					"width": 18,
+					"height": 12,
+					"sizingX": "move",
+					"dataSource": "PP_FontSize",
+					"fontFamily": "Lucida Grande",
+					"fontSize": 11,
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"method": "ObjectMethods/Page2Variable5.4dm",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Page2List": {
+					"type": "dropdown",
+					"top": 3,
+					"left": 76,
+					"width": 20,
+					"height": 12,
+					"sizingX": "move",
+					"dataSource": "PP_FontSizePopup",
+					"choiceList": [
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"14",
+						"18",
+						"24",
+						"36"
+					],
+					"fontFamily": "Lucida Grande",
+					"fontSize": 11,
+					"method": "ObjectMethods/Page2List.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Picture Button": {
+					"type": "pictureButton",
+					"top": 4,
+					"left": 100,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_StyleB",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleBold.png",
+					"loopBackToFirstFrame": true,
+					"borderStyle": "solid",
+					"method": "ObjectMethods/Picture Button.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Picture Button1": {
+					"type": "pictureButton",
+					"top": 4,
+					"left": 120,
+					"width": 16,
+					"height": 16,
+					"sizingX": "move",
+					"dataSource": "PP_StyleI",
+					"columnCount": 2,
+					"picture": "/RESOURCES/Images/library/PP_StyleItalics.png",
+					"borderStyle": "solid",
+					"method": "ObjectMethods/Picture Button1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Picture2": {
+					"type": "picture",
+					"top": 0,
+					"left": 138,
+					"width": 14,
+					"height": 42,
+					"sizingX": "move",
+					"sizingY": "grow",
+					"pictureFormat": "scaled",
+					"picture": "/RESOURCES/EditPopup/Background.png"
+				},
+				"Picture Button2": {
+					"type": "pictureButton",
+					"top": 3,
+					"left": 140,
+					"width": 10,
+					"height": 10,
+					"sizingX": "move",
+					"dataSource": "PP_AcceptEdit",
+					"picture": "/RESOURCES/EditPopup/GreenDot.png",
+					"loopBackToFirstFrame": true,
+					"method": "ObjectMethods/Picture Button2.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Picture Button3": {
+					"type": "pictureButton",
+					"top": 18,
+					"left": 140,
+					"width": 10,
+					"height": 10,
+					"sizingX": "move",
+					"dataSource": "PP_CancelEdit",
+					"picture": "/RESOURCES/EditPopup/RedDot.png",
+					"loopBackToFirstFrame": true,
+					"method": "ObjectMethods/Picture Button3.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				}
+			}
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

@@ -1,0 +1,1 @@
+PPro_ScaleTo(PP_ExtArea; 1)

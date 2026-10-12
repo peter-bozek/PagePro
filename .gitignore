@@ -9,3 +9,11 @@ ReportWriter/test/Libraries/
 ReportWriter/test/Plugins/
 ReportWriter/test/Project/DerivedData/
 ReportWriter/test/userPreferences.*/
+
+# 4D test database (test/PagePro.4dbase): data, logs, generated files, per-user settings, plugin alias
+ReportWriter/test/PagePro.4dbase/Data/
+ReportWriter/test/PagePro.4dbase/Logs/
+ReportWriter/test/PagePro.4dbase/Plugins/
+ReportWriter/test/PagePro.4dbase/Project/DerivedData/
+ReportWriter/test/PagePro.4dbase/Project/Trash/
+ReportWriter/test/PagePro.4dbase/userPreferences.*/

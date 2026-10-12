@@ -1,0 +1,50 @@
+{
+	"Default Folder": {
+		"groups": [
+			"Default Forms",
+			"Default Project Methods",
+			"Default Tables"
+		]
+	},
+	"Default Forms": {},
+	"Default Project Methods": {},
+	"Default Tables": {},
+	"PPro": {
+		"methods": [
+			"PPro_CallbackTemplate",
+			"PPro_CreateDocumentTree",
+			"PPro_EditorFull",
+			"PPro_LoadObjects",
+			"PPro_LoadTable",
+			"PPro_ObjectGroup",
+			"PPro_SectionSubformMethod",
+			"PPro_Util_TypeToLong",
+			"PPro_VirtStructCreateFieldList",
+			"PPro_VirtualStructure",
+			"PPro_XMLObjects"
+		],
+		"forms": [
+			"PageProWindow"
+		]
+	},
+	"PPRo_Area": {},
+	"PPro_Compiler": {},
+	"PPro_Demo": {
+		"groups": [
+			"PPRo_Area"
+		]
+	},
+	"PPRo_Documents": {},
+	"PPro_MenuHandling": {},
+	"PPro_Utils": {
+		"methods": [
+			"PPro_Util_ColorToComponents",
+			"PPro_Util_ComponentsToColor",
+			"PPro_Util_CoordToRect",
+			"PPro_Util_HexToNum",
+			"PPro_Util_RectToCoord",
+			"PPro_Util_ReturnMeasure"
+		]
+	},
+	"trash": {}
+}

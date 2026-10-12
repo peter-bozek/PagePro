@@ -1043,4 +1043,11 @@ private:
 typedef	void (*RW_CBFunction) (void *inData);
 void	RW_RunInMainThread (RW_CBFunction inFunction, void *inData);	// client app has to implement...
 void	RW_ConvertPictureForPrinting (RWValue &ioPict, bool inForPDF);
+
+// picture diagnostics: one line "RW pict: ..." on the console (stdout)
+void	RW_PictLog (const char *inFormat, ...)
+#if	defined(__GNUC__) || defined(__clang__)
+	__attribute__ ((format (printf, 1, 2)))
+#endif
+	;
 #endif

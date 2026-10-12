@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<List version="1">
+	<group text="Standar variables" id="StandardVars">
+		<item text="Record number" type="var" reference="RWRecord" width="32" height="15"/>
+		<item text="Date" type="var" reference="RWDate" format="7" width="90" height="15"/>
+		<item text="Time" type="var" reference="RWTime" format="4"/>
+		<item text="Page No" type="var" reference="PAGE"/>
+		<item text="Pages" type="var" reference="PAGES"/>
+		<item text="Picture" type="pict" format="4" width="64" height="32"/>
+	</group>
+<!--    following group contain examples of supported objects that can be dragged into PagePro area
+		for  picture object, it is not possible to pass reference, will be implemented later
+		<group text="Examples">
+			<item text="Variable" type="var" reference="variableName" format="### ### ##9.00" width="90" height="15"/>
+			<item text="Date Variable" type="var" reference="dateVariableName" format="7"/>
+			<item text="Auto Array element" type="var" reference="arrayVariable" index="-1"/>
+			<item text="Fixed Array element" type="var" reference="arrayVariable" index="3"/>
+			<item text="Field" type="field" reference="[Table]Field" format="4"/>
+			<item text="Picture" type="pict" format="4" width="64" height="32"/>
+		</group>
+-->
+</List>

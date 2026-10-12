@@ -1,0 +1,1 @@
+ Setter to internal component variables   PPro_SetEditorVariable (        selector;          string with variable name       pointerToVar)      pointer to variable in that will contain returned value   -> error: 0 - no error                -1 - unknown variable  

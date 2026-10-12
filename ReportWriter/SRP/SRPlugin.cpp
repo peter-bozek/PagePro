@@ -18,6 +18,7 @@ extern	"C"		void Yield4D (void);
 # include	<stdio.h>
 # include	<string.h>
 # include	<memory>
+# include	<exception>
 
 #if VERSIONWIN
 # include	<Windows.h>
@@ -813,6 +814,12 @@ long RW_Print (RWString &src, long inOptions, long dstFlags, RWString &dst, long
 		fflush (stdout);
 		result = l;
 	}
+	catch (const std::exception &e)
+	{
+		printf ("\nException in RW_Print: %s. Source: %s\n", e.what(), SourceName (src, IsFileName).c_str());
+		fflush (stdout);
+		result = errGenericError;
+	}
 	catch (...)
 	{
 		printf ("\nUncaught exception in RW_Print! Source: %s\n", SourceName (src, IsFileName).c_str());
@@ -875,6 +882,12 @@ long RW_Process_RW (RWString &src, long inOptions, RWString &dst)
 		printf ("\nException in RW_Process_RW: %ld. Source: %s\n", l, SourceName (src, IsFileName).c_str());
 		fflush (stdout);
 		result = l;
+	}
+	catch (const std::exception &e)
+	{
+		printf ("\nException in RW_Process_RW: %s. Source: %s\n", e.what(), SourceName (src, IsFileName).c_str());
+		fflush (stdout);
+		result = errGenericError;
 	}
 	catch (...)
 	{
@@ -939,6 +952,12 @@ long RW_Print_RW (RWString &src, long inOptions, long dstFlags, RWString &dst, l
 		fflush (stdout);
 		result = l;
 	}
+	catch (const std::exception &e)
+	{
+		printf ("\nException in RW_Print_RW: %s. Source: %s\n", e.what(), SourceName (src, IsFileName).c_str());
+		fflush (stdout);
+		result = errGenericError;
+	}
 	catch (...)
 	{
 		printf ("\nUncaught exception in RW_Print_RW! Source: %s\n", SourceName (src, IsFileName).c_str());
@@ -1000,11 +1019,17 @@ void	RW_ConvertPictureForPrinting (RWValue &ioPict, bool inForPDF)
 		if (p)
 		{
 			if (inForPDF)
+			{
 				SR4DData::GetPictureFrom4D (p, ioPict, inForPDF);
+				if (ioPict.GetBlobSize() == 0 || (ioPict.GetKind() != RWValue::eValue_PictureJPG && ioPict.GetKind() != RWValue::eValue_PicturePNG))
+					RW_PictLog ("RW_ConvertPictureForPrinting: no JPEG / PNG for PDF (kind %d, %zu bytes)", int (ioPict.GetKind()), ioPict.GetBlobSize());
+			}
 			else
 			{
 #if	1
 				ioPict.SetPictureRef (PA_CreateNativePictureForPrinting (p), false);	// this will crash on Mac 4D 11.6
+				if (ioPict.GetPictureRef() == NULL)
+					RW_PictLog ("RW_ConvertPictureForPrinting: PA_CreateNativePictureForPrinting failed");
 #else
 				if (PA_GetShort4DVersion() >= 0x1200)	// try it on 4D v19
 					ioPict.SetPictureRef (PA_CreateNativePictureForPrinting (p), false);
@@ -1019,6 +1044,8 @@ void	RW_ConvertPictureForPrinting (RWValue &ioPict, bool inForPDF)
 			PA_DisposePicture (p);
 		}
 	}
+	else
+		RW_PictLog ("RW_ConvertPictureForPrinting: no picture data (kind %d)", int (ioPict.GetKind()));
 }
 
 

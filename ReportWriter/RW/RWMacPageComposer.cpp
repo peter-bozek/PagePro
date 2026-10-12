@@ -381,7 +381,6 @@ RWMacPageComposer::OpenSessionSafe (bool inDoPageSetup, bool inDoJobSetup, unsig
         NSInteger buttonPressed = [pageLayout runModalWithPrintInfo:_printInfo];
         
         if (buttonPressed == NSOKButton) {
-            _printInfo = [pageLayout printInfo];
             PMPageFormat pageFormat = (PMPageFormat) [_printInfo PMPageFormat];
             status = PMCopyPageFormat(pageFormat, mPageFormat);
             
@@ -399,7 +398,6 @@ RWMacPageComposer::OpenSessionSafe (bool inDoPageSetup, bool inDoJobSetup, unsig
         NSInteger buttonPressed = [printPanel runModalWithPrintInfo:_printInfo];
 
         if (buttonPressed == NSOKButton) {
-            _printInfo = [printPanel printInfo];
             PMPrintSettings printSettings = (PMPrintSettings) [_printInfo PMPrintSettings];
             status = PMCopyPrintSettings(printSettings, mPrintSettings);
 

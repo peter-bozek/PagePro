@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE base SYSTEM "http://www.4d.com/dtd/2007/base.dtd" >
+<base uuid="EAA4C8A515ED47A596A10114E265A432">
+	<table name="Table 1" index="1" uuid="6362659FB1414A4ABECA4A8BFE5B258C">
+		<table_extra>
+			<editor_table_info>
+				<coordinates left="30" top="20" width="59" height="102"/>
+			</editor_table_info>
+		</table_extra>
+	</table>
+</base>

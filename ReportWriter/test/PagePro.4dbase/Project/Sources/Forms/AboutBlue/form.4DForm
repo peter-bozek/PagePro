@@ -1,0 +1,211 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"width": 400,
+	"height": 210,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDeactivate",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		{
+			"objects": {
+				"Viereck": {
+					"type": "rectangle",
+					"top": 0,
+					"left": 0,
+					"width": 400,
+					"height": 210,
+					"fill": "automatic",
+					"stroke": "automatic"
+				}
+			}
+		},
+		{
+			"objects": {
+				"Picture8": {
+					"type": "picture",
+					"top": 15,
+					"left": 214,
+					"width": 170,
+					"height": 128,
+					"pictureFormat": "scaled",
+					"picture": "/RESOURCES/Images/library/PagePro_Logo.png"
+				},
+				"Variable": {
+					"type": "input",
+					"top": 145,
+					"left": 214,
+					"width": 170,
+					"height": 15,
+					"dataSource": "PP_VersionString",
+					"textAlign": "center",
+					"fontFamily": "Arial",
+					"fontSize": 12,
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Variable1": {
+					"type": "input",
+					"top": 170,
+					"left": 214,
+					"width": 170,
+					"height": 34,
+					"dataSource": "PP_PluginVersionString",
+					"textAlign": "center",
+					"fontFamily": "Arial",
+					"fontSize": 12,
+					"focusable": false,
+					"fill": "transparent",
+					"borderStyle": "none",
+					"enterable": false,
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "none",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onDataChange",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button2": {
+					"type": "button",
+					"top": 369,
+					"left": 16,
+					"width": 33,
+					"height": 17,
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"shortcutKey": "[Esc]",
+					"display": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Invisible Button3": {
+					"type": "button",
+					"top": 369,
+					"left": 56,
+					"width": 33,
+					"height": 17,
+					"dataSource": "PP_OK",
+					"action": "cancel",
+					"shortcutKey": "[Return]",
+					"display": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Bild9": {
+					"type": "picture",
+					"top": 20,
+					"left": 16,
+					"width": 120,
+					"height": 147,
+					"pictureFormat": "scaled",
+					"picture": "/RESOURCES/Images/library/SBS_Logo.png"
+				},
+				"Text": {
+					"type": "text",
+					"top": 170,
+					"left": 16,
+					"width": 131,
+					"height": 15,
+					"textAlign": "center",
+					"fontFamily": "Arial Bold",
+					"fontSize": 12,
+					"fontWeight": "bold",
+					"text": "SDS Software GmbH"
+				},
+				"Invisible Button1": {
+					"type": "button",
+					"top": 0,
+					"left": 0,
+					"width": 400,
+					"height": 210,
+					"dataSource": "PP_Cancel",
+					"shortcutKey": "[Esc]",
+					"display": false,
+					"method": "ObjectMethods/Invisible Button1.4dm",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				}
+			}
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

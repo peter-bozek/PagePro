@@ -1,0 +1,234 @@
+{
+	"destination": "detailScreen",
+	"rightMargin": 19,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Group Box": {
+					"type": "groupBox",
+					"top": 16,
+					"left": 16,
+					"width": 340,
+					"height": 80,
+					"class": "Default",
+					"text": ":xliff:PP_ExportSectionLbl"
+				},
+				"Button": {
+					"type": "button",
+					"top": 294,
+					"left": 232,
+					"width": 120,
+					"height": 22,
+					"dataSource": "PP_OK",
+					"action": "accept",
+					"text": ":xliff:PP_OK",
+					"class": "Default",
+					"defaultButton": true,
+					"method": "ObjectMethods/Button.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Check Box": {
+					"type": "checkbox",
+					"top": 42,
+					"left": 30,
+					"width": 274,
+					"height": 21,
+					"dataSource": "PP_ExportBreaks",
+					"text": ":xliff:PP_ExportSectionBreaks",
+					"class": "Default",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button1": {
+					"type": "button",
+					"top": 294,
+					"left": 92,
+					"width": 120,
+					"height": 22,
+					"dataSource": "PP_Cancel",
+					"action": "cancel",
+					"text": ":xliff:PP_Cancel",
+					"class": "Default",
+					"events": [
+						"onClick"
+					]
+				},
+				"Check Box1": {
+					"type": "checkbox",
+					"top": 64,
+					"left": 30,
+					"width": 274,
+					"height": 21,
+					"dataSource": "PP_ExportHeaders",
+					"text": ":xliff:PP_ExportSectionHeaders",
+					"class": "Default",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Group Box1": {
+					"type": "groupBox",
+					"top": 104,
+					"left": 16,
+					"width": 339,
+					"height": 80,
+					"class": "Default",
+					"text": ":xliff:PP_ExportTextLbl"
+				},
+				"Check Box2": {
+					"type": "radio",
+					"top": 130,
+					"left": 30,
+					"width": 274,
+					"height": 21,
+					"dataSource": "PP_ExportTexts",
+					"text": ":xliff:PP_ExportTexts",
+					"class": "Default",
+					"radioGroup": "Group1",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box3": {
+					"type": "radio",
+					"top": 152,
+					"left": 30,
+					"width": 274,
+					"height": 21,
+					"dataSource": "PP_ExportVars",
+					"text": ":xliff:PP_ExportVars",
+					"class": "Default",
+					"radioGroup": "Group1",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Group Box2": {
+					"type": "groupBox",
+					"top": 192,
+					"left": 16,
+					"width": 339,
+					"height": 80,
+					"class": "Default",
+					"text": ":xliff:PP_ExportTextFormat"
+				},
+				"Check Box4": {
+					"type": "radio",
+					"top": 218,
+					"left": 30,
+					"width": 274,
+					"height": 21,
+					"dataSource": "PP_ExportTabs",
+					"text": ":xliff:PP_ExportTextTab",
+					"class": "Default",
+					"radioGroup": "Group2",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box5": {
+					"type": "radio",
+					"top": 240,
+					"left": 30,
+					"width": 274,
+					"height": 21,
+					"dataSource": "PP_ExportCVS",
+					"text": ":xliff:PP_ExportTextCVS",
+					"class": "Default",
+					"radioGroup": "Group2",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				}
+			}
+		}
+	],
+	"editor": {
+		"groups": {
+			"Group1": [
+				"Check Box2",
+				"Check Box3"
+			],
+			"Group2": [
+				"Check Box4",
+				"Check Box5"
+			]
+		},
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

@@ -1,0 +1,164 @@
+{
+	"destination": "detailScreen",
+	"rightMargin": 19,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Group Box": {
+					"type": "groupBox",
+					"top": 16,
+					"left": 16,
+					"width": 340,
+					"height": 190,
+					"class": "Default",
+					"text": ":xliff:PP_DocumentType"
+				},
+				"Radio Button": {
+					"type": "radio",
+					"top": 80,
+					"left": 32,
+					"width": 160,
+					"height": 18,
+					"dataSource": "PP_Type1",
+					"text": ":xliff:PP_DynamicReport",
+					"class": "Default",
+					"radioGroup": "Group2",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Radio Button1": {
+					"type": "radio",
+					"top": 48,
+					"left": 32,
+					"width": 160,
+					"height": 18,
+					"dataSource": "PP_Type2",
+					"text": ":xliff:PP_StaticReport",
+					"class": "Default",
+					"radioGroup": "Group2",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button": {
+					"type": "button",
+					"top": 214,
+					"left": 252,
+					"width": 100,
+					"height": 22,
+					"dataSource": "PP_OK",
+					"action": "accept",
+					"text": ":xliff:PP_OK",
+					"class": "Default",
+					"defaultButton": true,
+					"events": [
+						"onClick"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 104,
+					"left": 55,
+					"width": 132,
+					"height": 16,
+					"class": "Default",
+					"text": ":xliff:PP_Configuration"
+				},
+				"Button1": {
+					"type": "button",
+					"top": 166,
+					"left": 34,
+					"width": 120,
+					"height": 22,
+					"dataSource": "PP_Setup",
+					"action": "accept",
+					"text": ":xliff:PP_PageSetupBtn",
+					"class": "Default",
+					"method": "ObjectMethods/Button1.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Popup Drop down List": {
+					"type": "dropdown",
+					"top": 103,
+					"left": 207,
+					"width": 120,
+					"height": 20,
+					"dataSource": "PP_ReportTypes",
+					"class": "Default",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				}
+			}
+		}
+	],
+	"editor": {
+		"groups": {
+			"Group2": [
+				"Radio Button",
+				"Radio Button1"
+			]
+		},
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

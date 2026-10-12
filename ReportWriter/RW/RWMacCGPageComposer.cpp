@@ -31,6 +31,7 @@ inline	RWMacCGPictData::RWMacCGPictData (void)
 		fKind (RWMacCGPictData::eKind_None)
 // pB		fQDPRef (0)
 {
+	fCGIRef = NULL;
 	fRect = CGRectMake (0, 0, 0, 0);
 }
 
@@ -734,8 +735,11 @@ RWMacCGPageComposer::GetPictBounds (SRect &ioRect, const RWPicture &inPicture, E
 				CGDataProviderRef	provider = CGDataProviderCreateWithData (NULL, pd->fConvertedPict.GetBlobData(), pd->fConvertedPict.GetBlobSize(), NULL);
 				CGImageSourceRef	source = CGImageSourceCreateWithDataProvider (provider, NULL);
 				CFRelease (provider);
-				pd->fCGIRef = CGImageSourceCreateImageAtIndex (source, 0, NULL);
-				CFRelease (source);
+				if (source)
+				{
+					pd->fCGIRef = CGImageSourceCreateImageAtIndex (source, 0, NULL);
+					CFRelease (source);
+				}
 				pd->fRect.size.width = CGImageGetWidth (pd->fCGIRef);
 				pd->fRect.size.height = CGImageGetHeight (pd->fCGIRef);
 				break;
@@ -752,6 +756,18 @@ RWMacCGPageComposer::GetPictBounds (SRect &ioRect, const RWPicture &inPicture, E
 			default:	// to shut up compiler
 				break;
 		}
+
+		if (pd->fKind == RWMacCGPictData::eKind_CGI && pd->fCGIRef == NULL)
+		{
+			RW_PictLog ("RWMacCGPageComposer::GetPictBounds: can't decode the picture (kind %d, %zu bytes)",
+						int (pd->fConvertedPict.GetKind()), pd->fConvertedPict.GetBlobSize());
+			pd->fKind = RWMacCGPictData::eKind_None;
+		}
+		else if (pd->fKind == RWMacCGPictData::eKind_None)
+			RW_PictLog ("RWMacCGPageComposer::GetPictBounds: unsupported picture (kind %d, source kind %d, %zu bytes)",
+						int (pd->fConvertedPict.GetKind()), int (inPicture.GetKind()), inPicture.GetBlobSize());
+		else if (pd->fRect.size.width <= 0 || pd->fRect.size.height <= 0)
+			RW_PictLog ("RWMacCGPageComposer::GetPictBounds: picture has no size (%g x %g)", pd->fRect.size.width, pd->fRect.size.height);
 	}
 	else
 		pd = static_cast <RWMacCGPictData*> (*cd);

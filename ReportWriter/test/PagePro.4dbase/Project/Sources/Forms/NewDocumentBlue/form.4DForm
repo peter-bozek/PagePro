@@ -1,0 +1,178 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"rightMargin": 0,
+	"bottomMargin": 20,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Radio Button": {
+					"type": "radio",
+					"top": 75,
+					"left": 50,
+					"width": 200,
+					"height": 20,
+					"dataSource": "PP_Type1",
+					"text": ":xliff:PP_ObjDynamicReport",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"radioGroup": "Gruppe2",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Radio Button1": {
+					"type": "radio",
+					"top": 45,
+					"left": 50,
+					"width": 200,
+					"height": 20,
+					"dataSource": "PP_Type2",
+					"text": ":xliff:PP_ObjStaticReport",
+					"class": "PPro_Tahoma12Bold",
+					"focusable": false,
+					"radioGroup": "Gruppe2",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Button": {
+					"type": "button",
+					"top": 166,
+					"left": 270,
+					"width": 120,
+					"height": 24,
+					"dataSource": "PP_OK",
+					"action": "accept",
+					"text": ":xliff:PP_BtnOK",
+					"class": "PPro_Buttons",
+					"focusable": false,
+					"defaultButton": true,
+					"events": [
+						"onClick"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 108,
+					"left": 50,
+					"width": 120,
+					"height": 14,
+					"class": "PPro_Tahoma12",
+					"textAlign": "right",
+					"text": ":xliff:PP_ObjConfiguration"
+				},
+				"Button1": {
+					"type": "button",
+					"top": 166,
+					"left": 20,
+					"width": 140,
+					"height": 24,
+					"dataSource": "PP_Setup",
+					"action": "accept",
+					"text": ":xliff:PP_BtnPageSetup",
+					"class": "PPro_Buttons",
+					"focusable": false,
+					"method": "ObjectMethods/Button1.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Popup Drop down List": {
+					"type": "dropdown",
+					"top": 105,
+					"left": 180,
+					"width": 200,
+					"height": 20,
+					"dataSource": "PP_ReportTypes",
+					"focusable": false,
+					"class": "PPro_Tahoma12Bold",
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Text4": {
+					"type": "text",
+					"top": 7,
+					"left": 10,
+					"width": 390,
+					"height": 14,
+					"class": "PPro_Tahoma12Bold",
+					"text": ":xliff:PP_SettingsNewReport"
+				},
+				"Linie": {
+					"type": "line",
+					"top": 25,
+					"left": 0,
+					"width": 410
+				}
+			}
+		}
+	],
+	"editor": {
+		"groups": {
+			"Gruppe2": [
+				"Radio Button",
+				"Radio Button1"
+			]
+		},
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

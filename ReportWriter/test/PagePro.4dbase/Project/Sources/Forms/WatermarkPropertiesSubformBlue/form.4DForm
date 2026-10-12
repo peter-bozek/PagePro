@@ -1,0 +1,327 @@
+{
+	"destination": "detailScreen",
+	"windowSizingX": "fixed",
+	"windowSizingY": "fixed",
+	"width": 230,
+	"height": 290,
+	"markerBody": 290,
+	"markerBreak": 290,
+	"markerFooter": 290,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onOutsideCall",
+		"onDoubleClick",
+		"onDrop",
+		"onMenuSelect",
+		"onPluginArea",
+		"onDataChange",
+		"onDragOver",
+		"onTimer",
+		"onAfterKeystroke",
+		"onAfterEdit",
+		"onBeginDragOver",
+		"onBoundVariableChange",
+		"onPageChange"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "595pt",
+		"paperHeight": "842pt"
+	},
+	"pages": [
+		null,
+		{
+			"objects": {
+				"Variable7": {
+					"type": "input",
+					"top": 50,
+					"left": 90,
+					"width": 130,
+					"height": 12,
+					"dataSource": "PP_Type",
+					"class": "DefautSmall",
+					"focusable": false,
+					"fill": "transparent",
+					"enterable": false,
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Check Box12": {
+					"type": "checkbox",
+					"top": 78,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_VisibleBtn",
+					"text": ":xliff:PP_ObjVisible",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box13": {
+					"type": "checkbox",
+					"top": 98,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_DrawBtn",
+					"text": ":xliff:PP_ObjWillBePrinted",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box1": {
+					"type": "checkbox",
+					"top": 118,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_OnTopBtn",
+					"text": ":xliff:PP_ObjSectionOnTop",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box14": {
+					"type": "checkbox",
+					"top": 168,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_FirstBtn",
+					"text": ":xliff:PP_ObjOnFirstPage",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box15": {
+					"type": "checkbox",
+					"top": 188,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_OddBtn",
+					"text": ":xliff:PP_ObjOnOddPages",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box16": {
+					"type": "checkbox",
+					"top": 208,
+					"left": 100,
+					"width": 120,
+					"height": 16,
+					"dataSource": "PP_Odd2Btn",
+					"text": ":xliff:PP_ObjOddNotOnLast",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box17": {
+					"type": "checkbox",
+					"top": 228,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_EvenBtn",
+					"text": ":xliff:PP_ObjOnEvenPages",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box18": {
+					"type": "checkbox",
+					"top": 248,
+					"left": 100,
+					"width": 120,
+					"height": 16,
+					"dataSource": "PP_Even2Btn",
+					"text": ":xliff:PP_ObjEvenNotOnLast",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Check Box19": {
+					"type": "checkbox",
+					"top": 268,
+					"left": 90,
+					"width": 130,
+					"height": 16,
+					"dataSource": "PP_LastBtn",
+					"text": ":xliff:PP_ObjOnLastPage",
+					"class": "PPro_Tahoma10Bold",
+					"focusable": false,
+					"events": [
+						"onClick",
+						"onHeader",
+						"onPrintingBreak",
+						"onPrintingFooter",
+						"onDisplayDetail",
+						"onPrintingDetail"
+					]
+				},
+				"Variable6": {
+					"type": "input",
+					"top": 30,
+					"left": 90,
+					"width": 130,
+					"height": 12,
+					"dataSource": "PP_ObjectID",
+					"class": "DefautSmall",
+					"fill": "transparent",
+					"contextMenu": "none",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onDataChange"
+					]
+				},
+				"Text": {
+					"type": "text",
+					"top": 5,
+					"left": 5,
+					"width": 220,
+					"height": 12,
+					"class": "PPro_Tahoma10Bold",
+					"text": ":xliff:PP_SettingsSection"
+				},
+				"Linie": {
+					"type": "line",
+					"top": 20,
+					"left": 0,
+					"width": 230
+				},
+				"Text5": {
+					"type": "text",
+					"top": 30,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjID"
+				},
+				"Text6": {
+					"type": "text",
+					"top": 50,
+					"left": 5,
+					"width": 80,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjType"
+				},
+				"Linie1": {
+					"type": "line",
+					"top": 70,
+					"left": 0,
+					"width": 230
+				},
+				"Linie2": {
+					"type": "line",
+					"top": 140,
+					"left": 0,
+					"width": 230
+				},
+				"Text8": {
+					"type": "text",
+					"top": 150,
+					"left": 5,
+					"width": 190,
+					"height": 12,
+					"class": "DefautSmall",
+					"text": ":xliff:PP_ObjSectionPrintOn"
+				}
+			},
+			"entryOrder": [
+				"Variable7",
+				"Check Box12",
+				"Check Box13",
+				"Check Box1",
+				"Check Box14",
+				"Check Box15",
+				"Check Box16",
+				"Check Box17",
+				"Check Box18",
+				"Check Box19"
+			]
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {},
+			"View 2": {},
+			"View 3": {},
+			"View 4": {},
+			"View 5": {},
+			"View 6": {},
+			"View 7": {},
+			"View 8": {},
+			"View 9": {}
+		}
+	}
+}

@@ -1,0 +1,1 @@
+ PPro_GetPropertyNumber (report; object; property) -> value   Property value getter for floating number properties  C_LONGINT($1)  //report where is the object  C_LONGINT($2)  //object to set property  C_TEXT($3)  //property ID  C_REAL($0)  //value  

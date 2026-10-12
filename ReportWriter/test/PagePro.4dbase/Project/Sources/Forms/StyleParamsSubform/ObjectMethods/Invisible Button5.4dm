@@ -1,0 +1,1 @@
+PPro_OpacityButtonScript(->PP_TextOpacity)

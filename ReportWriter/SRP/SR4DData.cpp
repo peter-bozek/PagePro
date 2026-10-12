@@ -81,146 +81,164 @@ void
 SR4DData::GetPictureAsBlobFrom4D (void *ph, RWValue &outValue)
 {
 	outValue.SetPicture  (RWValue::eValue_BLOB, 0, 0, true);
-	if (ph != NULL)
+	if (ph == NULL)
 	{
-		PA_Unistring	u = PA_GetPictureData ((PA_Picture) ph, 1, NULL);
-		if (PA_GetLastError() == 0)	// at least one format is available
-		{
-			PA_Variable	v2[2];
-			memset (&v2, 0, sizeof (v2));
-			v2[0].fType = eVK_Picture;
-			v2[0].uValue.fPicture = ph;
-			v2[1] = PA_CreateVariable (eVK_Blob);
-			PA_Variable	result = PA_ExecuteCommandByID (532, v2, 2);	// VARIABLE TO BLOB
-			long	len = PA_GetBlobVariable (v2[1], NULL);
-			if (len > 0)
-			{
-				void	*blob = malloc (len);
-				if (blob)
-				{
-					len = PA_GetBlobVariable (v2[1], blob);
-					outValue.SetPicture (RWValue::eValue_BLOB, blob, len, true);
-				}
-			}
-			PA_ClearVariable (&result);
-//			PA_ClearVariable (&v2[0]);	this belongs to 4D var/field
-			PA_ClearVariable (&v2[1]);
-		}
-		PA_DisposeUnistring (&u);
+		RW_PictLog ("GetPictureAsBlobFrom4D: no picture (NULL)");
+		return;
 	}
+
+	PA_Unistring	u = PA_GetPictureData ((PA_Picture) ph, 1, NULL);
+	if (PA_GetLastError() == 0)	// at least one format is available
+	{
+		PA_Variable	v2[2];
+		memset (&v2, 0, sizeof (v2));
+		v2[0].fType = eVK_Picture;
+		v2[0].uValue.fPicture = ph;
+		v2[1] = PA_CreateVariable (eVK_Blob);
+		PA_Variable	result = PA_ExecuteCommandByID (532, v2, 2);	// VARIABLE TO BLOB
+		long	error = PA_GetLastError();
+		long	len = PA_GetBlobVariable (v2[1], NULL);
+		if (len > 0)
+		{
+			void	*blob = malloc (len);
+			if (blob)
+			{
+				len = PA_GetBlobVariable (v2[1], blob);
+				outValue.SetPicture (RWValue::eValue_BLOB, blob, len, true);
+			}
+		}
+		if (outValue.GetBlobSize() == 0)
+			RW_PictLog ("GetPictureAsBlobFrom4D: VARIABLE TO BLOB failed (error %ld, length %ld)", error, len);
+		PA_ClearVariable (&result);
+//		PA_ClearVariable (&v2[0]);	this belongs to 4D var/field
+		PA_ClearVariable (&v2[1]);
+	}
+	else
+		RW_PictLog ("GetPictureAsBlobFrom4D: empty picture (no format)");
+	PA_DisposeUnistring (&u);
+}
+
+
+// Maps a 4D picture codec (".png", "image/png", "public.png" ...) to our kind.
+// Formats we can't use directly (SVG, GIF, BMP, HEIC ...) return eValue_Undefined and get converted to PNG.
+static RWValue::EValue_Kind
+PictKindFromCodec (const RWString &inCodec)
+{
+	RWString	codec = RWStr::ToLowerASCII (inCodec);
+	auto		has = [&codec] (const char16_t *inText) { return codec.find (inText) != RWString::npos; };
+
+	if (has (u"pict"))
+		return RWValue::eValue_PicturePICT;
+	if (has (u"pdf"))
+		return RWValue::eValue_PicturePDF;
+	if (has (u"jpg") || has (u"jpeg"))
+		return RWValue::eValue_PictureJPG;
+	if (has (u"png"))
+		return RWValue::eValue_PicturePNG;
+	if (has (u"tif"))
+		return RWValue::eValue_PictureTIFF;
+	return RWValue::eValue_Undefined;
+}
+
+
+// Converts ph to PNG (CONVERT PICTURE) and extracts the result. Used for formats we can't
+// embed or decode ourselves: SVG, GIF, BMP ... and for PDF output anything but JPEG / PNG.
+static void
+ConvertPictureToPNG (void *ph, RWValue &outValue)
+{
+	PA_Unichar		fmt [] = { '.', 'p', 'n', 'g', 0 };
+	PA_Unistring	uni = PA_CreateUnistring (fmt);
+	PA_Variable		pv[2];
+	PA_SetPictureVariable (&pv[0], PA_DuplicatePicture (ph, false));	// a copy, CONVERT PICTURE replaces the picture of the variable
+	PA_SetStringVariable (&pv[1], &uni);
+	PA_Variable	v = PA_ExecuteCommandByID (1002, pv, 2);	// CONVERT PICTURE (pict:P, codec:S)
+	long		error = PA_GetLastError();
+	PA_ClearVariable (&v);
+	PA_ClearVariable (&pv[1]);
+	if (error != 0 || PA_GetVariableKind (pv[0]) != eVK_Picture)
+		RW_PictLog ("ConvertPictureToPNG: CONVERT PICTURE failed (error %ld)", error);
+	else
+		SR4DData::GetPictureFrom4D (PA_GetPictureVariable (pv[0]), outValue, false, false);
+	PA_ClearVariable (&pv[0]);
 }
 
 
 void
-SR4DData::GetPictureFrom4D (void *ph, RWValue &outValue, bool inForPDF)
+SR4DData::GetPictureFrom4D (void *ph, RWValue &outValue, bool inForPDF, bool inAllowConvert)
 {
 	outValue.SetPicture  (RWValue::eValue_BLOB, 0, 0, true);
-	if (ph != NULL)
+	if (ph == NULL)
 	{
-		PA_Unistring			u;
-		long					index = 1, best = 0;
-		RWValue::EValue_Kind	bestKind = RWValue::eValue_Undefined;
-
-		while (true)
-		{
-			u = PA_GetPictureData (ph, index, NULL);
-			if (PA_GetLastError() != 0)
-				break;
-			RWString	s = RWStr::FromPA (&u);
-
-			if (s.find (u".pict", 1) != RWString::npos)
-			{
-				best = index;
-				bestKind = RWValue::eValue_PicturePICT;
-			}
-			else if (s.find (u".pdf;", 1) != RWString::npos)
-			{
-				best = index;
-				bestKind = RWValue::eValue_PicturePDF;
-			}
-			else if (s.find (u".jpg;", 1) != RWString::npos)
-			{
-				best = index;
-				bestKind = RWValue::eValue_PictureJPG;
-			}
-			else if (s.find (u".png;", 1) != RWString::npos)
-			{
-				best = index;
-				bestKind = RWValue::eValue_PicturePNG;
-			}
-			else if (s.find (u".tif;", 1) != RWString::npos)
-			{
-				best = index;
-				bestKind = RWValue::eValue_PictureTIFF;
-			}
-			PA_DisposeUnistring (&u);
-			// PDF (PoDoFo 1.0): JPEG is embedded unchanged, PNG decoded and Flate compressed (alpha becomes a soft mask)
-			if (bestKind > RWValue::eValue_PicturePICT && (not inForPDF || bestKind == RWValue::eValue_PictureJPG || bestKind == RWValue::eValue_PicturePNG))
-				break;
-			index++;
-		}
-		if (bestKind != RWValue::eValue_Undefined)
-		{
-			if (inForPDF && bestKind != RWValue::eValue_PictureJPG && bestKind != RWValue::eValue_PicturePNG)
-			{
-				// lossless and keeps transparency (was .jpg)
-				PA_Unichar		fmt [] = { '.', 'p', 'n', 'g', 0 };
-				PA_Unistring	uni = PA_CreateUnistring (fmt);
-/*
- switch (inKind)
-				{
-					case RWValue::eValue_PictureJPG:
-					{
-						PA_Unichar	jpeg [] = { '.', 'j', 'p', 'g', 0 };
-						uni = PA_CreateUnistring (jpeg);
-						break;
-					}
-					case RWValue::eValue_PicturePNG:
-					{
-						PA_Unichar	png [] = { '.', 'p', 'n', 'g', 0 };
-						uni = PA_CreateUnistring (png);
-						break;
-					}
-					case RWValue::eValue_PictureTIFF:
-					{
-						PA_Unichar	tiff [] = { '.', 't', 'i', 'f', 0 };
-						uni = PA_CreateUnistring (tiff);
-						break;
-					}
-					default:
-						return;
-				}
-*/
-				PA_Variable	pv[2];
-				PA_SetPictureVariable (&pv[0], PA_DuplicatePicture (ph, true));	//••••••••• TODO ••• check this
-				PA_SetStringVariable (&pv[1], &uni);
-				PA_Variable	v = PA_ExecuteCommandByID (1002, pv, 2);	// CONVERT PICTURE (pict:P, codec:S)	- does it use QuickTime?!?
-				PA_ClearVariable (&v);
-				PA_ClearVariable (&pv[1]);
-				GetPictureFrom4D (PA_GetPictureVariable (pv[0]), outValue, false);
-				PA_ClearVariable (&pv[0]);
-			}
-			else
-			{
-				PA_Handle		data = PA_NewHandle (0);
-				u = PA_GetPictureData ((PA_Picture) ph, best, data);
-				if (PA_GetLastError() == 0)
-				{
-					long	size = PA_GetHandleSize (data);
-					if (size > 0)
-					{
-						void	*pd = PA_LockHandle (data);
-						RWValue	temp (bestKind, pd, size);
-						outValue.Detach (temp);
-						PA_UnlockHandle (data);
-					}
-				}
-				if (data)
-					PA_DisposeHandle (data);
-				PA_DisposeUnistring (&u);
-			}
-		}
+		RW_PictLog ("GetPictureFrom4D: no picture (NULL)");
+		return;
 	}
+
+	PA_Unistring			u;
+	long					index = 1, best = 0, count = 0;
+	RWValue::EValue_Kind	bestKind = RWValue::eValue_Undefined;
+
+	while (true)
+	{
+		u = PA_GetPictureData (ph, index, NULL);
+		if (PA_GetLastError() != 0)
+			break;
+		count++;
+		RWString				codec = RWStr::FromPA (&u);
+		RWValue::EValue_Kind	kind = PictKindFromCodec (codec);
+		PA_DisposeUnistring (&u);
+		RW_PictLog ("GetPictureFrom4D: format %ld \"%s\" -> %s", index, RWStr::ToUTF8 (codec).c_str(),
+					kind == RWValue::eValue_Undefined ? "not usable" : RWValue::GetPictFormats() [kind - RWValue::eValue_BLOB]);
+
+		if (kind != RWValue::eValue_Undefined)
+		{
+			best = index;
+			bestKind = kind;
+		}
+		// PDF (PoDoFo 1.0): JPEG is embedded unchanged, PNG decoded and Flate compressed (alpha becomes a soft mask)
+		if (bestKind > RWValue::eValue_PicturePICT && (not inForPDF || bestKind == RWValue::eValue_PictureJPG || bestKind == RWValue::eValue_PicturePNG))
+			break;
+		index++;
+	}
+
+	if (count == 0)
+	{
+		RW_PictLog ("GetPictureFrom4D: empty picture (no format)");
+		return;
+	}
+
+	bool	usable = bestKind != RWValue::eValue_Undefined;
+	if (inForPDF)
+		usable = bestKind == RWValue::eValue_PictureJPG || bestKind == RWValue::eValue_PicturePNG;
+	if (not usable)
+	{
+		// lossless and keeps transparency (was .jpg)
+		if (inAllowConvert)
+			ConvertPictureToPNG (ph, outValue);
+		else
+			RW_PictLog ("GetPictureFrom4D: no usable format after conversion");
+	}
+	else
+	{
+		PA_Handle		data = PA_NewHandle (0);
+		u = PA_GetPictureData ((PA_Picture) ph, best, data);
+		if (PA_GetLastError() == 0)
+		{
+			long	size = PA_GetHandleSize (data);
+			if (size > 0)
+			{
+				void	*pd = PA_LockHandle (data);
+				RWValue	temp (bestKind, pd, size);
+				outValue.Detach (temp);
+				PA_UnlockHandle (data);
+			}
+		}
+		if (data)
+			PA_DisposeHandle (data);
+		PA_DisposeUnistring (&u);
+	}
+
+	if (outValue.GetBlobSize() == 0)
+		RW_PictLog ("GetPictureFrom4D: result is empty (format %ld of %ld)", best, count);
 }
 
 
@@ -247,16 +265,21 @@ SR4DData::Get4DPicture (const RWValue &inValue)
 		}
 		else
 			pict = PA_CreatePicture (inValue.GetBlobData(), inValue.GetBlobSize());
+		if (pict == NULL)
+			RW_PictLog ("Get4DPicture: can't create a 4D picture (kind %d, %zu bytes)", int (inValue.GetKind()), inValue.GetBlobSize());
 	}
+	else
+		RW_PictLog ("Get4DPicture: no picture data (kind %d)", int (inValue.GetKind()));
 	return pict;
 }
 
 
+// ph is not disposed here: a picture of a variable or an array belongs to 4D, the result of an
+// expression is cleared by SR4DVariable::Fetch, a field's picture by SR4DField::Fetch.
 void
 SR4DData::GetCurrentPicture (void *ph)
 {
 	GetPictureAsBlobFrom4D (ph, mCurrent);
-    PA_DisposePicture((PA_Picture) ph);
 //	GetPictureFrom4D (ph, mCurrent, false);
 }
 
@@ -295,10 +318,12 @@ SR4DVariable::Fetch (long inIteration, bool inSeek)
 		mCurrent.Free();
 
 		PA_Variable	v;
+		bool		ownsV = false;	// PA_ExecuteFunction returns a result we own, PA_GetVariable the 4D variable itself
 		if (mIndex == SR4DVariable_Expression)	//mbs 17062010
 		{
 			PA_Unistring	ustr = RWStr::CreatePA (mName);	
 			v = PA_ExecuteFunction (&ustr);
+			ownsV = true;
 			PA_DisposeUnistring (&ustr);
 		}
 		else
@@ -308,6 +333,7 @@ SR4DVariable::Fetch (long inIteration, bool inSeek)
 			{
 				PA_Unistring	ustr = RWStr::CreatePA (mName);
 				v = PA_ExecuteFunction (&ustr);
+				ownsV = true;
 				PA_DisposeUnistring (&ustr);
 			}
 		}
@@ -425,6 +451,12 @@ SR4DVariable::Fetch (long inIteration, bool inSeek)
 				break;
 		}
 
+		// PA_GetVariable does not copy pictures or arrays: clearing v (or disposing its picture, as it
+		// used to) destroys the 4D variable - its picture is empty on the next print, an array crashes 4D.
+		// Only the result of an expression is ours; the picture was copied into mCurrent.
+		if (ownsV && PA_GetVariableKind (v) == eVK_Picture)
+			PA_ClearVariable (&v);
+
 		mChanged = (mOld != mCurrent);
 	}
 
@@ -493,8 +525,13 @@ SR4DField::Fetch (long inIteration, bool inSeek)
 					break;
 
 				case eFK_PictureField:
-					GetCurrentPicture (PA_GetPictureField (mTable, mField));
+				{
+					PA_Picture	p = PA_GetPictureField (mTable, mField);
+					GetCurrentPicture (p);
+					if (p)
+						PA_DisposePicture (p);
 					break;
+				}
 
 				case eFK_DateField:
 				{
